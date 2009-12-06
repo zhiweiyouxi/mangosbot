@@ -1300,6 +1300,19 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 m_stableSlots;
 
         /*********************************************************/
+        /***                    GOSSIP SYSTEM                  ***/
+        /*********************************************************/
+
+        void PrepareGossipMenu(WorldObject *pSource, uint32 gossipid = 0);
+        void SendPreparedGossip(WorldObject *pSource);
+        void OnGossipSelect(WorldObject *pSource, uint32 option);
+        void OnPoiSelect(WorldObject *pSource, GossipOption const *gossip);
+
+        uint32 GetGossipTextId(uint32 action, uint32 zoneid);
+        uint32 GetGossipTextId(WorldObject *pSource);
+        GossipOption const* GetGossipOption(WorldObject *pSource, uint32 id) const;
+
+        /*********************************************************/
         /***                    QUEST SYSTEM                   ***/
         /*********************************************************/
 
@@ -1414,6 +1427,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         bool LoadFromDB(uint32 guid, SqlQueryHolder *holder);
 
+        bool MinimalLoadFromDB(QueryResult *result, uint32 guid);
         static bool   LoadValuesArrayFromDB(Tokens& data,uint64 guid);
         static uint32 GetUInt32ValueFromArray(Tokens const& data, uint16 index);
         static float  GetFloatValueFromArray(Tokens const& data, uint16 index);
