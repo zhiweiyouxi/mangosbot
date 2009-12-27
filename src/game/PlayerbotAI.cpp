@@ -1334,7 +1334,7 @@ void PlayerbotAI::DoCombatMovement() {
 		// ranged combat - just move within spell range
 		// TODO: just follow in spell range! how to determine bots spell range?
 		if( targetDist>25.0f ) {
-			m_bot->GetMotionMaster()->MoveChase( m_targetCombat );
+			m_bot->GetMotionMaster()->MoveChase( m_targetCombat, SPELL_DISTANCE );
 		} else {
 			MovementClear();
 		}

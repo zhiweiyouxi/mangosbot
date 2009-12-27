@@ -15,6 +15,7 @@ class PlayerbotMgr;
 
 #define BOTLOOT_DISTANCE 25.0f
 #define EAT_DRINK_PERCENT 25
+#define SPELL_DISTANCE 25.0f
 
 class MANGOS_DLL_SPEC PlayerbotAI
 {
