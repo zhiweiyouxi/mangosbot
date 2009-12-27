@@ -1723,27 +1723,43 @@
 			Filter="Ai*"
 			>
 			<File
-				RelativePath="..\..\src\game\AiAction.cpp"
+				RelativePath="..\..\src\game\Action.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiAction.h"
+				RelativePath="..\..\src\game\Action.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiActionBasket.cpp"
+				RelativePath="..\..\src\game\ActionBasket.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiActionBasket.h"
+				RelativePath="..\..\src\game\ActionBasket.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiQueue.cpp"
+				RelativePath="..\..\src\game\Engine.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiQueue.h"
+				RelativePath="..\..\src\game\Engine.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\EngineMage.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\EngineMage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Queue.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Queue.h"
 				>
 			</File>
 		</Filter>
