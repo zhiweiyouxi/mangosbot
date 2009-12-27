@@ -291,11 +291,10 @@ void PlayerbotHunterAI::DoNonCombatActions()
     Item* pItem = ai->FindDrink();
 	Item* fItem = ai->FindBandage();
 
-    if (pItem != NULL && ai->GetManaPercent() < 30)
+    if (pItem != NULL && ai->GetManaPercent() < EAT_DRINK_PERCENT)
     {
         ai->TellMaster("I could use a drink.");
-        ai->UseItem(*pItem);
-        ai->SetIgnoreUpdateTime(30);
+		ai->Drink();
         return;
     }
 
@@ -305,18 +304,16 @@ void PlayerbotHunterAI::DoNonCombatActions()
 
     pItem = ai->FindFood();
 
-    if (pItem != NULL && ai->GetHealthPercent() < 30)
+    if (pItem != NULL && ai->GetHealthPercent() < EAT_DRINK_PERCENT)
     {
         ai->TellMaster("I could use some food.");
-        ai->UseItem(*pItem);
-        ai->SetIgnoreUpdateTime(30);
+		ai->Eat();
         return;
     }
 	else if (pItem == NULL && fItem != NULL && !m_bot->HasAura(RECENTLY_BANDAGED, 0) && ai->GetHealthPercent() < 70)
     {
         ai->TellMaster("I could use first aid.");
-        ai->UseItem(*fItem);
-        ai->SetIgnoreUpdateTime(8);
+        ai->Bandage();
         return;
     }
     else if (pItem == NULL && fItem == NULL && m_bot->getRace() == RACE_DRAENEI && !m_bot->HasAura(GIFT_OF_THE_NAARU, 0) && ai->GetHealthPercent() < 70)

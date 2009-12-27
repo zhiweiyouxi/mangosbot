@@ -616,7 +616,7 @@ void PlayerbotDruidAI::DoNonCombatActions()
     Item* pItem = ai->FindDrink();
 	Item* fItem = ai->FindBandage();
 
-    if (pItem != NULL && ai->GetManaPercent() < 30)
+    if (pItem != NULL && ai->GetManaPercent() < EAT_DRINK_PERCENT)
     {
         ai->TellMaster("I could use a drink.");
         ai->UseItem(*pItem);
@@ -642,7 +642,7 @@ void PlayerbotDruidAI::DoNonCombatActions()
 
     pItem = ai->FindFood();
 
-    if (pItem != NULL && ai->GetHealthPercent() < 30)
+    if (pItem != NULL && ai->GetHealthPercent() < EAT_DRINK_PERCENT)
     {
         ai->TellMaster("I could use some food.");
         ai->UseItem(*pItem);

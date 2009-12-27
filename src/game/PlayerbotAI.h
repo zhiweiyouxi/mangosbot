@@ -14,6 +14,7 @@ class PlayerbotClassAI;
 class PlayerbotMgr;
 
 #define BOTLOOT_DISTANCE 25.0f
+#define EAT_DRINK_PERCENT 25
 
 class MANGOS_DLL_SPEC PlayerbotAI
 {
@@ -212,7 +213,10 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		void MovementUpdate();
 		void MovementClear();
 		bool IsMoving();
-
+		void Drink();
+		void Eat();
+		void Bandage();
+		void UseLongTimeItem(Item* pItem, uint8 time = 30);
         void SetInFront( const Unit* obj );
 
         void ItemLocalization(std::string& itemName, const uint32 itemID) const;
