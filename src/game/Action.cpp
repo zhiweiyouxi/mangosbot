@@ -1,4 +1,5 @@
 #include "pchdef.h"
+#include "PlayerbotAI.h"
 #include "Action.h"
 
 namespace ai
@@ -23,6 +24,16 @@ CastSpellAction::CastSpellAction(PlayerbotAI* const ai, const char* spell) : Act
 void CastSpellAction::Execute()
 {
 	ai->CastSpell(spellid);
+}
+
+ActionBasket::ActionBasket(Action* action, float relevance)
+{
+	this->action = action;
+	this->relevance = relevance;
+}
+
+ActionBasket::~ActionBasket(void)
+{
 }
 
 }

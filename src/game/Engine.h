@@ -1,14 +1,8 @@
 #pragma once
+
+#include "Action.h"
 #include "Queue.h"
-#include "Common.h"
-#include "World.h"
-#include "SpellMgr.h"
-#include "Player.h"
-#include "ObjectMgr.h"
-#include "WorldPacket.h"
-#include "Unit.h"
-#include "SharedDefines.h"
-#include "PlayerbotAI.h"
+#include "Trigger.h"
 
 namespace ai
 {
@@ -24,6 +18,7 @@ public:
 	virtual ~Engine(void);
 protected:
 	Queue queue;
+	std::list<Trigger*> triggers;
 	Player* master;
 	Player* bot;
 	PlayerbotAI* ai;

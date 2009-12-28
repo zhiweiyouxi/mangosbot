@@ -1,4 +1,6 @@
 #include "pchdef.h"
+#include "Action.h"
+#include "Queue.h"
 #include "EngineMage.h"
 namespace ai
 {
@@ -12,17 +14,17 @@ EngineMage::~EngineMage(void)
 
 void EngineMage::Init()
 {
-	queue.Push(new CastFrostBoltAction(ai), 1.0f);
+	queue.Push(new ActionBasket(new CastFrostBoltAction(ai), 1.0f));
 }
 
 CastFrostBoltAction::CastFrostBoltAction(PlayerbotAI* const ai) : CastSpellAction(ai, "frostbolt")
 {
 }
 
-Action** CastFrostBoltAction::GetAfterActions()
+ActionBasket** CastFrostBoltAction::GetAfterActions()
 {
-	Action** actions = new Action*[1];
-	actions[0] = new CastFrostBoltAction(ai);
+	ActionBasket** actions = new ActionBasket*[1];
+	actions[0] = new ActionBasket(new CastFrostBoltAction(ai), 1.0f);
 	return actions;
 }
 

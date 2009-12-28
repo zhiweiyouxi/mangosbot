@@ -3,14 +3,6 @@
 namespace ai
 {
 
-ActionBasket::ActionBasket(Action* action, float relevance)
-{
-	this->action = action;
-	this->relevance = relevance;
-}
 
-ActionBasket::~ActionBasket(void)
-{
-}
 
 }

@@ -1731,14 +1731,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\ActionBasket.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ActionBasket.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Engine.cpp"
 				>
 			</File>
@@ -1760,6 +1752,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\Queue.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Trigger.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Trigger.h"
 				>
 			</File>
 		</Filter>

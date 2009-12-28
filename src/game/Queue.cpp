@@ -1,5 +1,7 @@
 #include "pchdef.h"
+#include "Action.h"
 #include "Queue.h"
+
 namespace ai
 {
 Queue::Queue(void)
@@ -10,9 +12,21 @@ Queue::~Queue(void)
 {
 }
 
-void Queue::Push(Action *action, float relevance)
+void Queue::Push(ActionBasket *action)
 {
-	actions.push_back(new ActionBasket(action, relevance));
+	if (action)
+		actions.push_back(action);
+}
+
+void Queue::Push(ActionBasket **actions)
+{
+	if (actions)
+	{
+		for (int i=0; i<sizeof(actions)/sizeof(ActionBasket*); i++)
+		{
+			Push(actions[i]);
+		}
+	}
 }
 
 Action* Queue::Pop()

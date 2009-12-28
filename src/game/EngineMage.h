@@ -17,6 +17,6 @@ class CastFrostBoltAction : public CastSpellAction
 {
 public:
 	CastFrostBoltAction(PlayerbotAI* const ai);
-	Action** GetAfterActions();
+	ActionBasket** GetAfterActions();
 };
 }

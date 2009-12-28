@@ -10,7 +10,8 @@ public:
 public:
 	~Queue(void);
 public:
-	void Push(Action *action, float relevance);
+	void Push(ActionBasket *action);
+	void Push(ActionBasket **actions);
 	Action* Pop();
 private:
 	std::list<ActionBasket*> actions;
