@@ -62,6 +62,16 @@ private:
 	int count;
 };
 
+class TestMultiplier : public Multiplier
+{
+public:
+    TestMultiplier() : Multiplier() { asked = 0; }
+    float GetValue(Action* action) { return asked = 5.0f; }
+
+    static int asked;
+};
+
+int TestMultiplier::asked;
 
 class TestEngine : public Engine
 {
@@ -71,8 +81,10 @@ public:
 	{
 		queue.Push(new ActionBasket(new RepeatingAction(NULL), 1.0f));
 		triggers.push_back(new TestTrigger(NULL));
+        multipliers.push_back(new TestMultiplier());
 	}
 };
+
 
 class EngineTestCase : public CPPUNIT_NS::TestFixture
 {
@@ -98,6 +110,7 @@ protected:
 
 		CPPUNIT_ASSERT_EQUAL(RepeatingAction::destroyed, 5);
 		CPPUNIT_ASSERT(TriggeredAction::fired);
+        CPPUNIT_ASSERT(TestMultiplier::asked);
 	}
 };
 

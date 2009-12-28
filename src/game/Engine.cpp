@@ -21,12 +21,20 @@ Engine::~Engine(void)
 	{
 		action = queue.Pop();
 	} while (action);
-	for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
+	
+    for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
 	{
 		Trigger* trigger = *i;
 		delete trigger;
 	}
 	triggers.empty();
+
+    for (std::list<Multiplier*>::iterator i = multipliers.begin(); i != multipliers.end(); i++)
+    {
+        Multiplier* multiplier = *i;
+        delete multiplier;
+    }
+    multipliers.empty();
 }
 
 void Engine::DoNextAction(Unit*)
@@ -36,7 +44,7 @@ void Engine::DoNextAction(Unit*)
 		Trigger* trigger = *i;
 		if (trigger->IsActive())
 		{
-			queue.Push(trigger->CreateHandlers());
+			MultiplyAndPush(trigger->CreateHandlers());
 		}
 	}
 	Action* action = queue.Pop();
@@ -44,7 +52,24 @@ void Engine::DoNextAction(Unit*)
 	if (action)
 	{
 		action->Execute();
-		queue.Push(action->GetAfterActions());
+		MultiplyAndPush(action->GetAfterActions());
 		delete action;
 	}
+}
+
+void Engine::MultiplyAndPush(ActionBasket** actions)
+{
+    if (actions)
+    {
+        for (std::list<Multiplier*>::iterator i = multipliers.begin(); i!= multipliers.end(); i++)
+        {
+            Multiplier* multiplier = *i;
+            for (int j=0; j<sizeof(actions)/sizeof(ActionBasket*); j++)
+            {
+                float k = multiplier->GetValue(actions[j]->getAction());
+                actions[j]->AmendRelevance(k);
+            }
+        }
+        queue.Push(actions);
+    }
 }

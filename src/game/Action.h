@@ -43,6 +43,7 @@ namespace ai
 	public:
 		float getRelevance() {return relevance;}
 		Action* getAction() {return action;}
+        void AmendRelevance(float k) {relevance *= k; }
 	private:
 		Action* action;
 		float relevance;

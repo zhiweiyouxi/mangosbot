@@ -3,6 +3,7 @@
 #include "Action.h"
 #include "Queue.h"
 #include "Trigger.h"
+#include "Multiplier.h"
 
 namespace ai
 {
@@ -20,9 +21,14 @@ namespace ai
 
     public:
 	    virtual ~Engine(void);
+
+    private:
+        void MultiplyAndPush(ActionBasket** actions);
+
     protected:
 	    Queue queue;
 	    std::list<Trigger*> triggers;
+        std::list<Multiplier*> multipliers;
 	    Player* master;
 	    Player* bot;
     };
