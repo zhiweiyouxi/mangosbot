@@ -2,19 +2,7 @@
 #include "PlayerbotAI.h"
 #include "Action.h"
 
-namespace ai
-{
-
-Action::Action(PlayerbotAI* const ai)
-{
-	this->ai = ai;
-}
-
-Action::~Action(void)
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------------
+using namespace ai;
 
 CastSpellAction::CastSpellAction(PlayerbotAI* const ai, const char* spell) : Action(ai)
 {
@@ -24,16 +12,4 @@ CastSpellAction::CastSpellAction(PlayerbotAI* const ai, const char* spell) : Act
 void CastSpellAction::Execute()
 {
 	ai->CastSpell(spellid);
-}
-
-ActionBasket::ActionBasket(Action* action, float relevance)
-{
-	this->action = action;
-	this->relevance = relevance;
-}
-
-ActionBasket::~ActionBasket(void)
-{
-}
-
 }

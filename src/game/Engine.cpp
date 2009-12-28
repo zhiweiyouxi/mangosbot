@@ -12,14 +12,7 @@
 
 #include "Engine.h"
 
-namespace ai
-{
-Engine::Engine(Player* const master, Player* const bot, PlayerbotAI* const ai)
-{
-	this->master = master;
-	this->bot = bot;
-	this->ai = ai;
-}
+using namespace ai;
 
 Engine::~Engine(void)
 {
@@ -54,6 +47,4 @@ void Engine::DoNextAction(Unit*)
 		queue.Push(action->GetAfterActions());
 		delete action;
 	}
-}
-
 }

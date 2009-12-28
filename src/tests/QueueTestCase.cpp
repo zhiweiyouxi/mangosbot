@@ -7,6 +7,12 @@
 
 using namespace ai;
 
+class TestAction : public Action
+{
+public:
+    TestAction(PlayerbotAI* const ai) : Action(ai) {}
+};
+
 class QueueTestCase : public CPPUNIT_NS::TestFixture
 {
 	CPPUNIT_TEST_SUITE( QueueTestCase );
@@ -23,9 +29,9 @@ public:
 protected:
 	void queueMustHaveOrder()
 	{
-		Action action1(NULL);
-		Action action2(NULL);
-		Action action3(NULL);
+		TestAction action1(NULL);
+		TestAction action2(NULL);
+		TestAction action3(NULL);
 
 		Queue q;
 		q.Push(new ActionBasket(&action1, 0.5f));

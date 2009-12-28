@@ -17,7 +17,8 @@ public:
 	{
 		destroyed++;
 	}
-	ActionBasket** GetAfterActions() 
+
+    ActionBasket** GetAfterActions() 
 	{
 		ActionBasket** actions = new ActionBasket*[1];
 		actions[0] = new ActionBasket(new RepeatingAction(ai), 1.0f);

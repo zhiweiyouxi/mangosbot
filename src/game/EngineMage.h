@@ -6,8 +6,8 @@ namespace ai
 class EngineMage : public Engine
 {
 public:
-	EngineMage(Player* const master, Player* const bot, PlayerbotAI* const ai);
-	virtual ~EngineMage(void);
+    EngineMage(Player* const master, Player* const bot, PlayerbotAI* const ai) : Engine(master, bot, ai) {}
+    virtual ~EngineMage(void) {}
 
 public:
 	void Init();
@@ -16,7 +16,7 @@ public:
 class CastFrostBoltAction : public CastSpellAction
 {
 public:
-	CastFrostBoltAction(PlayerbotAI* const ai);
+    CastFrostBoltAction(PlayerbotAI* const ai) : CastSpellAction(ai, "frostbolt") {}
 	ActionBasket** GetAfterActions();
 };
 }

@@ -2,14 +2,4 @@
 #include "Trigger.h"
 #include "Action.h"
 
-namespace ai
-{
-	Trigger::Trigger(PlayerbotAI* const ai)
-	{
-		this->ai = ai;
-	}
-
-	Trigger::~Trigger()
-	{
-	}
-}
+using namespace ai;

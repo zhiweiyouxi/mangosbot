@@ -1,21 +1,20 @@
 #pragma once
+#include "PlayerBotAiAware.h"
 
 namespace ai
 {
 	class ActionBasket;
 
-	class Action
+    class Action : public PlayerBotAiAware
 	{
 	public:
-		Action(PlayerbotAI* const ai);
+        Action(PlayerbotAI* const ai) : PlayerBotAiAware(ai) {}
+        virtual ~Action(void) {}
 
-		virtual void Execute() {}
-		virtual ActionBasket** GetAfterActions() {return NULL;}
-	public:
-		virtual ~Action(void);
+    public:
+        virtual void Execute() {}
+        virtual ActionBasket** GetAfterActions() { return NULL; }
 
-	protected:
-		PlayerbotAI* ai;
 	};
 
 	//---------------------------------------------------------------------------------------------------------------------
@@ -30,11 +29,17 @@ namespace ai
 		uint32 spellid;
 	};
 
+    //---------------------------------------------------------------------------------------------------------------------
+
 	class ActionBasket
 	{
 	public:
-		ActionBasket(Action* action, float relevance);
-		~ActionBasket(void);
+		ActionBasket(Action* action, float relevance)
+        {
+            this->action = action;
+            this->relevance = relevance;
+        }
+        ~ActionBasket(void) {}
 	public:
 		float getRelevance() {return relevance;}
 		Action* getAction() {return action;}
