@@ -3,13 +3,6 @@
 
 namespace ai
 {
-
-    class EnemyTooCloseTrigger : public Trigger
-    {
-    public:
-        EnemyTooCloseTrigger(PlayerbotAIFacade* const ai) : Trigger(ai) {}
-
-    public:
-        virtual BOOL IsActive();
-    };
+    BEGIN_TRIGGER(EnemyTooCloseTrigger, Trigger)
+    END_TRIGGER()
 }

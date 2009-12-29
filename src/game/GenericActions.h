@@ -4,11 +4,6 @@
 
 namespace ai
 {
-    class FleeAction : public Action
-    {
-    public:
-        FleeAction(PlayerbotAIFacade* const ai) : Action(ai) {}
-        virtual void Execute();
-        virtual const char* getName() { return "flee"; }
-    };
+    BEGIN_ACTION(FleeAction, "flee")
+    END_ACTION()
 }

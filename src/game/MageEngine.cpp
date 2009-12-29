@@ -4,6 +4,7 @@
 #include "MageEngine.h"
 #include "MageActions.h"
 #include "MageTriggers.h"
+#include "MageMultipliers.h"
 #include "MageActionFactory.h"
 
 using namespace ai;
@@ -22,3 +23,8 @@ void MageEngine::InitActionFactory()
 {
     actionFactory = new MageActionFactory(ai);
 };
+
+void MageEngine::InitMultipliers()
+{
+    multipliers.push_back(new FrostMageMultiplier());
+}

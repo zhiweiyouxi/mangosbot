@@ -1,6 +1,45 @@
 #pragma once
 #include "PlayerbotAIFacadeAware.h"
 
+#define BEGIN_SPELL_ACTION(clazz, name) \
+    class clazz : public CastSpellAction \
+        { \
+        public: \
+            clazz(PlayerbotAIFacade* const ai) : CastSpellAction(ai, name) {} \
+
+#define NEXT_ACTIONS(name, relevance) \
+            virtual NextAction* getNextAction() { return new NextAction(name, relevance); }
+
+#define BEGIN_NEXT_ACTIONS(size) \
+    NextAction** getNextActions() \
+    { \
+        NextAction** actions = new NextAction*[size + 1];
+
+#define NEXT_ACTION(index, name, relevance) \
+    actions[index] = new NextAction(name, relevance);
+
+#define END_NEXT_ACTIONS(size) \
+        actions[size] = NULL; \
+        return actions; \
+    }
+
+#define END_SPELL_ACTION() \
+    };
+
+#define BEGIN_ACTION(clazz, name) \
+class clazz : public Action \
+    { \
+    public: \
+        clazz(PlayerbotAIFacade* const ai) : Action(ai) {} \
+        virtual void Execute(); \
+        virtual const char* getName() { return name; }
+
+#define ACTION_KIND(value) \
+    virtual int getKind() { return value; }
+
+#define END_ACTION() \
+    };
+
 namespace ai
 {
     class NextAction
@@ -42,6 +81,7 @@ namespace ai
         virtual NextAction* getNextAction() { return NULL; }
         virtual NextAction** getNextActions();
         virtual const char* getName() { return "action"; }
+        virtual int getKind() { return 0; }
 	};
 
 	//---------------------------------------------------------------------------------------------------------------------

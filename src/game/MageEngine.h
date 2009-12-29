@@ -17,6 +17,7 @@ public:
 	virtual void InitTriggers();
     virtual void InitQueue();
     virtual void InitActionFactory();
+    virtual void InitMultipliers();
 };
 
 }

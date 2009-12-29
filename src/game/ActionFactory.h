@@ -3,6 +3,11 @@
 #include "PlayerbotAIFacadeAware.h"
 #include "Action.h"
 
+#define CREATE_ACTION_RULE(actioname, clazz) \
+    if (!strcmp(actioname, name)) \
+        return new clazz(ai);
+
+
 namespace ai
 {
     class ActionFactory : public PlayerbotAIFacadeAware

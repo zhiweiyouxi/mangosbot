@@ -2,6 +2,20 @@
 #include "Action.h"
 #include "PlayerbotAIFacadeAware.h"
 
+#define NEXT_TRIGGERS(name, relevance) \
+    virtual NextAction* getNextAction() { return new NextAction(name, relevance); }
+
+#define BEGIN_TRIGGER(clazz, super) \
+class clazz : public super \
+    { \
+    public: \
+        clazz(PlayerbotAIFacade* const ai) : super(ai) {} \
+    public: \
+        virtual BOOL IsActive();
+
+#define END_TRIGGER() \
+    };
+
 namespace ai
 {
     class Trigger : public PlayerbotAIFacadeAware

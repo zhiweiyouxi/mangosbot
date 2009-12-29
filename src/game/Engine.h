@@ -13,10 +13,11 @@ namespace ai
     public:
         Engine(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
 
-	    void Init() { InitActionFactory(); InitQueue(); InitTriggers(); }
+	    void Init() { InitActionFactory(); InitQueue(); InitTriggers(); InitMultipliers(); }
         virtual void InitTriggers() {}
         virtual void InitQueue() {}
         virtual void InitActionFactory() { actionFactory = new ActionFactory(ai); }
+        virtual void InitMultipliers() {}
 	    virtual BOOL DoNextAction(Unit*);
 
     public:

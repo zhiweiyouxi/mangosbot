@@ -39,7 +39,7 @@ protected:
         ai.resetSpell("frostbolt");
         engine.DoNextAction(NULL);
 
-        //std::cout << ai.buffer;
+        std::cout << ai.buffer;
         CPPUNIT_ASSERT(!strcmp(ai.buffer.c_str(), ">frostbolt>frostbolt>frostbolt"));
     }
 
