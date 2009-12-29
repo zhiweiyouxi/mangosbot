@@ -1,0 +1,17 @@
+#pragma once
+
+#include "Strategy.h"
+#include "DruidActionFactory.h"
+
+namespace ai
+{
+    class GenericDruidStrategy : public Strategy
+    {
+    public:
+        GenericDruidStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+
+    public:
+        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual ActionFactory* createActionFactory() { return new DruidActionFactory(ai); }
+    };
+}

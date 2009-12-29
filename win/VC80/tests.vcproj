@@ -630,7 +630,15 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\..\src\tests\DruidTestCase.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\tests\EngineTestCase.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\tests\HunterTestCase.cpp"
 			>
 		</File>
 		<File
@@ -667,6 +675,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\tests\QueueTestCase.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\tests\WarriorTestCase.cpp"
 			>
 		</File>
 	</Files>
