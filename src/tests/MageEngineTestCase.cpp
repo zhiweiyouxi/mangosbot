@@ -4,7 +4,8 @@
 #include "../game/ActionBasket.h"
 #include "../game/Queue.h"
 #include "../game/Trigger.h"
-#include "../game/MageEngine.h"
+#include "../game/Engine.h"
+#include "../game/FrostMageStrategy.h"
 
 #include "MockPlayerbotAIFacade.h"
 
@@ -30,8 +31,9 @@ public:
 protected:
     void combatVsCaster()
     {
-        MageEngine engine(&ai);
-        engine.Init();
+        FrostMageStrategy* strategy = new FrostMageStrategy(&ai);
+        Engine engine(&ai);
+        engine.Init(strategy);
 
         engine.DoNextAction(NULL);
         ai.resetSpell("frostbolt");
@@ -45,8 +47,9 @@ protected:
 
 	void combatVsMelee()
 	{
-		MageEngine engine(&ai);
-		engine.Init();
+        FrostMageStrategy* strategy = new FrostMageStrategy(&ai);
+        Engine engine(&ai);
+        engine.Init(strategy);
 
         engine.DoNextAction(NULL); // frostbolt
         

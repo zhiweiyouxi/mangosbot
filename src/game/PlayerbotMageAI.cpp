@@ -60,13 +60,17 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 	BERSERKING              = ai->getSpellId("berserking"); // troll
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
 
-    engine = new ai::MageEngine(new PlayerbotAIFacade(ai));
-    engine->Init();
+    facade = new ai::PlayerbotAIFacade(ai);
+    engine = new ai::Engine(facade);
+    strategy = new ai::FrostMageStrategy(facade);
+    engine->Init(strategy);
 }
 
 PlayerbotMageAI::~PlayerbotMageAI() 
 {
     delete engine;
+    delete strategy;
+    delete facade;
 }
 
 void PlayerbotMageAI::DoNextCombatManeuver(Unit *pTarget)

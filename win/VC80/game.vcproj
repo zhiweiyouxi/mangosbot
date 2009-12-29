@@ -1775,6 +1775,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\Strategy.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Strategy.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\Trigger.cpp"
 				>
 			</File>
@@ -1802,14 +1810,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageEngine.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageEngine.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\game\MageMultipliers.cpp"
 					>
 				</File>
@@ -1825,6 +1825,26 @@
 					RelativePath="..\..\src\game\MageTriggers.h"
 					>
 				</File>
+				<Filter
+					Name="Strategies"
+					>
+					<File
+						RelativePath="..\..\src\game\FrostMageStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\FrostMageStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericMageStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericMageStrategy.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Generic"

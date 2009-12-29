@@ -2,6 +2,7 @@
 #include "MockPlayerbotAIFacade.h"
 
 using namespace std;
+using namespace ai;
 
 BOOL MockPlayerbotAIFacade::canCastSpell(const char* spell)
 {

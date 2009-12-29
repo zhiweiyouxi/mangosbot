@@ -1,6 +1,8 @@
 #include "pchdef.h"
 #include "PlayerbotAIFacade.h"
 
+using namespace ai;
+
 float PlayerbotAIFacade::GetDistanceToEnemy()
 {
     Unit *target = ai->GetCurrentTarget();

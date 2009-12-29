@@ -5,19 +5,20 @@
 #include "Trigger.h"
 #include "Multiplier.h"
 #include "ActionFactory.h"
+#include "Strategy.h"
 
 namespace ai
 {
     class MANGOS_DLL_SPEC Engine : public PlayerbotAIFacadeAware
     {
     public:
-        Engine(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
+        Engine(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) 
+        {
+            actionFactory = NULL;
+            strategy = NULL;
+        }
 
-	    void Init() { InitActionFactory(); InitQueue(); InitTriggers(); InitMultipliers(); }
-        virtual void InitTriggers() {}
-        virtual void InitQueue() {}
-        virtual void InitActionFactory() { actionFactory = new ActionFactory(ai); }
-        virtual void InitMultipliers() {}
+	    void Init(Strategy *strategy);
 
     public:
 	    virtual BOOL DoNextAction(Unit*);
@@ -28,6 +29,7 @@ namespace ai
 
     private:
         void MultiplyAndPush(NextAction** actions);
+        void Reset();
 
     protected:
 	    Queue queue;
@@ -36,5 +38,6 @@ namespace ai
 	    Player* master;
 	    Player* bot;
         ActionFactory* actionFactory;
+        Strategy* strategy;
     };
 }

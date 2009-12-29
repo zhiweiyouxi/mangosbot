@@ -85,22 +85,27 @@ public:
 
 int TestMultiplier::asked;
 
-class TestEngine : public Engine
+class TestStrategy : public Strategy
 {
 public:
-	TestEngine() : Engine(NULL) {}
-	void InitQueue() 
-	{
-		queue.Push(new ActionBasket(new RepeatingAction(NULL), 1.0f));
-		triggers.push_back(new TestTrigger(NULL));
-        multipliers.push_back(new TestMultiplier());
-	}
-    void InitActionFactory()
-    {
-        this->actionFactory = new TestActionFactory(ai);
-    }
-};
+    TestStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
 
+    BEGIN_NEXT_ACTIONS(1)
+        NEXT_ACTION(0, "RepeatingAction", 1.0f)
+    END_NEXT_ACTIONS(1)
+
+    virtual void InitMultipliers(std::list<Multiplier*> &multipliers)
+    {
+        multipliers.push_back(new TestMultiplier());
+    }
+
+    virtual void InitTriggers(std::list<Trigger*> &triggers)
+    {
+        triggers.push_back(new TestTrigger(NULL));
+    }
+
+    virtual ActionFactory* createActionFactory() { return new TestActionFactory(ai); }
+};
 
 class EngineTestCase : public CPPUNIT_NS::TestFixture
 {
@@ -118,8 +123,8 @@ public:
 protected:
 	void engineMustRepeatActions()
 	{
-		TestEngine engine;
-		engine.Init();
+		Engine engine(NULL);
+		engine.Init(new TestStrategy(NULL));
 
 		for (int i=0; i<6; i++)
 			engine.DoNextAction(NULL);

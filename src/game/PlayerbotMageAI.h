@@ -3,7 +3,8 @@
 
 #include "PlayerbotClassAI.h"
 
-#include "MageEngine.h"
+#include "Engine.h"
+#include "FrostMageStrategy.h"
 
 enum
 {
@@ -52,7 +53,9 @@ class MANGOS_DLL_SPEC PlayerbotMageAI : PlayerbotClassAI
 
         uint32 SpellSequence, LastSpellArcane, LastSpellFire, LastSpellFrost, CONJURE_WATER, CONJURE_FOOD;
 
-        ai::MageEngine* engine;
+        ai::Engine* engine;
+        ai::Strategy* strategy;
+        ai::PlayerbotAIFacade* facade;
 };
 
 #endif

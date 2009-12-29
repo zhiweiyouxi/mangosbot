@@ -3,22 +3,25 @@
 #include "PlayerbotAIFacade.h"
 #include "string"
 
-class MockPlayerbotAIFacade : public PlayerbotAIFacade
+namespace ai
 {
-public:
-    MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 100.0f; }
+    class MockPlayerbotAIFacade : public PlayerbotAIFacade
+    {
+    public:
+        MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 100.0f; }
 
-    virtual float GetDistanceToEnemy() { return distanceToEnemy; }
-    virtual void MoveToMaster() { buffer = buffer.append(">flee"); }
-    virtual void CastSpell(const char* spell) { buffer.append(">").append(spell); alreadyCast.push_back(spell); }
-    virtual BOOL canCastSpell(const char* spell);
+        virtual float GetDistanceToEnemy() { return distanceToEnemy; }
+        virtual void MoveToMaster() { buffer = buffer.append(">flee"); }
+        virtual void CastSpell(const char* spell) { buffer.append(">").append(spell); alreadyCast.push_back(spell); }
+        virtual BOOL canCastSpell(const char* spell);
 
-public:
-    void resetSpells() {alreadyCast.clear(); }
-    void resetSpell(const char* spell);
+    public:
+        void resetSpells() {alreadyCast.clear(); }
+        void resetSpell(const char* spell);
 
-    std::string buffer;
-    std::list<std::string> alreadyCast;
-    float distanceToEnemy;
-};
+        std::string buffer;
+        std::list<std::string> alreadyCast;
+        float distanceToEnemy;
+    };
 
+}

@@ -1,12 +1,14 @@
 #pragma once
 
 #include "PlayerbotAIFacade.h"
-
-class PlayerbotAIFacadeAware 
+namespace ai
 {
-public:
-    PlayerbotAIFacadeAware(PlayerbotAIFacade* const ai) { this->ai = ai; }
+    class PlayerbotAIFacadeAware 
+    {
+    public:
+        PlayerbotAIFacadeAware(PlayerbotAIFacade* const ai) { this->ai = ai; }
 
-protected:
-    PlayerbotAIFacade* ai;
-};
+    protected:
+        PlayerbotAIFacade* ai;
+    };
+}
