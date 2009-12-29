@@ -4,7 +4,7 @@
 
 namespace ai
 {
-    class MageActionFactory : ActionFactory
+    class MageActionFactory : public ActionFactory
     {
     public:
         MageActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}

@@ -17,6 +17,6 @@ namespace ai
     {
     public:
         CastFrostNovaAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "frost nova") {}
-        virtual NextAction* getNextAction() { return new NextAction("flee", 1.0f); }
+        virtual NextAction* getNextAction() { return new NextAction("flee", 10.0f); }
     };
 }
