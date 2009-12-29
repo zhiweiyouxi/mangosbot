@@ -59,9 +59,14 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 	EVERY_MAN_FOR_HIMSELF   = ai->getSpellId("every man for himself"); // human
 	BERSERKING              = ai->getSpellId("berserking"); // troll
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
+
+    engine = new ai::MageEngine(new PlayerbotAIFacade(ai));
 }
 
-PlayerbotMageAI::~PlayerbotMageAI() {}
+PlayerbotMageAI::~PlayerbotMageAI() 
+{
+    delete engine;
+}
 
 void PlayerbotMageAI::DoNextCombatManeuver(Unit *pTarget)
 {
@@ -78,6 +83,8 @@ void PlayerbotMageAI::DoNextCombatManeuver(Unit *pTarget)
     }
 
     // ------- Non Duel combat ----------
+    engine->DoNextAction(pTarget);
+    return;
 
 	//ai->SetMovementOrder( PlayerbotAI::MOVEMENT_FOLLOW, GetMaster() ); // dont want to melee mob
 

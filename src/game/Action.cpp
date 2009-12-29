@@ -1,15 +1,17 @@
 #include "pchdef.h"
-#include "PlayerbotAI.h"
+#include "PlayerbotAIFacade.h"
 #include "Action.h"
 
 using namespace ai;
 
-CastSpellAction::CastSpellAction(PlayerbotAI* const ai, const char* spell) : Action(ai)
+NextAction** Action::getNextActions() 
 {
-	this->spellid = ai->getSpellId(spell);
+    NextAction** actions = new NextAction*[1];
+    actions[0] = getNextAction();
+    return actions;
 }
 
 void CastSpellAction::Execute()
 {
-	ai->CastSpell(spellid);
+	ai->CastSpell(spell);
 }

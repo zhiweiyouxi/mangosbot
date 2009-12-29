@@ -1,18 +1,19 @@
 #pragma once
 #include "Action.h"
-#include "PlayerBotAiAware.h"
+#include "PlayerbotAIFacadeAware.h"
 
 namespace ai
 {
-    class Trigger : public PlayerBotAiAware
+    class Trigger : public PlayerbotAIFacadeAware
 	{
 	public:
-        Trigger(PlayerbotAI* const ai) : PlayerBotAiAware(ai) {}
+        Trigger(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
         virtual ~Trigger() {}
 
 	public:
 		virtual BOOL IsActive() = NULL;
-		virtual ActionBasket** CreateHandlers() = NULL;
+        virtual NextAction* getNextAction() { return NULL; }
+        virtual NextAction** getNextActions();
 
 	};
 }

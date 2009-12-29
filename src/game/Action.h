@@ -1,20 +1,45 @@
 #pragma once
-#include "PlayerBotAiAware.h"
+#include "PlayerbotAIFacadeAware.h"
 
 namespace ai
 {
-	class ActionBasket;
+    class NextAction
+    {
+    public:
+        NextAction(const char* name, float relevance)
+        {
+            this->name = name;
+            this->relevance = relevance;
+        }
+        NextAction(const NextAction& o)
+        {
+            this->name = o.name;
+            this->relevance = o.relevance;
+        }
 
-    class Action : public PlayerBotAiAware
+    public:
+        const char* getName() { return name.c_str(); }
+        float getRelevance() {return relevance;}
+
+    private:
+        float relevance;
+        std::string name;
+    };
+    
+    //---------------------------------------------------------------------------------------------------------------------
+    
+    class ActionBasket;
+
+    class Action : public PlayerbotAIFacadeAware
 	{
 	public:
-        Action(PlayerbotAI* const ai) : PlayerBotAiAware(ai) {}
+        Action(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
         virtual ~Action(void) {}
 
     public:
         virtual void Execute() {}
-        virtual ActionBasket** GetAfterActions() { return NULL; }
-
+        virtual NextAction* getNextAction() { return NULL; }
+        virtual NextAction** getNextActions();
 	};
 
 	//---------------------------------------------------------------------------------------------------------------------
@@ -22,11 +47,14 @@ namespace ai
 	class CastSpellAction : public Action
 	{
 	public:
-		CastSpellAction(PlayerbotAI* const ai, const char* spell);
+        CastSpellAction(PlayerbotAIFacade* const ai, const char* spell) : Action(ai)
+        {
+            this->spell = spell;
+        }
 
 		void Execute();
 	private:
-		uint32 spellid;
+		const char* spell;
 	};
 
     //---------------------------------------------------------------------------------------------------------------------
@@ -48,4 +76,8 @@ namespace ai
 		Action* action;
 		float relevance;
 	};
+
+    //---------------------------------------------------------------------------------------------------------------------
+    
+   
 }

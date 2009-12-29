@@ -95,6 +95,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
     public:
         PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot);
+        PlayerbotAI() : m_mgr(NULL), m_bot(NULL) {} // for mocking purpose
         virtual ~PlayerbotAI();
 
         // This is called from Unit.cpp and is called every second (I think)
@@ -123,7 +124,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
         // finds spell ID for matching substring args
         // in priority of full text match, spells not taking reagents, and highest rank
-        uint32 getSpellId(const char* args, bool master = false) const;
+        virtual uint32 getSpellId(const char* args, bool master = false) const;
 
         // extracts item ids from links
         void extractItemIds(const std::string& text, std::list<uint32>& itemIds) const;

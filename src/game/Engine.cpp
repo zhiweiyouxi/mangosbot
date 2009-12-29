@@ -8,7 +8,7 @@
 #include "WorldPacket.h"
 #include "Unit.h"
 #include "SharedDefines.h"
-#include "PlayerbotAI.h"
+#include "PlayerbotAIFacade.h"
 
 #include "Engine.h"
 
@@ -35,16 +35,18 @@ Engine::~Engine(void)
         delete multiplier;
     }
     multipliers.empty();
+
+    delete actionFactory;
 }
 
-void Engine::DoNextAction(Unit*)
+void Engine::DoNextAction(Unit* unit)
 {
 	for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
 	{
 		Trigger* trigger = *i;
 		if (trigger->IsActive())
 		{
-			MultiplyAndPush(trigger->CreateHandlers());
+			MultiplyAndPush(trigger->getNextActions());
 		}
 	}
 	Action* action = queue.Pop();
@@ -52,24 +54,37 @@ void Engine::DoNextAction(Unit*)
 	if (action)
 	{
 		action->Execute();
-		MultiplyAndPush(action->GetAfterActions());
+		MultiplyAndPush(action->getNextActions());
 		delete action;
 	}
+    else
+    {
+        InitQueue();
+        DoNextAction(unit);
+    }
 }
 
-void Engine::MultiplyAndPush(ActionBasket** actions)
+void Engine::MultiplyAndPush(NextAction** actions)
 {
     if (actions)
     {
-        for (std::list<Multiplier*>::iterator i = multipliers.begin(); i!= multipliers.end(); i++)
+        for (int j=0; j<sizeof(actions)/sizeof(NextAction*); j++)
         {
-            Multiplier* multiplier = *i;
-            for (int j=0; j<sizeof(actions)/sizeof(ActionBasket*); j++)
+            NextAction* nextAction = actions[j];
+            if (nextAction)
             {
-                float k = multiplier->GetValue(actions[j]->getAction());
-                actions[j]->AmendRelevance(k);
+                Action* action = actionFactory->createAction(nextAction->getName());
+                float k = nextAction->getRelevance();
+                for (std::list<Multiplier*>::iterator i = multipliers.begin(); i!= multipliers.end(); i++)
+                {
+                    Multiplier* multiplier = *i;
+                    k *= multiplier->GetValue(action);
+                }
+
+                queue.Push(new ActionBasket(action, k));
+                delete nextAction;
             }
         }
-        queue.Push(actions);
+        delete actions;
     }
 }

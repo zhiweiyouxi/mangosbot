@@ -11,29 +11,28 @@ using namespace ai;
 class RepeatingAction : public Action
 {
 public:
-	RepeatingAction(PlayerbotAI* const ai) : Action(ai) {}
+	RepeatingAction(PlayerbotAIFacade* const ai) : Action(ai) {}
 
 	virtual ~RepeatingAction()
 	{
 		destroyed++;
 	}
 
-    ActionBasket** GetAfterActions() 
-	{
-		ActionBasket** actions = new ActionBasket*[1];
-		actions[0] = new ActionBasket(new RepeatingAction(ai), 1.0f);
-		return actions;
-	}
+    void Execute() { executed++; }
+
+    NextAction* getNextAction() { return new NextAction("RepeatingAction", 1.0f); }
 
 	static int destroyed;
+    static int executed;
 };
 
 int RepeatingAction::destroyed = 0;
+int RepeatingAction::executed = 0;
 
 class TriggeredAction : public Action
 {
 public:
-	TriggeredAction(PlayerbotAI* const ai) : Action(ai) { fired = false; }
+	TriggeredAction(PlayerbotAIFacade* const ai) : Action(ai) { fired = false; }
 	virtual ~TriggeredAction() {}
 
 	void Execute() { fired = TRUE; }
@@ -43,20 +42,31 @@ public:
 
 int TriggeredAction::fired = 0;
 
+class TestActionFactory : public ActionFactory
+{
+public:
+    TestActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}
+    virtual Action* createAction(const char* name)
+    {
+        if (!strcmp("TriggeredAction", name))
+            return new TriggeredAction(ai);
+
+        if (!strcmp("RepeatingAction", name))
+            return new RepeatingAction(ai);
+
+        return NULL;
+    }
+};
+
 class TestTrigger : public Trigger
 {
 public:
-	TestTrigger(PlayerbotAI* const ai) : Trigger(ai) {count = 0;}
+	TestTrigger(PlayerbotAIFacade* const ai) : Trigger(ai) {count = 0;}
 	virtual BOOL IsActive() 
 	{
 		return ++count==3;
 	}
-	virtual ActionBasket** CreateHandlers() 
-	{
-		ActionBasket** actions = new ActionBasket*[1];
-		actions[0] = new ActionBasket(new TriggeredAction(ai), 10.0f);
-		return actions;
-	}
+    NextAction* getNextAction() { return new NextAction("TriggeredAction", 10.0f); }
 
 private:
 	int count;
@@ -76,13 +86,17 @@ int TestMultiplier::asked;
 class TestEngine : public Engine
 {
 public:
-	TestEngine() : Engine(NULL, NULL, NULL) {}
-	void Init() 
+	TestEngine() : Engine(NULL) {}
+	void InitQueue() 
 	{
 		queue.Push(new ActionBasket(new RepeatingAction(NULL), 1.0f));
 		triggers.push_back(new TestTrigger(NULL));
         multipliers.push_back(new TestMultiplier());
 	}
+    void InitActionFactory()
+    {
+        this->actionFactory = new TestActionFactory(ai);
+    }
 };
 
 
@@ -108,9 +122,10 @@ protected:
 		for (int i=0; i<6; i++)
 			engine.DoNextAction(NULL);
 
-		CPPUNIT_ASSERT_EQUAL(RepeatingAction::destroyed, 5);
 		CPPUNIT_ASSERT(TriggeredAction::fired);
         CPPUNIT_ASSERT(TestMultiplier::asked);
+        CPPUNIT_ASSERT_EQUAL(5, RepeatingAction::executed);
+        CPPUNIT_ASSERT_EQUAL(5, RepeatingAction::destroyed);
 	}
 };
 

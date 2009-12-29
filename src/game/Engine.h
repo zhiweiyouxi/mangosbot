@@ -4,26 +4,26 @@
 #include "Queue.h"
 #include "Trigger.h"
 #include "Multiplier.h"
+#include "ActionFactory.h"
 
 namespace ai
 {
-    class MANGOS_DLL_SPEC Engine : public PlayerBotAiAware
+    class MANGOS_DLL_SPEC Engine : public PlayerbotAIFacadeAware
     {
     public:
-        Engine(Player* const master, Player* const bot, PlayerbotAI* const ai) : PlayerBotAiAware(ai)
-        {
-            this->master = master;
-            this->bot = bot;
-        }
+        Engine(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
 
-	    virtual void Init() {}
+	    void Init() { InitActionFactory(); InitQueue(); InitTriggers(); }
+        virtual void InitTriggers() {}
+        virtual void InitQueue() {}
+        virtual void InitActionFactory() { actionFactory = new ActionFactory(ai); }
 	    virtual void DoNextAction(Unit*);
 
     public:
 	    virtual ~Engine(void);
 
     private:
-        void MultiplyAndPush(ActionBasket** actions);
+        void MultiplyAndPush(NextAction** actions);
 
     protected:
 	    Queue queue;
@@ -31,5 +31,6 @@ namespace ai
         std::list<Multiplier*> multipliers;
 	    Player* master;
 	    Player* bot;
+        ActionFactory* actionFactory;
     };
 }

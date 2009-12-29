@@ -3,6 +3,8 @@
 
 #include "PlayerbotClassAI.h"
 
+#include "MageEngine.h"
+
 enum
 {
     SPELL_FROST,
@@ -47,6 +49,8 @@ class MANGOS_DLL_SPEC PlayerbotMageAI : PlayerbotClassAI
 		uint32 ARCANE_TORRENT, GIFT_OF_THE_NAARU, STONEFORM, ESCAPE_ARTIST, EVERY_MAN_FOR_HIMSELF, SHADOWMELD, BLOOD_FURY, WAR_STOMP, BERSERKING, WILL_OF_THE_FORSAKEN;
 
         uint32 SpellSequence, LastSpellArcane, LastSpellFire, LastSpellFrost, CONJURE_WATER, CONJURE_FOOD;
+
+        ai::MageEngine* engine;
 };
 
 #endif

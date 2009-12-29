@@ -10,7 +10,7 @@ using namespace ai;
 class TestAction : public Action
 {
 public:
-    TestAction(PlayerbotAI* const ai) : Action(ai) {}
+    TestAction(PlayerbotAIFacade* const ai) : Action(ai) {}
 };
 
 class QueueTestCase : public CPPUNIT_NS::TestFixture

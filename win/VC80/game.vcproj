@@ -1731,6 +1731,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\ActionFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\ActionFactory.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\Engine.cpp"
 				>
 			</File>
@@ -1739,11 +1747,51 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\EngineMage.cpp"
+				RelativePath="..\..\src\game\GenericActions.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\EngineMage.h"
+				RelativePath="..\..\src\game\GenericActions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\GenericTriggers.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\GenericTriggers.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageActionFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageActionFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageActions.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageActions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageEngine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageEngine.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageTriggers.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MageTriggers.h"
 				>
 			</File>
 			<File
@@ -1755,7 +1803,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\PlayerBotAiAware.h"
+				RelativePath="..\..\src\game\PlayerbotAIFacade.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PlayerbotAIFacade.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PlayerBotAIFacadeAware.h"
 				>
 			</File>
 			<File

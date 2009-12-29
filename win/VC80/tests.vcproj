@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\dep\include,..\..\src\framework,..\..\src\shared,..\..\src\game,..\..\src\tests;..\..\dep\ACE_wrappers"
+				AdditionalIncludeDirectories="..\..\dep\include,..\..\src\framework,..\..\src\shared,..\..\src\game,..\..\src\mangosd;..\..\dep\ACE_wrappers;..\..\dep\cppunit\include"
 				PreprocessorDefinitions="VERSION=&quot;0.15.0-DEV&quot;;WIN32;_DEBUG;MANGOS_DEBUG;_CONSOLE;ENABLE_CLI"
 				IgnoreStandardIncludePath="false"
 				BasicRuntimeChecks="3"
@@ -180,12 +180,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libmySQL.lib libeay32.lib ws2_32.lib winmm.lib odbc32.lib odbccp32.lib advapi32.lib dbghelp.lib framework.lib msvcrtd.lib"
+				AdditionalDependencies="libmySQL.lib libeay32.lib ws2_32.lib winmm.lib odbc32.lib odbccp32.lib advapi32.lib dbghelp.lib framework.lib msvcrtd.lib cppunitd.lib"
 				OutputFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\tests.exe"
 				Version=""
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\dep\lib\$(PlatformName)_$(ConfigurationName)&quot;;&quot;.\framework__$(PlatformName)_$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\dep\lib\$(PlatformName)_$(ConfigurationName)&quot;;&quot;.\framework__$(PlatformName)_$(ConfigurationName)&quot;;..\..\dep\cppunit\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\tests.pdb"
 				GenerateMapFile="true"
@@ -634,7 +634,19 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\tests\MageEngineTestCase.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\tests\main.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\tests\MockPlayerbotAIFacade.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\tests\MockPlayerbotAIFacade.h"
 			>
 		</File>
 		<File
