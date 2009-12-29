@@ -7,6 +7,6 @@ namespace ai
     {
     public:
         MageEnemyTooCloseTrigger(PlayerbotAIFacade* const ai) : EnemyTooCloseTrigger(ai) {}
-        virtual NextAction* getNextAction() { return new NextAction("frostnova", 10.0f); }
+        virtual NextAction** getNextActions();
     };
 }

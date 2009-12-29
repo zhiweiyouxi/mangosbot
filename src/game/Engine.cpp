@@ -13,6 +13,7 @@
 #include "Engine.h"
 
 using namespace ai;
+using namespace std;
 
 Engine::~Engine(void)
 {
@@ -83,7 +84,7 @@ void Engine::MultiplyAndPush(NextAction** actions)
 {
     if (actions)
     {
-        for (int j=0; j<sizeof(actions)/sizeof(NextAction*); j++)
+        for (int j=0; j<10; j++) // TODO: remove 10
         {
             NextAction* nextAction = actions[j];
             if (nextAction)
@@ -99,6 +100,8 @@ void Engine::MultiplyAndPush(NextAction** actions)
                 queue.Push(new ActionBasket(action, k));
                 delete nextAction;
             }
+            else 
+                break;
         }
         delete actions;
     }

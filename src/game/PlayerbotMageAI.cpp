@@ -61,6 +61,7 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
 
     engine = new ai::MageEngine(new PlayerbotAIFacade(ai));
+    engine->Init();
 }
 
 PlayerbotMageAI::~PlayerbotMageAI() 

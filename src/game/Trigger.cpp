@@ -8,5 +8,6 @@ NextAction** Trigger::getNextActions()
 {
     NextAction** actions = new NextAction*[1];
     actions[0] = getNextAction();
+    actions[1] = NULL;
     return actions;
 }

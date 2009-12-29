@@ -41,6 +41,7 @@ namespace ai
         virtual BOOL isAvailable() { return TRUE; }
         virtual NextAction* getNextAction() { return NULL; }
         virtual NextAction** getNextActions();
+        virtual const char* getName() { return "action"; }
 	};
 
 	//---------------------------------------------------------------------------------------------------------------------
@@ -55,6 +56,7 @@ namespace ai
 
 		void Execute();
         virtual BOOL isAvailable();
+        virtual const char* getName() { return spell; }
 	private:
 		const char* spell;
 	};
@@ -74,6 +76,7 @@ namespace ai
 		float getRelevance() {return relevance;}
 		Action* getAction() {return action;}
         void AmendRelevance(float k) {relevance *= k; }
+        void setRelevance(float relevance) { this->relevance = relevance; }
 	private:
 		Action* action;
 		float relevance;

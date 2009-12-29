@@ -6,8 +6,9 @@ using namespace ai;
 
 NextAction** Action::getNextActions() 
 {
-    NextAction** actions = new NextAction*[1];
+    NextAction** actions = new NextAction*[2];
     actions[0] = getNextAction();
+    actions[1] = NULL;
     return actions;
 }
 

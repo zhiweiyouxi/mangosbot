@@ -19,6 +19,7 @@ public:
 	}
 
     void Execute() { executed++; }
+    const char* getName() {return "RepeatingAction"; }
 
     NextAction* getNextAction() { return new NextAction("RepeatingAction", 1.0f); }
 
@@ -36,6 +37,7 @@ public:
 	virtual ~TriggeredAction() {}
 
 	void Execute() { fired = TRUE; }
+    const char* getName() {return "TriggeredAction"; }
 
 	static int fired;
 };

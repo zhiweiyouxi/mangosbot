@@ -15,7 +15,20 @@ Queue::~Queue(void)
 void Queue::Push(ActionBasket *action)
 {
 	if (action)
+    {
+        for (std::list<ActionBasket*>::iterator iter = actions.begin(); iter != actions.end(); iter++)
+        {
+            ActionBasket* basket = *iter;
+            if (!strcmp(action->getAction()->getName(), basket->getAction()->getName()))
+            {
+                basket->setRelevance(action->getRelevance());
+                delete action->getAction();
+                delete action;
+                return;
+            }
+        }
 		actions.push_back(action);
+    }
 }
 
 void Queue::Push(ActionBasket **actions)
