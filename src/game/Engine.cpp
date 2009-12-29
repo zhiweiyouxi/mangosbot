@@ -106,3 +106,14 @@ void Engine::MultiplyAndPush(NextAction** actions)
         delete actions;
     }
 }
+
+void Engine::ExecuteAction(const char* name)
+{
+    Action *action = actionFactory->createAction(name);
+    if (action)
+    {
+        action->Execute();
+        MultiplyAndPush(action->getNextActions());
+        delete action;
+    }
+}

@@ -18,7 +18,10 @@ namespace ai
         virtual void InitQueue() {}
         virtual void InitActionFactory() { actionFactory = new ActionFactory(ai); }
         virtual void InitMultipliers() {}
+
+    public:
 	    virtual BOOL DoNextAction(Unit*);
+        void ExecuteAction(const char* name);
 
     public:
 	    virtual ~Engine(void);

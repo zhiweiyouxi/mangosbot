@@ -35,6 +35,7 @@ class MANGOS_DLL_SPEC PlayerbotClassAI
         Player* GetPlayerBot() {return m_bot;}
         PlayerbotAI* GetAI (){return m_ai;};
 
+        virtual void DoSpecificAction(const char* name) {}
 
     private:
         Player* m_master;

@@ -29,6 +29,8 @@ class MANGOS_DLL_SPEC PlayerbotMageAI : PlayerbotClassAI
         // buff a specific player, usually a real PC who is not in group
         void BuffPlayer(Player *target);
 
+        virtual void DoSpecificAction(const char* name) { engine->ExecuteAction(name); }
+
     private:
         // ARCANE
         uint32 ARCANE_MISSILES, ARCANE_EXPLOSION, COUNTERSPELL, SLOW, ARCANE_BARRAGE, ARCANE_BLAST, MIRROR_IMAGE, ARCANE_POWER;

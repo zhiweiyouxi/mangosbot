@@ -2614,6 +2614,12 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         }
     }
 
+    else if (text.size() > 2 && text.substr(0, 2) == "d " || text.size() > 3 && text.substr(0, 3) == "do ")
+    {
+        std::string action = text.substr(text.find(" ") + 1);
+        GetClassAI()->DoSpecificAction(action.c_str());
+    }
+
     // use items
     else if (text.size() > 2 && text.substr(0, 2) == "u " || text.size() > 4 && text.substr(0, 4) == "use ")
     {

@@ -22,6 +22,5 @@ Action* MageActionFactory::createAction(const char* name)
     CREATE_ACTION_RULE("arcane blast", CastArcaneBlastAction);
     CREATE_ACTION_RULE("counterspell", CastCounterspellAction);
  
-    throw new std::exception(name);
     return NULL;
 }
