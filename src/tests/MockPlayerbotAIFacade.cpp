@@ -1,2 +1,15 @@
 #include "pch.h"
 #include "MockPlayerbotAIFacade.h"
+
+using namespace std;
+
+BOOL MockPlayerbotAIFacade::canCastSpell(const char* spell)
+{
+    for (list<string>::iterator i = alreadyCast.begin(); i != alreadyCast.end(); i++)
+    {
+        string s = *i;
+        if (!strcmp(s.c_str(), spell))
+            return FALSE;
+    }
+    return TRUE;
+}

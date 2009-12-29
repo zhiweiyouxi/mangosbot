@@ -17,7 +17,7 @@ namespace ai
         virtual void InitTriggers() {}
         virtual void InitQueue() {}
         virtual void InitActionFactory() { actionFactory = new ActionFactory(ai); }
-	    virtual void DoNextAction(Unit*);
+	    virtual BOOL DoNextAction(Unit*);
 
     public:
 	    virtual ~Engine(void);

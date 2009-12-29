@@ -19,6 +19,7 @@ public:
     virtual float GetDistanceToEnemy();
     virtual void MoveToMaster() { ai->GetPlayerBot()->GetMotionMaster()->MoveChase(ai->GetMaster()); }
     virtual void CastSpell(const char* spell) { ai->CastSpell(ai->getSpellId(spell)); }
+    virtual BOOL canCastSpell( const char* spell );
 protected:
     PlayerbotAI *ai;
 };

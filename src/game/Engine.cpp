@@ -27,20 +27,22 @@ Engine::~Engine(void)
 		Trigger* trigger = *i;
 		delete trigger;
 	}
-	triggers.empty();
+	triggers.clear();
 
     for (std::list<Multiplier*>::iterator i = multipliers.begin(); i != multipliers.end(); i++)
     {
         Multiplier* multiplier = *i;
         delete multiplier;
     }
-    multipliers.empty();
+    multipliers.clear();
 
     delete actionFactory;
 }
 
-void Engine::DoNextAction(Unit* unit)
+BOOL Engine::DoNextAction(Unit* unit)
 {
+    BOOL actionExecuted = FALSE;
+
 	for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
 	{
 		Trigger* trigger = *i;
@@ -49,19 +51,32 @@ void Engine::DoNextAction(Unit* unit)
 			MultiplyAndPush(trigger->getNextActions());
 		}
 	}
-	Action* action = queue.Pop();
+    Action* action = NULL;
+    
+    do 
+    {
+        action = queue.Pop();
+        if (action)
+        {
+            if (action->isAvailable())
+            {
+                action->Execute();
+                MultiplyAndPush(action->getNextActions());
+                actionExecuted = TRUE;
+                delete action;
+                break;
+            }
+            delete action;
+        }
+    }
+    while (action);
 	
-	if (action)
-	{
-		action->Execute();
-		MultiplyAndPush(action->getNextActions());
-		delete action;
-	}
-    else
+    if (!action)
     {
         InitQueue();
-        DoNextAction(unit);
     }
+
+    return actionExecuted;
 }
 
 void Engine::MultiplyAndPush(NextAction** actions)

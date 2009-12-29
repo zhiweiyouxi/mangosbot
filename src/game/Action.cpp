@@ -15,3 +15,9 @@ void CastSpellAction::Execute()
 {
 	ai->CastSpell(spell);
 }
+
+
+BOOL CastSpellAction::isAvailable()
+{
+    return ai->canCastSpell(spell);
+}

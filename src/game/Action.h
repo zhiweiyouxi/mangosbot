@@ -38,6 +38,7 @@ namespace ai
 
     public:
         virtual void Execute() {}
+        virtual BOOL isAvailable() { return TRUE; }
         virtual NextAction* getNextAction() { return NULL; }
         virtual NextAction** getNextActions();
 	};
@@ -53,6 +54,7 @@ namespace ai
         }
 
 		void Execute();
+        virtual BOOL isAvailable();
 	private:
 		const char* spell;
 	};

@@ -31,10 +31,17 @@ protected:
 		MageEngine engine(&ai);
 		engine.Init();
 
-		for (int i=0; i<6; i++)
-			engine.DoNextAction(NULL);
-
-        std::cout << ai.buffer;
+        // enemy too close -> frost nova
+        engine.DoNextAction(NULL);
+        // flee
+        engine.DoNextAction(NULL);
+        // frostbolt
+        engine.DoNextAction(NULL);
+        ai.resetSpells();
+        // repeat as enemy is close again :)
+        engine.DoNextAction(NULL);
+        
+        CPPUNIT_ASSERT(!strcmp(ai.buffer.c_str(), ">spell:frost nova>flee>spell:frostbolt>spell:frost nova"));
 	}
 };
 
