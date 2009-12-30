@@ -20,54 +20,57 @@ class MageEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST_SUITE_END();
 
 protected:
-    MockPlayerbotAIFacade ai;
+    MockPlayerbotAIFacade *ai;
 
 public:
 	void setUp()
 	{
-        ai.resetSpells();
 	}
 
 protected:
     void combatVsCaster()
     {
-        FrostMageStrategy* strategy = new FrostMageStrategy(&ai);
-        Engine engine(&ai);
-        engine.Init(strategy);
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new MageActionFactory(ai));
+        engine.addStrategy("frost mage");
+        engine.Init();
 
         engine.DoNextAction(NULL);
-        ai.resetSpell("frostbolt");
+        ai->resetSpell("frostbolt");
         engine.DoNextAction(NULL);
-        ai.resetSpell("frostbolt");
+        ai->resetSpell("frostbolt");
         engine.DoNextAction(NULL);
 
-        std::cout << ai.buffer;
-        CPPUNIT_ASSERT(!strcmp(ai.buffer.c_str(), ">frostbolt>frostbolt>frostbolt"));
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>frostbolt>frostbolt"));
     }
 
 	void combatVsMelee()
 	{
-        FrostMageStrategy* strategy = new FrostMageStrategy(&ai);
-        Engine engine(&ai);
-        engine.Init(strategy);
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new MageActionFactory(ai));
+        engine.addStrategy("frost mage");
+        engine.Init();
 
         engine.DoNextAction(NULL); // frostbolt
         
-        ai.distanceToEnemy = 0.0f; // enemy too close
+        ai->distanceToEnemy = 0.0f; // enemy too close
         engine.DoNextAction(NULL); // frost nova
         
         engine.DoNextAction(NULL); // flee
         
-        ai.distanceToEnemy = 100.0f; 
-        ai.resetSpell("frostbolt");
+        ai->distanceToEnemy = 100.0f; 
+        ai->resetSpell("frostbolt");
         
         engine.DoNextAction(NULL); // frostbolt
-        ai.resetSpell("frostbolt");
+        ai->resetSpell("frostbolt");
 
         engine.DoNextAction(NULL); // frostbolt
                 
-        std::cout << ai.buffer;
-        CPPUNIT_ASSERT(!strcmp(ai.buffer.c_str(), ">frostbolt>frost nova>flee>frostbolt>frostbolt"));
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>frost nova>flee>frostbolt>frostbolt"));
 	}
 };
 

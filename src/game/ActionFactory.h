@@ -2,6 +2,7 @@
 
 #include "PlayerbotAIFacadeAware.h"
 #include "Action.h"
+#include "Strategy.h"
 
 #define CREATE_ACTION_RULE(actioname, clazz) \
     if (!strcmp(actioname, name)) \
@@ -18,5 +19,6 @@ namespace ai
 
     public:
         virtual Action* createAction(const char* name);
+        virtual Strategy* createStrategy(const char* name) { return NULL; }
     };
 }

@@ -31,9 +31,8 @@ public:
 protected:
     void combatVsCaster()
     {
-        GenericWarriorStrategy* strategy = new GenericWarriorStrategy(&ai);
-        Engine engine(&ai);
-        engine.Init(strategy);
+        Engine engine(&ai, new WarriorActionFactory(&ai));
+        engine.Init();
 
         engine.DoNextAction(NULL);
         ai.resetSpell("frostbolt");
@@ -47,9 +46,8 @@ protected:
 
     void combatVsMelee()
     {
-        GenericWarriorStrategy* strategy = new GenericWarriorStrategy(&ai);
-        Engine engine(&ai);
-        engine.Init(strategy);
+        Engine engine(&ai, new WarriorActionFactory(&ai));
+        engine.Init();
 
         engine.DoNextAction(NULL); // frostbolt
 

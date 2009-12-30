@@ -1,5 +1,7 @@
 
 #include "PlayerbotMageAI.h"
+#include "PlayerbotAIFacade.h"
+#include "FrostMageStrategy.h"
 
 class PlayerbotAI;
 
@@ -60,17 +62,15 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 	BERSERKING              = ai->getSpellId("berserking"); // troll
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
 
-    facade = new ai::PlayerbotAIFacade(ai);
-    engine = new ai::Engine(facade);
-    strategy = new ai::FrostMageStrategy(facade);
-    engine->Init(strategy);
+    ai::PlayerbotAIFacade *facade = new ai::PlayerbotAIFacade(ai);
+    engine = new ai::Engine(facade, new ai::MageActionFactory(facade));
+    engine->addStrategy("frost mage");
+    engine->Init();
 }
 
 PlayerbotMageAI::~PlayerbotMageAI() 
 {
     delete engine;
-    delete strategy;
-    delete facade;
 }
 
 void PlayerbotMageAI::DoNextCombatManeuver(Unit *pTarget)

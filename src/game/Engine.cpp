@@ -18,6 +18,11 @@ using namespace std;
 Engine::~Engine(void)
 {
     Reset();
+    clearStrategies();
+    if (actionFactory)
+        delete actionFactory;
+    if (ai)
+        delete ai;
 }
 
 void Engine::Reset()
@@ -41,23 +46,29 @@ void Engine::Reset()
         delete multiplier;
     }
     multipliers.clear();
-
-    if (actionFactory)
-        delete actionFactory;
-
-    if (strategy)
-        delete strategy;
 }
 
-void Engine::Init(Strategy *strategy)
+void Engine::clearStrategies()
+{
+    for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+    {
+        Strategy* strategy = *i;
+        delete strategy;
+    }
+    strategies.clear();
+}
+
+void Engine::Init()
 {
     Reset();
-    this->strategy = strategy;
-    this->actionFactory = strategy->createActionFactory();
 
-    strategy->InitMultipliers(multipliers);
-    strategy->InitTriggers(triggers);
-    MultiplyAndPush(strategy->getNextActions());
+    for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+    {
+        Strategy* strategy = *i;
+        strategy->InitMultipliers(multipliers);
+        strategy->InitTriggers(triggers);
+        MultiplyAndPush(strategy->getNextActions());
+    }
 }
 
 
@@ -95,7 +106,11 @@ BOOL Engine::DoNextAction(Unit* unit)
 	
     if (!action)
     {
-        MultiplyAndPush(strategy->getNextActions());
+        for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+        {
+            Strategy* strategy = *i;
+            MultiplyAndPush(strategy->getNextActions());
+        }
     }
 
     return actionExecuted;
@@ -136,5 +151,24 @@ void Engine::ExecuteAction(const char* name)
         action->Execute();
         MultiplyAndPush(action->getNextActions());
         delete action;
+    }
+}
+
+void Engine::addStrategy(const char* name)
+{
+    removeStrategy(name);
+    strategies.push_back(actionFactory->createStrategy(name));
+}
+
+void Engine::removeStrategy(const char* name)
+{
+    for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+    {
+        Strategy* strategy = *i;
+        if (!strcmp(strategy->getName(), name))
+        {
+            strategies.remove(strategy);
+            delete strategy;
+        }
     }
 }

@@ -31,9 +31,8 @@ public:
 protected:
     void combatVsCaster()
     {
-        GenericDruidStrategy* strategy = new GenericDruidStrategy(&ai);
-        Engine engine(&ai);
-        engine.Init(strategy);
+        Engine engine(&ai, new DruidActionFactory(&ai));
+        engine.Init();
 
         engine.DoNextAction(NULL);
         ai.resetSpell("frostbolt");
@@ -47,9 +46,8 @@ protected:
 
     void combatVsMelee()
     {
-        GenericDruidStrategy* strategy = new GenericDruidStrategy(&ai);
-        Engine engine(&ai);
-        engine.Init(strategy);
+        Engine engine(&ai, new DruidActionFactory(&ai));
+        engine.Init();
 
         engine.DoNextAction(NULL); // frostbolt
 

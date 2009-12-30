@@ -11,3 +11,4 @@ Action* ActionFactory::createAction(const char* name)
 
     return NULL;
 }
+

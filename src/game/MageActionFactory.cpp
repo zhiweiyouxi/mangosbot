@@ -1,6 +1,7 @@
 #include "pchdef.h"
 #include "MageActionFactory.h"
 #include "MageActions.h"
+#include "FrostMageStrategy.h"
 
 using namespace ai;
 
@@ -23,4 +24,16 @@ Action* MageActionFactory::createAction(const char* name)
     CREATE_ACTION_RULE("counterspell", CastCounterspellAction);
  
     return NULL;
+}
+
+Strategy* MageActionFactory::createStrategy(const char* name)
+{
+    Strategy* strategy = ActionFactory::createStrategy(name);
+    if (strategy)
+        return strategy;
+
+    if (!strcmp("frost mage", name))
+        return new FrostMageStrategy(ai);
+    
+    return new GenericMageStrategy(ai);
 }

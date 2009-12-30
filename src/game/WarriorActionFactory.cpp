@@ -1,6 +1,7 @@
 #include "pchdef.h"
 #include "WarriorActions.h"
 #include "WarriorActionFactory.h"
+#include "GenericWarriorStrategy.h"
 
 using namespace ai;
 

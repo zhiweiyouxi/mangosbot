@@ -44,22 +44,6 @@ public:
 
 int TriggeredAction::fired = 0;
 
-class TestActionFactory : public ActionFactory
-{
-public:
-    TestActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}
-    virtual Action* createAction(const char* name)
-    {
-        if (!strcmp("TriggeredAction", name))
-            return new TriggeredAction(ai);
-
-        if (!strcmp("RepeatingAction", name))
-            return new RepeatingAction(ai);
-
-        return NULL;
-    }
-};
-
 class TestTrigger : public Trigger
 {
 public:
@@ -103,8 +87,29 @@ public:
     {
         triggers.push_back(new TestTrigger(NULL));
     }
+};
 
-    virtual ActionFactory* createActionFactory() { return new TestActionFactory(ai); }
+class TestActionFactory : public ActionFactory
+{
+public:
+    TestActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}
+    virtual Action* createAction(const char* name)
+    {
+        if (!strcmp("TriggeredAction", name))
+            return new TriggeredAction(ai);
+
+        if (!strcmp("RepeatingAction", name))
+            return new RepeatingAction(ai);
+
+        return NULL;
+    }
+    virtual Strategy* createStrategy(const char* name)
+    {
+        if (!strcmp("TestStrategy", name))
+            return new TestStrategy(ai);
+
+        return NULL;
+    }
 };
 
 class EngineTestCase : public CPPUNIT_NS::TestFixture
@@ -123,8 +128,9 @@ public:
 protected:
 	void engineMustRepeatActions()
 	{
-		Engine engine(NULL);
-		engine.Init(new TestStrategy(NULL));
+		Engine engine(NULL, new TestActionFactory(NULL));
+        engine.addStrategy("TestStrategy");
+        engine.Init();
 
 		for (int i=0; i<6; i++)
 			engine.DoNextAction(NULL);

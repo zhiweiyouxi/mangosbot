@@ -12,13 +12,15 @@ namespace ai
     class MANGOS_DLL_SPEC Engine : public PlayerbotAIFacadeAware
     {
     public:
-        Engine(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) 
+        Engine(PlayerbotAIFacade* const ai, ActionFactory *factory) : PlayerbotAIFacadeAware(ai) 
         {
-            actionFactory = NULL;
-            strategy = NULL;
+            actionFactory = factory;
         }
 
-	    void Init(Strategy *strategy);
+	    void Init();
+        void addStrategy(const char* name);
+        void removeStrategy(const char* name);
+        void clearStrategies();
 
     public:
 	    virtual BOOL DoNextAction(Unit*);
@@ -38,6 +40,6 @@ namespace ai
 	    Player* master;
 	    Player* bot;
         ActionFactory* actionFactory;
-        Strategy* strategy;
+        std::list<Strategy*> strategies;
     };
 }

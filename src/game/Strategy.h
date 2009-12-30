@@ -2,7 +2,6 @@
 #include "Action.h"
 #include "Multiplier.h"
 #include "Trigger.h"
-#include "ActionFactory.h"
 
 namespace ai
 {
@@ -16,6 +15,6 @@ namespace ai
         virtual NextAction** getNextActions() { return NULL; }
         virtual void InitTriggers(std::list<Trigger*> &triggers) {}
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers) {}
-        virtual ActionFactory* createActionFactory() { return new ActionFactory(ai); }
+        virtual const char* getName() { return NULL; }
     };
 }
