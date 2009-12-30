@@ -3,8 +3,6 @@
 
 #include "PlayerbotClassAI.h"
 
-#include "Engine.h"
-
 enum
 {
     SPELL_FROST,
@@ -29,8 +27,6 @@ class MANGOS_DLL_SPEC PlayerbotMageAI : PlayerbotClassAI
         // buff a specific player, usually a real PC who is not in group
         void BuffPlayer(Player *target);
 
-        virtual void DoSpecificAction(const char* name) { engine->ExecuteAction(name); }
-
     private:
         // ARCANE
         uint32 ARCANE_MISSILES, ARCANE_EXPLOSION, COUNTERSPELL, SLOW, ARCANE_BARRAGE, ARCANE_BLAST, MIRROR_IMAGE, ARCANE_POWER;
@@ -51,8 +47,6 @@ class MANGOS_DLL_SPEC PlayerbotMageAI : PlayerbotClassAI
 		uint32 ARCANE_TORRENT, GIFT_OF_THE_NAARU, STONEFORM, ESCAPE_ARTIST, EVERY_MAN_FOR_HIMSELF, SHADOWMELD, BLOOD_FURY, WAR_STOMP, BERSERKING, WILL_OF_THE_FORSAKEN;
 
         uint32 SpellSequence, LastSpellArcane, LastSpellFire, LastSpellFrost, CONJURE_WATER, CONJURE_FOOD;
-
-        ai::Engine* engine;
 };
 
 #endif

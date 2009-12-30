@@ -6,4 +6,7 @@ namespace ai
 {
     BEGIN_ACTION(FleeAction, "flee")
     END_ACTION()
+
+    BEGIN_ACTION(MeleeAction, "melee")
+    END_ACTION()
 }

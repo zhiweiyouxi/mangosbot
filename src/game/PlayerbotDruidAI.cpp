@@ -5,6 +5,8 @@
     Version : 0.42
 */
 #include "PlayerbotDruidAI.h"
+#include "PlayerbotAIFacade.h"
+#include "BearTankDruidStrategy.h"
 
 class PlayerbotAI;
 
@@ -63,6 +65,11 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 	// racial
 	SHADOWMELD              = ai->getSpellId("shadowmeld"); // night elf
 	WAR_STOMP               = ai->getSpellId("war stomp"); // tauren
+
+    ai::PlayerbotAIFacade *facade = new ai::PlayerbotAIFacade(ai);
+    engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
+    engine->addStrategy("bear tank");
+    engine->Init();
 }
 
 PlayerbotDruidAI::~PlayerbotDruidAI() {}
@@ -106,6 +113,9 @@ void PlayerbotDruidAI::DoNextCombatManeuver(Unit *pTarget)
             ai->CastSpell(MOONFIRE);
             return;
     }
+
+    engine->DoNextAction(pTarget);
+    return;
 
     uint32 masterHP = GetMaster()->GetHealth()*100 / GetMaster()->GetMaxHealth();
 

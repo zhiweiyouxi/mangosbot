@@ -10,3 +10,9 @@ BOOL EnemyTooCloseTrigger::IsActive()
     float distance = ai->GetDistanceToEnemy();
     return distance <= ATTACK_DISTANCE;
 }
+
+BOOL EnemyOutOfMeleeTrigger::IsActive()
+{
+    float distance = ai->GetDistanceToEnemy();
+    return distance > ATTACK_DISTANCE;
+}

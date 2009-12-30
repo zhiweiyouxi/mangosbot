@@ -14,6 +14,8 @@
 class Player;
 class PlayerbotAI;
 
+#include "Engine.h"
+
 class MANGOS_DLL_SPEC PlayerbotClassAI
 {
     public:
@@ -35,12 +37,16 @@ class MANGOS_DLL_SPEC PlayerbotClassAI
         Player* GetPlayerBot() {return m_bot;}
         PlayerbotAI* GetAI (){return m_ai;};
 
-        virtual void DoSpecificAction(const char* name) {}
+        virtual void DoSpecificAction(const char* name) { if (engine) engine->ExecuteAction(name); }
+        virtual void ChangeStrategy( const char* name );
 
     private:
         Player* m_master;
         Player* m_bot;
         PlayerbotAI* m_ai;
+
+protected:
+        ai::Engine* engine;
 };
 
 #endif

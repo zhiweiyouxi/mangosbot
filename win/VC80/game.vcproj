@@ -1953,6 +1953,14 @@
 					Name="Strategies"
 					>
 					<File
+						RelativePath="..\..\src\game\BearTankDruidStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\BearTankDruidStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericDruidStrategy.cpp"
 						>
 					</File>

@@ -14,6 +14,7 @@ namespace ai
         virtual void MoveToMaster() { buffer = buffer.append(">flee"); }
         virtual void CastSpell(const char* spell) { buffer.append(">").append(spell); alreadyCast.push_back(spell); }
         virtual BOOL canCastSpell(const char* spell);
+        virtual void MoveToTarget() {buffer.append(">melee"); }
 
     public:
         void resetSpells() {alreadyCast.clear(); }

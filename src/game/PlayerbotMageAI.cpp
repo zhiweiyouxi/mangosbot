@@ -70,7 +70,6 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 
 PlayerbotMageAI::~PlayerbotMageAI() 
 {
-    delete engine;
 }
 
 void PlayerbotMageAI::DoNextCombatManeuver(Unit *pTarget)
