@@ -113,6 +113,7 @@ namespace ai
     public:
         virtual void Execute() {}
         virtual BOOL isAvailable() { return TRUE; }
+        virtual BOOL isUseful() { return TRUE; }
         virtual NextAction* getNextAction() { return NULL; }
         virtual NextAction** getNextActions();
         virtual NextAction* getAlternativeAction() { return NULL; }

@@ -14,3 +14,8 @@ void MeleeAction::Execute()
 {
     ai->MoveToTarget();
 }
+
+BOOL CastLifeBloodAction::isUseful()
+{
+    return ai->GetHealthPercent() <= 25;
+}

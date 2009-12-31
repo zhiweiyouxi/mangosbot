@@ -85,24 +85,26 @@ BOOL Engine::DoNextAction(Unit* unit)
 			MultiplyAndPush(trigger->getNextActions());
 		}
 	}
-    Action* action = NULL;
+    ActionBasket* basket = NULL;
     
     do 
     {
-        ActionBasket* basket = queue.Peek(); // just for reference
-
-        action = queue.Pop();
-        if (action)
+        basket = queue.Peek();
+        if (basket)
         {
-            if (action->isAvailable())
+            float relevance = basket->getRelevance(); // just for reference
+            BOOL skipPrerequisites = basket->isSkipPrerequisites();
+
+            Action* action = queue.Pop();
+            if (action->isAvailable() && action->isUseful())
             {
-                if (!basket->isSkipPrerequisites() && MultiplyAndPush(action->getPrerequisiteActions(), basket->getRelevance() + 1))
+                if (!skipPrerequisites && MultiplyAndPush(action->getPrerequisiteActions(), relevance + 1))
                 {
                     sLog.outBasic("A:%s - prerequisites", action->getName());
                     NextAction** prerequisites = new NextAction*[2];
-                    prerequisites[0] = new NextAction(action->getName(), basket->getRelevance());
+                    prerequisites[0] = new NextAction(action->getName(), relevance);
                     prerequisites[1] = NULL;
-                    MultiplyAndPush(prerequisites, 0.0f, TRUE);
+                    MultiplyAndPush(prerequisites, relevance, TRUE);
                     delete action;
                     DoNextAction(unit);
                     break;
@@ -117,14 +119,14 @@ BOOL Engine::DoNextAction(Unit* unit)
             else
             {
                 sLog.outBasic("A:%s - n/a", action->getName());
-                MultiplyAndPush(action->getAlternativeActions(), basket->getRelevance());
+                MultiplyAndPush(action->getAlternativeActions(), relevance);
             }
             delete action;
         }
     }
-    while (action);
+    while (basket);
 	
-    if (!action)
+    if (!basket)
     {
         sLog.outBasic("--- queue is empty ---");
         for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)

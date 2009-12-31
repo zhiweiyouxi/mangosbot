@@ -42,6 +42,12 @@ BOOL PlayerbotAIFacade::HasAura(const char* spell)
     return ai->HasAura(spell);
 }
 
+void PlayerbotAIFacade::RemoveAura(const char* name)
+{
+    uint32 spellid = ai->getSpellId(name);
+    ai->GetPlayerBot()->RemoveAurasDueToSpell(spellid);
+}
+
 BOOL PlayerbotAIFacade::HasAggro()
 {
     Unit* currentTarget = ai->GetCurrentTarget();

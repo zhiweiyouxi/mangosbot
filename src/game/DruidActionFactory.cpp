@@ -7,6 +7,8 @@ using namespace ai;
 
 Action* DruidActionFactory::createAction(const char* name)
 {
+    CREATE_ACTION_RULE("melee", DruidMeleeAction);
+    
     Action* action = ActionFactory::createAction(name);
     if (action)
         return action;

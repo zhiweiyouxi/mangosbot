@@ -21,6 +21,7 @@ namespace ai
         virtual uint8 GetManaPercent() { return mana; }
         virtual BOOL HasAggro() { return aggro; }
         virtual int GetAttackerCount() { return attackerCount; }
+        virtual void RemoveAura(const char* name) {auras.remove(name); buffer.append(">-").append(name); }
 
     public:
         void resetSpells() {alreadyCast.clear(); }

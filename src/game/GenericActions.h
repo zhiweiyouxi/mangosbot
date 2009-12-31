@@ -14,5 +14,7 @@ namespace ai
         BEGIN_ALTERNATIVE_ACTIONS(1)
             ALTERNATIVE_ACTION(0, "rejuvenation", 6.0f)
         END_ALTERNATIVE_ACTIONS(1)
+
+        virtual BOOL isUseful();
     END_SPELL_ACTION()
 }

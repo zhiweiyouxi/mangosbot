@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Action.h"
+#include "GenericActions.h"
 
 #define DEFAULT_DRUID_NEXT_ACTIONS() \
     BEGIN_NEXT_ACTIONS(1) \
@@ -35,16 +35,18 @@ namespace ai
         DEFAULT_DRUID_NEXT_ACTIONS()
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")
+    BEGIN_ACTION(CastCasterFormAction, "caster form")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
         virtual BOOL isAvailable();
+        virtual BOOL isUseful();
         PREREQUISITE_ACTIONS("caster form")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        virtual BOOL isUseful();
         PREREQUISITE_ACTIONS("caster form")
     END_SPELL_ACTION()
 
@@ -57,4 +59,11 @@ namespace ai
         DEFAULT_DRUID_NEXT_ACTIONS()
         PREREQUISITE_ACTIONS("dire bear form")
     END_SPELL_ACTION()
+
+    class DruidMeleeAction : public MeleeAction
+    {
+    public:
+        DruidMeleeAction(PlayerbotAIFacade* const ai) : MeleeAction(ai) {}
+        PREREQUISITE_ACTIONS("dire bear form")
+    };
 }

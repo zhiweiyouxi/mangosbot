@@ -20,6 +20,7 @@ class DruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( druidMustHoldAggro );
     CPPUNIT_TEST( druidMustDemoralizeAttackers );
     CPPUNIT_TEST( bearFormIfDireNotAvailable );
+    CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -155,6 +156,23 @@ protected:
         ai->rage = 0;
         engine.DoNextAction(NULL); // melee
         
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee"));
+    }
+
+    void healHimself()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("bear tank");
+        engine.Init();
+
+        engine.DoNextAction(NULL); // faerie fire
+        engine.DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
+
+        ai->distanceToEnemy = 0.0f; 
         ai->health = 1;
         engine.DoNextAction(NULL); // life blood
         ai->auras.push_back("life blood");
@@ -164,6 +182,8 @@ protected:
         
         ai->health = 100;
         ai->auras.remove("life blood");
+        engine.DoNextAction(NULL); // bear form
+        ai->auras.push_back("bear form");
         engine.DoNextAction(NULL); // melee
         
         ai->health = 1;
@@ -178,7 +198,7 @@ protected:
         engine.DoNextAction(NULL); // dire bear form
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee>life blood>caster form>regrowth>melee>rejuvenation>melee>faerie fire>dire bear form"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>life blood>-dire bear form>regrowth>bear form>melee>-bear form>rejuvenation>faerie fire>dire bear form"));
     }
 };
 
