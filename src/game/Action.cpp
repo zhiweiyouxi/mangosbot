@@ -12,6 +12,14 @@ NextAction** Action::getNextActions()
     return actions;
 }
 
+NextAction** Action::getAlternativeActions() 
+{
+    NextAction** actions = new NextAction*[2];
+    actions[0] = getAlternativeAction();
+    actions[1] = NULL;
+    return actions;
+}
+
 void CastSpellAction::Execute()
 {
 	ai->CastSpell(spell);

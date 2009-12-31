@@ -99,6 +99,10 @@ BOOL Engine::DoNextAction(Unit* unit)
                 delete action;
                 break;
             }
+            else
+            {
+                MultiplyAndPush(action->getAlternativeActions());
+            }
             delete action;
         }
     }

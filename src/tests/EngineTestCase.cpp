@@ -8,6 +8,20 @@
 
 using namespace ai;
 
+class AlternativeAction : public Action
+{
+public:
+    AlternativeAction(PlayerbotAIFacade* const ai) : Action(ai) {}
+    virtual ~AlternativeAction() {}
+
+    void Execute() { executed++; }
+    const char* getName() {return "AlternativeAction"; }
+
+    static int executed;
+};
+
+int AlternativeAction::executed = 0;
+
 class RepeatingAction : public Action
 {
 public:
@@ -20,13 +34,17 @@ public:
 
     void Execute() { executed++; }
     const char* getName() {return "RepeatingAction"; }
+    BOOL isAvailable() { return available; }
 
     NextAction* getNextAction() { return new NextAction("RepeatingAction", 1.0f); }
+    NextAction* getAlternativeAction() { return new NextAction("AlternativeAction", 1.0f); }
 
 	static int destroyed;
     static int executed;
+    static BOOL available;
 };
 
+int RepeatingAction::available = TRUE;
 int RepeatingAction::destroyed = 0;
 int RepeatingAction::executed = 0;
 
@@ -100,6 +118,9 @@ public:
 
         if (!strcmp("RepeatingAction", name))
             return new RepeatingAction(ai);
+        
+        if (!strcmp("AlternativeAction", name))
+            return new AlternativeAction(ai);
 
         return NULL;
     }
@@ -139,6 +160,10 @@ protected:
         CPPUNIT_ASSERT(TestMultiplier::asked);
         CPPUNIT_ASSERT_EQUAL(5, RepeatingAction::executed);
         CPPUNIT_ASSERT_EQUAL(5, RepeatingAction::destroyed);
+
+        RepeatingAction::available = FALSE;
+        engine.DoNextAction(NULL);
+        CPPUNIT_ASSERT(AlternativeAction::executed);
 	}
 };
 

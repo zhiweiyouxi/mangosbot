@@ -11,5 +11,8 @@ namespace ai
     END_ACTION()
 
     BEGIN_SPELL_ACTION(CastLifeBloodAction, "life blood")
+        BEGIN_ALTERNATIVE_ACTIONS(1)
+            ALTERNATIVE_ACTION(0, "rejuvenation", 6.0f)
+        END_ALTERNATIVE_ACTIONS(1)
     END_SPELL_ACTION()
 }

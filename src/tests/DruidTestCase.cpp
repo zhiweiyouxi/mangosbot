@@ -73,14 +73,15 @@ protected:
         
         ai->health = 1;
         engine.DoNextAction(NULL); // life blood
+        engine.DoNextAction(NULL); // rejuvenation
         engine.DoNextAction(NULL); // regrowth
         
         ai->health = 100;
-        engine.DoNextAction(NULL); // melee
+        engine.DoNextAction(NULL); 
         
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee>life blood>regrowth>melee>life blood>regrowth"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee>life blood>rejuvenation>regrowth"));
     }
 };
 

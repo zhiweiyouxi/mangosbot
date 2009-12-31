@@ -7,21 +7,6 @@
         public: \
             clazz(PlayerbotAIFacade* const ai) : CastSpellAction(ai, name) {} \
 
-#define NEXT_ACTIONS(name, relevance) \
-            virtual NextAction* getNextAction() { return new NextAction(name, relevance); }
-
-#define BEGIN_NEXT_ACTIONS(size) \
-    NextAction** getNextActions() \
-    { \
-        NextAction** actions = new NextAction*[size + 1];
-
-#define NEXT_ACTION(index, name, relevance) \
-    actions[index] = new NextAction(name, relevance);
-
-#define END_NEXT_ACTIONS(size) \
-        actions[size] = NULL; \
-        return actions; \
-    }
 
 #define END_SPELL_ACTION() \
     };
@@ -39,6 +24,41 @@ class clazz : public Action \
 
 #define END_ACTION() \
     };
+
+
+#define NEXT_ACTIONS(name, relevance) \
+    virtual NextAction* getNextAction() { return new NextAction(name, relevance); }
+
+#define BEGIN_NEXT_ACTIONS(size) \
+    NextAction** getNextActions() \
+    { \
+    NextAction** actions = new NextAction*[size + 1];
+
+#define NEXT_ACTION(index, name, relevance) \
+    actions[index] = new NextAction(name, relevance);
+
+#define END_NEXT_ACTIONS(size) \
+    actions[size] = NULL; \
+    return actions; \
+    }
+
+
+#define ALTERNATIVE_ACTIONS(name, relevance) \
+    virtual NextAction* getAlternativeAction() { return new NextAction(name, relevance); }
+
+#define BEGIN_ALTERNATIVE_ACTIONS(size) \
+    NextAction** getAlternativeActions() \
+    { \
+    NextAction** actions = new NextAction*[size + 1];
+
+#define ALTERNATIVE_ACTION(index, name, relevance) \
+    actions[index] = new NextAction(name, relevance);
+
+#define END_ALTERNATIVE_ACTIONS(size) \
+    actions[size] = NULL; \
+    return actions; \
+    }
+
 
 namespace ai
 {
@@ -80,6 +100,8 @@ namespace ai
         virtual BOOL isAvailable() { return TRUE; }
         virtual NextAction* getNextAction() { return NULL; }
         virtual NextAction** getNextActions();
+        virtual NextAction* getAlternativeAction() { return NULL; }
+        virtual NextAction** getAlternativeActions();
         virtual const char* getName() { return "action"; }
         virtual int getKind() { return 0; }
 	};
