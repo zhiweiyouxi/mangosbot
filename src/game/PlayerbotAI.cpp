@@ -1869,7 +1869,6 @@ void PlayerbotAI::MovementUpdate()
 
     // call set position (updates states, exploration, etc.)
     m_bot->SetPosition( m_bot->GetPositionX(), m_bot->GetPositionY(), m_bot->GetPositionZ(), m_bot->GetOrientation(), false );
-    TellMaster("%f, %f, %f", m_bot->GetPositionX(), m_bot->GetPositionY(), m_bot->GetPositionZ())   ;
 }
 
 void PlayerbotAI::MovementClear() 

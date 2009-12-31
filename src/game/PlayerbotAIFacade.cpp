@@ -1,5 +1,7 @@
 #include "pchdef.h"
 #include "PlayerbotAIFacade.h"
+#include "DBCStructure.h"
+#include "Spell.h"
 
 using namespace ai;
 
@@ -13,12 +15,21 @@ float PlayerbotAIFacade::GetDistanceToEnemy()
     return 1e8;
 }
 
-BOOL PlayerbotAIFacade::canCastSpell( const char* spell )
+BOOL PlayerbotAIFacade::canCastSpell( const char* name )
 {
-    uint32 spellid = ai->getSpellId(spell);
+    uint32 spellid = ai->getSpellId(name);
     Player* bot = ai->GetPlayerBot();
 
-    return bot->HasSpell(spellid) && !bot->HasSpellCooldown(spellid);
+    BOOL res = bot->HasSpell(spellid) && !bot->HasSpellCooldown(spellid);
+    if (!res)
+        return FALSE;
+
+    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellid );
+    Spell *spell = new Spell(bot, spellInfo, false );
+    res = (spell->CheckPower() == SPELL_CAST_OK);
+    delete spell;
+
+    return res;
 }
 
 uint8 PlayerbotAIFacade::GetRage()
