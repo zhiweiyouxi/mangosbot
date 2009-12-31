@@ -21,3 +21,13 @@ BOOL RageAvailable::IsActive()
 {
     return ai->GetRage() >= amount;
 }
+
+BOOL LowHealthTrigger::IsActive()
+{
+    return ai->GetHealthPercent() < 25;
+}
+
+BOOL LowManaTrigger::IsActive()
+{
+    return ai->GetManaPercent() < 25;
+}

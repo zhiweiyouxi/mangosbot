@@ -3,13 +3,6 @@
 
 namespace ai
 {
-    BEGIN_TRIGGER(DruidEnemyTooCloseTrigger, EnemyTooCloseTrigger)
-        BEGIN_NEXT_ACTIONS(2)
-            NEXT_ACTION(0, "frost nova", 10.0f)
-            NEXT_ACTION(1, "flee", 5.0f)
-        END_NEXT_ACTIONS(2)
-    END_TRIGGER()
-
     class MaulAvailable : public RageAvailable
     {
     public:
@@ -31,4 +24,11 @@ namespace ai
             NEXT_ACTION(1, "maul", 1.0f)
         END_NEXT_ACTIONS(2)
     };
+
+    BEGIN_TRIGGER(DruidLowHealthTrigger, LowHealthTrigger)
+        BEGIN_NEXT_ACTIONS(2)
+            NEXT_ACTION(0, "life blood", 6.0f)
+            NEXT_ACTION(1, "regrowth", 5.0f)
+        END_NEXT_ACTIONS(2)
+  END_TRIGGER()
 }

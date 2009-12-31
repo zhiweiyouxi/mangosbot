@@ -70,8 +70,17 @@ protected:
 
         ai->rage = 0;
         engine.DoNextAction(NULL); // melee
+        
+        ai->health = 1;
+        engine.DoNextAction(NULL); // life blood
+        engine.DoNextAction(NULL); // regrowth
+        
+        ai->health = 100;
+        engine.DoNextAction(NULL); // melee
+        
+        
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee>life blood>regrowth>melee>life blood>regrowth"));
     }
 };
 

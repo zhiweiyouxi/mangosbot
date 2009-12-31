@@ -9,4 +9,7 @@ namespace ai
 
     BEGIN_ACTION(MeleeAction, "melee")
     END_ACTION()
+
+    BEGIN_SPELL_ACTION(CastLifeBloodAction, "life blood")
+    END_SPELL_ACTION()
 }

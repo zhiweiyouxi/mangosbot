@@ -4,4 +4,4 @@
 
 using namespace ai;
 
-BOOL DruidEnemyTooCloseTrigger::IsActive() { return EnemyTooCloseTrigger::IsActive(); }
+BOOL DruidLowHealthTrigger::IsActive() { return LowHealthTrigger::IsActive(); }

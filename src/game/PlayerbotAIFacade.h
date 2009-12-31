@@ -25,6 +25,8 @@ namespace ai
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
         virtual BOOL HasAura(const char* spell);
+        virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
+        virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
     protected:
         PlayerbotAI *ai;
     };

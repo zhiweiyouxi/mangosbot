@@ -33,4 +33,13 @@ namespace ai
     BEGIN_SPELL_ACTION(CastSwipeAction, "swipe")
         DEFAULT_DRUID_NEXT_ACTIONS()
     END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
+    END_SPELL_ACTION()
 }

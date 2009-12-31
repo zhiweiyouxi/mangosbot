@@ -25,4 +25,10 @@ namespace ai
     protected:
         int amount;
     };
+
+    BEGIN_TRIGGER(LowHealthTrigger, Trigger)
+    END_TRIGGER()
+
+    BEGIN_TRIGGER(LowManaTrigger, Trigger)
+    END_TRIGGER()
 }

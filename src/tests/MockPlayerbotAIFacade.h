@@ -17,6 +17,8 @@ namespace ai
         virtual void MoveToTarget() {buffer.append(">melee"); }
         virtual uint8 GetRage() { return rage; } 
         virtual BOOL HasAura(const char* spell);
+        virtual uint8 GetHealthPercent() { return health; }
+        virtual uint8 GetManaPercent() { return mana; }
 
     public:
         void resetSpells() {alreadyCast.clear(); }
@@ -26,7 +28,7 @@ namespace ai
         std::list<std::string> alreadyCast;
         std::list<std::string> auras;
         float distanceToEnemy;
-        uint8 rage;
+        uint8 rage, health, mana;
     };
 
 }
