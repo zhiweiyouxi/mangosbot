@@ -3,3 +3,8 @@
 #include "GenericActions.h"
 
 using namespace ai;
+
+BOOL CastBearFormAction::isAvailable()
+{
+    return !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
+}

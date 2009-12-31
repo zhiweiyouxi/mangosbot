@@ -16,3 +16,8 @@ BOOL EnemyOutOfMeleeTrigger::IsActive()
     float distance = ai->GetDistanceToEnemy();
     return distance > ATTACK_DISTANCE;
 }
+
+BOOL RageAvailable::IsActive()
+{
+    return ai->GetRage() >= amount;
+}

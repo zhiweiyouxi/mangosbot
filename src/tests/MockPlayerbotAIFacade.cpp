@@ -27,3 +27,14 @@ void MockPlayerbotAIFacade::resetSpell(const char* spell)
         }
     }
 }
+
+BOOL MockPlayerbotAIFacade::HasAura(const char* spell)
+{
+    for (list<string>::iterator i = auras.begin(); i != auras.end(); i++)
+    {
+        string s = *i;
+        if (!strcmp(s.c_str(), spell))
+            return TRUE;
+    }
+    return FALSE;
+}

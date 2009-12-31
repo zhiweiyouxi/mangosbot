@@ -11,7 +11,13 @@ Action* DruidActionFactory::createAction(const char* name)
     if (action)
         return action;
 
-    CREATE_ACTION_RULE("faerie fire", CastFaerieFireBoltAction);
+    CREATE_ACTION_RULE("faerie fire", CastFaerieFireAction);
+    CREATE_ACTION_RULE("bear form", CastBearFormAction);
+    CREATE_ACTION_RULE("dire bear form", CastDireBearFormAction);
+    CREATE_ACTION_RULE("maul", CastMaulAction);
+    CREATE_ACTION_RULE("swipe", CastSwipeAction);
+    
+        
 
     return NULL;
 }

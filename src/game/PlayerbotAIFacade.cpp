@@ -20,3 +20,13 @@ BOOL PlayerbotAIFacade::canCastSpell( const char* spell )
 
     return bot->HasSpell(spellid) && !bot->HasSpellCooldown(spellid);
 }
+
+uint8 PlayerbotAIFacade::GetRage()
+{
+    return ai->GetRageAmount();
+}
+
+BOOL PlayerbotAIFacade::HasAura(const char* spell)
+{
+    return ai->HasAura(spell);
+}

@@ -54,15 +54,24 @@ protected:
         engine.Init();
 
         engine.DoNextAction(NULL); // faerie fire
+        
+        engine.DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
 
         ai->distanceToEnemy = 100.0f; // enemy too far
         engine.DoNextAction(NULL); // melee
 
         ai->distanceToEnemy = 0.0f; 
-        engine.DoNextAction(NULL); // attack
+        ai->rage = 10;
+        engine.DoNextAction(NULL); // maul
 
+        ai->rage = 15;
+        engine.DoNextAction(NULL); // swipe
+
+        ai->rage = 0;
+        engine.DoNextAction(NULL); // melee
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee"));
     }
 };
 

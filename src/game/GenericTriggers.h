@@ -11,4 +11,18 @@ namespace ai
             NEXT_ACTION(0, "melee", 1.0f)
         END_NEXT_ACTIONS(1)
     END_TRIGGER()
+
+    class RageAvailable : public Trigger
+    {
+    public:
+        RageAvailable(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
+        {
+            this->amount = amount;
+        }
+    public: 
+        virtual BOOL IsActive();
+
+    protected:
+        int amount;
+    };
 }

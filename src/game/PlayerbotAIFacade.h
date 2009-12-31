@@ -23,6 +23,8 @@ namespace ai
         virtual void MoveToTarget() { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), 0, 0); }
         virtual void CastSpell(const char* spell) { ai->CastSpell(ai->getSpellId(spell)); }
         virtual BOOL canCastSpell( const char* spell );
+        virtual uint8 GetRage();
+        virtual BOOL HasAura(const char* spell);
     protected:
         PlayerbotAI *ai;
     };
