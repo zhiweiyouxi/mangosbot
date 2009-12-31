@@ -30,12 +30,12 @@ BOOL RageAvailable::IsActive()
 
 BOOL LowHealthTrigger::IsActive()
 {
-    return ai->GetHealthPercent() < 25;
+    return ai->GetHealthPercent() < EAT_DRINK_PERCENT;
 }
 
 BOOL LowManaTrigger::IsActive()
 {
-    return ai->GetManaPercent() < 25;
+    return ai->GetManaPercent() < EAT_DRINK_PERCENT;
 }
 
 BOOL LoseAggroTrigger::IsActive()

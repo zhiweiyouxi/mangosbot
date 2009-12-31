@@ -36,6 +36,7 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_ACTION(CastCasterFormAction, "caster form")
+        virtual BOOL isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
@@ -47,12 +48,17 @@ namespace ai
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
         DEFAULT_DRUID_NEXT_ACTIONS()
         virtual BOOL isUseful();
-        PREREQUISITE_ACTIONS("caster form")
+        BEGIN_PREREQUISITE_ACTIONS(1)
+            PREREQUISITE_ACTION(0, "caster form")
+            END_PREREQUISITE_ACTIONS(1)
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
         DEFAULT_DRUID_NEXT_ACTIONS()
-        PREREQUISITE_ACTIONS("dire bear form")
+        BEGIN_PREREQUISITE_ACTIONS(2)
+            PREREQUISITE_ACTION(0, "dire bear form")
+            PREREQUISITE_ACTION(1, "reach spell")
+        END_PREREQUISITE_ACTIONS(2)
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")

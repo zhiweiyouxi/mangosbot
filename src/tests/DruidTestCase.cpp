@@ -22,6 +22,7 @@ class DruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( druidMustDemoralizeAttackers );
     CPPUNIT_TEST( bearFormIfDireNotAvailable );
     CPPUNIT_TEST( healHimself );
+    CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -185,13 +186,13 @@ protected:
         ai->distanceToEnemy = 0.0f; 
         ai->health = 1;
         engine.DoNextAction(NULL); // life blood
-        ai->auras.push_back("life blood");
+        ai->auras.push_back("lifeblood");
 
         engine.DoNextAction(NULL); // caster form
         engine.DoNextAction(NULL); // regrowth
         
         ai->health = 100;
-        ai->auras.remove("life blood");
+        ai->auras.remove("lifeblood");
         engine.DoNextAction(NULL); // bear form
         ai->auras.push_back("bear form");
         engine.DoNextAction(NULL); // melee
@@ -208,7 +209,35 @@ protected:
         engine.DoNextAction(NULL); // dire bear form
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>life blood>-dire bear form>regrowth>bear form>melee>-bear form>rejuvenation>faerie fire>dire bear form"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>lifeblood>-dire bear form>regrowth>bear form>melee>-bear form>rejuvenation>faerie fire>dire bear form"));
+    }
+
+    void intensiveHealing()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("bear tank");
+        engine.Init();
+
+        ai->auras.push_back("dire bear form");
+        ai->auras.remove("rejuvenation");
+
+        ai->distanceToEnemy = 0.0f; 
+        ai->health = 1;
+        ai->auras.remove("rejuvenation");
+        engine.DoNextAction(NULL); // life blood
+        ai->auras.push_back("lifeblood");
+
+        ai->alreadyCast.remove("rejuvenation");
+        ai->auras.remove("rejuvenation");
+        engine.DoNextAction(NULL); // caster form
+        ai->alreadyCast.remove("rejuvenation");
+        ai->auras.remove("rejuvenation");
+        engine.DoNextAction(NULL); // regrowth
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>-dire bear form>regrowth"));
     }
 };
 

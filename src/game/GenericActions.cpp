@@ -22,7 +22,7 @@ void ReachSpellAction::Execute()
 
 BOOL CastLifeBloodAction::isUseful()
 {
-    return ai->GetHealthPercent() <= 25;
+    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
 BOOL ReachSpellAction::isUseful()

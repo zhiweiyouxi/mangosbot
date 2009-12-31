@@ -96,25 +96,32 @@ BOOL Engine::DoNextAction(Unit* unit)
             BOOL skipPrerequisites = basket->isSkipPrerequisites();
 
             Action* action = queue.Pop();
-            if (action->isAvailable() && action->isUseful())
+            if (action->isAvailable())
             {
-                if (!skipPrerequisites && MultiplyAndPush(action->getPrerequisiteActions(), relevance + 1))
+                if (action->isUseful())
                 {
-                    sLog.outBasic("A:%s - prerequisites", action->getName());
-                    NextAction** prerequisites = new NextAction*[2];
-                    prerequisites[0] = new NextAction(action->getName(), relevance);
-                    prerequisites[1] = NULL;
-                    MultiplyAndPush(prerequisites, relevance, TRUE);
+                    if (!skipPrerequisites && MultiplyAndPush(action->getPrerequisiteActions(), relevance + 1))
+                    {
+                        sLog.outBasic("A:%s - prerequisites", action->getName());
+                        NextAction** prerequisites = new NextAction*[2];
+                        prerequisites[0] = new NextAction(action->getName(), relevance);
+                        prerequisites[1] = NULL;
+                        MultiplyAndPush(prerequisites, relevance, TRUE);
+                        delete action;
+                        DoNextAction(unit);
+                        break;
+                    }
+                    sLog.outBasic("A:%s", action->getName());
+                    action->Execute();
+                    MultiplyAndPush(action->getNextActions());
+                    actionExecuted = TRUE;
                     delete action;
-                    DoNextAction(unit);
                     break;
                 }
-                sLog.outBasic("A:%s", action->getName());
-                action->Execute();
-                MultiplyAndPush(action->getNextActions());
-                actionExecuted = TRUE;
-                delete action;
-                break;
+                else
+                {
+                    sLog.outBasic("A:%s - useless", action->getName());
+                }
             }
             else
             {

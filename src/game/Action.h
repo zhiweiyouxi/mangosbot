@@ -61,8 +61,8 @@ class clazz : public Action \
     { \
     NextAction** actions = new NextAction*[size + 1];
 
-#define ALTERNATIVE_ACTION(index, name, relevance) \
-    actions[index] = new NextAction(name, relevance);
+#define ALTERNATIVE_ACTION(index, name) \
+    actions[index] = new NextAction(name, 0.0f);
 
 #define END_ALTERNATIVE_ACTIONS(size) \
     actions[size] = NULL; \

@@ -4,18 +4,21 @@
 namespace ai
 {
     BEGIN_TRIGGER(EnemyTooCloseTrigger, Trigger)
+        virtual const char* getName() { return "too close"; }
     END_TRIGGER()
 
     BEGIN_TRIGGER(EnemyOutOfMeleeTrigger, Trigger)
         BEGIN_NEXT_ACTIONS(1)
             NEXT_ACTION(0, "melee", 1.0f)
         END_NEXT_ACTIONS(1)
+        virtual const char* getName() { return "out of melee range"; }
     END_TRIGGER()
 
     BEGIN_TRIGGER(EnemyOutOfSpellRangeTrigger, Trigger)
         BEGIN_NEXT_ACTIONS(1)
             NEXT_ACTION(0, "reach spell", 2.0f)
         END_NEXT_ACTIONS(1)
+        virtual const char* getName() { return "out of spell range"; }
     END_TRIGGER()
 
     BEGIN_TRIGGER(LoseAggroTrigger, Trigger)
@@ -51,8 +54,10 @@ namespace ai
     };
 
     BEGIN_TRIGGER(LowHealthTrigger, Trigger)
+        virtual const char* getName() { return "low health"; }
     END_TRIGGER()
 
     BEGIN_TRIGGER(LowManaTrigger, Trigger)
+        virtual const char* getName() { return "low mana"; }
     END_TRIGGER()
 }

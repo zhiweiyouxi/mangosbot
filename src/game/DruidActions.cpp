@@ -16,17 +16,17 @@ BOOL CastDireBearFormAction::isAvailable()
 
 BOOL CastRejuvenationAction::isAvailable()
 {
-    return CastSpellAction::isAvailable() && !ai->HasAura("life blood");
+    return CastSpellAction::isAvailable() && !ai->HasAura("lifeblood");
 }
 
 BOOL CastRejuvenationAction::isUseful()
 {
-    return ai->GetHealthPercent() <= 25;
+    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
 BOOL CastRegrowthAction::isUseful()
 {
-    return ai->GetHealthPercent() <= 25;
+    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
 void CastCasterFormAction::Execute()
@@ -39,4 +39,11 @@ void CastCasterFormAction::Execute()
         ai->RemoveAura("cat form");
     if (ai->HasAura("travel form")) 
         ai->RemoveAura("travel form");
+}
+
+
+BOOL CastCasterFormAction::isUseful()
+{
+    return (ai->HasAura("dire bear form") || ai->HasAura("bear form") ||
+        ai->HasAura("cat form") || ai->HasAura("travel form")); 
 }

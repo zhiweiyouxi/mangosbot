@@ -2131,6 +2131,12 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
         }
     }
 
+    // sometimes target is not selected
+    if (!pTarget)
+    {
+        pTarget = m_bot;
+    }
+
     if (HasAura(spellId, *pTarget))
         return false;
 

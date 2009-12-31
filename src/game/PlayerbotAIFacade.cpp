@@ -54,6 +54,8 @@ BOOL PlayerbotAIFacade::HasAggro()
     if (currentTarget)
     {
         HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
+        if (!ref)
+            return TRUE; // simulate as target is not atacking anybody yet
         while( ref )
         {
             ThreatManager *target = ref->getSource();

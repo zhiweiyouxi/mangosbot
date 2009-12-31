@@ -15,7 +15,7 @@ Action* ActionFactory::createAction(const char* name)
     if (!strcmp("reach spell", name))
         return new ReachSpellAction(ai);
 
-    if (!strcmp("life blood", name))
+    if (!strcmp("lifeblood", name))
         return new CastLifeBloodAction(ai);
 
     return NULL;
