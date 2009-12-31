@@ -10,11 +10,10 @@
 namespace ai
 {
     BEGIN_SPELL_ACTION(CastFaerieFireAction, "faerie fire")
-        BEGIN_NEXT_ACTIONS(3)
+        BEGIN_NEXT_ACTIONS(2)
             NEXT_ACTION(0, "melee", 1.0f)
-            NEXT_ACTION(1, "dire bear form", 1.2f)
-            NEXT_ACTION(2, "bear form", 1.1f)
-        END_NEXT_ACTIONS(3)
+            NEXT_ACTION(1, "dire bear form", 1.5f)
+        END_NEXT_ACTIONS(2)
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastBearFormAction, "bear form")
@@ -24,6 +23,7 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastDireBearFormAction, "dire bear form")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        ALTERNATIVE_ACTIONS("bear form", 1.0f)
         virtual BOOL isAvailable();
     END_SPELL_ACTION()
 
@@ -40,17 +40,21 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
         virtual BOOL isAvailable();
+        PREREQUISITE_ACTIONS("caster form")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        PREREQUISITE_ACTIONS("caster form")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        PREREQUISITE_ACTIONS("dire bear form")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        PREREQUISITE_ACTIONS("dire bear form")
     END_SPELL_ACTION()
 }

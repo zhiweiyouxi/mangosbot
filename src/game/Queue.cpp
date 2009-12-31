@@ -2,15 +2,8 @@
 #include "Action.h"
 #include "Queue.h"
 
-namespace ai
-{
-Queue::Queue(void)
-{
-}
+using namespace ai;
 
-Queue::~Queue(void)
-{
-}
 
 void Queue::Push(ActionBasket *action)
 {
@@ -65,5 +58,18 @@ Action* Queue::Pop()
 	return NULL;
 }
 
-
+ActionBasket* Queue::Peek()
+{
+    float max = -1;
+    ActionBasket* selection = NULL;
+    for (std::list<ActionBasket*>::iterator iter = actions.begin(); iter != actions.end(); iter++)
+    {
+        ActionBasket* basket = *iter;
+        if (basket->getRelevance() > max)
+        {
+            max = basket->getRelevance();
+            selection = basket;
+        }
+    }
+    return selection;
 }

@@ -59,6 +59,21 @@ class clazz : public Action \
     return actions; \
     }
 
+#define PREREQUISITE_ACTIONS(name) \
+    virtual NextAction* getPrerequisiteAction() { return new NextAction(name, 0.0f); }
+
+#define BEGIN_PREREQUISITE_ACTIONS(size) \
+    NextAction** getPrerequisiteActions() \
+    { \
+    NextAction** actions = new NextAction*[size + 1];
+
+#define PREREQUISITE_ACTION(index, name) \
+    actions[index] = new NextAction(name, 0.0f);
+
+#define END_PREREQUISITE_ACTIONS(size) \
+    actions[size] = NULL; \
+    return actions; \
+    }
 
 namespace ai
 {
@@ -102,6 +117,8 @@ namespace ai
         virtual NextAction** getNextActions();
         virtual NextAction* getAlternativeAction() { return NULL; }
         virtual NextAction** getAlternativeActions();
+        virtual NextAction* getPrerequisiteAction() { return NULL; }
+        virtual NextAction** getPrerequisiteActions();
         virtual const char* getName() { return "action"; }
         virtual int getKind() { return 0; }
 	};
@@ -128,20 +145,23 @@ namespace ai
 	class ActionBasket
 	{
 	public:
-		ActionBasket(Action* action, float relevance)
+		ActionBasket(Action* action, float relevance, BOOL skipPrerequisites = FALSE)
         {
             this->action = action;
             this->relevance = relevance;
+            this->skipPrerequisites = skipPrerequisites;
         }
-        ~ActionBasket(void) {}
+        virtual ~ActionBasket(void) {}
 	public:
 		float getRelevance() {return relevance;}
 		Action* getAction() {return action;}
+        BOOL isSkipPrerequisites() { return skipPrerequisites; }
         void AmendRelevance(float k) {relevance *= k; }
         void setRelevance(float relevance) { this->relevance = relevance; }
 	private:
 		Action* action;
 		float relevance;
+        BOOL skipPrerequisites;
 	};
 
     //---------------------------------------------------------------------------------------------------------------------

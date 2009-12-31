@@ -8,19 +8,41 @@
 
 using namespace ai;
 
+class PrerequisiteAction : public Action
+{
+public:
+    PrerequisiteAction(PlayerbotAIFacade* const ai) : Action(ai) {}
+    virtual ~PrerequisiteAction() { destroyed = TRUE; }
+
+    void Execute() { executed++; }
+    const char* getName() {return "PrerequisiteAction"; }
+
+    static int executed;
+    static int destroyed;
+};
+
+int PrerequisiteAction::executed = 0;
+int PrerequisiteAction::destroyed = 0;
+
 class AlternativeAction : public Action
 {
 public:
     AlternativeAction(PlayerbotAIFacade* const ai) : Action(ai) {}
-    virtual ~AlternativeAction() {}
+    virtual ~AlternativeAction() {destroyed = TRUE;}
+
+    BEGIN_PREREQUISITE_ACTIONS(1)
+        PREREQUISITE_ACTION(0, "PrerequisiteAction");
+    END_PREREQUISITE_ACTIONS(1)
 
     void Execute() { executed++; }
     const char* getName() {return "AlternativeAction"; }
 
     static int executed;
+    static int destroyed;
 };
 
 int AlternativeAction::executed = 0;
+int AlternativeAction::destroyed = 0;
 
 class RepeatingAction : public Action
 {
@@ -122,6 +144,9 @@ public:
         if (!strcmp("AlternativeAction", name))
             return new AlternativeAction(ai);
 
+        if (!strcmp("PrerequisiteAction", name))
+            return new PrerequisiteAction(ai);
+
         return NULL;
     }
     virtual Strategy* createStrategy(const char* name)
@@ -163,7 +188,11 @@ protected:
 
         RepeatingAction::available = FALSE;
         engine.DoNextAction(NULL);
+        engine.DoNextAction(NULL);
         CPPUNIT_ASSERT(AlternativeAction::executed);
+        CPPUNIT_ASSERT(AlternativeAction::destroyed);
+        CPPUNIT_ASSERT(PrerequisiteAction::executed);
+        CPPUNIT_ASSERT(PrerequisiteAction::destroyed);
 	}
 };
 

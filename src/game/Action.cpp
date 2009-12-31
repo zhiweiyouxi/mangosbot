@@ -20,6 +20,14 @@ NextAction** Action::getAlternativeActions()
     return actions;
 }
 
+NextAction** Action::getPrerequisiteActions() 
+{
+    NextAction** actions = new NextAction*[2];
+    actions[0] = getPrerequisiteAction();
+    actions[1] = NULL;
+    return actions;
+}
+
 void CastSpellAction::Execute()
 {
 	ai->CastSpell(spell);

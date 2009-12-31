@@ -89,11 +89,24 @@ BOOL Engine::DoNextAction(Unit* unit)
     
     do 
     {
+        ActionBasket* basket = queue.Peek(); // just for reference
+
         action = queue.Pop();
         if (action)
         {
             if (action->isAvailable())
             {
+                if (!basket->isSkipPrerequisites() && MultiplyAndPush(action->getPrerequisiteActions(), basket->getRelevance() + 1))
+                {
+                    sLog.outBasic("A:%s - prerequisites", action->getName());
+                    NextAction** prerequisites = new NextAction*[2];
+                    prerequisites[0] = new NextAction(action->getName(), basket->getRelevance());
+                    prerequisites[1] = NULL;
+                    MultiplyAndPush(prerequisites, 0.0f, TRUE);
+                    delete action;
+                    DoNextAction(unit);
+                    break;
+                }
                 sLog.outBasic("A:%s", action->getName());
                 action->Execute();
                 MultiplyAndPush(action->getNextActions());
@@ -104,7 +117,7 @@ BOOL Engine::DoNextAction(Unit* unit)
             else
             {
                 sLog.outBasic("A:%s - n/a", action->getName());
-                MultiplyAndPush(action->getAlternativeActions());
+                MultiplyAndPush(action->getAlternativeActions(), basket->getRelevance());
             }
             delete action;
         }
@@ -125,8 +138,9 @@ BOOL Engine::DoNextAction(Unit* unit)
     return actionExecuted;
 }
 
-void Engine::MultiplyAndPush(NextAction** actions)
+BOOL Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, BOOL skipPrerequisites)
 {
+    BOOL pushed = FALSE;
     if (actions)
     {
         for (int j=0; j<10; j++) // TODO: remove 10
@@ -142,7 +156,11 @@ void Engine::MultiplyAndPush(NextAction** actions)
                     k *= multiplier->GetValue(action);
                 }
 
-                queue.Push(new ActionBasket(action, k));
+                if (forceRelevance > 0.0f)
+                    k = forceRelevance;
+
+                queue.Push(new ActionBasket(action, k, skipPrerequisites));
+                pushed = TRUE;
                 delete nextAction;
             }
             else 
@@ -150,6 +168,7 @@ void Engine::MultiplyAndPush(NextAction** actions)
         }
         delete actions;
     }
+    return pushed;
 }
 
 void Engine::ExecuteAction(const char* name)

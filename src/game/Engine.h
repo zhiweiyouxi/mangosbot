@@ -30,7 +30,7 @@ namespace ai
 	    virtual ~Engine(void);
 
     private:
-        void MultiplyAndPush(NextAction** actions);
+        BOOL MultiplyAndPush(NextAction** actions, float forceRelevance = 0.0f, BOOL skipPrerequisites = FALSE);
         void Reset();
 
     protected:

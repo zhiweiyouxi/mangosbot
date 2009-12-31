@@ -6,13 +6,14 @@ namespace ai
 class Queue
 {
 public:
-	Queue(void);
+    Queue(void) {}
 public:
-	~Queue(void);
+    ~Queue(void) {}
 public:
 	void Push(ActionBasket *action);
 	void Push(ActionBasket **actions);
 	Action* Pop();
+    ActionBasket* Peek();
 private:
 	std::list<ActionBasket*> actions;
 };
