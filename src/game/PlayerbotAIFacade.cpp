@@ -34,10 +34,29 @@ BOOL PlayerbotAIFacade::canCastSpell( const char* name )
 
 uint8 PlayerbotAIFacade::GetRage()
 {
-    return ai->GetRageAmount();
+    return ai->GetRagePercent();
 }
 
 BOOL PlayerbotAIFacade::HasAura(const char* spell)
 {
     return ai->HasAura(spell);
+}
+
+BOOL PlayerbotAIFacade::HasAggro()
+{
+    Unit* currentTarget = ai->GetCurrentTarget();
+    if (currentTarget)
+    {
+        HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
+        while( ref )
+        {
+            ThreatManager *target = ref->getSource();
+            Unit *attacker = target->getOwner();
+            Unit *victim = attacker->getVictim();
+            if (victim == ai->GetPlayerBot() && currentTarget == attacker)
+                return TRUE;
+            ref = ref->next();
+        }
+    }
+    return FALSE;
 }

@@ -33,4 +33,11 @@ namespace ai
         END_NEXT_ACTIONS(2)
         virtual const char* getName() { return "low health"; }
   END_TRIGGER()
+
+
+  BEGIN_TRIGGER(BearTankDruidLoseAggroTrigger, LoseAggroTrigger)
+      BEGIN_NEXT_ACTIONS(1)
+          NEXT_ACTION(0, "growl", 10.0f)
+      END_NEXT_ACTIONS(1)
+  END_TRIGGER()
 }

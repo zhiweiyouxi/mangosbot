@@ -12,6 +12,9 @@ namespace ai
         END_NEXT_ACTIONS(1)
     END_TRIGGER()
 
+    BEGIN_TRIGGER(LoseAggroTrigger, Trigger)
+    END_TRIGGER()
+
     class RageAvailable : public Trigger
     {
     public:

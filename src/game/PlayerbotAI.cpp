@@ -833,6 +833,16 @@ uint8 PlayerbotAI::GetRageAmount(const Unit& target) const
     return (static_cast<float> (target.GetPower(POWER_RAGE)));
 }
 
+uint8 PlayerbotAI::GetRagePercent(const Unit& target) const
+{
+    return (static_cast<float> (target.GetPower(POWER_RAGE)) / target.GetMaxPower(POWER_RAGE)) * 100;
+}
+
+uint8 PlayerbotAI::GetRagePercent() const
+{
+    return GetRagePercent(*m_bot);
+}
+
 uint8 PlayerbotAI::GetRageAmount() const
 {
     return GetRageAmount(*m_bot);

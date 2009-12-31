@@ -46,7 +46,6 @@ void Engine::Reset()
         delete multiplier;
     }
     multipliers.clear();
-    sLog.outBasic("Engine::Clear");
 }
 
 void Engine::clearStrategies()
@@ -82,7 +81,7 @@ BOOL Engine::DoNextAction(Unit* unit)
 		Trigger* trigger = *i;
 		if (trigger->IsActive())
 		{
-            sLog.outBasic("Trigger %s is active!", trigger->getName());
+            sLog.outBasic("T:%s", trigger->getName());
 			MultiplyAndPush(trigger->getNextActions());
 		}
 	}
@@ -95,7 +94,7 @@ BOOL Engine::DoNextAction(Unit* unit)
         {
             if (action->isAvailable())
             {
-                sLog.outBasic("Executing %s action!", action->getName());
+                sLog.outBasic("A:%s", action->getName());
                 action->Execute();
                 MultiplyAndPush(action->getNextActions());
                 actionExecuted = TRUE;
@@ -104,7 +103,7 @@ BOOL Engine::DoNextAction(Unit* unit)
             }
             else
             {
-                sLog.outBasic("Action %s is not available", action->getName());
+                sLog.outBasic("A:%s - n/a", action->getName());
                 MultiplyAndPush(action->getAlternativeActions());
             }
             delete action;
@@ -114,7 +113,7 @@ BOOL Engine::DoNextAction(Unit* unit)
 	
     if (!action)
     {
-        sLog.outBasic("No action left");
+        sLog.outBasic("--- queue is empty ---");
         for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
         {
             Strategy* strategy = *i;

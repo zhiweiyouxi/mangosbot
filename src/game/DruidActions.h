@@ -43,5 +43,10 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
+        DEFAULT_DRUID_NEXT_ACTIONS()
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
+        DEFAULT_DRUID_NEXT_ACTIONS()
     END_SPELL_ACTION()
 }

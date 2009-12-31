@@ -31,3 +31,8 @@ BOOL LowManaTrigger::IsActive()
 {
     return ai->GetManaPercent() < 25;
 }
+
+BOOL LoseAggroTrigger::IsActive()
+{
+    return !ai->HasAggro();
+}

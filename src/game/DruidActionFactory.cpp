@@ -22,6 +22,8 @@ Action* DruidActionFactory::createAction(const char* name)
     
     CREATE_ACTION_RULE("regrowth", CastRegrowthAction);
     CREATE_ACTION_RULE("rejuvenation", CastRejuvenationAction);
+
+    CREATE_ACTION_RULE("growl", CastGrowlAction);
         
 
     return NULL;

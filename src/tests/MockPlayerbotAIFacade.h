@@ -8,7 +8,7 @@ namespace ai
     class MockPlayerbotAIFacade : public PlayerbotAIFacade
     {
     public:
-        MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 100.0f; rage = 0; }
+        MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 100.0f; rage = 0; aggro = TRUE; }
 
         virtual float GetDistanceToEnemy() { return distanceToEnemy; }
         virtual void MoveToMaster() { buffer = buffer.append(">flee"); }
@@ -19,6 +19,7 @@ namespace ai
         virtual BOOL HasAura(const char* spell);
         virtual uint8 GetHealthPercent() { return health; }
         virtual uint8 GetManaPercent() { return mana; }
+        virtual BOOL HasAggro() { return aggro; }
 
     public:
         void resetSpells() {alreadyCast.clear(); }
@@ -29,6 +30,7 @@ namespace ai
         std::list<std::string> auras;
         float distanceToEnemy;
         uint8 rage, health, mana;
+        BOOL aggro;
     };
 
 }
