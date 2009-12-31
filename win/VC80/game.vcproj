@@ -1961,6 +1961,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\CatDpsDruidStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\CatDpsDruidStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericDruidStrategy.cpp"
 						>
 					</File>

@@ -28,6 +28,7 @@ namespace ai
 		virtual BOOL IsActive() = NULL;
         virtual NextAction* getNextAction() { return NULL; }
         virtual NextAction** getNextActions();
+        virtual const char* getName() { return "Trigger"; }
 
 	};
 }

@@ -15,7 +15,7 @@ using namespace ai;
 class DruidTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DruidTestCase );
-    //CPPUNIT_TEST( combatVsCaster );
+    CPPUNIT_TEST( druidMustDoMauls );
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST_SUITE_END();
 
@@ -43,6 +43,30 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>frostbolt>frostbolt"));
+    }
+
+    void druidMustDoMauls()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("bear tank");
+        engine.Init();
+
+        engine.DoNextAction(NULL); // faerie fire
+        engine.DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
+        ai->distanceToEnemy = 100.0f; // enemy too far
+        engine.DoNextAction(NULL); // melee
+    
+        ai->distanceToEnemy = 0.0f; 
+        ai->rage = 10;
+        engine.DoNextAction(NULL); // maul
+        ai->resetSpell("maul");
+        engine.DoNextAction(NULL); // maul
+    
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>maul"));
     }
 
     void combatVsMelee()
