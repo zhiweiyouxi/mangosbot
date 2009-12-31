@@ -18,6 +18,7 @@ class DruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( druidMustDoMauls );
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( druidMustHoldAggro );
+    CPPUNIT_TEST( druidMustDemoralizeAttackers );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -44,6 +45,25 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>frostbolt>frostbolt"));
+    }
+
+    void druidMustDemoralizeAttackers()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("bear tank");
+        engine.Init();
+
+        engine.DoNextAction(NULL); // faerie fire
+        engine.DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
+        ai->attackerCount = 3;
+        engine.DoNextAction(NULL); // demoralizing roar
+        engine.DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>demoralizing roar>melee"));
     }
 
     void druidMustHoldAggro()

@@ -29,6 +29,21 @@ namespace ai
         int amount;
     };
 
+    class AttackerCountTrigger : public Trigger
+    {
+    public:
+        AttackerCountTrigger(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
+        {
+            this->amount = amount;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "attacker count"; }
+
+    protected:
+        int amount;
+    };
+
     BEGIN_TRIGGER(LowHealthTrigger, Trigger)
     END_TRIGGER()
 

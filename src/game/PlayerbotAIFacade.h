@@ -28,6 +28,7 @@ namespace ai
         virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
+        virtual int GetAttackerCount() { return ai->GetAttackerCount(); }
     protected:
         PlayerbotAI *ai;
     };

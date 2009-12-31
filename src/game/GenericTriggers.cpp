@@ -36,3 +36,8 @@ BOOL LoseAggroTrigger::IsActive()
 {
     return !ai->HasAggro();
 }
+
+BOOL AttackerCountTrigger::IsActive()
+{
+    return ai->GetAttackerCount() >= amount;
+}
