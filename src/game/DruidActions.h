@@ -9,7 +9,7 @@
 
 namespace ai
 {
-    BEGIN_SPELL_ACTION(CastFaerieFireAction, "faerie fire")
+    BEGIN_RANGED_SPELL_ACTION(CastFaerieFireAction, "faerie fire")
         BEGIN_NEXT_ACTIONS(2)
             NEXT_ACTION(0, "melee", 1.0f)
             NEXT_ACTION(1, "dire bear form", 1.5f)

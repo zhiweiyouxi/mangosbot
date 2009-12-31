@@ -61,7 +61,7 @@ protected:
         
         engine.DoNextAction(NULL); // flee
         
-        ai->distanceToEnemy = 100.0f; 
+        ai->distanceToEnemy = 15.0f; 
         ai->resetSpell("frostbolt");
         
         engine.DoNextAction(NULL); // frostbolt

@@ -17,6 +17,12 @@ BOOL EnemyOutOfMeleeTrigger::IsActive()
     return distance > ATTACK_DISTANCE;
 }
 
+BOOL EnemyOutOfSpellRangeTrigger::IsActive()
+{
+    float distance = ai->GetDistanceToEnemy();
+    return distance > SPELL_DISTANCE; // TODO: externalize
+}
+
 BOOL RageAvailable::IsActive()
 {
     return ai->GetRage() >= amount;

@@ -8,13 +8,13 @@ namespace ai
     class MockPlayerbotAIFacade : public PlayerbotAIFacade
     {
     public:
-        MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 100.0f; rage = 0; aggro = TRUE; attackerCount = 1; }
+        MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; attackerCount = 1; }
 
         virtual float GetDistanceToEnemy() { return distanceToEnemy; }
         virtual void MoveToMaster() { buffer = buffer.append(">flee"); }
         virtual void CastSpell(const char* spell) { buffer.append(">").append(spell); alreadyCast.push_back(spell); }
         virtual BOOL canCastSpell(const char* spell);
-        virtual void MoveToTarget() {buffer.append(">melee"); }
+        virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">melee"); }
         virtual uint8 GetRage() { return rage; } 
         virtual BOOL HasAura(const char* spell);
         virtual uint8 GetHealthPercent() { return health; }

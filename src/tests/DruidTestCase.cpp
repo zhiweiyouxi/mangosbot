@@ -15,6 +15,7 @@ using namespace ai;
 class DruidTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DruidTestCase );
+    CPPUNIT_TEST( tooFarForSpells );
     CPPUNIT_TEST( druidMustDoMauls );
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( druidMustHoldAggro );
@@ -49,21 +50,25 @@ protected:
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>bear form"));
     }
 
-    void combatVsCaster()
+    void tooFarForSpells()
     {
         ai = new MockPlayerbotAIFacade();
 
         Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("bear tank");
         engine.Init();
 
-        engine.DoNextAction(NULL);
-        ai->resetSpell("frostbolt");
-        engine.DoNextAction(NULL);
-        ai->resetSpell("frostbolt");
-        engine.DoNextAction(NULL);
+        ai->distanceToEnemy = 100.0f;
+        engine.DoNextAction(NULL); // reach spell
+        ai->distanceToEnemy = 15.0f;
+
+        engine.DoNextAction(NULL); // faerie fire
+        engine.DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
+        engine.DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>frostbolt>frostbolt"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach spell>faerie fire>dire bear form>melee"));
     }
 
     void druidMustDemoralizeAttackers()
@@ -122,7 +127,7 @@ protected:
         engine.DoNextAction(NULL); // faerie fire
         engine.DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
-        ai->distanceToEnemy = 100.0f; // enemy too far
+        ai->distanceToEnemy = 15.0f; // enemy too far
         engine.DoNextAction(NULL); // melee
     
         ai->distanceToEnemy = 0.0f; 
@@ -148,7 +153,7 @@ protected:
         engine.DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
 
-        ai->distanceToEnemy = 100.0f; // enemy too far
+        ai->distanceToEnemy = 15.0f; // enemy too far
         engine.DoNextAction(NULL); // melee
 
         ai->distanceToEnemy = 0.0f; 

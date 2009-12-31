@@ -20,7 +20,7 @@ namespace ai
     public:
         virtual float GetDistanceToEnemy();
         virtual void MoveToMaster() { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
-        virtual void MoveToTarget() { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), 0, 0); }
+        virtual void MoveToTarget(float distance = 0.0f) { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
         virtual void CastSpell(const char* spell) { ai->CastSpell(ai->getSpellId(spell)); }
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();

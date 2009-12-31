@@ -11,6 +11,16 @@
 #define END_SPELL_ACTION() \
     };
 
+#define BEGIN_RANGED_SPELL_ACTION(clazz, name) \
+class clazz : public CastRangedSpellAction \
+        { \
+        public: \
+        clazz(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, name) {} \
+
+
+#define END_RANGED_SPELL_ACTION() \
+    };
+
 #define BEGIN_ACTION(clazz, name) \
 class clazz : public Action \
     { \
@@ -137,9 +147,23 @@ namespace ai
 		void Execute();
         virtual BOOL isAvailable();
         virtual const char* getName() { return spell; }
+
 	private:
 		const char* spell;
 	};
+
+    //---------------------------------------------------------------------------------------------------------------------
+
+    class CastRangedSpellAction : public CastSpellAction
+    {
+    public:
+        CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+
+        PREREQUISITE_ACTIONS("reach spell");
+
+    private:
+        const char* spell;
+    };
 
     //---------------------------------------------------------------------------------------------------------------------
 

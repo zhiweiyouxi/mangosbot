@@ -12,6 +12,12 @@ namespace ai
         END_NEXT_ACTIONS(1)
     END_TRIGGER()
 
+    BEGIN_TRIGGER(EnemyOutOfSpellRangeTrigger, Trigger)
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "reach spell", 2.0f)
+        END_NEXT_ACTIONS(1)
+    END_TRIGGER()
+
     BEGIN_TRIGGER(LoseAggroTrigger, Trigger)
     END_TRIGGER()
 

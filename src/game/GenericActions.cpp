@@ -15,7 +15,17 @@ void MeleeAction::Execute()
     ai->MoveToTarget();
 }
 
+void ReachSpellAction::Execute()
+{
+    ai->MoveToTarget(SPELL_DISTANCE);
+}
+
 BOOL CastLifeBloodAction::isUseful()
 {
     return ai->GetHealthPercent() <= 25;
+}
+
+BOOL ReachSpellAction::isUseful()
+{
+    return ai->GetDistanceToEnemy() > SPELL_DISTANCE;
 }

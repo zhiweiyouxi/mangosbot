@@ -13,31 +13,31 @@
 
 namespace ai
 {
-    BEGIN_SPELL_ACTION(CastFrostBoltAction, "frostbolt")
+    BEGIN_RANGED_SPELL_ACTION(CastFrostBoltAction, "frostbolt")
         DEFAULT_MAGE_NEXT_ACTIONS()
         ACTION_KIND(ACTION_KIND_FROST)
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastIceLanceAction, "ice lance")
+    BEGIN_RANGED_SPELL_ACTION(CastIceLanceAction, "ice lance")
         DEFAULT_MAGE_NEXT_ACTIONS()
         ACTION_KIND(ACTION_KIND_FROST)
     END_SPELL_ACTION()
 
     // --------------------------------------------------------------------------------
 
-    BEGIN_SPELL_ACTION(CastFireBallAction, "fireball")
+    BEGIN_RANGED_SPELL_ACTION(CastFireBallAction, "fireball")
         DEFAULT_MAGE_NEXT_ACTIONS()
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastFireBlastAction, "fire blast")
+    BEGIN_RANGED_SPELL_ACTION(CastFireBlastAction, "fire blast")
         DEFAULT_MAGE_NEXT_ACTIONS()
     END_SPELL_ACTION()
     
-    BEGIN_SPELL_ACTION(CastPyroblastAction, "pyroblast")
+    BEGIN_RANGED_SPELL_ACTION(CastPyroblastAction, "pyroblast")
         DEFAULT_MAGE_NEXT_ACTIONS()
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastScorchAction, "scorch")
+    BEGIN_RANGED_SPELL_ACTION(CastScorchAction, "scorch")
         DEFAULT_MAGE_NEXT_ACTIONS()
     END_SPELL_ACTION()
     
@@ -61,13 +61,13 @@ namespace ai
     
     // --------------------------------------------------------------------------------
 
-    BEGIN_SPELL_ACTION(CastArcaneBlastAction, "arcane blast")
+    BEGIN_RANGED_SPELL_ACTION(CastArcaneBlastAction, "arcane blast")
         DEFAULT_MAGE_NEXT_ACTIONS()
     END_SPELL_ACTION()
     
     // --------------------------------------------------------------------------------
 
-    BEGIN_SPELL_ACTION(CastCounterspellAction, "counterspell")
+    BEGIN_RANGED_SPELL_ACTION(CastCounterspellAction, "counterspell")
         DEFAULT_MAGE_NEXT_ACTIONS()
     END_SPELL_ACTION()
 
