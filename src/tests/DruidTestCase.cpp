@@ -77,12 +77,17 @@ protected:
         engine.DoNextAction(NULL); // faerie fire
         engine.DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
+        
         ai->attackerCount = 3;
+        ai->auras.remove("dire bear form");
+        ai->resetSpell("dire bear form");
+        engine.DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
         engine.DoNextAction(NULL); // demoralizing roar
         engine.DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>demoralizing roar>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>dire bear form>demoralizing roar>melee"));
     }
 
     void druidMustHoldAggro()
