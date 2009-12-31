@@ -115,6 +115,7 @@ BOOL Engine::DoNextAction(Unit* unit)
             Strategy* strategy = *i;
             MultiplyAndPush(strategy->getNextActions());
         }
+        return DoNextAction(unit);
     }
 
     return actionExecuted;

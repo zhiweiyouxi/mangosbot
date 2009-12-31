@@ -24,6 +24,7 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastDireBearFormAction, "dire bear form")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        virtual BOOL isAvailable();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastMaulAction, "maul")
@@ -38,6 +39,7 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
+        virtual BOOL isAvailable();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")

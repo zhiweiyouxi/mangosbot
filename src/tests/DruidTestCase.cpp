@@ -73,15 +73,27 @@ protected:
         
         ai->health = 1;
         engine.DoNextAction(NULL); // life blood
-        engine.DoNextAction(NULL); // rejuvenation
+        ai->auras.push_back("life blood");
+
         engine.DoNextAction(NULL); // regrowth
         
         ai->health = 100;
-        engine.DoNextAction(NULL); 
+        ai->auras.remove("life blood");
+        engine.DoNextAction(NULL); // melee
         
+        ai->health = 1;
+        engine.DoNextAction(NULL); // rejuvenation
+
+        engine.DoNextAction(NULL); // melee
+
+        ai->resetSpells(); // continue as began
+        ai->health = 70;
+        ai->auras.remove("dire bear form");
+        engine.DoNextAction(NULL); // faerie fire
+        engine.DoNextAction(NULL); // dire bear form
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee>life blood>rejuvenation>regrowth"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee>life blood>regrowth>melee>rejuvenation>melee>faerie fire>dire bear form"));
     }
 };
 

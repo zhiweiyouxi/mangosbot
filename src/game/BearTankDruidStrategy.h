@@ -10,9 +10,10 @@ namespace ai
         BearTankDruidStrategy(PlayerbotAIFacade* const ai) : GenericDruidStrategy(ai) {}
 
     public:
-        BEGIN_NEXT_ACTIONS(1)
+        BEGIN_NEXT_ACTIONS(2)
             NEXT_ACTION(0, "faerie fire", 2.0f)
-        END_NEXT_ACTIONS(1)
+            NEXT_ACTION(1, "melee", 1.0f)
+        END_NEXT_ACTIONS(2)
     
     public:
         virtual void InitTriggers(std::list<Trigger*> &triggers);
