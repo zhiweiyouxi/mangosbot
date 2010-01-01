@@ -48,10 +48,25 @@ namespace ai
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
         DEFAULT_DRUID_NEXT_ACTIONS()
         virtual BOOL isUseful();
-        BEGIN_PREREQUISITE_ACTIONS(1)
-            PREREQUISITE_ACTION(0, "caster form")
-            END_PREREQUISITE_ACTIONS(1)
+        PREREQUISITE_ACTIONS("caster form")
     END_SPELL_ACTION()
+
+    class CastRejuvenationOnPartyAction : public HealPartyMemberAction
+    {
+    public:
+        CastRejuvenationOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "rejuvenation on party") {}
+        PREREQUISITE_ACTIONS("caster form")
+    };
+
+    class CastRegrowthOnPartyAction : public HealPartyMemberAction
+    {
+    public:
+        CastRegrowthOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "regrowth on party") {}
+        BEGIN_PREREQUISITE_ACTIONS(2)
+            PREREQUISITE_ACTION(0, "caster form")
+            PREREQUISITE_ACTION(1, "rejuvenation on party")
+        END_PREREQUISITE_ACTIONS(2)
+    };
 
     BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
         DEFAULT_DRUID_NEXT_ACTIONS()

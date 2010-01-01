@@ -32,23 +32,27 @@ namespace ai
             NEXT_ACTION(1, "rejuvenation", 5.0f)
         END_NEXT_ACTIONS(2)
         virtual const char* getName() { return "low health"; }
-  END_TRIGGER()
+    END_TRIGGER()
 
+    BEGIN_TRIGGER(DruidPartyMemberLowHealthTrigger, PartyMemberLowHealthTrigger)
+        NEXT_ACTIONS("regrowth on party", 5.0f)
+        virtual const char* getName() { return "party member low health"; }
+    END_TRIGGER()
 
-  BEGIN_TRIGGER(BearTankDruidLoseAggroTrigger, LoseAggroTrigger)
+    BEGIN_TRIGGER(BearTankDruidLoseAggroTrigger, LoseAggroTrigger)
       BEGIN_NEXT_ACTIONS(1)
           NEXT_ACTION(0, "growl", 3.0f)
       END_NEXT_ACTIONS(1)
       virtual const char* getName() { return "lose aggro"; }
-  END_TRIGGER()
+    END_TRIGGER()
 
-  class BearTankDruidDemoralizeAttackers : public AttackerCountTrigger
-  {
-  public:
-      BearTankDruidDemoralizeAttackers(PlayerbotAIFacade* const ai) : AttackerCountTrigger(ai, 2)  {}
-  public: 
-      BEGIN_NEXT_ACTIONS(1)
-          NEXT_ACTION(0, "demoralizing roar", 2.0f)
-      END_NEXT_ACTIONS(1)
-  END_TRIGGER()
+    class BearTankDruidDemoralizeAttackers : public AttackerCountTrigger
+    {
+    public:
+        BearTankDruidDemoralizeAttackers(PlayerbotAIFacade* const ai) : AttackerCountTrigger(ai, 2)  {}
+    public: 
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "demoralizing roar", 2.0f)
+        END_NEXT_ACTIONS(1)
+    };
 }

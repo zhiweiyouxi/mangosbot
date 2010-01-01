@@ -1,40 +1,90 @@
 #pragma once
 
 #include "Action.h"
+#include "PlayerbotAIFacade.h"
 
 namespace ai
 {
+    class CastSpellAction : public Action
+    {
+    public:
+        CastSpellAction(PlayerbotAIFacade* const ai, const char* spell) : Action(ai)
+        {
+            this->spell = spell;
+        }
+
+        void Execute() { ai->CastSpell(spell); }
+        virtual BOOL isAvailable() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < 100; }
+        virtual const char* getName() { return spell; }
+
+    protected:
+        const char* spell;
+    };
+
+    //---------------------------------------------------------------------------------------------------------------------
+
+    class CastRangedSpellAction : public CastSpellAction
+    {
+    public:
+        CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+
+        PREREQUISITE_ACTIONS("reach spell");
+    };
+    //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(FleeAction, "flee")
     END_ACTION()
 
+    //---------------------------------------------------------------------------------------------------------------------
+
     BEGIN_ACTION(MeleeAction, "melee")
     END_ACTION()
+
+    //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(ReachSpellAction, "reach spell")
         virtual BOOL isUseful();
     END_ACTION()
 
-    BEGIN_SPELL_ACTION(CastLifeBloodAction, "lifeblood")
-        BEGIN_ALTERNATIVE_ACTIONS(1)
-            ALTERNATIVE_ACTION(0, "regrowth")
-        END_ALTERNATIVE_ACTIONS(1)
+    //---------------------------------------------------------------------------------------------------------------------
 
+    BEGIN_SPELL_ACTION(CastLifeBloodAction, "lifeblood")
+        ALTERNATIVE_ACTIONS("regrowth")
         virtual BOOL isUseful();
     END_SPELL_ACTION()
+
+    //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UseHealingPotion, "healing potion")
         ALTERNATIVE_ACTIONS("mana potion")
         virtual BOOL isAvailable();
     END_ACTION()
 
+    //---------------------------------------------------------------------------------------------------------------------
+
     BEGIN_ACTION(UseManaPotion, "mana potion")
         ALTERNATIVE_ACTIONS("flee")
         virtual BOOL isAvailable();
     END_ACTION()
 
+    //---------------------------------------------------------------------------------------------------------------------
+
     BEGIN_ACTION(UsePanicPotion, "panic potion")
         ALTERNATIVE_ACTIONS("healing potion")
         virtual BOOL isAvailable();
     END_ACTION()
+
+    //---------------------------------------------------------------------------------------------------------------------
+    
+    class HealPartyMemberAction : public CastSpellAction
+    {
+    public:
+        HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+
+        PREREQUISITE_ACTIONS("reach spell");
+        virtual void Execute();
+        virtual BOOL isUseful();
+    };
+    //---------------------------------------------------------------------------------------------------------------------
+
 }

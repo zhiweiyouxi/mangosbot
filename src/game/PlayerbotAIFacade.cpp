@@ -2,6 +2,7 @@
 #include "PlayerbotAIFacade.h"
 #include "DBCStructure.h"
 #include "Spell.h"
+#include "Group.h"
 
 using namespace ai;
 
@@ -104,4 +105,36 @@ BOOL PlayerbotAIFacade::isHealingPotion(const ItemPrototype* pItemProto)
 BOOL PlayerbotAIFacade::isManaPotion(const ItemPrototype* pItemProto)
 {
     return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
+}
+
+Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
+{
+    uint8 minHealth = 100;
+    Player* minHealthPlayer = NULL;
+
+    Group* group = ai->GetMaster()->GetGroup();
+    if (group)
+    {
+        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+        {
+            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
+            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
+                continue;
+
+            uint8 health = ai->GetHealthPercent(*player);
+            if (!minHealthPlayer || minHealth > health)
+            {
+                minHealthPlayer = player;
+                minHealth = health;
+            }
+        }
+    }
+    return minHealthPlayer;
+}
+
+uint8 PlayerbotAIFacade::GetPartyMinHealthPercent()
+{
+    Player* player = GetPartyMinHealthPlayer();
+    return player ? ai->GetHealthPercent(*player) : 100;
 }

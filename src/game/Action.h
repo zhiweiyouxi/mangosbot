@@ -134,37 +134,6 @@ namespace ai
         virtual int getKind() { return 0; }
 	};
 
-	//---------------------------------------------------------------------------------------------------------------------
-
-	class CastSpellAction : public Action
-	{
-	public:
-        CastSpellAction(PlayerbotAIFacade* const ai, const char* spell) : Action(ai)
-        {
-            this->spell = spell;
-        }
-
-		void Execute();
-        virtual BOOL isAvailable();
-        virtual const char* getName() { return spell; }
-
-	private:
-		const char* spell;
-	};
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    class CastRangedSpellAction : public CastSpellAction
-    {
-    public:
-        CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-
-        PREREQUISITE_ACTIONS("reach spell");
-
-    private:
-        const char* spell;
-    };
-
     //---------------------------------------------------------------------------------------------------------------------
 
 	class ActionBasket

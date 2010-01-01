@@ -33,6 +33,11 @@ BOOL LowHealthTrigger::IsActive()
     return ai->GetHealthPercent() < EAT_DRINK_PERCENT;
 }
 
+BOOL PartyMemberLowHealthTrigger::IsActive()
+{
+    return ai->GetPartyMinHealthPercent() < EAT_DRINK_PERCENT;
+}
+
 BOOL LowManaTrigger::IsActive()
 {
     return ai->GetManaPercent() < EAT_DRINK_PERCENT;

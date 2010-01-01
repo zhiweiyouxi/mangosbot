@@ -4,6 +4,7 @@
 #include "../game/ActionBasket.h"
 #include "../game/Queue.h"
 #include "../game/Engine.h"
+#include "../game/GenericActions.h"
 
 using namespace ai;
 

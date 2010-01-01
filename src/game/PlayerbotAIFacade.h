@@ -21,12 +21,14 @@ namespace ai
         virtual float GetDistanceToEnemy();
         virtual void MoveToMaster() { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
         virtual void MoveToTarget(float distance = 0.0f) { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
-        virtual void CastSpell(const char* spell) { ai->CastSpell(ai->getSpellId(spell)); }
+        virtual void CastSpell(const char* spell, Unit* target = NULL) { ai->CastSpell(ai->getSpellId(spell), target); }
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
         virtual BOOL HasAura(const char* spell);
         virtual void RemoveAura(const char* spell);
         virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
+        virtual Player* GetPartyMinHealthPlayer();
+        virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
         virtual int GetAttackerCount() { return ai->GetAttackerCount(); }

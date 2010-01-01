@@ -8,11 +8,11 @@ namespace ai
     class MockPlayerbotAIFacade : public PlayerbotAIFacade
     {
     public:
-        MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; attackerCount = 1; }
+        MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; attackerCount = 1; health = 100; mana = 100; partyMinHealth = 100; }
 
         virtual float GetDistanceToEnemy() { return distanceToEnemy; }
         virtual void MoveToMaster() { buffer = buffer.append(">flee"); }
-        virtual void CastSpell(const char* spell) { buffer.append(">").append(spell); alreadyCast.push_back(spell); }
+        virtual void CastSpell(const char* spell, Unit* target = NULL) { buffer.append(">").append(spell); alreadyCast.push_back(spell); }
         virtual BOOL canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">melee"); }
         virtual uint8 GetRage() { return rage; } 
@@ -31,6 +31,9 @@ namespace ai
         virtual BOOL HasManaPotion() { return FALSE; }
         virtual BOOL HasPanicPotion() { return FALSE; }
 
+        virtual Player* GetPartyMinHealthPlayer() { return NULL; }
+        virtual uint8 GetPartyMinHealthPercent() { return partyMinHealth; }
+
     public:
         void resetSpells() {alreadyCast.clear(); }
         void resetSpell(const char* spell);
@@ -42,6 +45,7 @@ namespace ai
         uint8 rage, health, mana;
         BOOL aggro;
         int attackerCount;
+        int partyMinHealth;
     };
 
 }

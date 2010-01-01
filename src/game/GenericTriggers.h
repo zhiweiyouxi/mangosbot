@@ -57,6 +57,10 @@ namespace ai
         virtual const char* getName() { return "low health"; }
     END_TRIGGER()
 
+    BEGIN_TRIGGER(PartyMemberLowHealthTrigger, Trigger)
+        virtual const char* getName() { return "party member low health"; }
+    END_TRIGGER()
+
     BEGIN_TRIGGER(LowManaTrigger, Trigger)
         virtual const char* getName() { return "low mana"; }
     END_TRIGGER()

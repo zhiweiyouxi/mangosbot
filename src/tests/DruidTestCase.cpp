@@ -23,6 +23,7 @@ class DruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( bearFormIfDireNotAvailable );
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( intensiveHealing );
+    CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -59,7 +60,7 @@ protected:
         engine.addStrategy("bear tank");
         engine.Init();
 
-        ai->distanceToEnemy = 100.0f;
+        ai->distanceToEnemy = 70.0f;
         engine.DoNextAction(NULL); // reach spell
         ai->distanceToEnemy = 15.0f;
 
@@ -238,6 +239,33 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>-dire bear form>regrowth"));
+    }
+
+    void healOthers()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("bear tank");
+        engine.Init();
+
+        engine.DoNextAction(NULL); // faerie fire
+        engine.DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
+
+        ai->partyMinHealth = 1;
+        engine.DoNextAction(NULL); // caster form
+        engine.DoNextAction(NULL); // rejuvenation on party
+        engine.DoNextAction(NULL); // regrowth on party
+
+        ai->partyMinHealth = 100;
+
+        ai->resetSpells();
+        ai->auras.clear();
+        engine.DoNextAction(NULL); // continue as usual with bear form
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party>dire bear form"));
     }
 };
 

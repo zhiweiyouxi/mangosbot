@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Action.h"
+#include "GenericActions.h"
 
 #define ACTION_KIND_FROST 1
 
