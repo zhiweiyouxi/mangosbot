@@ -138,3 +138,24 @@ uint8 PlayerbotAIFacade::GetPartyMinHealthPercent()
     Player* player = GetPartyMinHealthPlayer();
     return player ? ai->GetHealthPercent(*player) : 100;
 }
+
+
+int PlayerbotAIFacade::GetAttackerCount()
+{
+    int count = 0;
+
+    Unit* currentTarget = ai->GetCurrentTarget();
+    if (currentTarget)
+    {
+        HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
+        while( ref )
+        {
+            ThreatManager *target = ref->getSource();
+            Unit *attacker = target->getOwner();
+            if (attacker && !attacker->isDead())
+                count++;
+            ref = ref->next();
+        }
+    }
+    return count;
+}

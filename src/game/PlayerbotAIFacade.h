@@ -31,7 +31,7 @@ namespace ai
         virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
-        virtual int GetAttackerCount() { return ai->GetAttackerCount(); }
+        virtual int GetAttackerCount();
         
         virtual void UseHealingPotion();
         virtual void UseManaPotion();
