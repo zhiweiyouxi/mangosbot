@@ -943,120 +943,20 @@ Item* PlayerbotAI::FindMount(uint32 matchingRidingSkill) const
     return partialMatch;
 }
 
-Item* PlayerbotAI::FindFood() const
+
+BOOL PlayerbotAI::isDrink(const ItemPrototype* pItemProto)
 {
-    // list out items in main backpack
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (pItem)
-        {
-            const ItemPrototype* const pItemProto = pItem->GetProto();
-            if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                continue;
-
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-            {
-                // if is FOOD
-                // this enum is no longer defined in mangos. Is it no longer valid?
-                // according to google it was 11
-                if (pItemProto->Spells[0].SpellCategory == 11)
-                    return pItem;
-            }
-        }
-    }
-    // list out items in other removable backpacks
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (pBag)
-        {
-            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-            {
-                Item* const pItem = m_bot->GetItemByPos(bag, slot);
-                if (pItem)
-                {
-                    const ItemPrototype* const pItemProto = pItem->GetProto();
-
-                    if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                        continue;
-
-                    // this enum is no longer defined in mangos. Is it no longer valid?
-                    // according to google it was 11
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-                    {
-                        // if is FOOD
-                        // this enum is no longer defined in mangos. Is it no longer valid?
-                        // according to google it was 11
-                        // if (pItemProto->Spells[0].SpellCategory == SPELL_CATEGORY_FOOD)
-                        if (pItemProto->Spells[0].SpellCategory == 11)
-                            return pItem;
-                    }
-                }
-            }
-        }
-    }
-    return NULL;
+    return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
+        pItemProto->Spells[0].SpellCategory == 59);
 }
 
-Item* PlayerbotAI::FindDrink() const
+BOOL PlayerbotAI::isFood(const ItemPrototype* pItemProto)
 {
-    // list out items in main backpack
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (pItem)
-        {
-            const ItemPrototype* const pItemProto = pItem->GetProto();
-
-            if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                continue;
-
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-            {
-                // if (pItemProto->Spells[0].SpellCategory == SPELL_CATEGORY_DRINK)
-
-                // this enum is no longer defined in mangos. Is it no longer valid?
-                // according to google it was 59
-                // if (pItemProto->Spells[0].SpellCategory == 59)
-                if (pItemProto->Spells[0].SpellCategory == 59)
-                    return pItem;
-            }
-        }
-    }
-    // list out items in other removable backpacks
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (pBag)
-        {
-            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-            {
-                Item* const pItem = m_bot->GetItemByPos(bag, slot);
-                if (pItem)
-                {
-                    const ItemPrototype* const pItemProto = pItem->GetProto();
-
-                    if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                        continue;
-
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-                    {
-                        // if is WATER
-                        // SPELL_CATEGORY_DRINK is no longer defined in an enum in mangos
-                        // google says the valus is 59. Is this still valid?
-                        // if (pItemProto->Spells[0].SpellCategory == SPELL_CATEGORY_DRINK)
-                        if (pItemProto->Spells[0].SpellCategory == 59)
-                            return pItem;
-                    }
-                }
-            }
-        }
-    }
-    return NULL;
+    return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
+        pItemProto->Spells[0].SpellCategory == 11);
 }
 
-Item* PlayerbotAI::FindBandage() const
+Item* PlayerbotAI::FindUsableItem(BOOL predicate(const ItemPrototype*)) const
 {
     // list out items in main backpack
     for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
@@ -1069,7 +969,7 @@ Item* PlayerbotAI::FindBandage() const
             if (!pItemProto || !m_bot->CanUseItem(pItemProto))
                 continue;
 
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_BANDAGE)
+            if (predicate(pItemProto))
                 return pItem;
         }
     }
@@ -1089,7 +989,7 @@ Item* PlayerbotAI::FindBandage() const
                     if (!pItemProto || !m_bot->CanUseItem(pItemProto))
                         continue;
 
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_BANDAGE)
+                    if (predicate(pItemProto))
                         return pItem;
                 }
             }
@@ -1097,47 +997,15 @@ Item* PlayerbotAI::FindBandage() const
     }
     return NULL;
 }
-//Find Poison ...Natsukawa
-Item* PlayerbotAI::FindPoison() const
+
+BOOL PlayerbotAI::isBandage(const ItemPrototype* pItemProto)
 {
-    // list out items in main backpack
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (pItem)
-        {
-            const ItemPrototype* const pItemProto = pItem->GetProto();
+    return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_BANDAGE;
+}
 
-            if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                continue;
-
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == 6)
-                return pItem;
-        }
-    }
-    // list out items in other removable backpacks
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (pBag)
-        {
-            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-            {
-                Item* const pItem = m_bot->GetItemByPos(bag, slot);
-                if (pItem)
-                {
-                    const ItemPrototype* const pItemProto = pItem->GetProto();
-
-                    if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                        continue;
-
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == 6)
-                        return pItem;
-                }
-            }
-        }
-    }
-    return NULL;
+BOOL PlayerbotAI::isPoison(const ItemPrototype* pItemProto)
+{
+    return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == 6;
 }
 
 void PlayerbotAI::InterruptCurrentCastingSpell()

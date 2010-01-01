@@ -53,8 +53,8 @@ class clazz : public Action \
     }
 
 
-#define ALTERNATIVE_ACTIONS(name, relevance) \
-    virtual NextAction* getAlternativeAction() { return new NextAction(name, relevance); }
+#define ALTERNATIVE_ACTIONS(name) \
+    virtual NextAction* getAlternativeAction() { return new NextAction(name, 0.0f); }
 
 #define BEGIN_ALTERNATIVE_ACTIONS(size) \
     NextAction** getAlternativeActions() \

@@ -29,3 +29,33 @@ BOOL ReachSpellAction::isUseful()
 {
     return ai->GetDistanceToEnemy() > SPELL_DISTANCE;
 }
+
+void UseHealingPotion::Execute()
+{
+    ai->UseHealingPotion();
+}
+
+BOOL UseHealingPotion::isAvailable()
+{
+    return ai->HasHealingPotion();
+}
+
+void UseManaPotion::Execute()
+{
+    ai->UseManaPotion();
+}
+
+BOOL UseManaPotion::isAvailable()
+{
+    return ai->HasManaPotion();
+}
+
+void UsePanicPotion::Execute()
+{
+    ai->UsePanicPotion();
+}
+
+BOOL UsePanicPotion::isAvailable()
+{
+    return ai->HasPanicPotion();
+}

@@ -22,6 +22,14 @@ namespace ai
         virtual BOOL HasAggro() { return aggro; }
         virtual int GetAttackerCount() { return attackerCount; }
         virtual void RemoveAura(const char* name) {auras.remove(name); buffer.append(">-").append(name); }
+        
+        virtual void UseHealingPotion() { buffer.append(">hp"); }
+        virtual void UseManaPotion() { buffer.append(">mp"); }
+        virtual void UsePanicPotion() { buffer.append(">pp"); }
+
+        virtual BOOL HasHealingPotion() { return FALSE; }
+        virtual BOOL HasManaPotion() { return FALSE; }
+        virtual BOOL HasPanicPotion() { return FALSE; }
 
     public:
         void resetSpells() {alreadyCast.clear(); }

@@ -60,4 +60,10 @@ namespace ai
     BEGIN_TRIGGER(LowManaTrigger, Trigger)
         virtual const char* getName() { return "low mana"; }
     END_TRIGGER()
+
+    BEGIN_TRIGGER(PanicTrigger, Trigger)
+        virtual const char* getName() { return "panic"; }
+        NEXT_ACTIONS("panic potion", 100.0f)
+    END_TRIGGER()
+
 }

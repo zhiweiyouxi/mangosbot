@@ -162,11 +162,19 @@ class MANGOS_DLL_SPEC PlayerbotAI
         uint8 GetRunicPower(const Unit& target) const;
         uint8 GetRunicPower() const;
 
-        Item* FindFood() const;
-        Item* FindDrink() const;
-        Item* FindBandage() const;
-        Item* FindPoison() const;
+        Item* FindFood() { return FindUsableItem(isFood); }
+        static BOOL isFood(const ItemPrototype* pItemProto);
+        Item* FindDrink() const { return FindUsableItem(isDrink); }
+        static BOOL isDrink(const ItemPrototype* pItemProto);
+        Item* FindBandage() { return FindUsableItem(isBandage); }
+        static BOOL isBandage(const ItemPrototype* pItemProto);
+        Item* FindPoison() { return FindUsableItem(isPoison); }
+        static BOOL isPoison(const ItemPrototype* pItemProto);
+
+
+        Item* FindUsableItem(BOOL predicate(const ItemPrototype*)) const;
         Item* FindMount(uint32 matchingRidingSkill) const;
+
 
         // ******* Actions ****************************************
         // Your handlers can call these actions to make the bot do things.
@@ -280,6 +288,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		Unit *m_targetProtect;	// check 
 
 		Unit *m_followTarget;	// whom to follow in non combat situation?
+
 };
 
 #endif

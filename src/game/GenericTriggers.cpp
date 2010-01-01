@@ -47,3 +47,9 @@ BOOL AttackerCountTrigger::IsActive()
 {
     return ai->GetAttackerCount() >= amount;
 }
+
+
+BOOL PanicTrigger::IsActive()
+{
+    return ai->GetHealthPercent() < 25 && ai->GetManaPercent() < 25;
+}

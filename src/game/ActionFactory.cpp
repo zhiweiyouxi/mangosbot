@@ -18,6 +18,14 @@ Action* ActionFactory::createAction(const char* name)
     if (!strcmp("lifeblood", name))
         return new CastLifeBloodAction(ai);
 
+    if (!strcmp("healing potion", name))
+        return new UseHealingPotion(ai);
+    
+    if (!strcmp("mana potion", name))
+        return new UseManaPotion(ai);
+    
+    if (!strcmp("panic potion", name))
+        return new UsePanicPotion(ai);
     return NULL;
 }
 

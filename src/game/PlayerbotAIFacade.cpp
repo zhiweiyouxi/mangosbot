@@ -68,3 +68,40 @@ BOOL PlayerbotAIFacade::HasAggro()
     }
     return FALSE;
 }
+
+void PlayerbotAIFacade::UseHealingPotion() 
+{
+    Item* item = ai->FindUsableItem(isHealingPotion);
+    if (item)
+        ai->UseItem(*item);
+}
+
+void PlayerbotAIFacade::UseManaPotion() 
+{
+    Item* item = ai->FindUsableItem(isManaPotion);
+    if (item)
+        ai->UseItem(*item);
+}
+
+void PlayerbotAIFacade::UsePanicPotion() 
+{
+    Item* item = ai->FindUsableItem(isManaPotion);
+    if (item)
+        ai->UseItem(*item);
+}
+
+
+BOOL PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto)
+{
+    return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
+}
+
+BOOL PlayerbotAIFacade::isHealingPotion(const ItemPrototype* pItemProto)
+{
+    return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
+}
+
+BOOL PlayerbotAIFacade::isManaPotion(const ItemPrototype* pItemProto)
+{
+    return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
+}

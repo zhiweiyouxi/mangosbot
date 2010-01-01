@@ -638,6 +638,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\tests\GenericTestCase.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\tests\HunterTestCase.cpp"
 			>
 		</File>

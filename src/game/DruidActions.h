@@ -23,7 +23,7 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastDireBearFormAction, "dire bear form")
         DEFAULT_DRUID_NEXT_ACTIONS()
-        ALTERNATIVE_ACTIONS("bear form", 1.0f)
+        ALTERNATIVE_ACTIONS("bear form")
         virtual BOOL isAvailable();
     END_SPELL_ACTION()
 

@@ -30,6 +30,19 @@ namespace ai
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
         virtual int GetAttackerCount() { return ai->GetAttackerCount(); }
+        
+        virtual void UseHealingPotion();
+        virtual void UseManaPotion();
+        virtual void UsePanicPotion();
+        virtual BOOL HasHealingPotion() { return ai->FindUsableItem(isHealingPotion) != NULL; }
+        virtual BOOL HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
+        virtual BOOL HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
+
+        // TODO: move out of this class
+        static BOOL isHealingPotion(const ItemPrototype* pItemProto);
+        static BOOL isManaPotion(const ItemPrototype* pItemProto);
+        static BOOL isPanicPotion(const ItemPrototype* pItemProto);
+
     protected:
         PlayerbotAI *ai;
     };
