@@ -66,13 +66,19 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 	SHADOWMELD              = ai->getSpellId("shadowmeld"); // night elf
 	WAR_STOMP               = ai->getSpellId("war stomp"); // tauren
 
-    ai::PlayerbotAIFacade *facade = new ai::PlayerbotAIFacade(ai);
     engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     engine->addStrategy("bear tank");
     engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
+    nonCombatEngine->addStrategy("druid non combat");
+    nonCombatEngine->Init();
 }
 
-PlayerbotDruidAI::~PlayerbotDruidAI() {}
+PlayerbotDruidAI::~PlayerbotDruidAI()
+{
+    PlayerbotClassAI::~PlayerbotClassAI();
+}
 
 void PlayerbotDruidAI::HealTarget(Unit &target, uint8 hp)
 {
@@ -590,6 +596,9 @@ void PlayerbotDruidAI::DoNonCombatActions()
         return;
 
 	PlayerbotAI* ai = GetAI();
+    
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     if(m_bot->HasAura(CAT_FORM, 0))
     {

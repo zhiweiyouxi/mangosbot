@@ -118,6 +118,8 @@ public:
         NEXT_ACTION(0, "RepeatingAction", 1.0f)
     END_NEXT_ACTIONS(1)
 
+    virtual const char* getName() { return "TestStrategy"; }
+
     virtual void InitMultipliers(std::list<Multiplier*> &multipliers)
     {
         multipliers.push_back(new TestMultiplier());
@@ -127,6 +129,14 @@ public:
     {
         triggers.push_back(new TestTrigger(NULL));
     }
+};
+
+class AnotherTestStrategy : public Strategy
+{
+public:
+    AnotherTestStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+    
+    virtual const char* getName() { return "AnotherTestStrategy"; }
 };
 
 class TestActionFactory : public ActionFactory
@@ -154,6 +164,9 @@ public:
         if (!strcmp("TestStrategy", name))
             return new TestStrategy(ai);
 
+        if (!strcmp("AnotherTestStrategy", name))
+            return new AnotherTestStrategy(ai);
+
         return NULL;
     }
 };
@@ -161,7 +174,8 @@ public:
 class EngineTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( EngineTestCase );
-  CPPUNIT_TEST( engineMustRepeatActions );
+      CPPUNIT_TEST( engineMustRepeatActions );
+      CPPUNIT_TEST( addRemoveStrategies);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -194,6 +208,20 @@ protected:
         CPPUNIT_ASSERT(PrerequisiteAction::executed);
         CPPUNIT_ASSERT(PrerequisiteAction::destroyed);
 	}
+
+    void addRemoveStrategies()
+    {
+        Engine engine(NULL, new TestActionFactory(NULL));
+        engine.addStrategy("AnotherTestStrategy");
+        engine.removeStrategy("AnotherTestStrategy");
+        engine.Init();
+        
+        engine.addStrategy("TestStrategy");
+        engine.Init();
+
+        engine.DoNextAction(NULL);
+        CPPUNIT_ASSERT(TriggeredAction::fired);
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( EngineTestCase );

@@ -18,5 +18,6 @@ namespace ai
     public:
         virtual void InitTriggers(std::list<Trigger*> &triggers);
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
+        virtual const char* getName() { return "bear tank"; }
     };
 }

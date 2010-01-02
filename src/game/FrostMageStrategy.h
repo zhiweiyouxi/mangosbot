@@ -15,5 +15,6 @@ namespace ai
         END_NEXT_ACTIONS(1)
 
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
+        virtual const char* getName() { return "frost mage"; }
     };
 }

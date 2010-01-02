@@ -37,6 +37,8 @@ protected:
         engine.Init();
 
         ai->partyMinHealth = 1;
+        ai->auras.push_back("dire bear form");
+        engine.DoNextAction(NULL); // caster form
         engine.DoNextAction(NULL); // rejuvenation on party
         engine.DoNextAction(NULL); // regrowth on party
 
@@ -44,7 +46,7 @@ protected:
         engine.DoNextAction(NULL); // follow
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">rejuvenation on party>regrowth on party>follow"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">-dire bear form>rejuvenation on party>regrowth on party>follow"));
     }
 };
 

@@ -19,10 +19,10 @@ namespace ai
 
     public:
         virtual float GetDistanceToEnemy();
-        virtual void MoveToMaster() { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
-        virtual void FollowMaster() { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
-        virtual void MoveToTarget(float distance = 0.0f) { ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
-        virtual void Stay() {ai->SetIgnoreUpdateTime(255);}
+        virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
+        virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
+        virtual void MoveToTarget(float distance = 0.0f) { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
+        virtual void Stay() {ai->MovementClear();}
         virtual void CastSpell(const char* spell, Unit* target = NULL) { ai->CastSpell(ai->getSpellId(spell), target); }
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();

@@ -15,7 +15,7 @@ namespace ai
         virtual NextAction** getNextActions() { return NULL; }
         virtual void InitTriggers(std::list<Trigger*> &triggers) {}
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers) {}
-        virtual const char* getName() { return NULL; }
+        virtual const char* getName() = NULL;
     };
 
     class CombatStrategy : public Strategy

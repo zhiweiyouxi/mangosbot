@@ -21,8 +21,6 @@ Engine::~Engine(void)
     clearStrategies();
     if (actionFactory)
         delete actionFactory;
-    if (ai)
-        delete ai;
 }
 
 void Engine::Reset()
@@ -141,7 +139,8 @@ BOOL Engine::DoNextAction(Unit* unit)
             Strategy* strategy = *i;
             MultiplyAndPush(strategy->getNextActions());
         }
-        return DoNextAction(unit);
+        if (queue.Peek())
+            return DoNextAction(unit);
     }
 
     return actionExecuted;
@@ -199,6 +198,9 @@ void Engine::addStrategy(const char* name)
 
 void Engine::removeStrategy(const char* name)
 {
+    if (strategies.empty())
+        return;
+
     for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
     {
         Strategy* strategy = *i;
@@ -206,6 +208,7 @@ void Engine::removeStrategy(const char* name)
         {
             strategies.remove(strategy);
             delete strategy;
+            break;
         }
     }
 }

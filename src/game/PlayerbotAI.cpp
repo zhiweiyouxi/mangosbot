@@ -1897,8 +1897,8 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
         Feast();
 */
         // if commanded to follow master and not already following master then follow master
-        else if (!m_bot->isInCombat() && !IsMoving() )
-            MovementReset();
+/*        else if (!m_bot->isInCombat() && !IsMoving() )
+            MovementReset();*/
 
         // do class specific non combat actions
         else if (GetClassAI())
@@ -2455,7 +2455,7 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
     else if (text == "stay" || text == "stop")
 	{
         SetMovementOrder( MOVEMENT_STAY );
-		SetIgnoreUpdateTime(600);
+		SetIgnoreUpdateTime(255);
 	}
     else if (text == "drink")
 		Drink();
@@ -2506,7 +2506,13 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
     else if (text.size() > 3 && text.substr(0, 3) == "co ")
     {
         std::string strategy = text.substr(text.find(" ") + 1);
-        GetClassAI()->ChangeStrategy(strategy.c_str());
+        GetClassAI()->ChangeCombatStrategy(strategy.c_str());
+    }
+
+    else if (text.size() > 3 && text.substr(0, 3) == "nc ")
+    {
+        std::string strategy = text.substr(text.find(" ") + 1);
+        GetClassAI()->ChangeNonCombatStrategy(strategy.c_str());
     }
 
     // use items
