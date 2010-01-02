@@ -11,7 +11,9 @@ namespace ai
         MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) { distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; attackerCount = 1; health = 100; mana = 100; partyMinHealth = 100; }
 
         virtual float GetDistanceToEnemy() { return distanceToEnemy; }
-        virtual void MoveToMaster() { buffer = buffer.append(">flee"); }
+        virtual void MoveToMaster() { buffer.append(">flee"); }
+        virtual void FollowMaster() { buffer.append(">follow"); }
+        virtual void Stay() { buffer.append(">stay"); }
         virtual void CastSpell(const char* spell, Unit* target = NULL) { buffer.append(">").append(spell); alreadyCast.push_back(spell); }
         virtual BOOL canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">melee"); }
@@ -26,6 +28,8 @@ namespace ai
         virtual void UseHealingPotion() { buffer.append(">hp"); }
         virtual void UseManaPotion() { buffer.append(">mp"); }
         virtual void UsePanicPotion() { buffer.append(">pp"); }
+        virtual void UseFood() { buffer.append(">eat"); }
+        virtual void UseDrink() { buffer.append(">drink"); }
 
         virtual BOOL HasHealingPotion() { return FALSE; }
         virtual BOOL HasManaPotion() { return FALSE; }

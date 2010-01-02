@@ -55,6 +55,7 @@ namespace ai
 
     BEGIN_TRIGGER(LowHealthTrigger, Trigger)
         virtual const char* getName() { return "low health"; }
+        NEXT_ACTIONS("eat", 9.0f)
     END_TRIGGER()
 
     BEGIN_TRIGGER(PartyMemberLowHealthTrigger, Trigger)
@@ -63,6 +64,7 @@ namespace ai
 
     BEGIN_TRIGGER(LowManaTrigger, Trigger)
         virtual const char* getName() { return "low mana"; }
+        NEXT_ACTIONS("drink", 9.0f)
     END_TRIGGER()
 
     BEGIN_TRIGGER(PanicTrigger, Trigger)

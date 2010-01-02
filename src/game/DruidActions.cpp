@@ -47,3 +47,13 @@ BOOL CastCasterFormAction::isUseful()
     return (ai->HasAura("dire bear form") || ai->HasAura("bear form") ||
         ai->HasAura("cat form") || ai->HasAura("travel form")); 
 }
+
+BOOL CastMaulAction::isAvailable()
+{
+    return CastSpellAction::isAvailable() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
+}
+
+BOOL CastSwipeAction::isAvailable()
+{
+    return CastSpellAction::isAvailable() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
+}

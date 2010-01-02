@@ -4,15 +4,15 @@
 
 namespace ai
 {
-    class BearTankDruidStrategy : public GenericDruidStrategy
+    class CatDpsDruidStrategy : public GenericDruidStrategy
     {
     public:
-        BearTankDruidStrategy(PlayerbotAIFacade* const ai) : GenericDruidStrategy(ai) {}
+        CatDpsDruidStrategy(PlayerbotAIFacade* const ai) : GenericDruidStrategy(ai) {}
 
     public:
         BEGIN_NEXT_ACTIONS(2)
-            NEXT_ACTION(0, "faerie fire", 20.0f)
-            NEXT_ACTION(1, "melee", 10.0f)
+            NEXT_ACTION(0, "faerie fire", 2.0f)
+            NEXT_ACTION(1, "melee", 1.0f)
         END_NEXT_ACTIONS(2)
     
     public:

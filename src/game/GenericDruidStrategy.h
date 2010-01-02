@@ -5,10 +5,10 @@
 
 namespace ai
 {
-    class GenericDruidStrategy : public Strategy
+    class GenericDruidStrategy : public CombatStrategy
     {
     public:
-        GenericDruidStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        GenericDruidStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<Trigger*> &triggers);

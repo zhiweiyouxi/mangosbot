@@ -1858,11 +1858,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\GenericNonCombatStrategy.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GenericNonCombatStrategy.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\GenericTriggers.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\game\GenericTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\NonCombatActions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\NonCombatActions.h"
 					>
 				</File>
 			</Filter>
@@ -1966,6 +1982,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\game\CatDpsDruidStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericDruidNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericDruidNonCombatStrategy.h"
 						>
 					</File>
 					<File

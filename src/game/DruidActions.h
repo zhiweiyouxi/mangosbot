@@ -4,15 +4,15 @@
 
 #define DEFAULT_DRUID_NEXT_ACTIONS() \
     BEGIN_NEXT_ACTIONS(1) \
-    NEXT_ACTION(0, "melee", 1.0f) \
+    NEXT_ACTION(0, "melee", 10.0f) \
     END_NEXT_ACTIONS(1)
 
 namespace ai
 {
     BEGIN_RANGED_SPELL_ACTION(CastFaerieFireAction, "faerie fire")
         BEGIN_NEXT_ACTIONS(2)
-            NEXT_ACTION(0, "melee", 1.0f)
-            NEXT_ACTION(1, "dire bear form", 1.5f)
+            NEXT_ACTION(0, "melee", 10.0f)
+            NEXT_ACTION(1, "dire bear form", 15.0f)
         END_NEXT_ACTIONS(2)
     END_SPELL_ACTION()
 
@@ -29,10 +29,14 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastMaulAction, "maul")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        virtual BOOL isAvailable();
+        ALTERNATIVE_ACTIONS("melee")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastSwipeAction, "swipe")
         DEFAULT_DRUID_NEXT_ACTIONS()
+        virtual BOOL isAvailable();
+        ALTERNATIVE_ACTIONS("melee")
     END_SPELL_ACTION()
 
     BEGIN_ACTION(CastCasterFormAction, "caster form")

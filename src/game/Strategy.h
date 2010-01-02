@@ -13,8 +13,15 @@ namespace ai
 
     public:
         virtual NextAction** getNextActions() { return NULL; }
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual void InitTriggers(std::list<Trigger*> &triggers) {}
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers) {}
         virtual const char* getName() { return NULL; }
+    };
+
+    class CombatStrategy : public Strategy
+    {
+    public:
+        CombatStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        virtual void InitTriggers(std::list<Trigger*> &triggers);
     };
 }

@@ -630,6 +630,10 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\..\src\tests\DruidNonCombatTestCase.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\tests\DruidTestCase.cpp"
 			>
 		</File>
@@ -659,6 +663,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\tests\MockPlayerbotAIFacade.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\tests\NonCombatEngineTestCase.cpp"
 			>
 		</File>
 		<File

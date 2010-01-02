@@ -70,27 +70,14 @@ BOOL PlayerbotAIFacade::HasAggro()
     return FALSE;
 }
 
-void PlayerbotAIFacade::UseHealingPotion() 
+void PlayerbotAIFacade::FindAndUse(BOOL predicate(const ItemPrototype*))
 {
-    Item* item = ai->FindUsableItem(isHealingPotion);
+    Item* item = ai->FindUsableItem(predicate);
     if (item)
+    {
         ai->UseItem(*item);
+    }
 }
-
-void PlayerbotAIFacade::UseManaPotion() 
-{
-    Item* item = ai->FindUsableItem(isManaPotion);
-    if (item)
-        ai->UseItem(*item);
-}
-
-void PlayerbotAIFacade::UsePanicPotion() 
-{
-    Item* item = ai->FindUsableItem(isManaPotion);
-    if (item)
-        ai->UseItem(*item);
-}
-
 
 BOOL PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto)
 {
@@ -99,13 +86,28 @@ BOOL PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto)
 
 BOOL PlayerbotAIFacade::isHealingPotion(const ItemPrototype* pItemProto)
 {
-    return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
+    return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
+        pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 441;
 }
 
 BOOL PlayerbotAIFacade::isManaPotion(const ItemPrototype* pItemProto)
 {
-    return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
+    return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
+        pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 438;
 }
+
+BOOL PlayerbotAIFacade::isFood(const ItemPrototype* pItemProto)
+{
+    return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
+        pItemProto->Spells[0].SpellCategory == 11);
+}
+
+BOOL PlayerbotAIFacade::isDrink(const ItemPrototype* pItemProto)
+{
+    return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
+        pItemProto->Spells[0].SpellCategory == 59);
+}
+
 
 Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
 {
