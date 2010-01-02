@@ -3,6 +3,33 @@
 #include "Action.h"
 #include "PlayerbotAIFacade.h"
 
+#define BEGIN_SPELL_ACTION(clazz, name) \
+class clazz : public CastSpellAction \
+        { \
+        public: \
+        clazz(PlayerbotAIFacade* const ai) : CastSpellAction(ai, name) {} \
+
+
+#define END_SPELL_ACTION() \
+    };
+
+#define BEGIN_RANGED_SPELL_ACTION(clazz, name) \
+class clazz : public CastRangedSpellAction \
+        { \
+        public: \
+        clazz(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, name) {} \
+
+
+#define END_RANGED_SPELL_ACTION() \
+    };
+
+
+#define BEGIN_BUFF_ON_PARTY_ACTION(clazz, name) \
+class clazz : public BuffOnPartyAction \
+        { \
+        public: \
+        clazz(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, name) {} 
+
 namespace ai
 {
     class CastSpellAction : public Action
@@ -87,4 +114,12 @@ namespace ai
     };
     //---------------------------------------------------------------------------------------------------------------------
 
+    class BuffOnPartyAction : public CastSpellAction
+    {
+    public:
+        BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+    public: 
+        virtual void Execute();
+        virtual BOOL isUseful();
+    };
 }

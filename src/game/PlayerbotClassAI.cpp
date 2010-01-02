@@ -10,9 +10,21 @@ PlayerbotClassAI::PlayerbotClassAI(Player* const master, Player* const bot, Play
 
 PlayerbotClassAI::~PlayerbotClassAI() 
 {
-    if (engine) delete engine;
-    if (nonCombatEngine) delete nonCombatEngine;
-    if (facade) delete facade;
+    if (engine) 
+    {
+        delete engine;
+        engine = NULL;
+    }
+    if (nonCombatEngine) 
+    {
+        delete nonCombatEngine;
+        nonCombatEngine = NULL;
+    }
+    if (facade) 
+    {
+        delete facade;
+        facade = NULL;
+    }
 }
 
 bool PlayerbotClassAI::DoFirstCombatManeuver(Unit *) 
@@ -38,10 +50,6 @@ void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e )
         break;
     case '-':
         e->removeStrategy(name+1);
-        break;
-    default:
-        e->clearStrategies();
-        e->addStrategy(name);
         break;
     }
     

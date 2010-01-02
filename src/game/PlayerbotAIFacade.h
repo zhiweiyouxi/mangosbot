@@ -12,6 +12,12 @@
 
 namespace ai
 {
+    struct FindPlayerParam
+    {
+        PlayerbotAI *ai;
+        void* param;
+    };
+
     class PlayerbotAIFacade
     {
     public:
@@ -27,6 +33,8 @@ namespace ai
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
         virtual BOOL HasAura(const char* spell);
+        virtual BOOL IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
+        virtual Player* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
         virtual void RemoveAura(const char* spell);
         virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
         virtual Player* GetPartyMinHealthPlayer();
@@ -44,15 +52,18 @@ namespace ai
         virtual BOOL HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
         virtual BOOL HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
 
-        // TODO: move out of this class
+    protected:
         static BOOL isHealingPotion(const ItemPrototype* pItemProto);
         static BOOL isManaPotion(const ItemPrototype* pItemProto);
         static BOOL isPanicPotion(const ItemPrototype* pItemProto);
         static BOOL isFood(const ItemPrototype* pItemProto);
         static BOOL isDrink(const ItemPrototype* pItemProto);
         void FindAndUse(BOOL predicate(const ItemPrototype*));
+        Player* findPlayer(BOOL predicate(Player*, FindPlayerParam&), void *param);
+        static BOOL isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
 
     protected:
         PlayerbotAI *ai;
     };
+
 }

@@ -55,4 +55,10 @@ namespace ai
             NEXT_ACTION(0, "demoralizing roar", 20.0f)
         END_NEXT_ACTIONS(1)
     };
+
+
+    BUFF_ON_PARTY_TRIGGER(MarkOfTheWildOnPartyTrigger, "mark of the wild", "mark of the wild on party")
+
+    BUFF_TRIGGER(MarkOfTheWildTrigger, "mark of the wild", "mark of the wild")
+    BUFF_TRIGGER(ThornsTrigger, "thorns", "thorns")
 }

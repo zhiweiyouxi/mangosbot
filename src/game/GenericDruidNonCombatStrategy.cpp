@@ -10,5 +10,9 @@ void GenericDruidNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
     GenericNonCombatStrategy::InitTriggers(triggers);
     
     triggers.push_back(new DruidPartyMemberLowHealthTrigger(ai));
+
+    triggers.push_back(new ThornsTrigger(ai));
+    triggers.push_back(new MarkOfTheWildTrigger(ai));
+    triggers.push_back(new MarkOfTheWildOnPartyTrigger(ai));
 }
 

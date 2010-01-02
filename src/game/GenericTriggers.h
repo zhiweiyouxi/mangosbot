@@ -1,6 +1,22 @@
 #pragma once
 #include "Trigger.h"
 
+#define BUFF_TRIGGER(clazz, spell, action) \
+class clazz : public BuffTrigger \
+    { \
+    public: \
+        clazz(PlayerbotAIFacade* const ai) : BuffTrigger(ai, spell) {} \
+        NEXT_ACTIONS(action, 1.0f) \
+    };
+
+#define BUFF_ON_PARTY_TRIGGER(clazz, spell, action) \
+class clazz : public BuffOnPartyTrigger \
+    { \
+    public: \
+        clazz(PlayerbotAIFacade* const ai) : BuffOnPartyTrigger(ai, spell) {}  \
+        NEXT_ACTIONS(action, 1.0f) \
+    };
+
 namespace ai
 {
     BEGIN_TRIGGER(EnemyTooCloseTrigger, Trigger)
@@ -72,4 +88,26 @@ namespace ai
         NEXT_ACTIONS("panic potion", 100.0f)
     END_TRIGGER()
 
+    class BuffTrigger : public Trigger
+    {
+    public:
+        BuffTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai) 
+        {
+            this->spell = spell;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return spell; }
+
+    protected:
+        const char* spell;
+    };
+
+    class BuffOnPartyTrigger : public BuffTrigger
+    {
+    public:
+        BuffOnPartyTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
+    public: 
+       virtual BOOL IsActive();
+    };
 }

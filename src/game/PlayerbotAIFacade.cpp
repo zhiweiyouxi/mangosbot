@@ -13,7 +13,7 @@ float PlayerbotAIFacade::GetDistanceToEnemy()
     {
         return ai->GetPlayerBot()->GetDistance(target); 
     }
-    return 1e8;
+    return 0;
 }
 
 BOOL PlayerbotAIFacade::canCastSpell( const char* name )
@@ -41,6 +41,31 @@ uint8 PlayerbotAIFacade::GetRage()
 BOOL PlayerbotAIFacade::HasAura(const char* spell)
 {
     return ai->HasAura(spell);
+}
+
+Player* PlayerbotAIFacade::findPlayer(BOOL predicate(Player*, FindPlayerParam&), void* param)
+{
+    Group* group = ai->GetMaster()->GetGroup();
+    if (group)
+    {
+        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+        {
+            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
+            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
+                continue;
+
+            FindPlayerParam pp; pp.ai = ai; pp.param = param;
+            if (predicate(player, pp))
+                return player;
+        }
+    }
+    return NULL;
+}
+
+BOOL PlayerbotAIFacade::isPlayerWithoutAura(Player* player, FindPlayerParam &param )
+{
+    return !param.ai->HasAura((const char*)param.param, *player);
 }
 
 void PlayerbotAIFacade::RemoveAura(const char* name)

@@ -16,6 +16,7 @@ class DruidNonCombatTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DruidNonCombatTestCase );
     CPPUNIT_TEST( healOthers );
+    CPPUNIT_TEST( buff );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -47,6 +48,28 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">-dire bear form>rejuvenation on party>regrowth on party>follow"));
+    }
+
+    void buff()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("druid non combat");
+        engine.Init();
+
+        engine.DoNextAction(NULL);
+        ai->auras.push_back("mark of the wild");
+        
+        engine.DoNextAction(NULL);
+        ai->auras.push_back("thorns");
+        ai->resetSpell("mark of the wild");
+        
+        engine.DoNextAction(NULL);
+        engine.DoNextAction(NULL);
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">thorns>mark of the wild>mark of the wild on party"));
     }
 };
 

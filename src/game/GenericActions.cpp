@@ -84,3 +84,15 @@ BOOL HealPartyMemberAction::isUseful()
 {
     return ai->GetPartyMinHealthPercent() < EAT_DRINK_PERCENT;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void BuffOnPartyAction::Execute()
+{
+    ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
+}
+
+BOOL BuffOnPartyAction::isUseful()
+{
+    return !ai->IsAllPartyHasAura(spell);
+}

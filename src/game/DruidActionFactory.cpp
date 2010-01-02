@@ -32,6 +32,9 @@ Action* DruidActionFactory::createAction(const char* name)
     CREATE_ACTION_RULE("growl", CastGrowlAction);
     CREATE_ACTION_RULE("demoralizing roar", CastDemoralizingRoarAction);
         
+    CREATE_ACTION_RULE("thorns", CastThornsAction);
+    CREATE_ACTION_RULE("mark of the wild", CastMarkOfTheWildAction);
+    CREATE_ACTION_RULE("mark of the wild on party", CastMarkOfTheWildOnPartyAction);
 
     return NULL;
 }

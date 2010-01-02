@@ -1191,7 +1191,7 @@ void PlayerbotAI::DoNextCombatManeuver()
     }
 
     // do normal combat movement
-	DoCombatMovement();
+	//DoCombatMovement();
 
     if (GetClassAI() && !m_targetChanged )
         (GetClassAI())->DoNextCombatManeuver( m_targetCombat );

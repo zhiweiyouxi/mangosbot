@@ -58,3 +58,14 @@ BOOL PanicTrigger::IsActive()
 {
     return ai->GetHealthPercent() < 25 && ai->GetManaPercent() < 25;
 }
+
+BOOL BuffTrigger::IsActive()
+{
+    return !ai->HasAura(spell);
+}
+
+
+BOOL BuffOnPartyTrigger::IsActive()
+{
+    return !ai->IsAllPartyHasAura(spell);
+}

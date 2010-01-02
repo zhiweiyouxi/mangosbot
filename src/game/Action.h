@@ -1,25 +1,6 @@
 #pragma once
 #include "PlayerbotAIFacadeAware.h"
 
-#define BEGIN_SPELL_ACTION(clazz, name) \
-    class clazz : public CastSpellAction \
-        { \
-        public: \
-            clazz(PlayerbotAIFacade* const ai) : CastSpellAction(ai, name) {} \
-
-
-#define END_SPELL_ACTION() \
-    };
-
-#define BEGIN_RANGED_SPELL_ACTION(clazz, name) \
-class clazz : public CastRangedSpellAction \
-        { \
-        public: \
-        clazz(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, name) {} \
-
-
-#define END_RANGED_SPELL_ACTION() \
-    };
 
 #define BEGIN_ACTION(clazz, name) \
 class clazz : public Action \

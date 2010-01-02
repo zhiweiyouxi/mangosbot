@@ -58,18 +58,21 @@ namespace ai
     class CastRejuvenationOnPartyAction : public HealPartyMemberAction
     {
     public:
-        CastRejuvenationOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "rejuvenation on party") {}
+        CastRejuvenationOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "rejuvenation") {}
         PREREQUISITE_ACTIONS("caster form")
+
+        virtual const char* getName() { return "rejuvenation on party"; }
     };
 
     class CastRegrowthOnPartyAction : public HealPartyMemberAction
     {
     public:
-        CastRegrowthOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "regrowth on party") {}
+        CastRegrowthOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "regrowth") {}
         BEGIN_PREREQUISITE_ACTIONS(2)
             PREREQUISITE_ACTION(0, "caster form")
             PREREQUISITE_ACTION(1, "rejuvenation on party")
         END_PREREQUISITE_ACTIONS(2)
+        virtual const char* getName() { return "regrowth on party"; }
     };
 
     BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
@@ -78,6 +81,7 @@ namespace ai
             PREREQUISITE_ACTION(0, "dire bear form")
             PREREQUISITE_ACTION(1, "reach spell")
         END_PREREQUISITE_ACTIONS(2)
+        ALTERNATIVE_ACTIONS("faerie fire");
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")
@@ -91,4 +95,17 @@ namespace ai
         DruidMeleeAction(PlayerbotAIFacade* const ai) : MeleeAction(ai) {}
         PREREQUISITE_ACTIONS("dire bear form")
     };
+
+    BEGIN_SPELL_ACTION(CastMarkOfTheWildAction, "mark of the wild")
+        PREREQUISITE_ACTIONS("caster form")
+    END_SPELL_ACTION()
+
+    BEGIN_BUFF_ON_PARTY_ACTION(CastMarkOfTheWildOnPartyAction, "mark of the wild")
+        PREREQUISITE_ACTIONS("caster form")
+        virtual const char* getName() { return "mark of the wild on party";}
+    END_ACTION()
+
+    BEGIN_SPELL_ACTION(CastThornsAction, "thorns")
+        PREREQUISITE_ACTIONS("caster form")
+    END_SPELL_ACTION()
 }
