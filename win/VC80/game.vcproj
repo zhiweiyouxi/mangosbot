@@ -1921,6 +1921,14 @@
 					Name="Strategies"
 					>
 					<File
+						RelativePath="..\..\src\game\DpsHunterStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DpsHunterStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericHunterStrategy.cpp"
 						>
 					</File>

@@ -630,6 +630,10 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\..\src\tests\DpsHunterEngineTestCase.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\tests\DruidNonCombatTestCase.cpp"
 			>
 		</File>

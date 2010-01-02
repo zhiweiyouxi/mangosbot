@@ -13,5 +13,6 @@ namespace ai
     public:
         virtual void InitTriggers(std::list<Trigger*> &triggers);
         virtual ActionFactory* createActionFactory() { return new HunterActionFactory(ai); }
+        virtual const char* getName() { return "hunter"; }
     };
 }
