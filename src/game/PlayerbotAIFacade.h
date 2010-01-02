@@ -24,7 +24,7 @@ namespace ai
         PlayerbotAIFacade(PlayerbotAI* const ai) { this->ai = ai; }
 
     public:
-        virtual float GetDistanceToEnemy();
+        virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
         virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
         virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
         virtual void MoveToTarget(float distance = 0.0f) { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
@@ -33,10 +33,12 @@ namespace ai
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
         virtual BOOL HasAura(const char* spell);
+        virtual BOOL TargetHasAura(const char* spell);
         virtual BOOL IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
         virtual Player* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
         virtual void RemoveAura(const char* spell);
         virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
+        virtual uint8 GetTargetHealthPercent() { return ai->GetHealthPercent(*ai->GetCurrentTarget()); }
         virtual Player* GetPartyMinHealthPlayer();
         virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }

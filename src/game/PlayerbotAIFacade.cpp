@@ -6,14 +6,14 @@
 
 using namespace ai;
 
-float PlayerbotAIFacade::GetDistanceToEnemy()
+float PlayerbotAIFacade::GetDistanceToEnemy(float ifNoTarget)
 {
     Unit *target = ai->GetCurrentTarget();
     if (target && !target->isDead())
     {
         return ai->GetPlayerBot()->GetDistance(target); 
     }
-    return 0;
+    return ifNoTarget;
 }
 
 BOOL PlayerbotAIFacade::canCastSpell( const char* name )
@@ -41,6 +41,11 @@ uint8 PlayerbotAIFacade::GetRage()
 BOOL PlayerbotAIFacade::HasAura(const char* spell)
 {
     return ai->HasAura(spell);
+}
+
+BOOL PlayerbotAIFacade::TargetHasAura(const char* spell)
+{
+    return ai->HasAura(spell, *ai->GetCurrentTarget());
 }
 
 Player* PlayerbotAIFacade::findPlayer(BOOL predicate(Player*, FindPlayerParam&), void* param)

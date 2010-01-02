@@ -3,3 +3,13 @@
 #include "GenericActions.h"
 
 using namespace ai;
+
+BOOL CastSerpentStingAction::isUseful()
+{
+    return ai->GetTargetHealthPercent() >= 5;
+}
+
+BOOL CastArcaneShotAction::isUseful()
+{
+    return ai->GetTargetHealthPercent() >= 5 && ai->GetManaPercent() >= 30;
+}

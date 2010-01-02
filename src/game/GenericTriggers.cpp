@@ -7,7 +7,7 @@ using namespace ai;
 
 BOOL EnemyTooCloseTrigger::IsActive()
 {
-    float distance = ai->GetDistanceToEnemy();
+    float distance = ai->GetDistanceToEnemy(ATTACK_DISTANCE + 1);
     return distance <= ATTACK_DISTANCE;
 }
 

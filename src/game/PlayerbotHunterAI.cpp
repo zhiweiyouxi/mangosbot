@@ -2,6 +2,7 @@
 
 #include "PlayerbotHunterAI.h"
 #include "PlayerbotMgr.h"
+#include "DpsHunterStrategy.h"
 
 class PlayerbotAI;
 
@@ -76,9 +77,21 @@ PlayerbotHunterAI::PlayerbotHunterAI(Player* const master, Player* const bot, Pl
 
     m_petSummonFailed = false;
     m_rangedCombat = true;
+
+    engine = new ai::Engine(facade, new ai::HunterActionFactory(facade));
+    engine->addStrategy("dps hunter");
+    engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::HunterActionFactory(facade));
+    nonCombatEngine->addStrategy("hunter");
+    nonCombatEngine->Init();
+
 }
 
-PlayerbotHunterAI::~PlayerbotHunterAI() {}
+PlayerbotHunterAI::~PlayerbotHunterAI() 
+{
+    PlayerbotClassAI::~PlayerbotClassAI();
+}
 
 bool PlayerbotHunterAI::HasPet(Player* bot)
 {
@@ -104,6 +117,8 @@ void PlayerbotHunterAI::DoNextCombatManeuver(Unit *pTarget)
     }
 
     // ------- Non Duel combat ----------
+    engine->DoNextAction(pTarget);
+    return;
 
     // Hunter
     ai->SetInFront( pTarget );
@@ -271,6 +286,9 @@ void PlayerbotHunterAI::DoNonCombatActions()
     Player * m_bot = GetPlayerBot();
     if (!m_bot)
         return;
+
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     // reset ranged combat state
     if( !m_rangedCombat )

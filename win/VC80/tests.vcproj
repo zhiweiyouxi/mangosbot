@@ -650,6 +650,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\tests\HunterNonCombatTestCase.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\tests\HunterTestCase.cpp"
 			>
 		</File>

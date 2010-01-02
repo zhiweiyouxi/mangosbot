@@ -11,7 +11,7 @@ namespace ai
 
     public:
         BEGIN_NEXT_ACTIONS(2)
-            NEXT_ACTION(0, "concussive shot", 20.0f)
+            NEXT_ACTION(0, "concussive shot", 60.0f)
             NEXT_ACTION(1, "auto shot", 10.0f)
         END_NEXT_ACTIONS(2)
     

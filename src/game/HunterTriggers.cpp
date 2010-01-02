@@ -5,3 +5,8 @@
 using namespace ai;
 
 BOOL HunterEnemyTooCloseTrigger::IsActive() { return EnemyTooCloseTrigger::IsActive(); }
+
+BOOL HunterNoStingsActiveTrigger::IsActive()
+{
+    return !ai->TargetHasAura("serpent sting") && !ai->TargetHasAura("scorpid sting");
+}
