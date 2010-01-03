@@ -10,6 +10,7 @@ void DpsHunterStrategy::InitTriggers(std::list<Trigger*> &triggers)
     GenericHunterStrategy::InitTriggers(triggers);
 
     triggers.push_back(new HunterNoStingsActiveTrigger(ai));
+    triggers.push_back(new NoAttackersTrigger(ai));
 }
 
 void DpsHunterStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

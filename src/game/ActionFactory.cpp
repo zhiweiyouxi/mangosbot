@@ -44,6 +44,8 @@ Action* ActionFactory::createAction(const char* name)
     if (!strcmp("attack least threat", name))
         return new AttackLeastThreatAction(ai);
     
+    if (!strcmp("attack bigger threat", name))
+        return new AttackBiggerThreatAction(ai);
 
     return NULL;
 }

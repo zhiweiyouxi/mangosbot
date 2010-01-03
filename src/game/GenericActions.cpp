@@ -103,3 +103,10 @@ void AttackLeastThreatAction::Execute()
 {
     ai->AttackLeastThreat();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void AttackBiggerThreatAction::Execute()
+{
+    ai->AttackBiggerThreat();
+}

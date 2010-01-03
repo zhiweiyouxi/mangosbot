@@ -47,6 +47,7 @@ namespace ai
         virtual int GetAttackerCount();
 
         virtual void AttackLeastThreat();
+        virtual void AttackBiggerThreat();
         
         virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
         virtual void UseManaPotion() { FindAndUse(isManaPotion); }

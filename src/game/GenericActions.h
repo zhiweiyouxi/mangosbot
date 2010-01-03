@@ -129,4 +129,8 @@ namespace ai
     BEGIN_ACTION(AttackLeastThreatAction, "attack least threat")
     END_ACTION()
   
+    //---------------------------------------------------------------------------------------------------------------------
+
+    BEGIN_ACTION(AttackBiggerThreatAction, "attack bigger threat")
+    END_ACTION()
 }

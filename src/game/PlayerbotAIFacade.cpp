@@ -291,3 +291,24 @@ void PlayerbotAIFacade::AttackLeastThreat()
     if (target)
         ai->Attack(target);
 }
+
+void PlayerbotAIFacade::AttackBiggerThreat()
+{
+    std::list<ThreatManager*> attackers;
+    findAllAttackers(attackers);
+
+    float maxThreat = 1e8;
+    Unit* target = NULL;
+    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+    {  
+        ThreatManager* attacker = *i;
+        float threat = attacker->getThreat(ai->GetPlayerBot());
+        if (!target || threat > maxThreat)
+        {
+            maxThreat = threat;
+            target = attacker->getOwner();
+        }
+    }
+    if (target)
+        ai->Attack(target);
+}

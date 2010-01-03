@@ -24,6 +24,7 @@ class DruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
+    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -267,6 +268,25 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party>dire bear form"));
     }
+
+    void pickNewTarget()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new DruidActionFactory(ai));
+        engine.addStrategy("bear tank");
+        engine.Init();
+
+        ai->attackerCount = 0;
+        engine.DoNextAction(NULL); // attack bigger threat
+        ai->attackerCount = 1;
+        engine.DoNextAction(NULL); // as usual
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack bigger threat>faerie fire"));
+
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( DruidTestCase );

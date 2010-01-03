@@ -45,6 +45,7 @@ namespace ai
         virtual BOOL HasPanicPotion() { return FALSE; }
 
         virtual void AttackLeastThreat() {buffer.append(">attack least threat"); }
+        virtual void AttackBiggerThreat() {buffer.append(">attack bigger threat"); }
 
         virtual Player* GetPartyMinHealthPlayer() { return (Player*)0xEEEEEE; }
         virtual uint8 GetPartyMinHealthPercent() { return partyMinHealth; }
