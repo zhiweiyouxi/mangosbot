@@ -38,4 +38,14 @@ namespace ai
             NEXT_ACTION(0, "stay", 1.0f)
         END_NEXT_ACTIONS(1)
     };
+
+    class AssistNonCombatStrategy : public GenericNonCombatStrategy
+    {
+    public:
+        AssistNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        virtual const char* getName() { return "assist"; }
+
+    public:
+        virtual void InitTriggers(std::list<Trigger*> &triggers);
+    };
 }

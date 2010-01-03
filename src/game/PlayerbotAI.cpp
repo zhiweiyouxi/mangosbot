@@ -1165,7 +1165,7 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
 void PlayerbotAI::DoNextCombatManeuver()
 {
     // check for new targets
-	GetCombatTarget();
+	//GetCombatTarget();
 	// check if we have a target - fixes crash reported by rrtn (kill hunter's pet bug)
 	// if current target for attacks doesn't make sense anymore
     // clear our orders so we can get orders in next update
@@ -1178,6 +1178,8 @@ void PlayerbotAI::DoNextCombatManeuver()
 		m_targetCombat = 0;
         m_targetChanged = false;
         m_targetType = TARGET_NORMAL;
+
+        (GetClassAI())->DoNonCombatActions();
         return;
     }
 

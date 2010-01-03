@@ -123,7 +123,7 @@ namespace ai
 
     BEGIN_TRIGGER(NoAttackersTrigger, Trigger)
         BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "attack least threat", 100.0f)
+            NEXT_ACTION(0, "attack least threat", 9.0f)
         END_NEXT_ACTIONS(1)
     END_TRIGGER()
 }

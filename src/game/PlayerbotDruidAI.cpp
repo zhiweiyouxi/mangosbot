@@ -68,10 +68,13 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 
     engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     engine->addStrategy("bear tank");
+    engine->addStrategy("assist");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     nonCombatEngine->addStrategy("druid");
+    nonCombatEngine->addStrategy("assist");
+    nonCombatEngine->addStrategy("stay");
     nonCombatEngine->Init();
 }
 

@@ -48,11 +48,13 @@ protected:
         ai->resetSpells();        
         engine.DoNextAction(NULL); // arcane shot
 
+        ai->resetSpell("arcane shot");        
+        engine.DoNextAction(NULL); // arcane shot
         ai->resetSpell("auto shot");        
         engine.DoNextAction(NULL); // auto shot
                 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">concussive shot>serpent sting>auto shot>flee>arcane shot>auto shot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">serpent sting>arcane shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
 
 	}
 
@@ -64,13 +66,17 @@ protected:
         engine.addStrategy("dps hunter");
         engine.Init();
 
-        ai->attackerCount = 0;
+        ai->alreadyCast.push_back("auto shot");
+        ai->alreadyCast.push_back("serpent sting");
+        ai->alreadyCast.push_back("concussive shot"); // this will not be available as we do not have any target
+        ai->myAttackerCount = 0;
         engine.DoNextAction(NULL); // attack least threat
-        ai->attackerCount = 1;
+        ai->myAttackerCount = 1;
+        ai->resetSpells();
         engine.DoNextAction(NULL); // concussive shot
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>concussive shot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>serpent sting"));
 
     }
 };

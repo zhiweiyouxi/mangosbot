@@ -70,7 +70,7 @@ namespace ai
         BearTankNoAttackersTrigger(PlayerbotAIFacade* const ai) : NoAttackersTrigger(ai)  {}
     public: 
         BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "attack bigger threat", 100.0f)
+            NEXT_ACTION(0, "attack bigger threat", 9.0f)
         END_NEXT_ACTIONS(1)
     };
 

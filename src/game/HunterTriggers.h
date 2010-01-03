@@ -4,9 +4,10 @@
 namespace ai
 {
     BEGIN_TRIGGER(HunterEnemyTooCloseTrigger, EnemyTooCloseTrigger)
-        BEGIN_NEXT_ACTIONS(1)
+        BEGIN_NEXT_ACTIONS(2)
             NEXT_ACTION(0, "flee", 50.0f)
-        END_NEXT_ACTIONS(1)
+            NEXT_ACTION(1, "concussive shot", 40.0f)
+        END_NEXT_ACTIONS(2)
     END_TRIGGER()
 
     BEGIN_TRIGGER(HunterNoStingsActiveTrigger, Trigger)

@@ -4,7 +4,7 @@
 
 #define DEFAULT_HUNTER_NEXT_ACTIONS() \
     BEGIN_NEXT_ACTIONS(2) \
-        NEXT_ACTION(0, "arcane shot", 10.0f) \
+        NEXT_ACTION(0, "arcane shot", 11.0f) \
         NEXT_ACTION(1, "auto shot", 10.0f) \
     END_NEXT_ACTIONS(2)
 

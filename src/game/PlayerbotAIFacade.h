@@ -45,6 +45,7 @@ namespace ai
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
         virtual int GetAttackerCount();
+        virtual int GetMyAttackerCount();
 
         virtual void AttackLeastThreat();
         virtual void AttackBiggerThreat();

@@ -11,3 +11,7 @@ void GenericNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
     triggers.push_back(new LowManaTrigger(ai));
 }
 
+void AssistNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
+{
+    triggers.push_back(new NoAttackersTrigger(ai));
+}

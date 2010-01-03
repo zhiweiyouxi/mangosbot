@@ -178,17 +178,34 @@ int PlayerbotAIFacade::GetAttackerCount()
     int count = 0;
 
     Unit* currentTarget = ai->GetCurrentTarget();
-    if (currentTarget)
+    if (currentTarget && !currentTarget->isDead() && currentTarget->getVictim())
+        count++;
+
+    HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
+    while( ref )
     {
-        HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
-        while( ref )
-        {
-            ThreatManager *target = ref->getSource();
-            Unit *attacker = target->getOwner();
-            if (attacker && !attacker->isDead())
-                count++;
-            ref = ref->next();
-        }
+        ThreatManager *target = ref->getSource();
+        Unit *attacker = target->getOwner();
+        if (attacker && !attacker->isDead() && currentTarget != attacker)
+            count++;
+        ref = ref->next();
+    }
+    return count;
+}
+
+
+int PlayerbotAIFacade::GetMyAttackerCount()
+{
+    int count = 0;
+
+    HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
+    while( ref )
+    {
+        ThreatManager *target = ref->getSource();
+        Unit *attacker = target->getOwner();
+        if (attacker && !attacker->isDead() && attacker->getVictim() == ai->GetPlayerBot())
+            count++;
+        ref = ref->next();
     }
     return count;
 }

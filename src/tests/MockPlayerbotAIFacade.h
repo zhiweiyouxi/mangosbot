@@ -10,8 +10,9 @@ namespace ai
     public:
         MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) 
         { 
-            distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; attackerCount = 1; health = 100; mana = 100; partyMinHealth = 100; 
+            distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; health = 100; mana = 100; partyMinHealth = 100; 
             targetHealth = 100;
+            attackerCount = 1;myAttackerCount = 1;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -32,6 +33,7 @@ namespace ai
         virtual uint8 GetManaPercent() {return mana; }
         virtual BOOL HasAggro() { return aggro; }
         virtual int GetAttackerCount() { return attackerCount; }
+        virtual int GetMyAttackerCount() {return myAttackerCount; }
         virtual void RemoveAura(const char* name) {auras.remove(name); buffer.append(">-").append(name); }
         
         virtual void UseHealingPotion() { buffer.append(">hp"); }
@@ -64,6 +66,7 @@ namespace ai
         uint8 targetHealth;
         BOOL aggro;
         int attackerCount;
+        int myAttackerCount;
         int partyMinHealth;
     };
 

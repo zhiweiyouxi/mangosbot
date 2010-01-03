@@ -194,6 +194,8 @@ void Engine::addStrategy(const char* name)
 {
     removeStrategy(name);
     strategies.push_back(actionFactory->createStrategy(name));
+    
+    Init();
 }
 
 void Engine::removeStrategy(const char* name)
