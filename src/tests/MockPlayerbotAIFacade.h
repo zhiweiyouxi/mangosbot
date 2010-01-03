@@ -15,7 +15,8 @@ namespace ai
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
-        virtual void MoveToMaster() { buffer.append(">flee"); }
+        virtual void MoveToMaster() { buffer.append(">master"); }
+        virtual void Flee(float distance = SPELL_DISTANCE) { buffer.append(">flee"); }
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void Stay() { buffer.append(">stay"); }
         virtual void CastSpell(const char* spell, Unit* target = NULL) { buffer.append(">").append(spell); alreadyCast.push_back(spell); if (target) buffer.append(" on party"); }

@@ -8,7 +8,7 @@ using namespace ai;
 void FleeAction::Execute()
 {
     // TODO: move away from battle
-    ai->MoveToMaster();
+    ai->Flee();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

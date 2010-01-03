@@ -27,6 +27,7 @@ namespace ai
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
         virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
         virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 0, 0); }
+        virtual void Flee(float distance = SPELL_DISTANCE);
         virtual void MoveToTarget(float distance = 0.0f) { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
         virtual void Stay() {ai->MovementClear();}
         virtual void CastSpell(const char* spell, Unit* target = NULL) { ai->CastSpell(ai->getSpellId(spell), target); }
@@ -63,6 +64,8 @@ namespace ai
         void FindAndUse(BOOL predicate(const ItemPrototype*));
         Player* findPlayer(BOOL predicate(Player*, FindPlayerParam&), void *param);
         static BOOL isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
+        void findAllAttackers(std::list<Unit*> &out);
+        void findAllAttackers(HostileReference *ref, std::list<Unit*> &out);
 
     protected:
         PlayerbotAI *ai;

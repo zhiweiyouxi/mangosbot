@@ -62,14 +62,18 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 	BERSERKING              = ai->getSpellId("berserking"); // troll
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
 
-    ai::PlayerbotAIFacade *facade = new ai::PlayerbotAIFacade(ai);
     engine = new ai::Engine(facade, new ai::MageActionFactory(facade));
     engine->addStrategy("frost mage");
     engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::MageActionFactory(facade));
+    nonCombatEngine->addStrategy("mage");
+    nonCombatEngine->Init();
 }
 
 PlayerbotMageAI::~PlayerbotMageAI() 
 {
+    PlayerbotClassAI::~PlayerbotClassAI();
 }
 
 void PlayerbotMageAI::DoNextCombatManeuver(Unit *pTarget)
@@ -350,6 +354,9 @@ void PlayerbotMageAI::DoNonCombatActions()
     Player * m_bot = GetPlayerBot();
     if (!m_bot)
         return;
+
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     SpellSequence = SPELL_FROST;
 	PlayerbotAI* ai = GetAI();

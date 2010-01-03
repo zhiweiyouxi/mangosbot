@@ -3,6 +3,7 @@
 #include "DBCStructure.h"
 #include "Spell.h"
 #include "Group.h"
+#include "Creature.h"
 
 using namespace ai;
 
@@ -190,4 +191,82 @@ int PlayerbotAIFacade::GetAttackerCount()
         }
     }
     return count;
+}
+
+void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Unit*> &out)
+{
+    while( ref )
+    {
+        ThreatManager *target = ref->getSource();
+        Unit *attacker = target->getOwner();
+        if (attacker && !attacker->isDead())
+            out.push_back(attacker);
+        ref = ref->next();
+    }
+}
+
+void PlayerbotAIFacade::findAllAttackers(std::list<Unit*> &out)
+{
+    Player* bot = ai->GetPlayerBot();
+    HostileReference *ref = bot->getHostileRefManager().getFirst();
+    findAllAttackers(ref, out);
+    
+    ref = ai->GetMaster()->getHostileRefManager().getFirst();
+    findAllAttackers(ref, out);
+
+    if (ai->GetPlayerBot()->GetGroup())
+    {
+        GroupReference *gref = bot->GetGroup()->GetFirstMember();
+        while( gref )
+        {
+            if( gref->getSource() == bot || gref->getSource() == ai->GetMaster() )
+            {
+                gref = gref->next();
+                continue;
+            }
+            ref = gref->getSource()->getHostileRefManager().getFirst();
+            findAllAttackers(ref, out);
+            gref = gref->next();
+        }
+    }
+}
+
+void PlayerbotAIFacade::Flee(float distance)
+{
+    Player* bot = ai->GetPlayerBot();
+
+    float rx = bot->GetPositionX();
+    float ry = bot->GetPositionY();
+    float rz = bot->GetPositionZ();
+    float maxDistance = 0;
+
+    for (float r = distance; r>=ATTACK_DISTANCE; r -= ATTACK_DISTANCE)
+    {
+        for (float angle = 0; angle < 2*M_PI; angle += M_PI / 12)
+        {
+            float x = bot->GetPositionX() + cos(angle) * r;
+            float y = bot->GetPositionY() + sin(angle) * r;
+            float z = bot->GetPositionZ();
+
+            if (!bot->IsWithinLOS(x, y, z))
+                continue;
+
+            std::list<Unit*> attackers;
+            findAllAttackers(attackers);
+            for (std::list<Unit*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+            {  
+                Unit* unit = *i;
+                //c->
+                float distToCreature = unit->GetDistance(x, y, z);
+                if (maxDistance < distToCreature)
+                {
+                    maxDistance = distToCreature;
+                    rx = x; ry = y;
+                }
+            }
+        }
+    }
+
+    ai->MovementClear();
+    bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
 }
