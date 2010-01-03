@@ -175,22 +175,9 @@ uint8 PlayerbotAIFacade::GetPartyMinHealthPercent()
 
 int PlayerbotAIFacade::GetAttackerCount()
 {
-    int count = 0;
-
-    Unit* currentTarget = ai->GetCurrentTarget();
-    if (currentTarget && !currentTarget->isDead() && currentTarget->getVictim())
-        count++;
-
-    HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
-    while( ref )
-    {
-        ThreatManager *target = ref->getSource();
-        Unit *attacker = target->getOwner();
-        if (attacker && !attacker->isDead() && currentTarget != attacker)
-            count++;
-        ref = ref->next();
-    }
-    return count;
+    std::list<ThreatManager*> attackers;
+    findAllAttackers(attackers);
+    return attackers.size();
 }
 
 
@@ -273,9 +260,31 @@ void PlayerbotAIFacade::Flee(float distance)
             for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
             {  
                 Unit* unit = (*i)->getOwner();
-                //c->
+                
+                float maxPlayerDistance = 0;
+                if (ai->GetPlayerBot()->GetGroup())
+                {
+                    GroupReference *gref = bot->GetGroup()->GetFirstMember();
+                    while( gref )
+                    {
+                        if( gref->getSource() == bot || gref->getSource() == ai->GetMaster() )
+                        {
+                            gref = gref->next();
+                            continue;
+                        }
+                        Player* player = gref->getSource();
+                        float playerDistance = player->GetDistance(x, y, z);
+                        if (playerDistance > maxPlayerDistance)
+                        {
+                            maxPlayerDistance = playerDistance;
+                        }
+
+                        gref = gref->next();
+                    }
+                }
+
                 float distToCreature = unit->GetDistance(x, y, z);
-                if (maxDistance < distToCreature)
+                if (maxPlayerDistance < BOT_REACT_DISTANCE && maxDistance < distToCreature)
                 {
                     maxDistance = distToCreature;
                     rx = x; ry = y;
