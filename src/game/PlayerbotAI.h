@@ -16,6 +16,7 @@ class PlayerbotMgr;
 #define BOTLOOT_DISTANCE 25.0f
 #define EAT_DRINK_PERCENT 40
 #define SPELL_DISTANCE 25.0f
+#define BOT_REACT_DISTANCE 100.0f
 
 class MANGOS_DLL_SPEC PlayerbotAI
 {
@@ -235,6 +236,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		void Bandage();
 		void UseLongTimeItem(Item* pItem, uint8 time = 30);
         void SetInFront( const Unit* obj );
+        void Attack(Unit* thingToAttack);
 
         void ItemLocalization(std::string& itemName, const uint32 itemID) const;
         void QuestLocalization(std::string& questTitle, const uint32 questID) const;

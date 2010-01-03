@@ -6,7 +6,7 @@ using namespace ai;
 
 void GenericHunterStrategy::InitTriggers(std::list<Trigger*> &triggers)
 {
-    Strategy::InitTriggers(triggers);
+    CombatStrategy::InitTriggers(triggers);
     triggers.push_back(new HunterEnemyTooCloseTrigger(ai));
 
     triggers.push_back(new HunterAspectOfTheHawkTrigger(ai));

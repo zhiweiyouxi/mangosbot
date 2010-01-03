@@ -41,7 +41,7 @@ namespace ai
         }
 
         void Execute() { ai->CastSpell(spell); }
-        virtual BOOL isAvailable() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < 100; }
+        virtual BOOL isAvailable() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
         virtual const char* getName() { return spell; }
 
     protected:
@@ -112,6 +112,7 @@ namespace ai
         virtual void Execute();
         virtual BOOL isUseful();
     };
+
     //---------------------------------------------------------------------------------------------------------------------
 
     class BuffOnPartyAction : public CastSpellAction
@@ -122,4 +123,10 @@ namespace ai
         virtual void Execute();
         virtual BOOL isUseful();
     };
+
+    //---------------------------------------------------------------------------------------------------------------------
+    
+    BEGIN_ACTION(AttackLeastThreatAction, "attack least threat")
+    END_ACTION()
+  
 }

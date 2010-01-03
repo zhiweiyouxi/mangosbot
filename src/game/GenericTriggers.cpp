@@ -69,3 +69,8 @@ BOOL BuffOnPartyTrigger::IsActive()
 {
     return !ai->IsAllPartyHasAura(spell);
 }
+
+BOOL NoAttackersTrigger::IsActive()
+{
+    return ai->GetAttackerCount() == 0;
+}

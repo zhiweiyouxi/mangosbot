@@ -2469,8 +2469,7 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         if (attackOnGuid)
         {
             Unit* thingToAttack = ObjectAccessor::GetUnit(*m_bot, attackOnGuid);
-            if (!m_bot->IsFriendlyTo(thingToAttack) && m_bot->IsWithinLOSInMap(thingToAttack))
-                GetCombatTarget( thingToAttack );
+            Attack(thingToAttack);
         }
         else
         {
@@ -2715,4 +2714,10 @@ void PlayerbotAI::UseLongTimeItem(Item* pItem, uint8 time)
         SetIgnoreUpdateTime(time);
         return;
     }
+}
+
+void PlayerbotAI::Attack(Unit* thingToAttack)
+{
+    if (!m_bot->IsFriendlyTo(thingToAttack) && m_bot->IsWithinLOSInMap(thingToAttack))
+        GetCombatTarget( thingToAttack );
 }

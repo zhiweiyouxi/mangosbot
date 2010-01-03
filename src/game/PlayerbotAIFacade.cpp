@@ -193,19 +193,19 @@ int PlayerbotAIFacade::GetAttackerCount()
     return count;
 }
 
-void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Unit*> &out)
+void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out)
 {
     while( ref )
     {
         ThreatManager *target = ref->getSource();
         Unit *attacker = target->getOwner();
         if (attacker && !attacker->isDead())
-            out.push_back(attacker);
+            out.push_back(target);
         ref = ref->next();
     }
 }
 
-void PlayerbotAIFacade::findAllAttackers(std::list<Unit*> &out)
+void PlayerbotAIFacade::findAllAttackers(std::list<ThreatManager*> &out)
 {
     Player* bot = ai->GetPlayerBot();
     HostileReference *ref = bot->getHostileRefManager().getFirst();
@@ -251,11 +251,11 @@ void PlayerbotAIFacade::Flee(float distance)
             if (!bot->IsWithinLOS(x, y, z))
                 continue;
 
-            std::list<Unit*> attackers;
+            std::list<ThreatManager*> attackers;
             findAllAttackers(attackers);
-            for (std::list<Unit*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+            for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
             {  
-                Unit* unit = *i;
+                Unit* unit = (*i)->getOwner();
                 //c->
                 float distToCreature = unit->GetDistance(x, y, z);
                 if (maxDistance < distToCreature)
@@ -269,4 +269,25 @@ void PlayerbotAIFacade::Flee(float distance)
 
     ai->MovementClear();
     bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
+}
+
+void PlayerbotAIFacade::AttackLeastThreat()
+{
+    std::list<ThreatManager*> attackers;
+    findAllAttackers(attackers);
+
+    float minThreat = 1e8;
+    Unit* target = NULL;
+    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+    {  
+        ThreatManager* attacker = *i;
+        float threat = attacker->getThreat(ai->GetPlayerBot());
+        if (!target || threat < minThreat)
+        {
+            minThreat = threat;
+            target = attacker->getOwner();
+        }
+    }
+    if (target)
+        ai->Attack(target);
 }

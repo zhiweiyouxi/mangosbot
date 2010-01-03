@@ -35,7 +35,9 @@ namespace ai
     END_TRIGGER()
 
     BEGIN_TRIGGER(DruidPartyMemberLowHealthTrigger, PartyMemberLowHealthTrigger)
-        NEXT_ACTIONS("regrowth on party", 50.0f)
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "regrowth on party", 50.0f)
+        END_NEXT_ACTIONS(1)
         virtual const char* getName() { return "party member low health"; }
     END_TRIGGER()
 

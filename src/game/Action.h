@@ -17,9 +17,6 @@ class clazz : public Action \
     };
 
 
-#define NEXT_ACTIONS(name, relevance) \
-    virtual NextAction* getNextAction() { return new NextAction(name, relevance); }
-
 #define BEGIN_NEXT_ACTIONS(size) \
     NextAction** getNextActions() \
     { \

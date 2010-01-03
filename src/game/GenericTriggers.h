@@ -6,7 +6,9 @@ class clazz : public BuffTrigger \
     { \
     public: \
         clazz(PlayerbotAIFacade* const ai) : BuffTrigger(ai, spell) {} \
-        NEXT_ACTIONS(action, 1.0f) \
+        BEGIN_NEXT_ACTIONS(1) \
+            NEXT_ACTION(0, action, 1.0f) \
+        END_NEXT_ACTIONS(1) \
     };
 
 #define BUFF_ON_PARTY_TRIGGER(clazz, spell, action) \
@@ -14,7 +16,9 @@ class clazz : public BuffOnPartyTrigger \
     { \
     public: \
         clazz(PlayerbotAIFacade* const ai) : BuffOnPartyTrigger(ai, spell) {}  \
-        NEXT_ACTIONS(action, 1.0f) \
+        BEGIN_NEXT_ACTIONS(1) \
+            NEXT_ACTION(0, action, 1.0f) \
+        END_NEXT_ACTIONS(1) \
     };
 
 namespace ai
@@ -71,7 +75,9 @@ namespace ai
 
     BEGIN_TRIGGER(LowHealthTrigger, Trigger)
         virtual const char* getName() { return "low health"; }
-        NEXT_ACTIONS("eat", 9.0f)
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "eat", 9.0f)
+        END_NEXT_ACTIONS(1)
     END_TRIGGER()
 
     BEGIN_TRIGGER(PartyMemberLowHealthTrigger, Trigger)
@@ -80,12 +86,16 @@ namespace ai
 
     BEGIN_TRIGGER(LowManaTrigger, Trigger)
         virtual const char* getName() { return "low mana"; }
-        NEXT_ACTIONS("drink", 9.0f)
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "drink", 9.0f)
+        END_NEXT_ACTIONS(1)
     END_TRIGGER()
 
     BEGIN_TRIGGER(PanicTrigger, Trigger)
         virtual const char* getName() { return "panic"; }
-        NEXT_ACTIONS("panic potion", 100.0f)
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "panic potion", 100.0f)
+        END_NEXT_ACTIONS(1)
     END_TRIGGER()
 
     class BuffTrigger : public Trigger
@@ -110,4 +120,10 @@ namespace ai
     public: 
        virtual BOOL IsActive();
     };
+
+    BEGIN_TRIGGER(NoAttackersTrigger, Trigger)
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "attack least threat", 100.0f)
+        END_NEXT_ACTIONS(1)
+    END_TRIGGER()
 }

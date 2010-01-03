@@ -45,6 +45,8 @@ namespace ai
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
         virtual int GetAttackerCount();
+
+        virtual void AttackLeastThreat();
         
         virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
         virtual void UseManaPotion() { FindAndUse(isManaPotion); }
@@ -64,8 +66,8 @@ namespace ai
         void FindAndUse(BOOL predicate(const ItemPrototype*));
         Player* findPlayer(BOOL predicate(Player*, FindPlayerParam&), void *param);
         static BOOL isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
-        void findAllAttackers(std::list<Unit*> &out);
-        void findAllAttackers(HostileReference *ref, std::list<Unit*> &out);
+        void findAllAttackers(std::list<ThreatManager*> &out);
+        void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
 
     protected:
         PlayerbotAI *ai;

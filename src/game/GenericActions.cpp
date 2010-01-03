@@ -96,3 +96,10 @@ BOOL BuffOnPartyAction::isUseful()
 {
     return !ai->IsAllPartyHasAura(spell);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void AttackLeastThreatAction::Execute()
+{
+    ai->AttackLeastThreat();
+}

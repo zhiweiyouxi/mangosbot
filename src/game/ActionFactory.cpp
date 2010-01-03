@@ -41,6 +41,10 @@ Action* ActionFactory::createAction(const char* name)
     if (!strcmp("stay", name))
         return new StayAction(ai);
 
+    if (!strcmp("attack least threat", name))
+        return new AttackLeastThreatAction(ai);
+    
+
     return NULL;
 }
 

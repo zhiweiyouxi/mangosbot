@@ -15,7 +15,7 @@ using namespace ai;
 class DpsHunterEngineTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( DpsHunterEngineTestCase );
-  //CPPUNIT_TEST( combatVsCaster );
+  CPPUNIT_TEST( pickNewTarget );
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST_SUITE_END();
 
@@ -28,25 +28,7 @@ public:
 	}
 
 protected:
-    void combatVsCaster()
-    {
-        ai = new MockPlayerbotAIFacade();
-
-        Engine engine(ai, new HunterActionFactory(ai));
-        engine.addStrategy("frost DpsHunter");
-        engine.Init();
-
-        engine.DoNextAction(NULL);
-        ai->resetSpell("frostbolt");
-        engine.DoNextAction(NULL);
-        ai->resetSpell("frostbolt");
-        engine.DoNextAction(NULL);
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>frostbolt>frostbolt"));
-    }
-
-	void combatVsMelee()
+ 	void combatVsMelee()
 	{
         ai = new MockPlayerbotAIFacade();
 
@@ -73,6 +55,24 @@ protected:
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">concussive shot>serpent sting>auto shot>flee>arcane shot>auto shot"));
 
 	}
+
+    void pickNewTarget()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new HunterActionFactory(ai));
+        engine.addStrategy("dps hunter");
+        engine.Init();
+
+        ai->attackerCount = 0;
+        engine.DoNextAction(NULL); // attack least threat
+        ai->attackerCount = 1;
+        engine.DoNextAction(NULL); // concussive shot
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>concussive shot"));
+
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( DpsHunterEngineTestCase );
