@@ -4,4 +4,5 @@
 
 using namespace ai;
 
-BOOL WarriorEnemyTooCloseTrigger::IsActive() { return EnemyTooCloseTrigger::IsActive(); }
+BOOL WarriorLoseAggroTrigger::IsActive() { return LoseAggroTrigger::IsActive(); }
+

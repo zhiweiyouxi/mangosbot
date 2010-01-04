@@ -94,6 +94,7 @@ namespace ai
     public:
         DruidMeleeAction(PlayerbotAIFacade* const ai) : MeleeAction(ai) {}
         PREREQUISITE_ACTIONS("dire bear form")
+        virtual BOOL isUseful() { return TRUE; }
     };
 
     BEGIN_SPELL_ACTION(CastMarkOfTheWildAction, "mark of the wild")

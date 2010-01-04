@@ -2,7 +2,7 @@
 #include "Trigger.h"
 
 #define BUFF_TRIGGER(clazz, spell, action) \
-class clazz : public BuffTrigger \
+    class clazz : public BuffTrigger \
     { \
     public: \
         clazz(PlayerbotAIFacade* const ai) : BuffTrigger(ai, spell) {} \
@@ -12,12 +12,32 @@ class clazz : public BuffTrigger \
     };
 
 #define BUFF_ON_PARTY_TRIGGER(clazz, spell, action) \
-class clazz : public BuffOnPartyTrigger \
+    class clazz : public BuffOnPartyTrigger \
     { \
     public: \
         clazz(PlayerbotAIFacade* const ai) : BuffOnPartyTrigger(ai, spell) {}  \
         BEGIN_NEXT_ACTIONS(1) \
             NEXT_ACTION(0, action, 1.0f) \
+        END_NEXT_ACTIONS(1) \
+    };
+
+#define DEBUFF_TRIGGER(clazz, spell, action) \
+    class clazz : public DebuffTrigger \
+    { \
+    public: \
+        clazz(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, spell) {} \
+        BEGIN_NEXT_ACTIONS(1) \
+            NEXT_ACTION(0, action, 1.0f) \
+        END_NEXT_ACTIONS(1) \
+    };
+
+#define SPELL_AVAILABLE_TRIGGER(clazz, spell, relevance) \
+class clazz : public SpellAvailableTrigger \
+    { \
+    public: \
+        clazz(PlayerbotAIFacade* const ai) : SpellAvailableTrigger(ai, spell) {} \
+        BEGIN_NEXT_ACTIONS(1) \
+            NEXT_ACTION(0, spell, relevance) \
         END_NEXT_ACTIONS(1) \
     };
 
@@ -126,4 +146,30 @@ namespace ai
             NEXT_ACTION(0, "attack least threat", 9.0f)
         END_NEXT_ACTIONS(1)
     END_TRIGGER()
+
+    class DebuffTrigger : public BuffTrigger
+    {
+    public:
+        DebuffTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
+    public: 
+        virtual BOOL IsActive();
+    };
+
+    class SpellAvailableTrigger : public BuffTrigger
+    {
+    public:
+        SpellAvailableTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
+    public: 
+        virtual BOOL IsActive();
+    };
+
+    class TankNoAttackersTrigger : public NoAttackersTrigger
+    {
+    public:
+        TankNoAttackersTrigger(PlayerbotAIFacade* const ai) : NoAttackersTrigger(ai)  {}
+    public: 
+        BEGIN_NEXT_ACTIONS(1)
+            NEXT_ACTION(0, "attack bigger threat", 9.0f)
+            END_NEXT_ACTIONS(1)
+    };
 }

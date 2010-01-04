@@ -2049,11 +2049,27 @@
 					Name="Strategies"
 					>
 					<File
+						RelativePath="..\..\src\game\GenericWarriorNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericWarriorNonCombatStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericWarriorStrategy.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\game\GenericWarriorStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\TankWarriorStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\TankWarriorStrategy.h"
 						>
 					</File>
 				</Filter>

@@ -1,0 +1,123 @@
+#include "pch.h"
+
+#include "../game/Action.h"
+#include "../game/ActionBasket.h"
+#include "../game/Queue.h"
+#include "../game/Trigger.h"
+#include "../game/Engine.h"
+#include "../game/GenericWarriorStrategy.h"
+
+#include "MockPlayerbotAIFacade.h"
+
+using namespace ai;
+
+
+class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
+{
+    CPPUNIT_TEST_SUITE( TankWarriorTestCase );
+    CPPUNIT_TEST( combatVsMelee );
+    CPPUNIT_TEST( warriorMustHoldAggro );
+    CPPUNIT_TEST( warriorMustDemoralizeAttackers );
+    CPPUNIT_TEST( revengeIfDodge );
+    CPPUNIT_TEST_SUITE_END();
+
+protected:
+    MockPlayerbotAIFacade *ai;
+    Engine *engine;
+
+public:
+    void setUp()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        engine = new Engine(ai, new WarriorActionFactory(ai));
+        engine->addStrategy("tank");
+        engine->Init();
+        ai->spellCooldowns.push_back("revenge");
+    }
+
+    void tearDown()
+    {
+        if (engine)
+            delete engine;
+        if (ai) 
+            delete ai;
+    }
+
+protected:
+    void warriorMustDemoralizeAttackers()
+    {
+        engine->DoNextAction(NULL); // melee
+        engine->DoNextAction(NULL); // defensive stance
+
+        ai->attackerCount = 3;
+        engine->DoNextAction(NULL); // demoralizing roar
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>demoralizing shout>melee"));
+    }
+
+    void warriorMustHoldAggro()
+    {
+        engine->DoNextAction(NULL); // melee
+        engine->DoNextAction(NULL); // defensive stance
+        ai->aggro = FALSE;
+        engine->DoNextAction(NULL); // mocking blow
+        ai->aggro = TRUE;
+        
+        engine->DoNextAction(NULL); 
+
+        ai->aggro = FALSE;
+        engine->DoNextAction(NULL); // taunt
+        ai->aggro = TRUE;
+        
+        engine->DoNextAction(NULL);
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>mocking blow>melee>taunt>rend"));
+    }
+
+    void combatVsMelee()
+    {
+        ai->distanceToEnemy = 15.0f; // enemy too far
+        
+        engine->DoNextAction(NULL); // melee
+        ai->distanceToEnemy = 0.0f; 
+        engine->DoNextAction(NULL); // defensive stance
+
+        engine->DoNextAction(NULL); 
+        ai->spellCooldowns.remove("rend");
+        ai->targetAuras.push_back("rend");
+
+        engine->DoNextAction(NULL); 
+        ai->spellCooldowns.remove("disarm");
+        ai->targetAuras.push_back("disarm");
+
+        engine->DoNextAction(NULL); 
+        ai->spellCooldowns.remove("sunder armor");
+        ai->targetAuras.push_back("sunder armor");
+
+        ai->distanceToEnemy = 0.0f; 
+        ai->rage = 15;
+        engine->DoNextAction(NULL); // heroic strike
+
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>rend>disarm>sunder armor>heroic strike"));
+    }
+
+    void revengeIfDodge()
+    {
+        engine->DoNextAction(NULL); // melee
+        engine->DoNextAction(NULL); // melee
+        ai->spellCooldowns.remove("revenge");
+        engine->DoNextAction(NULL); // defensive stance
+
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>revenge"));
+    }
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION( TankWarriorTestCase );

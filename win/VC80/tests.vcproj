@@ -677,6 +677,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Warrior"
+			>
+			<File
+				RelativePath="..\..\src\tests\TankWarriorTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\WarrirorNonCombatTestCase.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\tests\main.cpp"
 			>
@@ -707,10 +719,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\tests\QueueTestCase.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\WarriorTestCase.cpp"
 			>
 		</File>
 	</Files>

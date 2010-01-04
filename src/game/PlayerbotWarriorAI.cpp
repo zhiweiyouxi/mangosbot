@@ -6,6 +6,8 @@
     */
 #include "PlayerbotWarriorAI.h"
 #include "PlayerbotMgr.h"
+#include "PlayerbotAIFacade.h"
+#include "TankWarriorStrategy.h"
 
 class PlayerbotAI;
 PlayerbotWarriorAI::PlayerbotWarriorAI(Player* const master, Player* const bot, PlayerbotAI* const ai): PlayerbotClassAI(master, bot, ai)
@@ -74,11 +76,27 @@ PlayerbotWarriorAI::PlayerbotWarriorAI(Player* const master, Player* const bot, 
 	WAR_STOMP               = ai->getSpellId("war stomp"); // tauren
 	BERSERKING              = ai->getSpellId("berserking"); // troll
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
+
+    engine = new ai::Engine(facade, new ai::WarriorActionFactory(facade));
+    engine->addStrategy("tank warrior");
+    engine->addStrategy("assist");
+    engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::WarriorActionFactory(facade));
+    nonCombatEngine->addStrategy("warrior non combat");
+    nonCombatEngine->addStrategy("assist");
+    nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->Init();
 }
-PlayerbotWarriorAI::~PlayerbotWarriorAI() {}
+PlayerbotWarriorAI::~PlayerbotWarriorAI() 
+{
+    PlayerbotClassAI::~PlayerbotClassAI();
+}
 
 bool PlayerbotWarriorAI::DoFirstCombatManeuver(Unit *pTarget)
 {
+    return true;
+
     Player *m_bot = GetPlayerBot();
     PlayerbotAI *ai = GetAI();
     PlayerbotAI::CombatOrderType co = ai->GetCombatOrder();
@@ -137,6 +155,8 @@ void PlayerbotWarriorAI::DoNextCombatManeuver(Unit *pTarget)
             return;
     }
     // ------- Non Duel combat ----------
+    engine->DoNextAction(NULL);
+    return;
 
     //ai->SetMovementOrder( PlayerbotAI::MOVEMENT_FOLLOW, GetMaster() ); // dont want to melee mob
 
@@ -303,6 +323,9 @@ void PlayerbotWarriorAI::DoNonCombatActions()
     Player * m_bot = GetPlayerBot();
     if (!m_bot)
         return;
+    
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     // TODO (by Runsttren): check if shout aura bot has is casted by this bot, 
     // otherwise cast other useful shout

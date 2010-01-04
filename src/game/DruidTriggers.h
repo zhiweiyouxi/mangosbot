@@ -64,14 +64,4 @@ namespace ai
     BUFF_TRIGGER(MarkOfTheWildTrigger, "mark of the wild", "mark of the wild")
     BUFF_TRIGGER(ThornsTrigger, "thorns", "thorns")
 
-    class BearTankNoAttackersTrigger : public NoAttackersTrigger
-    {
-    public:
-        BearTankNoAttackersTrigger(PlayerbotAIFacade* const ai) : NoAttackersTrigger(ai)  {}
-    public: 
-        BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "attack bigger threat", 9.0f)
-        END_NEXT_ACTIONS(1)
-    };
-
 }

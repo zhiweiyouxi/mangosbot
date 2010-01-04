@@ -13,6 +13,12 @@ class clazz : public CastSpellAction \
 #define END_SPELL_ACTION() \
     };
 
+#define BEGIN_DEBUFF_ACTION(clazz, name) \
+class clazz : public CastDebuffSpellAction \
+        { \
+        public: \
+        clazz(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, name) {} \
+
 #define BEGIN_RANGED_SPELL_ACTION(clazz, name) \
 class clazz : public CastRangedSpellAction \
         { \
@@ -58,6 +64,14 @@ namespace ai
         PREREQUISITE_ACTIONS("reach spell");
     };
     //---------------------------------------------------------------------------------------------------------------------
+    class CastDebuffSpellAction : public CastSpellAction
+    {
+    public:
+        CastDebuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+        virtual BOOL isAvailable();
+        PREREQUISITE_ACTIONS("reach spell");
+    };
+    //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(FleeAction, "flee")
     END_ACTION()
@@ -65,6 +79,7 @@ namespace ai
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(MeleeAction, "melee")
+        virtual BOOL isUseful();
     END_ACTION()
 
     //---------------------------------------------------------------------------------------------------------------------

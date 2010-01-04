@@ -18,7 +18,7 @@ void BearTankDruidStrategy::InitTriggers(std::list<Trigger*> &triggers)
 
     // TODO: maybe move to other strategy?
     triggers.push_back(new DruidPartyMemberLowHealthTrigger(ai));
-    triggers.push_back(new BearTankNoAttackersTrigger(ai));
+    triggers.push_back(new TankNoAttackersTrigger(ai));
 }
 
 void BearTankDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

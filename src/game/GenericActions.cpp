@@ -18,6 +18,11 @@ void MeleeAction::Execute()
     ai->MoveToTarget();
 }
 
+BOOL MeleeAction::isUseful()
+{
+    return ai->GetDistanceToEnemy() > ATTACK_DISTANCE;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 
 void ReachSpellAction::Execute()
@@ -109,4 +114,11 @@ void AttackLeastThreatAction::Execute()
 void AttackBiggerThreatAction::Execute()
 {
     ai->AttackBiggerThreat();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+BOOL CastDebuffSpellAction::isAvailable()
+{
+    return CastSpellAction::isAvailable() && !ai->TargetHasAura(spell);
 }

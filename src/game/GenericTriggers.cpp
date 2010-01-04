@@ -74,3 +74,14 @@ BOOL NoAttackersTrigger::IsActive()
 {
     return ai->GetAttackerCount() > 0 && ai->GetMyAttackerCount() == 0;
 }
+
+BOOL DebuffTrigger::IsActive()
+{
+    return !ai->TargetHasAura(spell);
+}
+
+BOOL SpellAvailableTrigger::IsActive()
+{
+    return ai->canCastSpell(spell);
+}
+
