@@ -2720,6 +2720,13 @@ void PlayerbotAI::UseLongTimeItem(Item* pItem, uint8 time)
 
 void PlayerbotAI::Attack(Unit* thingToAttack)
 {
-    if (!m_bot->IsFriendlyTo(thingToAttack) && m_bot->IsWithinLOSInMap(thingToAttack))
-        GetCombatTarget( thingToAttack );
+    if (m_bot->IsFriendlyTo(thingToAttack))
+    {
+        TellMaster("I cannot attack this");
+    }
+    else if (!m_bot->IsWithinLOSInMap(thingToAttack))
+    {
+        TellMaster("This is not in my sight, maybe later?");
+    }
+    else GetCombatTarget( thingToAttack );
 }

@@ -90,7 +90,7 @@ void Engine::Init()
 }
 
 
-BOOL Engine::DoNextAction(Unit* unit)
+BOOL Engine::DoNextAction(Unit* unit, int depth)
 {
     BOOL actionExecuted = FALSE;
     ActionBasket* basket = NULL;
@@ -150,8 +150,8 @@ BOOL Engine::DoNextAction(Unit* unit)
     {
         sLog.outBasic("--- queue is empty ---");
         PushDefaultActions();
-        if (queue.Peek())
-            return DoNextAction(unit);
+        if (queue.Peek() && depth < 5)
+            return DoNextAction(unit, depth + 1);
     }
 
     return actionExecuted;

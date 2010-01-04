@@ -314,7 +314,7 @@ void PlayerbotAIFacade::AttackLeastThreat()
             target = attacker->getOwner();
         }
     }
-    if (target)
+    if (target && !ai->HasAura("polymorph", *target))
         ai->Attack(target);
 }
 
@@ -335,6 +335,6 @@ void PlayerbotAIFacade::AttackBiggerThreat()
             target = attacker->getOwner();
         }
     }
-    if (target)
+    if (target && !ai->HasAura("polymorph", *target))
         ai->Attack(target);
 }

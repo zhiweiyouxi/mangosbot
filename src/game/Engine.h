@@ -56,7 +56,7 @@ namespace ai
         void clearStrategies();
 
     public:
-	    virtual BOOL DoNextAction(Unit*);
+	    virtual BOOL DoNextAction(Unit*, int depth = 0);
         void ExecuteAction(const char* name);
 
     public:
