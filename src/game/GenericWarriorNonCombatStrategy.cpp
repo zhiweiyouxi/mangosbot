@@ -8,6 +8,7 @@ using namespace ai;
 void GenericWarriorNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
 {
     GenericNonCombatStrategy::InitTriggers(triggers);
-    
+
+    triggers.push_back(new DefensiveStanceTrigger(ai));
 }
 

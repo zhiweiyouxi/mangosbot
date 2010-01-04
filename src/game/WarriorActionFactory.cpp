@@ -36,7 +36,7 @@ Strategy* WarriorActionFactory::createStrategy(const char* name)
     if (strategy)
         return strategy;
 
-    if (!strcmp("tank", name))
+    if (!strcmp("tank warrior", name))
         return new TankWarriorStrategy(ai);
 
     if (!strcmp("warrior non combat", name))

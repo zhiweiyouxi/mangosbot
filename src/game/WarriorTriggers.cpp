@@ -6,3 +6,4 @@ using namespace ai;
 
 BOOL WarriorLoseAggroTrigger::IsActive() { return LoseAggroTrigger::IsActive(); }
 
+BOOL WarriorEnemyOutOfMeleeTrigger::IsActive() { return EnemyOutOfMeleeTrigger::IsActive(); }

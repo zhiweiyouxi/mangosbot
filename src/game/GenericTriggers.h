@@ -49,14 +49,14 @@ namespace ai
 
     BEGIN_TRIGGER(EnemyOutOfMeleeTrigger, Trigger)
         BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "melee", 1.0f)
+            NEXT_ACTION(0, "melee", 10.0f)
         END_NEXT_ACTIONS(1)
         virtual const char* getName() { return "out of melee range"; }
     END_TRIGGER()
 
     BEGIN_TRIGGER(EnemyOutOfSpellRangeTrigger, Trigger)
         BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "reach spell", 2.0f)
+            NEXT_ACTION(0, "reach spell", 20.0f)
         END_NEXT_ACTIONS(1)
         virtual const char* getName() { return "out of spell range"; }
     END_TRIGGER()

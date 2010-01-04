@@ -25,6 +25,12 @@ class clazz : public CastRangedSpellAction \
         public: \
         clazz(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, name) {} \
 
+#define BEGIN_MELEE_SPELL_ACTION(clazz, name) \
+class clazz : public CastMeleeSpellAction \
+        { \
+        public: \
+        clazz(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, name) {} \
+
 
 #define END_RANGED_SPELL_ACTION() \
     };
@@ -54,6 +60,14 @@ namespace ai
         const char* spell;
     };
 
+
+    //---------------------------------------------------------------------------------------------------------------------
+    class CastMeleeSpellAction : public CastSpellAction
+    {
+    public:
+        CastMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+        virtual BOOL isAvailable();
+    };
     //---------------------------------------------------------------------------------------------------------------------
 
     class CastRangedSpellAction : public CastSpellAction

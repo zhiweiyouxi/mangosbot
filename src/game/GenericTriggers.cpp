@@ -40,7 +40,7 @@ BOOL PartyMemberLowHealthTrigger::IsActive()
 
 BOOL LowManaTrigger::IsActive()
 {
-    return ai->GetManaPercent() < EAT_DRINK_PERCENT;
+    return ai->GetManaPercent() != 0 && ai->GetManaPercent() < EAT_DRINK_PERCENT;
 }
 
 BOOL LoseAggroTrigger::IsActive()
@@ -56,7 +56,7 @@ BOOL AttackerCountTrigger::IsActive()
 
 BOOL PanicTrigger::IsActive()
 {
-    return ai->GetHealthPercent() < 25 && ai->GetManaPercent() < 25;
+    return ai->GetHealthPercent() < 25 && ai->GetManaPercent() != 0 && ai->GetManaPercent() < 25;
 }
 
 BOOL BuffTrigger::IsActive()
@@ -77,7 +77,7 @@ BOOL NoAttackersTrigger::IsActive()
 
 BOOL DebuffTrigger::IsActive()
 {
-    return !ai->TargetHasAura(spell);
+    return !ai->TargetHasAura(spell) && ai->canCastSpell(spell);
 }
 
 BOOL SpellAvailableTrigger::IsActive()

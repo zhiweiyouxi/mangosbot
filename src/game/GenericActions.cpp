@@ -11,6 +11,11 @@ void FleeAction::Execute()
     ai->Flee();
 }
 
+BOOL CastMeleeSpellAction::isAvailable()
+{
+    return CastSpellAction::isAvailable() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 
 void MeleeAction::Execute()

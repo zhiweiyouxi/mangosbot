@@ -4,31 +4,31 @@
 
 #define DEFAULT_WARRIOR_NEXT_ACTIONS() \
     BEGIN_NEXT_ACTIONS(1) \
-    NEXT_ACTION(0, "melee", 10.0f) \
+    NEXT_ACTION(0, "heroic strike", 20.0f) \
     END_NEXT_ACTIONS(1)
 
 namespace ai
 {
     // main
-    BEGIN_SPELL_ACTION(CastHeroicStrikeAction, "heroic strike")
+    BEGIN_MELEE_SPELL_ACTION(CastHeroicStrikeAction, "heroic strike")
     DEFAULT_WARRIOR_NEXT_ACTIONS()
     PREREQUISITE_ACTIONS("melee")
     END_SPELL_ACTION()
 
     // attack me
-    BEGIN_SPELL_ACTION(CastMockingBlowAction, "mocking blow")
+    BEGIN_MELEE_SPELL_ACTION(CastMockingBlowAction, "mocking blow")
     DEFAULT_WARRIOR_NEXT_ACTIONS()
     ALTERNATIVE_ACTIONS("taunt")
     PREREQUISITE_ACTIONS("melee")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastTauntAction, "taunt")
+    BEGIN_RANGED_SPELL_ACTION(CastTauntAction, "taunt")
     DEFAULT_WARRIOR_NEXT_ACTIONS()
     PREREQUISITE_ACTIONS("melee")
     END_SPELL_ACTION()
 
     // after dodge
-    BEGIN_SPELL_ACTION(CastRevengeAction, "revenge")
+    BEGIN_MELEE_SPELL_ACTION(CastRevengeAction, "revenge")
     DEFAULT_WARRIOR_NEXT_ACTIONS()
     PREREQUISITE_ACTIONS("melee")
     ALTERNATIVE_ACTIONS("melee")

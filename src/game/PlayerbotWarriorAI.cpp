@@ -95,7 +95,7 @@ PlayerbotWarriorAI::~PlayerbotWarriorAI()
 
 bool PlayerbotWarriorAI::DoFirstCombatManeuver(Unit *pTarget)
 {
-    return true;
+    return false;
 
     Player *m_bot = GetPlayerBot();
     PlayerbotAI *ai = GetAI();

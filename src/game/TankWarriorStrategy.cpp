@@ -9,8 +9,7 @@ void TankWarriorStrategy::InitTriggers(std::list<Trigger*> &triggers)
 {
     GenericWarriorStrategy::InitTriggers(triggers);
     
-    triggers.push_back(new DefensiveStanceTrigger(ai));
-    triggers.push_back(new EnemyOutOfMeleeTrigger(ai));
+    triggers.push_back(new WarriorEnemyOutOfMeleeTrigger(ai));
     triggers.push_back(new WarriorLoseAggroTrigger(ai));
 
     triggers.push_back(new HeroicStrikeAvailable(ai));

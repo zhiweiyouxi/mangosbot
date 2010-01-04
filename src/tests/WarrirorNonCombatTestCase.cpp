@@ -15,6 +15,7 @@ using namespace ai;
 class WarriorNonCombatTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( WarriorNonCombatTestCase );
+        CPPUNIT_TEST( buff );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -26,7 +27,20 @@ public:
     }
 
 protected:
-  
+    void buff()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new WarriorActionFactory(ai));
+        engine.addStrategy("warrior non combat");
+        engine.Init();
+
+        engine.DoNextAction(NULL);
+        engine.DoNextAction(NULL);
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance"));
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( WarriorNonCombatTestCase );

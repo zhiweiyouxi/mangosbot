@@ -3,6 +3,13 @@
 
 namespace ai
 {
+    BEGIN_TRIGGER(WarriorEnemyOutOfMeleeTrigger, EnemyOutOfMeleeTrigger)
+        BEGIN_NEXT_ACTIONS(1)
+        NEXT_ACTION(0, "melee", 50.0f)
+        END_NEXT_ACTIONS(1)
+        virtual const char* getName() { return "out of melee range"; }
+    END_TRIGGER()
+
     class HeroicStrikeAvailable : public RageAvailable
     {
     public:

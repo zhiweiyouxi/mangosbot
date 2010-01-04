@@ -31,7 +31,7 @@ public:
         ai = new MockPlayerbotAIFacade();
 
         engine = new Engine(ai, new WarriorActionFactory(ai));
-        engine->addStrategy("tank");
+        engine->addStrategy("tank warrior");
         engine->Init();
         ai->spellCooldowns.push_back("revenge");
     }
@@ -48,20 +48,20 @@ protected:
     void warriorMustDemoralizeAttackers()
     {
         engine->DoNextAction(NULL); // melee
-        engine->DoNextAction(NULL); // defensive stance
+        ai->distanceToEnemy = 0;
 
         ai->attackerCount = 3;
         engine->DoNextAction(NULL); // demoralizing roar
         engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>demoralizing shout>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>demoralizing shout>heroic strike"));
     }
 
     void warriorMustHoldAggro()
     {
         engine->DoNextAction(NULL); // melee
-        engine->DoNextAction(NULL); // defensive stance
+        ai->distanceToEnemy = 0;
         ai->aggro = FALSE;
         engine->DoNextAction(NULL); // mocking blow
         ai->aggro = TRUE;
@@ -75,7 +75,7 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>mocking blow>melee>taunt>rend"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>mocking blow>heroic strike>taunt>rend"));
     }
 
     void combatVsMelee()
@@ -100,23 +100,24 @@ protected:
 
         ai->distanceToEnemy = 0.0f; 
         ai->rage = 15;
+        ai->spellCooldowns.remove("heroic strike");
         engine->DoNextAction(NULL); // heroic strike
 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>rend>disarm>sunder armor>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>rend>heroic strike>disarm>sunder armor>heroic strike"));
     }
 
     void revengeIfDodge()
     {
         engine->DoNextAction(NULL); // melee
-        engine->DoNextAction(NULL); // melee
+        ai->distanceToEnemy = 0;
         ai->spellCooldowns.remove("revenge");
         engine->DoNextAction(NULL); // defensive stance
 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>defensive stance>revenge"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>revenge"));
     }
 };
 

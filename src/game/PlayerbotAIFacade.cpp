@@ -28,7 +28,7 @@ BOOL PlayerbotAIFacade::canCastSpell( const char* name )
 
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellid );
     Spell *spell = new Spell(bot, spellInfo, false );
-    res = (spell->CheckPower() == SPELL_CAST_OK);
+    res = (spell->CheckCast(true) == SPELL_CAST_OK);
     delete spell;
 
     return res;
@@ -226,7 +226,20 @@ void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Threat
         ThreatManager *target = ref->getSource();
         Unit *attacker = target->getOwner();
         if (attacker && !attacker->isDead())
-            out.push_back(target);
+        {
+            BOOL found = FALSE;
+            for (std::list<ThreatManager*>::iterator i = out.begin(); i != out.end(); i++)
+            {
+                ThreatManager *cur = *i;
+                if (cur->getOwner() == attacker)
+                {
+                    found = TRUE;
+                    break;
+                }
+            }
+            if (!found)
+                out.push_back(target);
+        }
         ref = ref->next();
     }
 }
