@@ -46,4 +46,13 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastAspectOfTheHawkAction, "aspect of the hawk")
     END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastCallPetAction, "call pet")
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastMendPetAction, "mend pet")
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastRevivePetAction, "revive pet")
+    END_SPELL_ACTION()
 }

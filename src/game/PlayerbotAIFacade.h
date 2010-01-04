@@ -40,6 +40,9 @@ namespace ai
         virtual void RemoveAura(const char* spell);
         virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
         virtual uint8 GetTargetHealthPercent() { return ai->GetHealthPercent(*ai->GetCurrentTarget()); }
+        virtual uint8 GetPetHealthPercent() { return ai->GetHealthPercent(*ai->GetPlayerBot()->GetPet()); }
+        virtual BOOL HasPet() { return ai->GetPlayerBot()->GetPet() != NULL; }
+        virtual BOOL IsPetDead() { return ai->GetPlayerBot()->GetPet()->getDeathState() != ALIVE; }
         virtual Player* GetPartyMinHealthPlayer();
         virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }

@@ -11,7 +11,7 @@ namespace ai
         MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL) 
         { 
             distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; health = 100; mana = 100; partyMinHealth = 100; 
-            targetHealth = 100;
+            targetHealth = 100; petHealth = 100; hasPet = TRUE;
             attackerCount = 1;myAttackerCount = 1;
         }
 
@@ -42,6 +42,10 @@ namespace ai
         virtual void UseFood() { buffer.append(">eat"); }
         virtual void UseDrink() { buffer.append(">drink"); }
 
+        virtual uint8 GetPetHealthPercent() { return petHealth; }
+        virtual BOOL HasPet() { return hasPet; }
+        virtual BOOL IsPetDead() { return petHealth <= 0; }
+
         virtual BOOL HasHealingPotion() { return FALSE; }
         virtual BOOL HasManaPotion() { return FALSE; }
         virtual BOOL HasPanicPotion() { return FALSE; }
@@ -62,8 +66,9 @@ namespace ai
         std::list<std::string> targetAuras;
         float distanceToEnemy;
         uint8 rage, health, mana;
-        uint8 targetHealth;
+        uint8 targetHealth, petHealth;
         BOOL aggro;
+        BOOL hasPet;
         int attackerCount;
         int myAttackerCount;
         int partyMinHealth;
