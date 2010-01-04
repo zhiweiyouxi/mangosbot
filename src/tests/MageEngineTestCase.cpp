@@ -37,9 +37,9 @@ protected:
         engine.Init();
 
         engine.DoNextAction(NULL);
-        ai->resetSpell("frostbolt");
+        ai->spellCooldowns.remove("frostbolt");
         engine.DoNextAction(NULL);
-        ai->resetSpell("frostbolt");
+        ai->spellCooldowns.remove("frostbolt");
         engine.DoNextAction(NULL);
 
         std::cout << ai->buffer;
@@ -62,10 +62,10 @@ protected:
         engine.DoNextAction(NULL); // flee
         
         ai->distanceToEnemy = 15.0f; 
-        ai->resetSpell("frostbolt");
+        ai->spellCooldowns.remove("frostbolt");
         
         engine.DoNextAction(NULL); // frostbolt
-        ai->resetSpell("frostbolt");
+        ai->spellCooldowns.remove("frostbolt");
 
         engine.DoNextAction(NULL); // frostbolt
                 

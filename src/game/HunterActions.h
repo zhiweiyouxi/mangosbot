@@ -10,6 +10,10 @@
 
 namespace ai
 {
+    BEGIN_RANGED_SPELL_ACTION(CastHuntersMarkAction, "hunter's mark")
+        DEFAULT_HUNTER_NEXT_ACTIONS()
+    END_SPELL_ACTION()
+
     BEGIN_RANGED_SPELL_ACTION(CastAutoShotAction, "auto shot")
         DEFAULT_HUNTER_NEXT_ACTIONS()
     END_SPELL_ACTION()

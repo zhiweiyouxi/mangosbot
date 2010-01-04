@@ -11,7 +11,7 @@ namespace ai
 
     public:
         BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "auto shot", 10.0f)
+            NEXT_ACTION(0, "hunter's mark", 50.0f)
         END_NEXT_ACTIONS(1)
     
     public:

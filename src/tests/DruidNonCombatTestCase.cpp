@@ -63,7 +63,7 @@ protected:
         
         engine.DoNextAction(NULL);
         ai->auras.push_back("thorns");
-        ai->resetSpell("mark of the wild");
+        ai->spellCooldowns.remove("mark of the wild");
         
         engine.DoNextAction(NULL);
         engine.DoNextAction(NULL);

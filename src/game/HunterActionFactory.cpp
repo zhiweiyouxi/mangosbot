@@ -19,6 +19,7 @@ Action* HunterActionFactory::createAction(const char* name)
     CREATE_ACTION_RULE("serpent sting", CastSerpentStingAction);
     CREATE_ACTION_RULE("scorpid sting", CastScorpidStingAction);
     CREATE_ACTION_RULE("aspect of the hawk", CastAspectOfTheHawkAction);
+    CREATE_ACTION_RULE("hunter's mark", CastHuntersMarkAction);
 
     //CREATE_ACTION_RULE("", CastAction);
 

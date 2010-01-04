@@ -36,6 +36,7 @@ protected:
         engine.addStrategy("dps hunter");
         engine.Init();
 
+        engine.DoNextAction(NULL); // hunter's mark
         engine.DoNextAction(NULL); // concussive shot
         engine.DoNextAction(NULL); // serpent sting
         ai->targetAuras.push_back("serpent sting");
@@ -48,13 +49,13 @@ protected:
         ai->resetSpells();        
         engine.DoNextAction(NULL); // arcane shot
 
-        ai->resetSpell("arcane shot");        
+        ai->spellCooldowns.remove("arcane shot");        
         engine.DoNextAction(NULL); // arcane shot
-        ai->resetSpell("auto shot");        
+        ai->spellCooldowns.remove("auto shot");        
         engine.DoNextAction(NULL); // auto shot
                 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">serpent sting>arcane shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>serpent sting>arcane shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
 
 	}
 
@@ -66,9 +67,10 @@ protected:
         engine.addStrategy("dps hunter");
         engine.Init();
 
-        ai->alreadyCast.push_back("auto shot");
-        ai->alreadyCast.push_back("serpent sting");
-        ai->alreadyCast.push_back("concussive shot"); // this will not be available as we do not have any target
+        ai->spellCooldowns.push_back("auto shot");
+        ai->spellCooldowns.push_back("serpent sting");
+        ai->spellCooldowns.push_back("concussive shot"); // this will not be available as we do not have any target
+        ai->spellCooldowns.push_back("hunter's mark");
         ai->myAttackerCount = 0;
         engine.DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;

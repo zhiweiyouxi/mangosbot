@@ -629,38 +629,54 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath="..\..\src\tests\DpsHunterEngineTestCase.cpp"
+		<Filter
+			Name="Druid"
 			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\DruidNonCombatTestCase.cpp"
+			<File
+				RelativePath="..\..\src\tests\BearTankDruidTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\DruidNonCombatTestCase.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Hunter"
 			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\DruidTestCase.cpp"
+			<File
+				RelativePath="..\..\src\tests\DpsHunterEngineTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\HunterNonCombatTestCase.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Mage"
 			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\EngineTestCase.cpp"
+			<File
+				RelativePath="..\..\src\tests\MageEngineTestCase.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Generic"
 			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\GenericTestCase.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\HunterNonCombatTestCase.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\HunterTestCase.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\MageEngineTestCase.cpp"
-			>
-		</File>
+			<File
+				RelativePath="..\..\src\tests\EngineTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\GenericTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\NonCombatEngineTestCase.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\tests\main.cpp"
 			>
@@ -671,10 +687,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\tests\MockPlayerbotAIFacade.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\NonCombatEngineTestCase.cpp"
 			>
 		</File>
 		<File

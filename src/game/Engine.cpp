@@ -15,6 +15,26 @@
 using namespace ai;
 using namespace std;
 
+bool ActionExecutionListeners::ActionExecuted(Action* action)
+{
+    bool result = true;
+    for (std::list<ActionExecutionListener*>::iterator i = listeners.begin(); i!=listeners.end(); i++)
+    {
+        result &= (*i)->ActionExecuted(action);
+    }
+    return result;
+}
+
+ActionExecutionListeners::~ActionExecutionListeners()
+{
+    for (std::list<ActionExecutionListener*>::iterator i = listeners.begin(); i!=listeners.end(); i++)
+    {
+        delete *i;
+    }
+    listeners.clear();
+}
+
+
 Engine::~Engine(void)
 {
     Reset();
@@ -73,18 +93,10 @@ void Engine::Init()
 BOOL Engine::DoNextAction(Unit* unit)
 {
     BOOL actionExecuted = FALSE;
-
-	for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
-	{
-		Trigger* trigger = *i;
-		if (trigger->IsActive())
-		{
-            sLog.outBasic("T:%s", trigger->getName());
-			MultiplyAndPush(trigger->getNextActions());
-		}
-	}
     ActionBasket* basket = NULL;
-    
+
+    ProcessTriggers();
+
     do 
     {
         basket = queue.Peek();
@@ -110,7 +122,10 @@ BOOL Engine::DoNextAction(Unit* unit)
                         break;
                     }
                     sLog.outBasic("A:%s", action->getName());
-                    action->Execute();
+                    
+                    if (actionExecutionListeners.ActionExecuted(action))
+                        action->Execute();
+                    
                     MultiplyAndPush(action->getNextActions());
                     actionExecuted = TRUE;
                     delete action;
@@ -134,11 +149,7 @@ BOOL Engine::DoNextAction(Unit* unit)
     if (!basket)
     {
         sLog.outBasic("--- queue is empty ---");
-        for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
-        {
-            Strategy* strategy = *i;
-            MultiplyAndPush(strategy->getNextActions());
-        }
+        PushDefaultActions();
         if (queue.Peek())
             return DoNextAction(unit);
     }
@@ -184,7 +195,9 @@ void Engine::ExecuteAction(const char* name)
     Action *action = actionFactory->createAction(name);
     if (action)
     {
-        action->Execute();
+        if (actionExecutionListeners.ActionExecuted(action))
+            action->Execute();
+
         MultiplyAndPush(action->getNextActions());
         delete action;
     }
@@ -212,5 +225,27 @@ void Engine::removeStrategy(const char* name)
             delete strategy;
             break;
         }
+    }
+}
+
+void Engine::ProcessTriggers()
+{
+    for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
+    {
+        Trigger* trigger = *i;
+        if (trigger->IsActive())
+        {
+            sLog.outBasic("T:%s", trigger->getName());
+            MultiplyAndPush(trigger->getNextActions());
+        }
+    }
+}
+
+void Engine::PushDefaultActions() 
+{
+    for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+    {
+        Strategy* strategy = *i;
+        MultiplyAndPush(strategy->getNextActions());
     }
 }

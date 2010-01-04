@@ -20,7 +20,7 @@ namespace ai
         virtual void Flee(float distance = SPELL_DISTANCE) { buffer.append(">flee"); }
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void Stay() { buffer.append(">stay"); }
-        virtual void CastSpell(const char* spell, Unit* target = NULL) { buffer.append(">").append(spell); alreadyCast.push_back(spell); if (target) buffer.append(" on party"); }
+        virtual void CastSpell(const char* spell, Unit* target = NULL) { buffer.append(">").append(spell); spellCooldowns.push_back(spell); if (target) buffer.append(" on party"); }
         virtual BOOL canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">melee"); }
         virtual uint8 GetRage() { return rage; } 
@@ -53,11 +53,10 @@ namespace ai
         virtual uint8 GetPartyMinHealthPercent() { return partyMinHealth; }
 
     public:
-        void resetSpells() {alreadyCast.clear(); }
-        void resetSpell(const char* spell);
+        void resetSpells() {spellCooldowns.clear(); }
 
         std::string buffer;
-        std::list<std::string> alreadyCast;
+        std::list<std::string> spellCooldowns;
         std::list<std::string> auras;
         std::list<std::string> partyAuras;
         std::list<std::string> targetAuras;

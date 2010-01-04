@@ -6,26 +6,13 @@ using namespace ai;
 
 BOOL MockPlayerbotAIFacade::canCastSpell(const char* spell)
 {
-    for (list<string>::iterator i = alreadyCast.begin(); i != alreadyCast.end(); i++)
+    for (list<string>::iterator i = spellCooldowns.begin(); i != spellCooldowns.end(); i++)
     {
         string s = *i;
         if (!strcmp(s.c_str(), spell))
             return FALSE;
     }
     return TRUE;
-}
-
-void MockPlayerbotAIFacade::resetSpell(const char* spell)
-{
-    for (list<string>::iterator i = alreadyCast.begin(); i != alreadyCast.end(); i++)
-    {
-        string s = *i;
-        if (!strcmp(s.c_str(), spell))
-        {
-            alreadyCast.remove(s);
-            break;
-        }
-    }
 }
 
 BOOL MockPlayerbotAIFacade::HasAura(const char* spell)
