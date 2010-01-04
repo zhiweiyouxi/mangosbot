@@ -44,6 +44,11 @@ BOOL PlayerbotAIFacade::HasAura(const char* spell)
     return ai->HasAura(spell);
 }
 
+BOOL PlayerbotAIFacade::PetHasAura(const char* spell)
+{
+    return ai->HasAura(spell, *ai->GetPlayerBot()->GetPet());
+}
+
 BOOL PlayerbotAIFacade::TargetHasAura(const char* spell)
 {
     return ai->HasAura(spell, *ai->GetCurrentTarget());
@@ -101,14 +106,31 @@ BOOL PlayerbotAIFacade::HasAggro()
     return FALSE;
 }
 
-void PlayerbotAIFacade::FindAndUse(BOOL predicate(const ItemPrototype*))
+BOOL PlayerbotAIFacade::FindAndUse(BOOL predicate(const ItemPrototype*), uint8 ignore_time)
 {
     Item* item = ai->FindUsableItem(predicate);
     if (item)
     {
         ai->UseItem(*item);
+        if (ignore_time)
+            ai->SetIgnoreUpdateTime(ignore_time);
+        return TRUE;
     }
+    return FALSE;
 }
+
+void PlayerbotAIFacade::UseFood() 
+{
+    if (!FindAndUse(isFood, 30))
+        ai->TellMaster("I need some food");
+}
+
+void PlayerbotAIFacade::UseDrink() 
+{
+    if (!FindAndUse(isDrink, 30))
+        ai->TellMaster("I need some water");
+}
+
 
 BOOL PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto)
 {
@@ -337,4 +359,9 @@ void PlayerbotAIFacade::AttackBiggerThreat()
     }
     if (target && !ai->HasAura("polymorph", *target))
         ai->Attack(target);
+}
+
+BOOL PlayerbotAIFacade::IsMounted()
+{
+    return ai->GetPlayerBot()->IsMounted();
 }

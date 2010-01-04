@@ -36,6 +36,18 @@ BOOL MockPlayerbotAIFacade::TargetHasAura(const char* spell)
     }
     return FALSE;
 }
+
+BOOL MockPlayerbotAIFacade::PetHasAura(const char* spell)
+{
+    for (list<string>::iterator i = petAuras.begin(); i != petAuras.end(); i++)
+    {
+        string s = *i;
+        if (!strcmp(s.c_str(), spell))
+            return TRUE;
+    }
+    return FALSE;
+}
+
 BOOL MockPlayerbotAIFacade::IsAllPartyHasAura(const char* spell)
 {
     for (list<string>::iterator i = partyAuras.begin(); i != partyAuras.end(); i++)

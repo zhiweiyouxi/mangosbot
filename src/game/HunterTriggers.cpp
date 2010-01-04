@@ -13,17 +13,17 @@ BOOL HunterNoStingsActiveTrigger::IsActive()
 
 BOOL HunterHasNoPetTrigger::IsActive()
 {
-    return !ai->HasPet();
+    return !ai->HasPet() && !ai->IsMounted();
 }
 
 BOOL HuntersPetDeadTrigger::IsActive()
 {
-    return ai->HasPet() && ai->IsPetDead();
+    return ai->HasPet() && ai->IsPetDead() && !ai->IsMounted();
 }
 
 
 BOOL HuntersPetLowHealthTrigger::IsActive()
 {
-    return ai->HasPet() && ai->GetPetHealthPercent() < EAT_DRINK_PERCENT;
+    return ai->HasPet() && ai->GetPetHealthPercent() < EAT_DRINK_PERCENT && !ai->IsMounted();
 }
 

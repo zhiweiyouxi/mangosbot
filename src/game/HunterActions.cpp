@@ -13,3 +13,8 @@ BOOL CastArcaneShotAction::isUseful()
 {
     return ai->GetTargetHealthPercent() >= 5 && ai->GetManaPercent() >= 30;
 }
+
+BOOL CastMendPetAction::isUseful()
+{
+    return !ai->PetHasAura(spell) && !ai->IsMounted();
+}

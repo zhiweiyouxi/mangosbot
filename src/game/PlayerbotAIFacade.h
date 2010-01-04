@@ -34,6 +34,7 @@ namespace ai
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
         virtual BOOL HasAura(const char* spell);
+        virtual BOOL PetHasAura(const char* spell);
         virtual BOOL TargetHasAura(const char* spell);
         virtual BOOL IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
         virtual Player* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
@@ -49,6 +50,7 @@ namespace ai
         virtual BOOL HasAggro();
         virtual int GetAttackerCount();
         virtual int GetMyAttackerCount();
+        virtual BOOL IsMounted();
 
         virtual void AttackLeastThreat();
         virtual void AttackBiggerThreat();
@@ -56,8 +58,8 @@ namespace ai
         virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
         virtual void UseManaPotion() { FindAndUse(isManaPotion); }
         virtual void UsePanicPotion()  { FindAndUse(isPanicPotion); }
-        virtual void UseFood() { FindAndUse(isFood); ai->SetIgnoreUpdateTime(30); }
-        virtual void UseDrink() { FindAndUse(isDrink); ai->SetIgnoreUpdateTime(30); }
+        virtual void UseFood();
+        virtual void UseDrink();
         virtual BOOL HasHealingPotion() { return ai->FindUsableItem(isHealingPotion) != NULL; }
         virtual BOOL HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
         virtual BOOL HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
@@ -68,7 +70,7 @@ namespace ai
         static BOOL isPanicPotion(const ItemPrototype* pItemProto);
         static BOOL isFood(const ItemPrototype* pItemProto);
         static BOOL isDrink(const ItemPrototype* pItemProto);
-        void FindAndUse(BOOL predicate(const ItemPrototype*));
+        BOOL FindAndUse(BOOL predicate(const ItemPrototype*), uint8 ignore_time = 0);
         Player* findPlayer(BOOL predicate(Player*, FindPlayerParam&), void *param);
         static BOOL isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);

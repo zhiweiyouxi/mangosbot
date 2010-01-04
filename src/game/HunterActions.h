@@ -51,6 +51,7 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastMendPetAction, "mend pet")
+        virtual BOOL isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRevivePetAction, "revive pet")

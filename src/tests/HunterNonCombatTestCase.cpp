@@ -62,8 +62,12 @@ protected:
         ai->petHealth = 1;
         engine->DoNextAction(NULL);
 
+        ai->spellCooldowns.remove("mend pet");
+        ai->petAuras.push_back("mend pet");
+        engine->DoNextAction(NULL);
+
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>aspect of the hawk"));
     }
     
 };

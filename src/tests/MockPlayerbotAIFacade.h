@@ -26,6 +26,7 @@ namespace ai
         virtual uint8 GetRage() { return rage; } 
         virtual BOOL HasAura(const char* spell);
         virtual BOOL TargetHasAura(const char* spell);
+        virtual BOOL PetHasAura(const char* spell);
         virtual BOOL IsAllPartyHasAura(const char* spell);
         virtual Player* GetPartyMemberWithoutAura(const char* spell) { return (Player*)0xEEEEEE; }
         virtual uint8 GetHealthPercent() { return health; }
@@ -46,6 +47,8 @@ namespace ai
         virtual BOOL HasPet() { return hasPet; }
         virtual BOOL IsPetDead() { return petHealth <= 0; }
 
+        virtual BOOL IsMounted() { return FALSE; }
+
         virtual BOOL HasHealingPotion() { return FALSE; }
         virtual BOOL HasManaPotion() { return FALSE; }
         virtual BOOL HasPanicPotion() { return FALSE; }
@@ -64,6 +67,7 @@ namespace ai
         std::list<std::string> auras;
         std::list<std::string> partyAuras;
         std::list<std::string> targetAuras;
+        std::list<std::string> petAuras;
         float distanceToEnemy;
         uint8 rage, health, mana;
         uint8 targetHealth, petHealth;
