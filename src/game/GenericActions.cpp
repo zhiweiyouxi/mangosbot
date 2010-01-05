@@ -4,6 +4,10 @@
 
 using namespace ai;
 
+NextAction** CastRangedSpellAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("reach spell"), NULL), CastSpellAction::getPrerequisites());
+}
 
 void FleeAction::Execute()
 {

@@ -74,6 +74,7 @@ namespace ai
     {
     public:
         CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+        virtual NextAction** getPrerequisites();
 
     };
     //---------------------------------------------------------------------------------------------------------------------

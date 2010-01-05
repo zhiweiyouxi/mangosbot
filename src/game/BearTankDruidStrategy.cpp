@@ -63,7 +63,7 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
     else if (!strcmp("faerie fire", name)) 
     {
         return new ActionNode (new CastFaerieFireAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("reach spell"), NULL), // TODO: remove this
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), new NextAction("dire bear form", 15.0f), NULL));
     }
@@ -85,7 +85,7 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastDireBearFormAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("bear form"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
     else if (!strcmp("maul", name)) 

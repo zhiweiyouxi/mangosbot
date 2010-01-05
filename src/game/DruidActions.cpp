@@ -9,6 +9,11 @@ BOOL CastBearFormAction::isAvailable()
     return CastSpellAction::isAvailable() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
 }
 
+NextAction** CastDireBearFormAction::getAlternatives()
+{
+    return NextAction::merge(NextAction::array(0, new NextAction("bear form"), NULL), CastSpellAction::getAlternatives());
+}
+
 BOOL CastDireBearFormAction::isAvailable()
 {
     return CastSpellAction::isAvailable() && !ai->HasAura("dire bear form");
