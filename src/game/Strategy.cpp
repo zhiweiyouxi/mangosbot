@@ -4,7 +4,9 @@
 
 using namespace ai;
 
-void CombatStrategy::InitTriggers(std::list<Trigger*> &triggers) 
+void CombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers) 
 {
-    triggers.push_back(new PanicTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new PanicTrigger(ai), 
+        NextAction::array(0, new NextAction("panic potion", 100.0f), NULL)));
 }

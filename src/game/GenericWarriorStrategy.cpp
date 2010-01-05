@@ -4,10 +4,22 @@
 
 using namespace ai;
 
-void GenericWarriorStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    triggers.push_back(new RevengeAvailableTrigger(ai));
-    triggers.push_back(new RendDebuffTrigger(ai));
-    triggers.push_back(new DisarmDebuffTrigger(ai));
-    triggers.push_back(new SunderArmorDebuffTrigger(ai));
+
+    triggers.push_back(new TriggerNode(
+        new RevengeAvailableTrigger(ai), 
+        NextAction::array(0, new NextAction("revenge", 50.0f), NULL)));
+    
+    triggers.push_back(new TriggerNode(
+        new RendDebuffTrigger(ai), 
+        NextAction::array(0, new NextAction("rend", 1.0f), NULL)));
+    
+    triggers.push_back(new TriggerNode(
+        new DisarmDebuffTrigger(ai), 
+        NextAction::array(0, new NextAction("disarm", 1.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new SunderArmorDebuffTrigger(ai), 
+        NextAction::array(0, new NextAction("sunder armor", 1.0f), NULL)));
 }

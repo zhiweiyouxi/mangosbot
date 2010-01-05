@@ -11,7 +11,7 @@ namespace ai
         GenericNonCombatStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
 
     public:
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual ActionFactory* createActionFactory() { return new ActionFactory(ai); }
     };
 
@@ -49,6 +49,6 @@ namespace ai
         virtual ActionNode* createAction(const char* name);
 
     public:
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
     };
 }

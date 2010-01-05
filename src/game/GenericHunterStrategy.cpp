@@ -5,13 +5,21 @@
 
 using namespace ai;
 
-void GenericHunterStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     CombatStrategy::InitTriggers(triggers);
 
-    triggers.push_back(new HunterEnemyTooCloseTrigger(ai));
-    triggers.push_back(new HuntersPetDeadTrigger(ai));
-    triggers.push_back(new HuntersPetLowHealthTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new EnemyTooCloseTrigger(ai), 
+        NextAction::array(0, new NextAction("flee", 50.0f), new NextAction("concussive shot", 40.0f), NULL)));    
+    
+    triggers.push_back(new TriggerNode(
+        new HuntersPetDeadTrigger(ai), 
+        NextAction::array(0, new NextAction("revive pet", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HuntersPetLowHealthTrigger(ai), 
+        NextAction::array(0, new NextAction("mend pet", 60.0f), NULL)));
 }
 
 ActionNode* GenericHunterStrategy::createAction(const char* name)

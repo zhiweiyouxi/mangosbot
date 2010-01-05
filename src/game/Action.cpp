@@ -68,3 +68,12 @@ NextAction** NextAction::array(uint8 nil, ...)
 
     return res;
 }
+
+void NextAction::destroy(NextAction** actions)
+{
+    if (!actions)
+        return;
+
+    for (int i=0; i<10 && actions[i]; i++)
+        delete actions[i];
+}

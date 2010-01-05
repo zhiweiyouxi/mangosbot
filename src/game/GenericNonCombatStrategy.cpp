@@ -6,16 +6,24 @@
 
 using namespace ai;
 
-void GenericNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     Strategy::InitTriggers(triggers);
-    triggers.push_back(new LowHealthTrigger(ai));
-    triggers.push_back(new LowManaTrigger(ai));
+    
+    triggers.push_back(new TriggerNode(
+        new LowHealthTrigger(ai), 
+        NextAction::array(0, new NextAction("eat", 9.0f), NULL)));
+    
+    triggers.push_back(new TriggerNode(
+        new LowManaTrigger(ai), 
+        NextAction::array(0, new NextAction("drink", 9.0f), NULL)));
 }
 
-void AssistNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void AssistNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    triggers.push_back(new NoAttackersTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new NoAttackersTrigger(ai), 
+        NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
 }
 
 ActionNode* AssistNonCombatStrategy::createAction(const char* name)

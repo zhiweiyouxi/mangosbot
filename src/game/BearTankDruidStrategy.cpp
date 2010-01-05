@@ -7,20 +7,38 @@
 
 using namespace ai;
 
-void BearTankDruidStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericDruidStrategy::InitTriggers(triggers);
     
-    triggers.push_back(new EnemyOutOfMeleeTrigger(ai));
-    triggers.push_back(new BearTankDruidLoseAggroTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new EnemyOutOfMeleeTrigger(ai), 
+        NextAction::array(0, new NextAction("melee", 10.0f), NULL)));
 
-    triggers.push_back(new MaulAvailable(ai));
-    triggers.push_back(new SwipeAvailable(ai));
-    triggers.push_back(new BearTankDruidDemoralizeAttackers(ai));
+    triggers.push_back(new TriggerNode(
+        new BearTankDruidLoseAggroTrigger(ai),
+        NextAction::array(0, new NextAction("growl", 30.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new MaulAvailable(ai),
+        NextAction::array(0, new NextAction("maul", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new SwipeAvailable(ai),
+        NextAction::array(0, new NextAction("swipe", 20.0f), new NextAction("maul", 10.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new AttackerCountTrigger(ai, 2),
+        NextAction::array(0, new NextAction("demoralizing roar", 20.0f), NULL)));
 
     // TODO: maybe move to other strategy?
-    triggers.push_back(new DruidPartyMemberLowHealthTrigger(ai));
-    triggers.push_back(new TankNoAttackersTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new DruidPartyMemberLowHealthTrigger(ai),
+        NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NoAttackersTrigger(ai),
+        NextAction::array(0, new NextAction("attack bigger threat", 50.0f), NULL)));
 }
 
 void BearTankDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

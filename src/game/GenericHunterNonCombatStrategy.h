@@ -11,7 +11,7 @@ namespace ai
         virtual const char* getName() { return "hunter non combat"; }
     
     public:
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual ActionNode* createAction(const char* name);
     };
 }

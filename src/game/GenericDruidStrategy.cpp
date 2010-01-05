@@ -4,8 +4,11 @@
 
 using namespace ai;
 
-void GenericDruidStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     CombatStrategy::InitTriggers(triggers);
-    triggers.push_back(new DruidLowHealthTrigger(ai));
+    
+    triggers.push_back(new TriggerNode(
+        new DruidLowHealthTrigger(ai),
+        NextAction::array(0, new NextAction("lifeblood", 60.0f), new NextAction("rejuvenation", 50.0f), NULL)));
 }

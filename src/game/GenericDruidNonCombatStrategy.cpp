@@ -6,15 +6,25 @@
 
 using namespace ai;
 
-void GenericDruidNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericDruidNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericNonCombatStrategy::InitTriggers(triggers);
     
-    triggers.push_back(new DruidPartyMemberLowHealthTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new DruidPartyMemberLowHealthTrigger(ai),
+        NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
 
-    triggers.push_back(new ThornsTrigger(ai));
-    triggers.push_back(new MarkOfTheWildTrigger(ai));
-    triggers.push_back(new MarkOfTheWildOnPartyTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new ThornsTrigger(ai),
+        NextAction::array(0, new NextAction("thorns", 1.0f), NULL)));
+    
+    triggers.push_back(new TriggerNode(
+        new MarkOfTheWildTrigger(ai),
+        NextAction::array(0, new NextAction("mark of the wild", 1.0f), NULL)));
+    
+    triggers.push_back(new TriggerNode(
+        new MarkOfTheWildOnPartyTrigger(ai),
+        NextAction::array(0, new NextAction("mark of the wild on party", 1.0f), NULL)));
 }
 
 

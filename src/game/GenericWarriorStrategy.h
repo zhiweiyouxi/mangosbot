@@ -11,7 +11,7 @@ namespace ai
         GenericWarriorStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
 
     public:
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual ActionFactory* createActionFactory() { return new WarriorActionFactory(ai); }
         virtual const char* getName() { return "warrior"; }
     };

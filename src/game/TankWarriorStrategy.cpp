@@ -6,17 +6,29 @@
 
 using namespace ai;
 
-void TankWarriorStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericWarriorStrategy::InitTriggers(triggers);
     
-    triggers.push_back(new WarriorEnemyOutOfMeleeTrigger(ai));
-    triggers.push_back(new WarriorLoseAggroTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new EnemyOutOfMeleeTrigger(ai), 
+        NextAction::array(0, new NextAction("melee", 50.0f), NULL)));
 
-    triggers.push_back(new HeroicStrikeAvailable(ai));
-    triggers.push_back(new WarriorDemoralizeAttackers(ai));
+    triggers.push_back(new TriggerNode(
+        new LoseAggroTrigger(ai), 
+        NextAction::array(0, new NextAction("mocking blow", 30.0f), NULL)));
 
-    triggers.push_back(new TankNoAttackersTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new HeroicStrikeAvailable(ai), 
+        NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new AttackerCountTrigger(ai, 2), 
+        NextAction::array(0, new NextAction("demoralizing shout", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NoAttackersTrigger(ai), 
+        NextAction::array(0, new NextAction("ttack bigger threat", 9.0f), NULL)));
 }
 
 void TankWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

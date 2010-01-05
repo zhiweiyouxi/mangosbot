@@ -15,7 +15,7 @@ namespace ai
         END_NEXT_ACTIONS(1)
     
     public:
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
         virtual const char* getName() { return "tank warrior"; }
         virtual ActionNode* createAction(const char* name);

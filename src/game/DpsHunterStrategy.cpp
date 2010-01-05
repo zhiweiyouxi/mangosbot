@@ -6,16 +6,29 @@
 
 using namespace ai;
 
-void DpsHunterStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericHunterStrategy::InitTriggers(triggers);
 
-    triggers.push_back(new HunterNoStingsActiveTrigger(ai));
-    triggers.push_back(new NoAttackersTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new HunterNoStingsActiveTrigger(ai), 
+        NextAction::array(0, new NextAction("serpent sting", 50.0f), NULL)));
+    
+    triggers.push_back(new TriggerNode(
+        new NoAttackersTrigger(ai), 
+        NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
 
-    triggers.push_back(new HunterHasNoPetTrigger(ai));
-    triggers.push_back(new HuntersPetDeadTrigger(ai));
-    triggers.push_back(new HuntersPetLowHealthTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new HunterHasNoPetTrigger(ai), 
+        NextAction::array(0, new NextAction("call pet", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HuntersPetDeadTrigger(ai), 
+        NextAction::array(0, new NextAction("revive pet", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HuntersPetLowHealthTrigger(ai), 
+        NextAction::array(0, new NextAction("mend pet", 60.0f), NULL)));
 }
 
 void DpsHunterStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

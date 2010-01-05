@@ -89,7 +89,6 @@ public:
 	{
 		return ++count==3;
 	}
-    NextAction* getNextAction() { return new NextAction("TriggeredAction", 10.0f); }
 
 private:
 	int count;
@@ -122,9 +121,11 @@ public:
         multipliers.push_back(new TestMultiplier());
     }
 
-    virtual void InitTriggers(std::list<Trigger*> &triggers)
+    virtual void InitTriggers(std::list<TriggerNode*> &triggers)
     {
-        triggers.push_back(new TestTrigger(NULL));
+        triggers.push_back(new TriggerNode(
+            new TestTrigger(ai), 
+            NextAction::array(0, new NextAction("TriggeredAction", 10.0f), NULL)));
     }
 
     virtual ActionNode* createAction(const char* name)

@@ -81,7 +81,7 @@ namespace ai
 
     protected:
 	    Queue queue;
-	    std::list<Trigger*> triggers;
+	    std::list<TriggerNode*> triggers;
         std::list<Multiplier*> multipliers;
 	    Player* master;
 	    Player* bot;

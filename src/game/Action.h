@@ -86,6 +86,7 @@ namespace ai
     public:
         static NextAction** clone(NextAction** actions);
         static NextAction** array(uint8 nil,...);
+        static void destroy(NextAction** actions);
 
     private:
         float relevance;
@@ -126,7 +127,13 @@ namespace ai
             this->alternatives = alternatives;
             this->continuers = continuers;
         }
-        virtual ~ActionNode() { delete action; }
+        virtual ~ActionNode() 
+        { 
+            delete action; 
+            NextAction::destroy(prerequisites); 
+            NextAction::destroy(alternatives); 
+            NextAction::destroy(continuers); 
+        }
 
     public:
         Action* getAction() { return action; }
@@ -139,9 +146,6 @@ namespace ai
         NextAction** getContinuers() { return NextAction::clone(continuers); }
         NextAction** getAlternatives() { return NextAction::clone(alternatives); }
         NextAction** getPrerequisites() { return NextAction::clone(prerequisites); }
-
-    private:
-        NextAction** clone(NextAction** actions);
 
     private:
         Action* action;

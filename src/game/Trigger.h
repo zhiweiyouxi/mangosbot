@@ -31,4 +31,32 @@ namespace ai
         virtual const char* getName() { return "Trigger"; }
 
 	};
+
+
+    class TriggerNode
+    {
+    public:
+        TriggerNode(Trigger* trigger, NextAction** handlers = NULL)
+        {
+            this->trigger = trigger; 
+            this->handlers = handlers;
+        }
+        virtual ~TriggerNode() 
+        { 
+            delete trigger; 
+            NextAction::destroy(handlers); 
+        }
+
+    public:
+        BOOL IsActive() { return trigger->IsActive(); }
+        Trigger* getTrigger() { return trigger; }
+        const char* getName() { return trigger->getName(); }
+
+    public:
+        NextAction** getHandlers() { return NextAction::clone(handlers); }
+
+    private:
+        Trigger* trigger;
+        NextAction** handlers;
+    };
 }

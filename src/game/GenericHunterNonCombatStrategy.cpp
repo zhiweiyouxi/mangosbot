@@ -6,14 +6,25 @@
 
 using namespace ai;
 
-void GenericHunterNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericHunterNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericNonCombatStrategy::InitTriggers(triggers);
     
-    triggers.push_back(new HunterAspectOfTheHawkTrigger(ai));
-    triggers.push_back(new HunterHasNoPetTrigger(ai));
-    triggers.push_back(new HuntersPetDeadTrigger(ai));
-    triggers.push_back(new HuntersPetLowHealthTrigger(ai));
+    triggers.push_back(new TriggerNode(
+        new HunterAspectOfTheHawkTrigger(ai), 
+        NextAction::array(0, new NextAction("aspect of the hawk", 1.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HunterHasNoPetTrigger(ai), 
+        NextAction::array(0, new NextAction("call pet", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HuntersPetDeadTrigger(ai), 
+        NextAction::array(0, new NextAction("revive pet", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HuntersPetLowHealthTrigger(ai), 
+        NextAction::array(0, new NextAction("mend pet", 60.0f), NULL)));
 }
 
 

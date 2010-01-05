@@ -51,9 +51,9 @@ void Engine::Reset()
 		action = queue.Pop();
 	} while (action);
 	
-    for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
+    for (std::list<TriggerNode*>::iterator i = triggers.begin(); i != triggers.end(); i++)
 	{
-		Trigger* trigger = *i;
+		TriggerNode* trigger = *i;
 		delete trigger;
 	}
 	triggers.clear();
@@ -247,13 +247,13 @@ void Engine::removeStrategy(const char* name)
 
 void Engine::ProcessTriggers()
 {
-    for (std::list<Trigger*>::iterator i = triggers.begin(); i != triggers.end(); i++)
+    for (std::list<TriggerNode*>::iterator i = triggers.begin(); i != triggers.end(); i++)
     {
-        Trigger* trigger = *i;
+        TriggerNode* trigger = *i;
         if (trigger->IsActive())
         {
             sLog.outBasic("T:%s", trigger->getName());
-            MultiplyAndPush(trigger->getNextActions());
+            MultiplyAndPush(trigger->getHandlers());
         }
     }
 }

@@ -11,7 +11,7 @@ namespace ai
         GenericDruidStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
 
     public:
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual ActionFactory* createActionFactory() { return new DruidActionFactory(ai); }
         virtual const char* getName() { return "druid"; }
     };
