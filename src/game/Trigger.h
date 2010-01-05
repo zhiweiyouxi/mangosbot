@@ -26,8 +26,7 @@ namespace ai
 
 	public:
 		virtual BOOL IsActive() = NULL;
-        virtual NextAction* getNextAction() { return NULL; }
-        virtual NextAction** getNextActions();
+        virtual NextAction** getHandlers() { return NULL; }
         virtual const char* getName() { return "Trigger"; }
 
 	};
@@ -53,7 +52,7 @@ namespace ai
         const char* getName() { return trigger->getName(); }
 
     public:
-        NextAction** getHandlers() { return NextAction::clone(handlers); }
+        NextAction** getHandlers() { return NextAction::merge(NextAction::clone(handlers), trigger->getHandlers()); }
 
     private:
         Trigger* trigger;

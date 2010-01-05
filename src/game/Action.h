@@ -38,7 +38,9 @@ namespace ai
         float getRelevance() {return relevance;}
 
     public:
+        static int size(NextAction** actions);
         static NextAction** clone(NextAction** actions);
+        static NextAction** merge(NextAction** what, NextAction** with);
         static NextAction** array(uint8 nil,...);
         static void destroy(NextAction** actions);
 
@@ -61,12 +63,9 @@ namespace ai
         virtual void Execute() {}
         virtual BOOL isAvailable() { return TRUE; }
         virtual BOOL isUseful() { return TRUE; }
-        virtual NextAction* getNextAction() { return NULL; }
-        virtual NextAction** getNextActions();
-        virtual NextAction* getAlternativeAction() { return NULL; }
-        virtual NextAction** getAlternativeActions();
-        virtual NextAction* getPrerequisiteAction() { return NULL; }
-        virtual NextAction** getPrerequisiteActions();
+        virtual NextAction** getPrerequisites() { return NULL; }
+        virtual NextAction** getAlternatives() { return NULL; }
+        virtual NextAction** getContinuers() { return NULL; }
         virtual const char* getName() { return "action"; }
         virtual int getKind() { return 0; }
 	};
@@ -97,9 +96,9 @@ namespace ai
         virtual BOOL isUseful() { return action->isUseful(); }
 
     public:
-        NextAction** getContinuers() { return NextAction::clone(continuers); }
-        NextAction** getAlternatives() { return NextAction::clone(alternatives); }
-        NextAction** getPrerequisites() { return NextAction::clone(prerequisites); }
+        NextAction** getContinuers() { return NextAction::merge(NextAction::clone(continuers), action->getContinuers()); }
+        NextAction** getAlternatives() { return NextAction::merge(NextAction::clone(alternatives), action->getAlternatives()); }
+        NextAction** getPrerequisites() { return NextAction::merge(NextAction::clone(prerequisites), action->getPrerequisites()); }
 
     private:
         Action* action;

@@ -13,6 +13,9 @@ class NextActionTestCase : public CPPUNIT_NS::TestFixture
 	CPPUNIT_TEST_SUITE( NextActionTestCase );
 	CPPUNIT_TEST( array );
     CPPUNIT_TEST( clone );
+    CPPUNIT_TEST( merge );
+    CPPUNIT_TEST( cloneNull );
+    CPPUNIT_TEST( mergeWithNull );
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -28,6 +31,7 @@ protected:
         NextAction** actions = NextAction::array(0, new NextAction("1", 1), NULL);
         CPPUNIT_ASSERT(!strcmp("1", actions[0]->getName()));
         CPPUNIT_ASSERT(!actions[1]);
+        NextAction::destroy(actions);
     }
 
 	void clone()
@@ -44,9 +48,39 @@ protected:
         CPPUNIT_ASSERT(!strcmp("2", cloned[1]->getName()));
 
         // check memory
-        delete actions[0]; delete actions[1]; delete actions;
-        delete cloned[0]; delete cloned[1]; delete cloned;
+        NextAction::destroy(cloned);
 	}
+
+    void merge()
+    {
+        NextAction** left = NextAction::array(0, new NextAction("1", 1),  new NextAction("2", 2), NULL);
+        NextAction** right = NextAction::array(0, new NextAction("3", 3), NULL);
+
+        NextAction** merged = NextAction::merge(left, right);
+
+        CPPUNIT_ASSERT(!merged[3]);
+        CPPUNIT_ASSERT(!strcmp("1", merged[0]->getName()));
+        CPPUNIT_ASSERT(!strcmp("2", merged[1]->getName()));
+        CPPUNIT_ASSERT(!strcmp("3", merged[2]->getName()));
+
+        // check memory
+        NextAction::destroy(merged);
+    }
+
+    void cloneNull()
+    {
+        NextAction** cloned = NextAction::clone(NULL);
+        CPPUNIT_ASSERT(!cloned);
+    }
+
+    void mergeWithNull()
+    {
+        NextAction** left = NextAction::array(0, new NextAction("1", 1), NULL);
+        NextAction** merged = NextAction::merge(left, NULL);
+
+        CPPUNIT_ASSERT(!merged[1]);
+        CPPUNIT_ASSERT(!strcmp("1", merged[0]->getName()));
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( NextActionTestCase );

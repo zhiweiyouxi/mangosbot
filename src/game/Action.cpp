@@ -4,28 +4,15 @@
 
 using namespace ai;
 
-NextAction** Action::getNextActions() 
+int NextAction::size(NextAction** actions)
 {
-    NextAction** actions = new NextAction*[2];
-    actions[0] = getNextAction();
-    actions[1] = NULL;
-    return actions;
-}
+    if (!actions)
+        return 0;
 
-NextAction** Action::getAlternativeActions() 
-{
-    NextAction** actions = new NextAction*[2];
-    actions[0] = getAlternativeAction();
-    actions[1] = NULL;
-    return actions;
-}
-
-NextAction** Action::getPrerequisiteActions() 
-{
-    NextAction** actions = new NextAction*[2];
-    actions[0] = getPrerequisiteAction();
-    actions[1] = NULL;
-    return actions;
+    int size;
+    for (size=0; size<10 && actions[size]; ) 
+        size++;
+    return size;
 }
 
 NextAction** NextAction::clone(NextAction** actions)
@@ -33,14 +20,30 @@ NextAction** NextAction::clone(NextAction** actions)
     if (!actions)
         return NULL;
 
-    int size;
-    for (size=0; size<10 && actions[size]; ) 
-        size++;
+    int size = NextAction::size(actions);
 
     NextAction** res = new NextAction*[size + 1];
     for (int i=0; i<size; i++)
         res[i] = new NextAction(*actions[i]);
     res[size] = NULL;
+    return res;
+}
+
+NextAction** NextAction::merge(NextAction** left, NextAction** right)
+{
+    int leftSize = NextAction::size(left);
+    int rightSize = NextAction::size(right);
+
+    NextAction** res = new NextAction*[leftSize + rightSize + 1];
+    for (int i=0; i<leftSize; i++)
+        res[i] = new NextAction(*left[i]);
+    for (int i=0; i<rightSize; i++)
+        res[leftSize + i] = new NextAction(*right[i]);
+    res[leftSize + rightSize] = NULL;
+
+    NextAction::destroy(left);
+    NextAction::destroy(right);
+
     return res;
 }
 
