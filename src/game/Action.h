@@ -83,6 +83,9 @@ namespace ai
         const char* getName() { return name.c_str(); }
         float getRelevance() {return relevance;}
 
+    public:
+        static NextAction** clone(NextAction** actions);
+
     private:
         float relevance;
         std::string name;
@@ -111,6 +114,36 @@ namespace ai
         virtual const char* getName() { return "action"; }
         virtual int getKind() { return 0; }
 	};
+
+    class ActionNode
+    {
+    public:
+        ActionNode(Action* action, NextAction** continuers = NULL, NextAction** alternatives = NULL, NextAction** prerequisites = NULL)
+        {
+            this->action = action; 
+            this->continuers = continuers;
+            this->alternatives = alternatives;
+            this->prerequisites = prerequisites;
+        }
+        virtual ~ActionNode() { delete action; }
+
+    public:
+        Action* getAction() { return action; }
+
+    public:
+        NextAction** getContinuers() { return NextAction::clone(continuers); }
+        NextAction** getAlternatives() { return NextAction::clone(alternatives); }
+        NextAction** getPrerequisites() { return NextAction::clone(prerequisites); }
+
+    private:
+        NextAction** clone(NextAction** actions);
+
+    private:
+        Action* action;
+        NextAction** continuers;
+        NextAction** alternatives;
+        NextAction** prerequisites;
+    };
 
     //---------------------------------------------------------------------------------------------------------------------
 

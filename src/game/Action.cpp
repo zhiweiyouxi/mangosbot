@@ -28,3 +28,18 @@ NextAction** Action::getPrerequisiteActions()
     return actions;
 }
 
+NextAction** NextAction::clone(NextAction** actions)
+{
+    if (!actions)
+        return NULL;
+
+    int size;
+    for (size=0; size<10 && actions[size]; ) 
+        size++;
+
+    NextAction** res = new NextAction*[size + 1];
+    for (int i=0; i<size; i++)
+        res[i] = new NextAction(*actions[i]);
+    res[size] = NULL;
+    return res;
+}
