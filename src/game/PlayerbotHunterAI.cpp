@@ -84,7 +84,7 @@ PlayerbotHunterAI::PlayerbotHunterAI(Player* const master, Player* const bot, Pl
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::HunterActionFactory(facade));
-    nonCombatEngine->addStrategy("hunter");
+    nonCombatEngine->addStrategy("hunter non combat");
     nonCombatEngine->addStrategy("assist");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->Init();

@@ -28,7 +28,7 @@ BOOL PlayerbotAIFacade::canCastSpell( const char* name )
 
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellid );
     Spell *spell = new Spell(bot, spellInfo, false );
-    res = (spell->CheckCast(true) == SPELL_CAST_OK);
+    res = (spell->CheckPower() == SPELL_CAST_OK);
     delete spell;
 
     return res;
