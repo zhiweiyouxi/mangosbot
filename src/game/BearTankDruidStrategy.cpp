@@ -4,8 +4,12 @@
 #include "BearTankDruidStrategy.h"
 #include "DruidActions.h"
 
-
 using namespace ai;
+
+NextAction** BearTankDruidStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("faerie fire", 20.0f), new NextAction("melee", 10.0f), NULL);
+}
 
 void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {

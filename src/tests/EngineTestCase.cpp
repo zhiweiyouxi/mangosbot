@@ -116,6 +116,8 @@ public:
 
     virtual const char* getName() { return "TestStrategy"; }
 
+    virtual NextAction** getDefaultActions() { return NextAction::array(0, new NextAction("RepeatingAction", 1.0f), NULL); }
+
     virtual void InitMultipliers(std::list<Multiplier*> &multipliers)
     {
         multipliers.push_back(new TestMultiplier());

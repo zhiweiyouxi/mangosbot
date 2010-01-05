@@ -85,7 +85,7 @@ void Engine::Init()
         Strategy* strategy = *i;
         strategy->InitMultipliers(multipliers);
         strategy->InitTriggers(triggers);
-        MultiplyAndPush(strategy->getNextActions());
+        MultiplyAndPush(strategy->getDefaultActions());
     }
 }
 
@@ -263,6 +263,6 @@ void Engine::PushDefaultActions()
     for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
     {
         Strategy* strategy = *i;
-        MultiplyAndPush(strategy->getNextActions());
+        MultiplyAndPush(strategy->getDefaultActions());
     }
 }

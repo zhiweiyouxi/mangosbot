@@ -6,6 +6,11 @@
 
 using namespace ai;
 
+NextAction** TankWarriorStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("melee", 10.0f), NULL);
+}
+
 void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericWarriorStrategy::InitTriggers(triggers);

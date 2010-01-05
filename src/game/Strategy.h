@@ -12,11 +12,11 @@ namespace ai
         virtual ~Strategy() {}
 
     public:
-        virtual NextAction** getNextActions() { return NULL; }
+        virtual NextAction** getDefaultActions() { return NULL; }
         virtual void InitTriggers(std::list<TriggerNode*> &triggers) {}
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers) {}
         virtual const char* getName() = NULL;
-        virtual ActionNode* createAction(const char* name) { return NULL; }
+        virtual ActionNode* createAction(const char* name)  { return NULL; }
     };
 
     class CombatStrategy : public Strategy

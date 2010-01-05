@@ -45,6 +45,11 @@ ActionNode* AssistNonCombatStrategy::createAction(const char* name)
     else return NULL;
 }
 
+NextAction** StayNonCombatStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("stay", 1.0f), NULL);
+}
+
 ActionNode* StayNonCombatStrategy::createAction(const char* name)
 {
     if (!strcmp("stay", name)) 
@@ -55,6 +60,11 @@ ActionNode* StayNonCombatStrategy::createAction(const char* name)
             /*C*/ NULL);
     }
     else return NULL;
+}
+
+NextAction** FollowMasterNonCombatStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("follow", 1.0f), NULL);
 }
 
 ActionNode* FollowMasterNonCombatStrategy::createAction(const char* name)

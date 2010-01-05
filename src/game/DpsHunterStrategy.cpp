@@ -6,6 +6,11 @@
 
 using namespace ai;
 
+NextAction** DpsHunterStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("hunter's mark", 50.0f), NULL);
+}
+
 void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericHunterStrategy::InitTriggers(triggers);

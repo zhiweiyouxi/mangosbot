@@ -21,6 +21,7 @@ namespace ai
         FollowMasterNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "follow"; }
         virtual ActionNode* createAction(const char* name);
+        virtual NextAction** getDefaultActions();
 
     public:
         BEGIN_NEXT_ACTIONS(1)
@@ -34,6 +35,7 @@ namespace ai
         StayNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "stay"; }
         virtual ActionNode* createAction(const char* name);
+        virtual NextAction** getDefaultActions();
 
     public:
         BEGIN_NEXT_ACTIONS(1)
