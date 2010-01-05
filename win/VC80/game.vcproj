@@ -1793,57 +1793,9 @@
 			<Filter
 				Name="Mage"
 				>
-				<File
-					RelativePath="..\..\src\game\MageActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\MageTriggers.h"
-					>
-				</File>
 				<Filter
 					Name="Strategies"
 					>
-					<File
-						RelativePath="..\..\src\game\FrostMageStrategy.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\FrostMageStrategy.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\GenericMageStrategy.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\GenericMageStrategy.h"
-						>
-					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -1929,6 +1881,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\GenericHunterNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericHunterNonCombatStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericHunterStrategy.cpp"
 						>
 					</File>
@@ -1982,14 +1942,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\game\BearTankDruidStrategy.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\CatDpsDruidStrategy.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\CatDpsDruidStrategy.h"
 						>
 					</File>
 					<File

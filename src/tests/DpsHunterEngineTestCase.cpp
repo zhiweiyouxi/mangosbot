@@ -70,6 +70,9 @@ protected:
 
     void pickNewTarget()
     {
+        engine->addStrategy("assist");
+        engine->Init();
+
         ai->spellCooldowns.push_back("auto shot");
         ai->spellCooldowns.push_back("serpent sting");
         ai->spellCooldowns.push_back("concussive shot"); // this will not be available as we do not have any target
@@ -99,7 +102,7 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>hunter's mark>revive pet>mend pet"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>hunter's mark"));
     }
 
 };

@@ -16,6 +16,7 @@ namespace ai
         virtual void InitTriggers(std::list<Trigger*> &triggers) {}
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers) {}
         virtual const char* getName() = NULL;
+        virtual ActionNode* createAction(const char* name) { return NULL; }
     };
 
     class CombatStrategy : public Strategy

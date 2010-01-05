@@ -12,7 +12,7 @@ public:
 public:
 	void Push(ActionBasket *action);
 	void Push(ActionBasket **actions);
-	Action* Pop();
+	ActionNode* Pop();
     ActionBasket* Peek();
 private:
 	std::list<ActionBasket*> actions;

@@ -19,5 +19,6 @@ namespace ai
         virtual void InitTriggers(std::list<Trigger*> &triggers);
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
         virtual const char* getName() { return "bear tank"; }
+        virtual ActionNode* createAction(const char* name);
     };
 }

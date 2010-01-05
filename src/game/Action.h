@@ -68,7 +68,7 @@ namespace ai
     class NextAction
     {
     public:
-        NextAction(const char* name, float relevance)
+        NextAction(const char* name, float relevance = 0.0f)
         {
             this->name = name;
             this->relevance = relevance;
@@ -85,6 +85,7 @@ namespace ai
 
     public:
         static NextAction** clone(NextAction** actions);
+        static NextAction** array(uint8 nil,...);
 
     private:
         float relevance;
@@ -118,17 +119,21 @@ namespace ai
     class ActionNode
     {
     public:
-        ActionNode(Action* action, NextAction** continuers = NULL, NextAction** alternatives = NULL, NextAction** prerequisites = NULL)
+        ActionNode(Action* action, NextAction** prerequisites = NULL, NextAction** alternatives = NULL, NextAction** continuers = NULL)
         {
             this->action = action; 
-            this->continuers = continuers;
-            this->alternatives = alternatives;
             this->prerequisites = prerequisites;
+            this->alternatives = alternatives;
+            this->continuers = continuers;
         }
         virtual ~ActionNode() { delete action; }
 
     public:
         Action* getAction() { return action; }
+        const char* getName() { return action->getName(); }
+        virtual void Execute() { action->Execute(); }
+        virtual BOOL isAvailable() { return action->isAvailable(); }
+        virtual BOOL isUseful() { return action->isUseful(); }
 
     public:
         NextAction** getContinuers() { return NextAction::clone(continuers); }
@@ -150,7 +155,7 @@ namespace ai
 	class ActionBasket
 	{
 	public:
-		ActionBasket(Action* action, float relevance, BOOL skipPrerequisites = FALSE)
+		ActionBasket(ActionNode* action, float relevance, BOOL skipPrerequisites = FALSE)
         {
             this->action = action;
             this->relevance = relevance;
@@ -159,12 +164,12 @@ namespace ai
         virtual ~ActionBasket(void) {}
 	public:
 		float getRelevance() {return relevance;}
-		Action* getAction() {return action;}
+		ActionNode* getAction() {return action;}
         BOOL isSkipPrerequisites() { return skipPrerequisites; }
         void AmendRelevance(float k) {relevance *= k; }
         void setRelevance(float relevance) { this->relevance = relevance; }
 	private:
-		Action* action;
+		ActionNode* action;
 		float relevance;
         BOOL skipPrerequisites;
 	};

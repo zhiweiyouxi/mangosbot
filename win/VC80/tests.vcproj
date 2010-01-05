@@ -656,10 +656,6 @@
 		<Filter
 			Name="Mage"
 			>
-			<File
-				RelativePath="..\..\src\tests\MageEngineTestCase.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Generic"

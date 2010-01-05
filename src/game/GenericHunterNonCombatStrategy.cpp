@@ -1,20 +1,23 @@
 #include "pchdef.h"
 #include "HunterTriggers.h"
-#include "GenericHunterStrategy.h"
+#include "HunterMultipliers.h"
+#include "GenericHunterNonCombatStrategy.h"
 #include "HunterActions.h"
 
 using namespace ai;
 
-void GenericHunterStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericHunterNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
 {
-    CombatStrategy::InitTriggers(triggers);
-
-    triggers.push_back(new HunterEnemyTooCloseTrigger(ai));
+    GenericNonCombatStrategy::InitTriggers(triggers);
+    
+    triggers.push_back(new HunterAspectOfTheHawkTrigger(ai));
+    triggers.push_back(new HunterHasNoPetTrigger(ai));
     triggers.push_back(new HuntersPetDeadTrigger(ai));
     triggers.push_back(new HuntersPetLowHealthTrigger(ai));
 }
 
-ActionNode* GenericHunterStrategy::createAction(const char* name)
+
+ActionNode* GenericHunterNonCombatStrategy::createAction(const char* name)
 {
     if (!strcmp("call pet", name)) 
     {
@@ -33,6 +36,13 @@ ActionNode* GenericHunterStrategy::createAction(const char* name)
     else if (!strcmp("revive pet", name)) 
     {
         return new ActionNode (new CastRevivePetAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("aspect of the hawk", name)) 
+    {
+        return new ActionNode (new CastAspectOfTheHawkAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

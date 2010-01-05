@@ -45,7 +45,7 @@ Engine::~Engine(void)
 
 void Engine::Reset()
 {
-	Action* action = NULL;
+	ActionNode* action = NULL;
 	do 
 	{
 		action = queue.Pop();
@@ -105,12 +105,12 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
             float relevance = basket->getRelevance(); // just for reference
             BOOL skipPrerequisites = basket->isSkipPrerequisites();
 
-            Action* action = queue.Pop();
+            ActionNode* action = queue.Pop();
             if (action->isAvailable())
             {
                 if (action->isUseful())
                 {
-                    if (!skipPrerequisites && MultiplyAndPush(action->getPrerequisiteActions(), relevance + 1))
+                    if (!skipPrerequisites && MultiplyAndPush(action->getPrerequisites(), relevance + 1))
                     {
                         sLog.outBasic("A:%s - prerequisites", action->getName());
                         NextAction** prerequisites = new NextAction*[2];
@@ -123,10 +123,10 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                     }
                     sLog.outBasic("A:%s", action->getName());
                     
-                    if (actionExecutionListeners.ActionExecuted(action))
+                    if (actionExecutionListeners.ActionExecuted(action->getAction()))
                         action->Execute();
                     
-                    MultiplyAndPush(action->getNextActions());
+                    MultiplyAndPush(action->getContinuers());
                     actionExecuted = TRUE;
                     delete action;
                     break;
@@ -139,7 +139,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
             else
             {
                 sLog.outBasic("A:%s - n/a", action->getName());
-                MultiplyAndPush(action->getAlternativeActions(), relevance);
+                MultiplyAndPush(action->getAlternatives(), relevance);
             }
             delete action;
         }
@@ -157,6 +157,23 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
     return actionExecuted;
 }
 
+ActionNode* Engine::createAction(const char* name)
+{
+    for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+    {
+        Strategy* strategy = *i;
+        ActionNode* node = strategy->createAction(name);
+        if (node)
+            return node;
+    }
+    ActionNode* node = actionFactory->createAction(name);
+    if (!node)
+    {
+        throw new std::exception("no one creates this action");
+    }
+    return node;
+}
+
 BOOL Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, BOOL skipPrerequisites)
 {
     BOOL pushed = FALSE;
@@ -167,12 +184,12 @@ BOOL Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, BOOL sk
             NextAction* nextAction = actions[j];
             if (nextAction)
             {
-                Action* action = actionFactory->createAction(nextAction->getName());
+                ActionNode* action = createAction(nextAction->getName());
                 float k = nextAction->getRelevance();
                 for (std::list<Multiplier*>::iterator i = multipliers.begin(); i!= multipliers.end(); i++)
                 {
                     Multiplier* multiplier = *i;
-                    k *= multiplier->GetValue(action);
+                    k *= multiplier->GetValue(action->getAction());
                 }
 
                 if (forceRelevance > 0.0f)
@@ -192,13 +209,13 @@ BOOL Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, BOOL sk
 
 void Engine::ExecuteAction(const char* name)
 {
-    Action *action = actionFactory->createAction(name);
+    ActionNode *action = createAction(name);
     if (action)
     {
-        if (actionExecutionListeners.ActionExecuted(action))
+        if (actionExecutionListeners.ActionExecuted(action->getAction()))
             action->Execute();
 
-        MultiplyAndPush(action->getNextActions());
+        MultiplyAndPush(action->getContinuers());
         delete action;
     }
 }

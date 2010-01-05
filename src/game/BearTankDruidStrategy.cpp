@@ -2,6 +2,8 @@
 #include "DruidTriggers.h"
 #include "DruidMultipliers.h"
 #include "BearTankDruidStrategy.h"
+#include "DruidActions.h"
+
 
 using namespace ai;
 
@@ -24,4 +26,101 @@ void BearTankDruidStrategy::InitTriggers(std::list<Trigger*> &triggers)
 void BearTankDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 {
 
+}
+
+
+ActionNode* BearTankDruidStrategy::createAction(const char* name)
+{
+    if (!strcmp("melee", name)) 
+    {
+        return new ActionNode (new DruidMeleeAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("faerie fire", name)) 
+    {
+        return new ActionNode (new CastFaerieFireAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("reach spell"), NULL), // TODO: remove this
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), new NextAction("dire bear form", 15.0f), NULL));
+    }
+    else if (!strcmp("caster form", name)) 
+    {
+        return new ActionNode (new CastCasterFormAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("bear form", name)) 
+    {
+        return new ActionNode (new CastBearFormAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("dire bear form", name)) 
+    {
+        return new ActionNode (new CastDireBearFormAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("bear form"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("maul", name)) 
+    {
+        return new ActionNode (new CastMaulAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("swipe", name)) 
+    {
+        return new ActionNode (new CastSwipeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("regrowth", name)) 
+    {
+        return new ActionNode (new CastRegrowthAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("rejuvenation", name)) 
+    {
+        return new ActionNode (new CastRejuvenationAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("regrowth on party", name)) 
+    {
+        return new ActionNode (new CastRegrowthOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), new NextAction("rejuvenation on party"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("rejuvenation on party", name)) 
+    {
+        return new ActionNode (new CastRejuvenationOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("growl", name)) 
+    {
+        return new ActionNode (new CastGrowlAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), new NextAction("reach spell"), NULL),
+            /*A*/ NextAction::array(0, new NextAction("faerie fire"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("demoralizing roar", name)) 
+    {
+        return new ActionNode (new CastDemoralizingRoarAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else return NULL;
 }

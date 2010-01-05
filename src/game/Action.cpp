@@ -43,3 +43,28 @@ NextAction** NextAction::clone(NextAction** actions)
     res[size] = NULL;
     return res;
 }
+
+NextAction** NextAction::array(uint8 nil, ...)
+{
+    va_list vl;
+    va_start(vl, nil);
+    
+    int size = 0;
+    NextAction* cur = NULL;
+    do 
+    {
+        cur = va_arg(vl, NextAction*);
+        size++;
+    }
+    while (cur);
+
+    va_end(vl);
+
+    NextAction** res = new NextAction*[size];
+    va_start(vl, nil);
+    for (int i=0; i<size; i++)
+        res[i] = va_arg(vl, NextAction*);
+    va_end(vl);
+
+    return res;
+}

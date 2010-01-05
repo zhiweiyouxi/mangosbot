@@ -58,9 +58,6 @@ public:
     const char* getName() {return "RepeatingAction"; }
     BOOL isAvailable() { return available; }
 
-    NextAction* getNextAction() { return new NextAction("RepeatingAction", 1.0f); }
-    NextAction* getAlternativeAction() { return new NextAction("AlternativeAction", 1.0f); }
-
 	static int destroyed;
     static int executed;
     static BOOL available;
@@ -129,6 +126,39 @@ public:
     {
         triggers.push_back(new TestTrigger(NULL));
     }
+
+    virtual ActionNode* createAction(const char* name)
+    {
+        if (!strcmp("TriggeredAction", name)) 
+        {
+            return new ActionNode (new TriggeredAction(ai),  
+                /*P*/ NULL,
+                /*A*/ NULL, 
+                /*C*/ NULL);
+        }
+        else if (!strcmp("RepeatingAction", name)) 
+        {
+            return new ActionNode (new RepeatingAction(ai),  
+                /*P*/ NULL,
+                /*A*/ NextAction::array(0, new NextAction("AlternativeAction", 1.0f), NULL), 
+                /*C*/ NextAction::array(0, new NextAction("RepeatingAction", 1.0f), NULL));
+        }
+        else if (!strcmp("AlternativeAction", name)) 
+        {
+            return new ActionNode (new AlternativeAction(ai),  
+                /*P*/ NextAction::array(0, new NextAction("PrerequisiteAction", 1.0f), NULL),
+                /*A*/ NULL, 
+                /*C*/ NULL);
+        }
+        else if (!strcmp("PrerequisiteAction", name)) 
+        {
+            return new ActionNode (new PrerequisiteAction(ai),  
+                /*P*/ NULL,
+                /*A*/ NULL, 
+                /*C*/ NULL);
+        }
+        else return NULL;
+    }
 };
 
 class AnotherTestStrategy : public Strategy
@@ -143,22 +173,6 @@ class TestActionFactory : public ActionFactory
 {
 public:
     TestActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}
-    virtual Action* createAction(const char* name)
-    {
-        if (!strcmp("TriggeredAction", name))
-            return new TriggeredAction(ai);
-
-        if (!strcmp("RepeatingAction", name))
-            return new RepeatingAction(ai);
-        
-        if (!strcmp("AlternativeAction", name))
-            return new AlternativeAction(ai);
-
-        if (!strcmp("PrerequisiteAction", name))
-            return new PrerequisiteAction(ai);
-
-        return NULL;
-    }
     virtual Strategy* createStrategy(const char* name)
     {
         if (!strcmp("TestStrategy", name))

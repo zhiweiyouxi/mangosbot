@@ -6,48 +6,72 @@
 
 using namespace ai;
 
-Action* ActionFactory::createAction(const char* name)
+ActionNode* ActionFactory::createAction(const char* name)
 {
-    if (!strcmp("flee", name))
-        return new FleeAction(ai);
-
-    if (!strcmp("melee", name))
-        return new MeleeAction(ai);
-    
-    if (!strcmp("reach spell", name))
-        return new ReachSpellAction(ai);
-
-    if (!strcmp("lifeblood", name))
-        return new CastLifeBloodAction(ai);
-
-    if (!strcmp("healing potion", name))
-        return new UseHealingPotion(ai);
-    
-    if (!strcmp("mana potion", name))
-        return new UseManaPotion(ai);
-    
-    if (!strcmp("panic potion", name))
-        return new UsePanicPotion(ai);
-    
-    if (!strcmp("eat", name))
-        return new EatAction(ai);
-    
-    if (!strcmp("drink", name))
-        return new DrinkAction(ai);
-
-    if (!strcmp("follow", name))
-        return new FollowAction(ai);
-
-    if (!strcmp("stay", name))
-        return new StayAction(ai);
-
-    if (!strcmp("attack least threat", name))
-        return new AttackLeastThreatAction(ai);
-    
-    if (!strcmp("attack bigger threat", name))
-        return new AttackBiggerThreatAction(ai);
-
-    return NULL;
+    if (!strcmp("flee", name)) 
+    {
+        return new ActionNode (new FleeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("melee", name)) 
+    {
+        return new ActionNode (new MeleeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("reach spell", name)) 
+    {
+        return new ActionNode (new ReachSpellAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("lifeblood", name)) 
+    {
+        return new ActionNode (new CastLifeBloodAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("regrowth"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("panic potion", name)) 
+    {
+        return new ActionNode (new UsePanicPotion(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("healing potion"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("healing potion", name)) 
+    {
+        return new ActionNode (new UseHealingPotion(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("mana potion"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("mana potion", name)) 
+    {
+        return new ActionNode (new UseManaPotion(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("flee"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("eat", name)) 
+    {
+        return new ActionNode (new EatAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("drink", name)) 
+    {
+        return new ActionNode (new DrinkAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else return NULL;
 }
 
 Strategy* ActionFactory::createStrategy(const char* name)

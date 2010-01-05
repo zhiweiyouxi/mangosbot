@@ -12,5 +12,6 @@ namespace ai
     
     public:
         virtual void InitTriggers(std::list<Trigger*> &triggers);
-    };
+        virtual ActionNode* createAction(const char* name);
+   };
 }

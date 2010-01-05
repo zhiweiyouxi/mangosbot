@@ -29,13 +29,13 @@ protected:
         CastSpellAction action3(NULL, "3");
 
 		Queue q;
-		q.Push(new ActionBasket(&action1, 0.5f));
-		q.Push(new ActionBasket(&action2, 0.7f));
-		q.Push(new ActionBasket(&action3, 0.3f));
+		q.Push(new ActionBasket(new ActionNode(&action1, NULL, NULL, NULL), 0.5f));
+		q.Push(new ActionBasket(new ActionNode(&action2, NULL, NULL, NULL), 0.7f));
+		q.Push(new ActionBasket(new ActionNode(&action3, NULL, NULL, NULL), 0.3f));
 
-		CPPUNIT_ASSERT(q.Pop() == &action2);
-		CPPUNIT_ASSERT(q.Pop() == &action1);
-		CPPUNIT_ASSERT(q.Pop() == &action3);
+		CPPUNIT_ASSERT(q.Pop()->getAction() == &action2);
+		CPPUNIT_ASSERT(q.Pop()->getAction() == &action1);
+		CPPUNIT_ASSERT(q.Pop()->getAction() == &action3);
 		CPPUNIT_ASSERT(q.Pop() == NULL);
 	}
 };

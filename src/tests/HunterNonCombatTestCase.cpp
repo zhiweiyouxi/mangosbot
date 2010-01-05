@@ -29,7 +29,7 @@ public:
         ai = new MockPlayerbotAIFacade();
 
         engine = new Engine(ai, new HunterActionFactory(ai));
-        engine->addStrategy("hunter");
+        engine->addStrategy("hunter non combat");
         engine->Init();
     }
 
@@ -55,6 +55,7 @@ protected:
         ai->hasPet = FALSE;
         engine->DoNextAction(NULL);
         
+        ai->spellCooldowns.push_back("aspect of the hawk");
         ai->hasPet = TRUE;
         ai->petHealth = 0;
         engine->DoNextAction(NULL);
@@ -67,7 +68,7 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>aspect of the hawk"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet"));
     }
     
 };

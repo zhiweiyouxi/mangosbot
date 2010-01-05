@@ -2,6 +2,7 @@
 #include "DruidTriggers.h"
 #include "DruidMultipliers.h"
 #include "GenericDruidNonCombatStrategy.h"
+#include "DruidActions.h"
 
 using namespace ai;
 
@@ -16,3 +17,43 @@ void GenericDruidNonCombatStrategy::InitTriggers(std::list<Trigger*> &triggers)
     triggers.push_back(new MarkOfTheWildOnPartyTrigger(ai));
 }
 
+
+ActionNode* GenericDruidNonCombatStrategy::createAction(const char* name)
+{
+    if (!strcmp("thorns", name)) 
+    {
+        return new ActionNode (new CastThornsAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("mark of the wild", name)) 
+    {
+        return new ActionNode (new CastMarkOfTheWildAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("mark of the wild on party", name)) 
+    {
+        return new ActionNode (new CastMarkOfTheWildOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("regrowth on party", name)) 
+    {
+        return new ActionNode (new CastRegrowthOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("caster form", name)) 
+    {
+        return new ActionNode (new CastCasterFormAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+   else return NULL;
+}

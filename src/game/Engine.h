@@ -77,6 +77,7 @@ namespace ai
         void Reset();
         void ProcessTriggers();
         void PushDefaultActions();
+        ActionNode* createAction(const char* name);
 
     protected:
 	    Queue queue;

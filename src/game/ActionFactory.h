@@ -18,7 +18,7 @@ namespace ai
         virtual ~ActionFactory() {}
 
     public:
-        virtual Action* createAction(const char* name);
+        virtual ActionNode* createAction(const char* name);
         virtual Strategy* createStrategy(const char* name);
     };
 }

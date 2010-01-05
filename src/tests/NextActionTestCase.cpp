@@ -11,7 +11,8 @@ using namespace ai;
 class NextActionTestCase : public CPPUNIT_NS::TestFixture
 {
 	CPPUNIT_TEST_SUITE( NextActionTestCase );
-	CPPUNIT_TEST( clone );
+	CPPUNIT_TEST( array );
+    CPPUNIT_TEST( clone );
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -22,6 +23,13 @@ public:
 	}
 
 protected:
+    void array()
+    {
+        NextAction** actions = NextAction::array(0, new NextAction("1", 1), NULL);
+        CPPUNIT_ASSERT(!strcmp("1", actions[0]->getName()));
+        CPPUNIT_ASSERT(!actions[1]);
+    }
+
 	void clone()
 	{
 		NextAction** actions = new NextAction*[3];

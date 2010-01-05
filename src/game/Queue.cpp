@@ -35,7 +35,7 @@ void Queue::Push(ActionBasket **actions)
 	}
 }
 
-Action* Queue::Pop()
+ActionNode* Queue::Pop()
 {
 	float max = -1;
 	ActionBasket* selection = NULL;
@@ -50,7 +50,7 @@ Action* Queue::Pop()
 	}
 	if (selection != NULL)
 	{
-		Action* action = selection->getAction();
+		ActionNode* action = selection->getAction();
 		actions.remove(selection);
 		delete selection;
 		return action;

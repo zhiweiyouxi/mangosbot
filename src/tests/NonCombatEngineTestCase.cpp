@@ -5,7 +5,6 @@
 #include "../game/Queue.h"
 #include "../game/Trigger.h"
 #include "../game/Engine.h"
-#include "../game/FrostMageStrategy.h"
 
 #include "MockPlayerbotAIFacade.h"
 
