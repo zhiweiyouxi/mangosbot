@@ -30,10 +30,6 @@ public:
     AlternativeAction(PlayerbotAIFacade* const ai) : Action(ai) {}
     virtual ~AlternativeAction() {destroyed = TRUE;}
 
-    BEGIN_PREREQUISITE_ACTIONS(1)
-        PREREQUISITE_ACTION(0, "PrerequisiteAction");
-    END_PREREQUISITE_ACTIONS(1)
-
     void Execute() { executed++; }
     const char* getName() {return "AlternativeAction"; }
 
@@ -109,10 +105,6 @@ class TestStrategy : public Strategy
 {
 public:
     TestStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
-
-    BEGIN_NEXT_ACTIONS(1)
-        NEXT_ACTION(0, "RepeatingAction", 1.0f)
-    END_NEXT_ACTIONS(1)
 
     virtual const char* getName() { return "TestStrategy"; }
 

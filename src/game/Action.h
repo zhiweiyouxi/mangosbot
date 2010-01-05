@@ -17,52 +17,6 @@ class clazz : public Action \
     };
 
 
-#define BEGIN_NEXT_ACTIONS(size) \
-    NextAction** getNextActions() \
-    { \
-    NextAction** actions = new NextAction*[size + 1];
-
-#define NEXT_ACTION(index, name, relevance) \
-    actions[index] = new NextAction(name, relevance);
-
-#define END_NEXT_ACTIONS(size) \
-    actions[size] = NULL; \
-    return actions; \
-    }
-
-
-#define ALTERNATIVE_ACTIONS(name) \
-    virtual NextAction* getAlternativeAction() { return new NextAction(name, 0.0f); }
-
-#define BEGIN_ALTERNATIVE_ACTIONS(size) \
-    NextAction** getAlternativeActions() \
-    { \
-    NextAction** actions = new NextAction*[size + 1];
-
-#define ALTERNATIVE_ACTION(index, name) \
-    actions[index] = new NextAction(name, 0.0f);
-
-#define END_ALTERNATIVE_ACTIONS(size) \
-    actions[size] = NULL; \
-    return actions; \
-    }
-
-#define PREREQUISITE_ACTIONS(name) \
-    virtual NextAction* getPrerequisiteAction() { return new NextAction(name, 0.0f); }
-
-#define BEGIN_PREREQUISITE_ACTIONS(size) \
-    NextAction** getPrerequisiteActions() \
-    { \
-    NextAction** actions = new NextAction*[size + 1];
-
-#define PREREQUISITE_ACTION(index, name) \
-    actions[index] = new NextAction(name, 0.0f);
-
-#define END_PREREQUISITE_ACTIONS(size) \
-    actions[size] = NULL; \
-    return actions; \
-    }
-
 namespace ai
 {
     class NextAction

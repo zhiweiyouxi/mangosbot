@@ -23,10 +23,6 @@ namespace ai
         virtual ActionNode* createAction(const char* name);
         virtual NextAction** getDefaultActions();
 
-    public:
-        BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "follow", 1.0f)
-        END_NEXT_ACTIONS(1)
     };
 
     class StayNonCombatStrategy : public GenericNonCombatStrategy
@@ -37,10 +33,6 @@ namespace ai
         virtual ActionNode* createAction(const char* name);
         virtual NextAction** getDefaultActions();
 
-    public:
-        BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "stay", 1.0f)
-        END_NEXT_ACTIONS(1)
     };
 
     class AssistNonCombatStrategy : public GenericNonCombatStrategy

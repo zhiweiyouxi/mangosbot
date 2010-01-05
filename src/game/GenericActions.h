@@ -75,7 +75,6 @@ namespace ai
     public:
         CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
-        PREREQUISITE_ACTIONS("reach spell");
     };
     //---------------------------------------------------------------------------------------------------------------------
     class CastDebuffSpellAction : public CastSpellAction
@@ -83,7 +82,6 @@ namespace ai
     public:
         CastDebuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
         virtual BOOL isAvailable();
-        PREREQUISITE_ACTIONS("reach spell");
     };
     //---------------------------------------------------------------------------------------------------------------------
 
@@ -105,28 +103,24 @@ namespace ai
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_SPELL_ACTION(CastLifeBloodAction, "lifeblood")
-        ALTERNATIVE_ACTIONS("regrowth")
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UseHealingPotion, "healing potion")
-        ALTERNATIVE_ACTIONS("mana potion")
         virtual BOOL isAvailable();
     END_ACTION()
 
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UseManaPotion, "mana potion")
-        ALTERNATIVE_ACTIONS("flee")
         virtual BOOL isAvailable();
     END_ACTION()
 
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UsePanicPotion, "panic potion")
-        ALTERNATIVE_ACTIONS("healing potion")
         virtual BOOL isAvailable();
     END_ACTION()
 
@@ -137,7 +131,6 @@ namespace ai
     public:
         HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
-        PREREQUISITE_ACTIONS("reach spell");
         virtual void Execute();
         virtual BOOL isUseful();
     };

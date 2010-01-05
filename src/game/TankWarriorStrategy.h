@@ -8,11 +8,6 @@ namespace ai
     {
     public:
         TankWarriorStrategy(PlayerbotAIFacade* const ai) : GenericWarriorStrategy(ai) {}
-
-    public:
-        BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "melee", 10.0f)
-        END_NEXT_ACTIONS(1)
     
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
