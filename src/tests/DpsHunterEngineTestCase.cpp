@@ -70,9 +70,6 @@ protected:
 
     void pickNewTarget()
     {
-        engine->addStrategy("assist");
-        engine->Init();
-
         ai->spellCooldowns.push_back("auto shot");
         ai->spellCooldowns.push_back("serpent sting");
         ai->spellCooldowns.push_back("concussive shot"); // this will not be available as we do not have any target

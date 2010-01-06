@@ -84,7 +84,6 @@ PlayerbotWarriorAI::PlayerbotWarriorAI(Player* const master, Player* const bot, 
 
     nonCombatEngine = new ai::Engine(facade, new ai::WarriorActionFactory(facade));
     nonCombatEngine->addStrategy("warrior non combat");
-    nonCombatEngine->addStrategy("assist");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->Init();
 }

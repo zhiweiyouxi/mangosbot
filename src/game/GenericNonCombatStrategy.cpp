@@ -26,25 +26,6 @@ void AssistNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
 }
 
-ActionNode* AssistNonCombatStrategy::createAction(const char* name)
-{
-    if (!strcmp("attack least threat", name)) 
-    {
-        return new ActionNode (new AttackLeastThreatAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("attack bigger threat", name)) 
-    {
-        return new ActionNode (new AttackBiggerThreatAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else return NULL;
-}
-
 NextAction** StayNonCombatStrategy::getDefaultActions()
 {
     return NextAction::array(0, new NextAction("stay", 1.0f), NULL);

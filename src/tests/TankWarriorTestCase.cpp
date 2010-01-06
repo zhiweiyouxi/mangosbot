@@ -19,6 +19,7 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( revengeIfDodge );
+    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -45,6 +46,25 @@ public:
     }
 
 protected:
+    void pickNewTarget()
+    {
+        engine->removeStrategy("assist");
+        engine->Init();
+
+        engine->DoNextAction(NULL); // reach melee
+        ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // melee
+
+        ai->myAttackerCount = 0;
+        engine->DoNextAction(NULL); // attack least threat
+        ai->myAttackerCount = 1;
+        engine->DoNextAction(NULL); // reach melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>attack bigger threat>defensive stance"));
+
+    }
+
     void warriorMustDemoralizeAttackers()
     {
         engine->DoNextAction(NULL); // reach melee

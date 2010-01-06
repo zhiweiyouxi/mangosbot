@@ -24,6 +24,7 @@ class BearTankDruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
+    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -49,6 +50,24 @@ public:
     }
 
 protected:
+    void pickNewTarget()
+    {
+        engine->removeStrategy("assist");
+        engine->Init();
+
+        engine->DoNextAction(NULL); // faerie fire
+        engine->DoNextAction(NULL); // dire bear form
+
+        ai->myAttackerCount = 0;
+        engine->DoNextAction(NULL); // attack least threat
+        ai->myAttackerCount = 1;
+        engine->DoNextAction(NULL); // reach melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>attack bigger threat>reach melee"));
+
+    }
+
     void bearFormIfDireNotAvailable()
     {
         engine->DoNextAction(NULL); // faerie fire

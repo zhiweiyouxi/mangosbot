@@ -78,6 +78,20 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("attack bigger threat", name)) 
+    {
+        return new ActionNode (new AttackBiggerThreatAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("attack least threat", name)) 
+    {
+        return new ActionNode (new AttackLeastThreatAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else return NULL;
 }
 

@@ -40,7 +40,6 @@ namespace ai
     public:
         AssistNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "assist"; }
-        virtual ActionNode* createAction(const char* name);
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
