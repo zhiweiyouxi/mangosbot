@@ -112,7 +112,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                 {
                     if (!skipPrerequisites && MultiplyAndPush(action->getPrerequisites(), relevance + 1))
                     {
-                        sLog.outBasic("A:%s - prerequisites", action->getName());
+                        //sLog.outBasic("A:%s - prerequisites", action->getName());
                         NextAction** prerequisites = new NextAction*[2];
                         prerequisites[0] = new NextAction(action->getName(), relevance);
                         prerequisites[1] = NULL;
@@ -123,7 +123,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                         break;
                     }
 
-                    sLog.outBasic("A:%s", action->getName());
+                    //sLog.outBasic("A:%s", action->getName());
 
                     if (actionExecutionListeners.ActionExecuted(action->getAction()))
                     {
@@ -138,18 +138,18 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                     }
                     else
                     {
-                        sLog.outBasic("A:%s - n/a", action->getName());
+                        //sLog.outBasic("A:%s - n/a", action->getName());
                         MultiplyAndPush(action->getAlternatives(), relevance);
                     }
                 }
                 else
                 {
-                    sLog.outBasic("A:%s - useless", action->getName());
+                    //sLog.outBasic("A:%s - useless", action->getName());
                 }
             }
             else 
             {
-                sLog.outBasic("A:%s - n/a", action->getName());
+                //sLog.outBasic("A:%s - n/a", action->getName());
                 MultiplyAndPush(action->getAlternatives(), relevance);
             }
             delete action;
@@ -159,7 +159,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
 	
     if (!basket)
     {
-        sLog.outBasic("--- queue is empty ---");
+        //sLog.outBasic("--- queue is empty ---");
         PushDefaultActions();
         if (queue.Peek() && depth < 5)
             return DoNextAction(unit, depth + 1);
@@ -263,7 +263,7 @@ void Engine::ProcessTriggers()
         TriggerNode* trigger = *i;
         if (trigger->IsActive())
         {
-            sLog.outBasic("T:%s", trigger->getName());
+            //sLog.outBasic("T:%s", trigger->getName());
             MultiplyAndPush(trigger->getHandlers());
         }
     }
