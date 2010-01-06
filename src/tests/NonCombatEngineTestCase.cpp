@@ -21,6 +21,7 @@ class NonCombatEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( assist );
   CPPUNIT_TEST( tankNonCombat );
   CPPUNIT_TEST( loot );
+  CPPUNIT_TEST( goaway );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -32,6 +33,20 @@ public:
 	}
 
 protected:
+    void goaway() 
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new ActionFactory(ai));
+        engine.addStrategy("goaway");
+        engine.Init();
+
+        ai->attackerCount = 0;
+        engine.DoNextAction(NULL);
+        std::cout << ai->buffer;
+
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">goaway"));
+    }
     void stayIfAttackers()
     {
         ai = new MockPlayerbotAIFacade();

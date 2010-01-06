@@ -10,6 +10,18 @@ BOOL FollowAction::Execute()
     return TRUE;
 }
 
+BOOL GoAwayAction::Execute()
+{
+    ai->GoAway();
+    return TRUE;
+}
+
+BOOL GoAwayAction::isUseful()
+{
+    return ai->GetAttackerCount() == 0;
+}
+
+
 BOOL FollowAction::isUseful()
 {
     return ai->GetAttackerCount() == 0;

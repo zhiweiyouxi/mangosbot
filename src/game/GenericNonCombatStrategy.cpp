@@ -74,3 +74,21 @@ ActionNode* FollowMasterNonCombatStrategy::createAction(const char* name)
     }
     else return NULL;
 }
+
+
+NextAction** GoAwayNonCombatStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("goaway", 1.0f), NULL);
+}
+
+ActionNode* GoAwayNonCombatStrategy::createAction(const char* name)
+{
+    if (!strcmp("goaway", name)) 
+    {
+        return new ActionNode (new GoAwayAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else return NULL;
+}

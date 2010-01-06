@@ -118,6 +118,9 @@ Strategy* ActionFactory::createStrategy(const char* name)
 
     if (!strcmp("loot", name))
         return new LootNonCombatStrategy(ai);
+    
+    if (!strcmp("goaway", name))
+        return new GoAwayNonCombatStrategy(ai);
 
     return NULL;
 }

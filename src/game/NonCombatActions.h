@@ -19,4 +19,8 @@ namespace ai
     BEGIN_ACTION(EatAction, "eat")
         virtual BOOL isUseful();
     END_ACTION()
+
+    BEGIN_ACTION(GoAwayAction, "goaway")
+        virtual BOOL isUseful();
+    END_ACTION()
 }

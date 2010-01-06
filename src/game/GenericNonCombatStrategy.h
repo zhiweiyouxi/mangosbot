@@ -24,6 +24,16 @@ namespace ai
 
     };
 
+    class GoAwayNonCombatStrategy : public GenericNonCombatStrategy
+    {
+    public:
+        GoAwayNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        virtual const char* getName() { return "goaway"; }
+        virtual ActionNode* createAction(const char* name);
+        virtual NextAction** getDefaultActions();
+
+    };
+
     class StayNonCombatStrategy : public GenericNonCombatStrategy
     {
     public:

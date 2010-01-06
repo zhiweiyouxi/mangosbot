@@ -21,6 +21,7 @@ namespace ai
         virtual void Flee(float distance = SPELL_DISTANCE) { buffer.append(">flee"); }
         virtual void Melee() { buffer.append(">melee"); }
         virtual void FollowMaster() { buffer.append(">follow"); }
+        virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }
         virtual void Stay() { buffer.append(">stay"); }
         virtual BOOL CastSpell(const char* spell, Unit* target = NULL);
         virtual BOOL canCastSpell(const char* spell);
