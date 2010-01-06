@@ -19,6 +19,7 @@ class NonCombatEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( eatDrink );
   CPPUNIT_TEST( assist );
   CPPUNIT_TEST( tankNonCombat );
+  CPPUNIT_TEST( loot );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -75,6 +76,26 @@ protected:
         std::cout << ai->buffer;
 
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">stay>attack least threat"));
+    }
+
+    void loot()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new ActionFactory(ai));
+        engine.addStrategy("stay");
+        engine.addStrategy("loot");
+        engine.Init();
+
+        ai->lootAvailable = true;
+        engine.DoNextAction(NULL);
+        ai->lootAvailable = false;
+        engine.DoNextAction(NULL);
+        ai->myAttackerCount = 1;
+
+        std::cout << ai->buffer;
+
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">loot>stay"));
     }
 
     void tankNonCombat()

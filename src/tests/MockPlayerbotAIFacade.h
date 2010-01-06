@@ -13,6 +13,7 @@ namespace ai
             distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; health = 100; mana = 100; partyMinHealth = 100; 
             targetHealth = 100; petHealth = 100; hasPet = TRUE;
             attackerCount = 1;myAttackerCount = 1;
+            lootAvailable = false;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -37,6 +38,8 @@ namespace ai
         virtual int GetAttackerCount() { return attackerCount; }
         virtual int GetMyAttackerCount() {return myAttackerCount; }
         virtual void RemoveAura(const char* name) {auras.remove(name); buffer.append(">-").append(name); }
+        virtual bool CanLoot() { return lootAvailable; }
+        virtual void Loot() { buffer.append(">loot"); }
         
         virtual void UseHealingPotion() { buffer.append(">hp"); }
         virtual void UseManaPotion() { buffer.append(">mp"); }
@@ -78,6 +81,7 @@ namespace ai
         int attackerCount;
         int myAttackerCount;
         int partyMinHealth;
+        bool lootAvailable;
     };
 
 }

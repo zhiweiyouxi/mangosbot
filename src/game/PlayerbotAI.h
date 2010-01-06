@@ -214,6 +214,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		void SendOrders( Player& player );
         bool FollowCheckTeleport( WorldObject &obj );
         void DoLoot();
+        bool CanLoot() { return !m_lootCreature.empty(); }
 
         void AcceptQuest( Quest const *qInfo, Player *pGiver );
         void TurnInQuests( WorldObject *questgiver );

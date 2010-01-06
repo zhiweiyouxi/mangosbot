@@ -85,3 +85,7 @@ BOOL SpellAvailableTrigger::IsActive()
     return ai->canCastSpell(spell);
 }
 
+BOOL LootAvailableTrigger::IsActive()
+{   
+    return ai->CanLoot();
+}

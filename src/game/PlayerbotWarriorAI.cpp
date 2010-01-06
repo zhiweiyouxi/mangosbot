@@ -86,6 +86,7 @@ PlayerbotWarriorAI::PlayerbotWarriorAI(Player* const master, Player* const bot, 
     nonCombatEngine->addStrategy("warrior non combat");
     nonCombatEngine->addStrategy("tank non combat");
     nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("loot");
     nonCombatEngine->Init();
 }
 PlayerbotWarriorAI::~PlayerbotWarriorAI() 

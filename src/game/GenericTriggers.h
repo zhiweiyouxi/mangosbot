@@ -132,4 +132,7 @@ namespace ai
     public: 
         virtual BOOL IsActive();
     };
+
+    BEGIN_TRIGGER(LootAvailableTrigger, Trigger)
+    END_TRIGGER()
 }

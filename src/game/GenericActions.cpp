@@ -152,3 +152,9 @@ BOOL CastDebuffSpellAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->TargetHasAura(spell);
 }
+
+BOOL LootAction::Execute()
+{
+    ai->Loot();
+    return TRUE;
+}

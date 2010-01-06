@@ -1155,10 +1155,26 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
     m_bot->Attack(m_targetCombat, true);
 
     // add thingToAttack to loot list
-    m_lootCreature.push_back( m_targetCombat->GetGUID() );
-
+    uint64 guid = m_targetCombat->GetGUID();
+    for (std::list<uint64>::iterator i = m_lootCreature.begin(); i != m_lootCreature.end(); i++)
+    {
+        if (*i == guid) 
+        {
+            guid = NULL;
+            break;
+        }
+    }
+    if (guid)
+    {
+        m_lootCreature.push_front( guid );
+        if (m_lootCreature.size() > 50)
+        {
+            for (int i=0; i<50; i++) 
+                m_lootCreature.pop_back();
+        }
+    }
 	// set movement generators for combat movement
-	MovementClear();
+	//MovementClear();
     return;
 }
 
@@ -1794,7 +1810,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
         return;
 
     // default updates occur every two seconds
-    m_ignoreAIUpdatesUntilTime = time(0) + 2;
+    m_ignoreAIUpdatesUntilTime = time(0) + 1;
 
 	// send heartbeat
 	MovementUpdate();
@@ -1886,14 +1902,14 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
             DoNextCombatManeuver();
 
         // bot was in combat recently - loot now
-        else if (m_botState == BOTSTATE_COMBAT)
+/*        else if (m_botState == BOTSTATE_COMBAT)
         {
             SetState( BOTSTATE_LOOTING );
             m_attackerInfo.clear();
         }
         else if (m_botState == BOTSTATE_LOOTING)
             DoLoot();
-/*
+
         // are we sitting, if so feast if possible
         else if (m_bot->getStandState() == UNIT_STAND_STATE_SIT)
         Feast();

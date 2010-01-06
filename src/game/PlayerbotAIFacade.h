@@ -53,6 +53,8 @@ namespace ai
         virtual int GetMyAttackerCount();
         virtual BOOL IsMounted();
         virtual BOOL HaveTarget() { return ai->GetCurrentTarget() != NULL; }
+        virtual bool CanLoot() { return ai->CanLoot(); }
+        virtual void Loot() { ai->DoLoot(); }
 
         virtual void AttackLeastThreat();
         virtual void AttackBiggerThreat();

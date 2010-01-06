@@ -75,6 +75,7 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
     nonCombatEngine->addStrategy("druid non combat");
     nonCombatEngine->addStrategy("tank non combat");
     nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("loot");
     nonCombatEngine->Init();
 }
 

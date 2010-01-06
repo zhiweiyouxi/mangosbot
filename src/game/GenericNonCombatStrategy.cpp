@@ -19,6 +19,14 @@ void GenericNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("drink", 9.0f), NULL)));
 }
 
+void LootNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+    triggers.push_back(new TriggerNode(
+        new LootAvailableTrigger(ai), 
+        NextAction::array(0, new NextAction("loot", 2.0f), NULL)));
+}
+
+
 void TankNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     triggers.push_back(new TriggerNode(

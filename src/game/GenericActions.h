@@ -160,4 +160,8 @@ namespace ai
 
     BEGIN_ACTION(AttackBiggerThreatAction, "attack bigger threat")
     END_ACTION()
+    //---------------------------------------------------------------------------------------------------------------------
+
+    BEGIN_ACTION(LootAction, "loot")
+    END_ACTION()
 }

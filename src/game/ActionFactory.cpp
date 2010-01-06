@@ -92,6 +92,13 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("loot", name)) 
+    {
+        return new ActionNode (new LootAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else return NULL;
 }
 
@@ -108,6 +115,9 @@ Strategy* ActionFactory::createStrategy(const char* name)
 
     if (!strcmp("tank non combat", name))
         return new TankNonCombatStrategy(ai);
+
+    if (!strcmp("loot", name))
+        return new LootNonCombatStrategy(ai);
 
     return NULL;
 }
