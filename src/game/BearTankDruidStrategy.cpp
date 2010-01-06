@@ -55,8 +55,8 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
 {
     if (!strcmp("melee", name)) 
     {
-        return new ActionNode (new DruidMeleeAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("dire bear form"), NULL),
+        return new ActionNode (new MeleeAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), new NextAction("reach melee"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }

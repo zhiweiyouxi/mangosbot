@@ -18,11 +18,12 @@ namespace ai
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
         virtual void MoveToMaster() { buffer.append(">master"); }
         virtual void Flee(float distance = SPELL_DISTANCE) { buffer.append(">flee"); }
+        virtual void Melee() { buffer.append(">melee"); }
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void Stay() { buffer.append(">stay"); }
         virtual BOOL CastSpell(const char* spell, Unit* target = NULL);
         virtual BOOL canCastSpell(const char* spell);
-        virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">melee"); }
+        virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
         virtual uint8 GetRage() { return rage; } 
         virtual BOOL HasAura(const char* spell);
         virtual BOOL TargetHasAura(const char* spell);

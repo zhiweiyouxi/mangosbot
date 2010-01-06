@@ -18,6 +18,13 @@ ActionNode* ActionFactory::createAction(const char* name)
     else if (!strcmp("melee", name)) 
     {
         return new ActionNode (new MeleeAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("reach melee"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("reach melee", name)) 
+    {
+        return new ActionNode (new ReachMeleeAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

@@ -13,38 +13,43 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastTauntAction, "taunt")
+        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     // after dodge
     BEGIN_MELEE_SPELL_ACTION(CastRevengeAction, "revenge")
+        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
 
     //debuffs
     BEGIN_DEBUFF_ACTION(CastRendAction, "rend")
+        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     BEGIN_DEBUFF_ACTION(CastDisarmAction, "disarm")
+        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     BEGIN_DEBUFF_ACTION(CastSunderArmorAction, "sunder armor") // 5 times
+        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastDemoralizingShoutAction, "demoralizing shout")
+    BEGIN_MELEE_SPELL_ACTION(CastDemoralizingShoutAction, "demoralizing shout")
     END_SPELL_ACTION()
 
     // stuns
-    BEGIN_SPELL_ACTION(CastShieldBashAction, "shield bash")
+    BEGIN_MELEE_SPELL_ACTION(CastShieldBashAction, "shield bash")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastIntimidatingShoutAction, "intimidating shout")
+    BEGIN_MELEE_SPELL_ACTION(CastIntimidatingShoutAction, "intimidating shout")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastThunderClapAction, "thunder clap")
+    BEGIN_MELEE_SPELL_ACTION(CastThunderClapAction, "thunder clap")
     END_SPELL_ACTION()
 
     // buffs
-    BEGIN_SPELL_ACTION(CastBattleShoutAction, "battle shout")
+    BEGIN_MELEE_SPELL_ACTION(CastBattleShoutAction, "battle shout")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDefensiveStanceAction, "defensive stance")

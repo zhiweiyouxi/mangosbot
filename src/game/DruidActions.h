@@ -18,11 +18,11 @@ namespace ai
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastMaulAction, "maul")
+    BEGIN_MELEE_SPELL_ACTION(CastMaulAction, "maul")
         virtual BOOL isPossible();
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastSwipeAction, "swipe")
+    BEGIN_MELEE_SPELL_ACTION(CastSwipeAction, "swipe")
         virtual BOOL isPossible();
     END_SPELL_ACTION()
 
@@ -57,15 +57,8 @@ namespace ai
     BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")
+    BEGIN_MELEE_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")
     END_SPELL_ACTION()
-
-    class DruidMeleeAction : public MeleeAction
-    {
-    public:
-        DruidMeleeAction(PlayerbotAIFacade* const ai) : MeleeAction(ai) {}
-        virtual BOOL isUseful() { return TRUE; }
-    };
 
     BEGIN_SPELL_ACTION(CastMarkOfTheWildAction, "mark of the wild")
     END_SPELL_ACTION()

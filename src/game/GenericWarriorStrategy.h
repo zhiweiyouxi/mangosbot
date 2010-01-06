@@ -14,5 +14,6 @@ namespace ai
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual ActionFactory* createActionFactory() { return new WarriorActionFactory(ai); }
         virtual const char* getName() { return "warrior"; }
+        ActionNode* createAction(const char* name);
     };
 }

@@ -18,18 +18,29 @@ BOOL FleeAction::Execute()
 
 BOOL CastMeleeSpellAction::isPossible()
 {
-    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
+    return CastSpellAction::isPossible();
+}
+
+NextAction** CastMeleeSpellAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), NULL), CastSpellAction::getPrerequisites());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL MeleeAction::Execute()
+BOOL ReachMeleeAction::Execute()
 {
     ai->MoveToTarget();
     return TRUE;
 }
 
-BOOL MeleeAction::isUseful()
+BOOL MeleeAction::Execute()
+{
+    ai->Melee();
+    return TRUE;
+}
+
+BOOL ReachMeleeAction::isUseful()
 {
     return ai->GetDistanceToEnemy() > ATTACK_DISTANCE;
 }

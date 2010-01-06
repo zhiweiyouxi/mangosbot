@@ -69,10 +69,12 @@ protected:
         engine->DoNextAction(NULL); // faerie fire
         engine->DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
+        engine->DoNextAction(NULL); // reach melee
+        ai->distanceToEnemy = 4.0f;
         engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach spell>faerie fire>dire bear form>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach spell>faerie fire>dire bear form>reach melee>melee"));
     }
 
     void druidMustDemoralizeAttackers()
@@ -86,11 +88,13 @@ protected:
         ai->spellCooldowns.remove("dire bear form");
         engine->DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
+        engine->DoNextAction(NULL); // reach melee
+        ai->distanceToEnemy = 0;
         engine->DoNextAction(NULL); // demoralizing roar
         engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>dire bear form>demoralizing roar>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>dire bear form>reach melee>demoralizing roar>melee"));
     }
 
     void druidMustHoldAggro()
@@ -98,14 +102,14 @@ protected:
         engine->DoNextAction(NULL); // faerie fire
         engine->DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
-        engine->DoNextAction(NULL); // melee
         ai->aggro = FALSE;
         engine->DoNextAction(NULL); // growl
         ai->aggro = TRUE;
-        engine->DoNextAction(NULL); // maul
+        engine->DoNextAction(NULL); // reach melee
+        engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>growl>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>growl>reach melee>melee"));
     }
 
     void druidMustDoMauls()
@@ -114,6 +118,7 @@ protected:
         engine->DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
         ai->distanceToEnemy = 15.0f; // enemy too far
+        engine->DoNextAction(NULL); // reach melee
         engine->DoNextAction(NULL); // melee
     
         ai->distanceToEnemy = 0.0f; 
@@ -123,7 +128,7 @@ protected:
         engine->DoNextAction(NULL); // maul
     
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>maul"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>reach melee>melee>maul>maul"));
     }
 
     void combatVsMelee()
@@ -134,6 +139,7 @@ protected:
         ai->auras.push_back("dire bear form");
 
         ai->distanceToEnemy = 15.0f; // enemy too far
+        engine->DoNextAction(NULL); // reach melee
         engine->DoNextAction(NULL); // melee
 
         ai->distanceToEnemy = 0.0f; 
@@ -147,7 +153,7 @@ protected:
         engine->DoNextAction(NULL); // melee
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>melee>maul>swipe>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>reach melee>melee>maul>swipe>melee"));
     }
 
     void healHimself()

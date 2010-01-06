@@ -46,86 +46,86 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
     if (!strcmp("rend", name)) 
     {
         return new ActionNode (new CastRendAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NextAction::array(0, new NextAction("defensive stance"), NULL),
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("heroic strike", name)) 
     {
         return new ActionNode (new CastHeroicStrikeAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("mocking blow", name)) 
     {
         return new ActionNode (new CastMockingBlowAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NextAction::array(0, new NextAction("defensive stance"), NULL),
             /*A*/ NextAction::array(0, new NextAction("taunt"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("taunt", name)) 
     {
         return new ActionNode (new CastTauntAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("revenge", name)) 
     {
         return new ActionNode (new CastRevengeAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("disarm", name)) 
     {
         return new ActionNode (new CastDisarmAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("sunder armor", name)) 
     {
         return new ActionNode (new CastSunderArmorAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("demoralizing shout", name)) 
     {
         return new ActionNode (new CastDemoralizingShoutAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("shield bash", name)) 
     {
         return new ActionNode (new CastShieldBashAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("intimidating shout", name)) 
     {
         return new ActionNode (new CastIntimidatingShoutAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("battle shout", name)) 
     {
         return new ActionNode (new CastBattleShoutAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else if (!strcmp("thunder clap", name)) 
     {
         return new ActionNode (new CastThunderClapAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("melee"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
-    else return NULL;
+    else return GenericWarriorStrategy::createAction(name);
 }

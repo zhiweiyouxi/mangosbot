@@ -67,6 +67,7 @@ namespace ai
     public:
         CastMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
         virtual BOOL isPossible();
+        virtual NextAction** getPrerequisites();
     };
     //---------------------------------------------------------------------------------------------------------------------
 
@@ -92,6 +93,9 @@ namespace ai
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(MeleeAction, "melee")
+    END_ACTION()
+
+    BEGIN_ACTION(ReachMeleeAction, "reach melee")
         virtual BOOL isUseful();
     END_ACTION()
 

@@ -47,22 +47,26 @@ public:
 protected:
     void warriorMustDemoralizeAttackers()
     {
-        engine->DoNextAction(NULL); // melee
+        engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // melee
 
         ai->attackerCount = 3;
         engine->DoNextAction(NULL); // demoralizing roar
         engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>demoralizing shout>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>demoralizing shout>heroic strike"));
     }
 
     void warriorMustHoldAggro()
     {
-        engine->DoNextAction(NULL); // melee
+        engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // melee
+
         ai->aggro = FALSE;
+        engine->DoNextAction(NULL); // defensive stance
         engine->DoNextAction(NULL); // mocking blow
         ai->aggro = TRUE;
         
@@ -75,20 +79,24 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>mocking blow>heroic strike>taunt>rend"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>mocking blow>heroic strike>taunt>rend"));
     }
 
     void combatVsMelee()
     {
         ai->distanceToEnemy = 15.0f; // enemy too far
         
-        engine->DoNextAction(NULL); // melee
+        engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0.0f; 
+        engine->DoNextAction(NULL); // melee
+
         engine->DoNextAction(NULL); // defensive stance
 
         engine->DoNextAction(NULL); 
         ai->spellCooldowns.remove("rend");
         ai->targetAuras.push_back("rend");
+
+        engine->DoNextAction(NULL); // heroic strike
 
         engine->DoNextAction(NULL); 
         ai->spellCooldowns.remove("disarm");
@@ -105,19 +113,21 @@ protected:
 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>rend>heroic strike>disarm>sunder armor>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>rend>heroic strike>disarm>sunder armor>heroic strike"));
     }
 
     void revengeIfDodge()
     {
-        engine->DoNextAction(NULL); // melee
+        engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // melee
         ai->spellCooldowns.remove("revenge");
         engine->DoNextAction(NULL); // defensive stance
+        engine->DoNextAction(NULL); // revenge
 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">melee>revenge"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>revenge"));
     }
 };
 
