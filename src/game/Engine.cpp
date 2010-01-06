@@ -118,7 +118,8 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                         prerequisites[1] = NULL;
                         MultiplyAndPush(prerequisites, relevance, TRUE);
                         delete action;
-                        DoNextAction(unit);
+                        if (depth < 5)
+                            DoNextAction(unit, depth + 1);
                         break;
                     }
 

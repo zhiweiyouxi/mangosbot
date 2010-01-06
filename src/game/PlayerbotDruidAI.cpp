@@ -73,6 +73,7 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 
     nonCombatEngine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     nonCombatEngine->addStrategy("druid non combat");
+    nonCombatEngine->addStrategy("tank non combat");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->Init();
 }

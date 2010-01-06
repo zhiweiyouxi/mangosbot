@@ -19,6 +19,13 @@ void GenericNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("drink", 9.0f), NULL)));
 }
 
+void TankNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+    triggers.push_back(new TriggerNode(
+        new NoAttackersTrigger(ai), 
+        NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
+}
+
 void AssistNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     triggers.push_back(new TriggerNode(

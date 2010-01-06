@@ -44,4 +44,14 @@ namespace ai
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
     };
+
+    class TankNonCombatStrategy : public GenericNonCombatStrategy
+    {
+    public:
+        TankNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        virtual const char* getName() { return "tank non combat"; }
+
+    public:
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+    };
 }

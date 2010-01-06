@@ -49,7 +49,7 @@ namespace ai
         virtual BOOL IsPetDead() { return petHealth <= 0; }
 
         virtual BOOL IsMounted() { return FALSE; }
-        virtual BOOL HaveTarget() { return TRUE; }
+        virtual BOOL HaveTarget() { return FALSE; }
 
         virtual BOOL HasHealingPotion() { return FALSE; }
         virtual BOOL HasManaPotion() { return FALSE; }
