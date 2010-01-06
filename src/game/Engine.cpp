@@ -104,9 +104,9 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
         {
             float relevance = basket->getRelevance(); // just for reference
             BOOL skipPrerequisites = basket->isSkipPrerequisites();
-
             ActionNode* action = queue.Pop();
-            if (action->isAvailable())
+
+            if (action->isPossible())
             {
                 if (action->isUseful())
                 {
@@ -121,22 +121,32 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                         DoNextAction(unit);
                         break;
                     }
+
                     sLog.outBasic("A:%s", action->getName());
-                    
+
                     if (actionExecutionListeners.ActionExecuted(action->getAction()))
-                        action->Execute();
-                    
-                    MultiplyAndPush(action->getContinuers());
-                    actionExecuted = TRUE;
-                    delete action;
-                    break;
+                    {
+                        actionExecuted = action->Execute();
+                    }
+
+                    if (actionExecuted)
+                    {
+                        MultiplyAndPush(action->getContinuers());
+                        delete action;
+                        break;
+                    }
+                    else
+                    {
+                        sLog.outBasic("A:%s - n/a", action->getName());
+                        MultiplyAndPush(action->getAlternatives(), relevance);
+                    }
                 }
                 else
                 {
                     sLog.outBasic("A:%s - useless", action->getName());
                 }
             }
-            else
+            else 
             {
                 sLog.outBasic("A:%s - n/a", action->getName());
                 MultiplyAndPush(action->getAlternatives(), relevance);

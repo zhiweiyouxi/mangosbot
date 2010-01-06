@@ -30,7 +30,7 @@ namespace ai
         virtual void Flee(float distance = SPELL_DISTANCE);
         virtual void MoveToTarget(float distance = 0.0f) { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
         virtual void Stay() {ai->MovementClear();}
-        virtual void CastSpell(const char* spell, Unit* target = NULL) { ai->CastSpell(ai->getSpellId(spell), target); }
+        virtual BOOL CastSpell(const char* spell, Unit* target = NULL) { return ai->CastSpell(ai->getSpellId(spell), target); }
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
         virtual BOOL HasAura(const char* spell);

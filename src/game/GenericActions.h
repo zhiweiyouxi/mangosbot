@@ -52,8 +52,8 @@ namespace ai
             this->spell = spell;
         }
 
-        void Execute() { ai->CastSpell(spell); }
-        virtual BOOL isAvailable() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
+        BOOL Execute() { return ai->CastSpell(spell); }
+        virtual BOOL isPossible() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
         virtual const char* getName() { return spell; }
 
     protected:
@@ -66,7 +66,7 @@ namespace ai
     {
     public:
         CastMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
     };
     //---------------------------------------------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ namespace ai
     {
     public:
         CastDebuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
     };
     //---------------------------------------------------------------------------------------------------------------------
 
@@ -110,19 +110,19 @@ namespace ai
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UseHealingPotion, "healing potion")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
     END_ACTION()
 
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UseManaPotion, "mana potion")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
     END_ACTION()
 
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UsePanicPotion, "panic potion")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
     END_ACTION()
 
     //---------------------------------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ namespace ai
     public:
         HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
-        virtual void Execute();
+        virtual BOOL Execute();
         virtual BOOL isUseful();
     };
 
@@ -143,7 +143,7 @@ namespace ai
     public:
         BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
     public: 
-        virtual void Execute();
+        virtual BOOL Execute();
         virtual BOOL isUseful();
     };
 

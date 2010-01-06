@@ -9,22 +9,24 @@ NextAction** CastRangedSpellAction::getPrerequisites()
     return NextAction::merge( NextAction::array(0, new NextAction("reach spell"), NULL), CastSpellAction::getPrerequisites());
 }
 
-void FleeAction::Execute()
+BOOL FleeAction::Execute()
 {
     // TODO: move away from battle
     ai->Flee();
+    return TRUE;
 }
 
-BOOL CastMeleeSpellAction::isAvailable()
+BOOL CastMeleeSpellAction::isPossible()
 {
-    return CastSpellAction::isAvailable() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
+    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void MeleeAction::Execute()
+BOOL MeleeAction::Execute()
 {
     ai->MoveToTarget();
+    return TRUE;
 }
 
 BOOL MeleeAction::isUseful()
@@ -34,9 +36,10 @@ BOOL MeleeAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void ReachSpellAction::Execute()
+BOOL ReachSpellAction::Execute()
 {
     ai->MoveToTarget(SPELL_DISTANCE);
+    return TRUE;
 }
 
 BOOL ReachSpellAction::isUseful()
@@ -53,45 +56,49 @@ BOOL CastLifeBloodAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void UseHealingPotion::Execute()
+BOOL UseHealingPotion::Execute()
 {
     ai->UseHealingPotion();
+    return TRUE;
 }
 
-BOOL UseHealingPotion::isAvailable()
+BOOL UseHealingPotion::isPossible()
 {
     return ai->HasHealingPotion();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void UseManaPotion::Execute()
+BOOL UseManaPotion::Execute()
 {
     ai->UseManaPotion();
+    return TRUE;
 }
 
-BOOL UseManaPotion::isAvailable()
+BOOL UseManaPotion::isPossible()
 {
     return ai->HasManaPotion();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void UsePanicPotion::Execute()
+BOOL UsePanicPotion::Execute()
 {
     ai->UsePanicPotion();
+    return TRUE;
 }
 
-BOOL UsePanicPotion::isAvailable()
+BOOL UsePanicPotion::isPossible()
 {
     return ai->HasPanicPotion();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void HealPartyMemberAction::Execute()
+BOOL HealPartyMemberAction::Execute()
 {
     ai->CastSpell(spell, ai->GetPartyMinHealthPlayer());
+    return TRUE;
 }
 
 BOOL HealPartyMemberAction::isUseful()
@@ -101,9 +108,10 @@ BOOL HealPartyMemberAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void BuffOnPartyAction::Execute()
+BOOL BuffOnPartyAction::Execute()
 {
     ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
+    return TRUE;
 }
 
 BOOL BuffOnPartyAction::isUseful()
@@ -113,21 +121,23 @@ BOOL BuffOnPartyAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void AttackLeastThreatAction::Execute()
+BOOL AttackLeastThreatAction::Execute()
 {
     ai->AttackLeastThreat();
+    return TRUE;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void AttackBiggerThreatAction::Execute()
+BOOL AttackBiggerThreatAction::Execute()
 {
     ai->AttackBiggerThreat();
+    return TRUE;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL CastDebuffSpellAction::isAvailable()
+BOOL CastDebuffSpellAction::isPossible()
 {
-    return CastSpellAction::isAvailable() && !ai->TargetHasAura(spell);
+    return CastSpellAction::isPossible() && !ai->TargetHasAura(spell);
 }

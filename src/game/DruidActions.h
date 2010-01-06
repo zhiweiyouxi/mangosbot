@@ -8,20 +8,22 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastBearFormAction, "bear form")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
+        virtual BOOL isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDireBearFormAction, "dire bear form")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
         virtual NextAction** getAlternatives();
+        virtual BOOL isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastMaulAction, "maul")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastSwipeAction, "swipe")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
     END_SPELL_ACTION()
 
     BEGIN_ACTION(CastCasterFormAction, "caster form")
@@ -29,7 +31,7 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
-        virtual BOOL isAvailable();
+        virtual BOOL isPossible();
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 

@@ -4,9 +4,14 @@
 
 using namespace ai;
 
-BOOL CastBearFormAction::isAvailable()
+BOOL CastBearFormAction::isPossible()
 {
-    return CastSpellAction::isAvailable() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
+    return CastSpellAction::isPossible() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
+}
+
+BOOL CastBearFormAction::isUseful()
+{
+    return CastSpellAction::isUseful() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
 }
 
 NextAction** CastDireBearFormAction::getAlternatives()
@@ -14,14 +19,19 @@ NextAction** CastDireBearFormAction::getAlternatives()
     return NextAction::merge(NextAction::array(0, new NextAction("bear form"), NULL), CastSpellAction::getAlternatives());
 }
 
-BOOL CastDireBearFormAction::isAvailable()
+BOOL CastDireBearFormAction::isPossible()
 {
-    return CastSpellAction::isAvailable() && !ai->HasAura("dire bear form");
+    return CastSpellAction::isPossible() && !ai->HasAura("dire bear form");
 }
 
-BOOL CastRejuvenationAction::isAvailable()
+BOOL CastDireBearFormAction::isUseful()
 {
-    return CastSpellAction::isAvailable() && !ai->HasAura("lifeblood");
+    return CastSpellAction::isUseful() && !ai->HasAura("dire bear form");
+}
+
+BOOL CastRejuvenationAction::isPossible()
+{
+    return CastSpellAction::isPossible() && !ai->HasAura("lifeblood");
 }
 
 BOOL CastRejuvenationAction::isUseful()
@@ -34,7 +44,7 @@ BOOL CastRegrowthAction::isUseful()
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
-void CastCasterFormAction::Execute()
+BOOL CastCasterFormAction::Execute()
 {
     if (ai->HasAura("dire bear form")) 
         ai->RemoveAura("dire bear form");
@@ -44,6 +54,8 @@ void CastCasterFormAction::Execute()
         ai->RemoveAura("cat form");
     if (ai->HasAura("travel form")) 
         ai->RemoveAura("travel form");
+
+    return TRUE;
 }
 
 
@@ -53,12 +65,12 @@ BOOL CastCasterFormAction::isUseful()
         ai->HasAura("cat form") || ai->HasAura("travel form")); 
 }
 
-BOOL CastMaulAction::isAvailable()
+BOOL CastMaulAction::isPossible()
 {
-    return CastSpellAction::isAvailable() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
+    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
 }
 
-BOOL CastSwipeAction::isAvailable()
+BOOL CastSwipeAction::isPossible()
 {
-    return CastSpellAction::isAvailable() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
+    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
 }

@@ -7,7 +7,7 @@ class clazz : public Action \
     { \
     public: \
         clazz(PlayerbotAIFacade* const ai) : Action(ai) {} \
-        virtual void Execute(); \
+        virtual BOOL Execute(); \
         virtual const char* getName() { return name; }
 
 #define ACTION_KIND(value) \
@@ -60,8 +60,8 @@ namespace ai
         virtual ~Action(void) {}
 
     public:
-        virtual void Execute() {}
-        virtual BOOL isAvailable() { return TRUE; }
+        virtual BOOL Execute() { return TRUE; }
+        virtual BOOL isPossible() { return TRUE; }
         virtual BOOL isUseful() { return TRUE; }
         virtual NextAction** getPrerequisites() { return NULL; }
         virtual NextAction** getAlternatives() { return NULL; }
@@ -91,8 +91,8 @@ namespace ai
     public:
         Action* getAction() { return action; }
         const char* getName() { return action->getName(); }
-        virtual void Execute() { action->Execute(); }
-        virtual BOOL isAvailable() { return action->isAvailable(); }
+        virtual BOOL Execute() { return action->Execute(); }
+        virtual BOOL isPossible() { return action->isPossible(); }
         virtual BOOL isUseful() { return action->isUseful(); }
 
     public:

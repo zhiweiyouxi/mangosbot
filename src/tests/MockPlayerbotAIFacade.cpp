@@ -15,6 +15,19 @@ BOOL MockPlayerbotAIFacade::canCastSpell(const char* spell)
     return TRUE;
 }
 
+BOOL MockPlayerbotAIFacade::CastSpell(const char* spell, Unit* target) 
+{
+    if (distanceToEnemy > SPELL_DISTANCE)
+        return FALSE;
+
+    buffer.append(">").append(spell); 
+    if (target) buffer.append(" on party"); 
+
+    spellCooldowns.push_back(spell); 
+    
+    return TRUE; 
+}
+
 BOOL MockPlayerbotAIFacade::HasAura(const char* spell)
 {
     for (list<string>::iterator i = auras.begin(); i != auras.end(); i++)

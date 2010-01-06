@@ -4,23 +4,26 @@
 
 using namespace ai;
 
-void FollowAction::Execute()
+BOOL FollowAction::Execute()
 {
     ai->FollowMaster();
+    return TRUE;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void StayAction::Execute()
+BOOL StayAction::Execute()
 {
     ai->Stay();
+    return TRUE;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void DrinkAction::Execute()
+BOOL DrinkAction::Execute()
 {
     ai->UseDrink();
+    return TRUE;
 }
 
 BOOL DrinkAction::isUseful()
@@ -30,9 +33,10 @@ BOOL DrinkAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void EatAction::Execute()
+BOOL EatAction::Execute()
 {
     ai->UseFood();
+    return TRUE;
 }
 
 BOOL EatAction::isUseful()

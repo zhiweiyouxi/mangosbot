@@ -20,7 +20,7 @@ namespace ai
         virtual void Flee(float distance = SPELL_DISTANCE) { buffer.append(">flee"); }
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void Stay() { buffer.append(">stay"); }
-        virtual void CastSpell(const char* spell, Unit* target = NULL) { buffer.append(">").append(spell); spellCooldowns.push_back(spell); if (target) buffer.append(" on party"); }
+        virtual BOOL CastSpell(const char* spell, Unit* target = NULL);
         virtual BOOL canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">melee"); }
         virtual uint8 GetRage() { return rage; } 
