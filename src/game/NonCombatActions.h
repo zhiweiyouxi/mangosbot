@@ -6,6 +6,7 @@
 namespace ai
 {
     BEGIN_ACTION(FollowAction, "follow")
+        virtual BOOL isUseful();
     END_ACTION()
 
     BEGIN_ACTION(StayAction, "stay")

@@ -10,6 +10,11 @@ BOOL FollowAction::Execute()
     return TRUE;
 }
 
+BOOL FollowAction::isUseful()
+{
+    return ai->GetAttackerCount() == 0;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 
 BOOL StayAction::Execute()

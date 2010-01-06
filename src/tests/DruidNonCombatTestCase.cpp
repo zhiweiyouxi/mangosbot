@@ -37,6 +37,7 @@ protected:
         engine.addStrategy("druid non combat");
         engine.Init();
 
+        ai->attackerCount = 0;
         ai->partyMinHealth = 1;
         ai->auras.push_back("dire bear form");
         engine.DoNextAction(NULL); // caster form

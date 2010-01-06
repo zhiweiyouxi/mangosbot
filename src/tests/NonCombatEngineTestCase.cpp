@@ -15,6 +15,7 @@ class NonCombatEngineTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( NonCombatEngineTestCase );
   CPPUNIT_TEST( followMaster );
+  CPPUNIT_TEST( stayIfAttackers );
   CPPUNIT_TEST( stay );
   CPPUNIT_TEST( eatDrink );
   CPPUNIT_TEST( assist );
@@ -31,6 +32,21 @@ public:
 	}
 
 protected:
+    void stayIfAttackers()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new ActionFactory(ai));
+        engine.addStrategy("follow");
+        engine.addStrategy("assist");
+        engine.Init();
+
+        ai->attackerCount = 1;
+        engine.DoNextAction(NULL);
+        std::cout << ai->buffer;
+
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), "")); // nothing to do
+    }
     void followMaster()
     {
         ai = new MockPlayerbotAIFacade();
@@ -39,6 +55,7 @@ protected:
         engine.addStrategy("follow");
         engine.Init();
 
+        ai->attackerCount = 0;
         engine.DoNextAction(NULL);
         std::cout << ai->buffer;
         
