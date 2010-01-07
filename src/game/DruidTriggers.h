@@ -36,4 +36,8 @@ namespace ai
     BUFF_TRIGGER(MarkOfTheWildTrigger, "mark of the wild", "mark of the wild")
     BUFF_TRIGGER(ThornsTrigger, "thorns", "thorns")
 
+
+    //--------------------------------------------------------------------------------------
+
+    DEBUFF_TRIGGER(RakeTrigger, "rake", "rake")
 }

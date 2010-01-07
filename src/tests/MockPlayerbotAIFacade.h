@@ -13,6 +13,7 @@ namespace ai
             distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; health = 100; mana = 100; partyMinHealth = 100; 
             targetHealth = 100; petHealth = 100; hasPet = TRUE;
             attackerCount = 1;myAttackerCount = 1;
+            comboPoints = 0;
             lootAvailable = false;
         }
 
@@ -33,6 +34,7 @@ namespace ai
         virtual BOOL IsAllPartyHasAura(const char* spell);
         virtual Player* GetPartyMemberWithoutAura(const char* spell) { return (Player*)0xEEEEEE; }
         virtual uint8 GetHealthPercent() { return health; }
+        virtual uint8 GetComboPoints() { return comboPoints; }
         virtual uint8 GetTargetHealthPercent() { return targetHealth; }
         virtual uint8 GetManaPercent() {return mana; }
         virtual BOOL HasAggro() { return aggro; }
@@ -77,6 +79,7 @@ namespace ai
         float distanceToEnemy;
         uint8 rage, health, mana;
         uint8 targetHealth, petHealth;
+        uint8 comboPoints;
         BOOL aggro;
         BOOL hasPet;
         int attackerCount;

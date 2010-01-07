@@ -33,10 +33,12 @@ namespace ai
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
         virtual BOOL isPossible();
         virtual BOOL isUseful();
+        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
         virtual BOOL isUseful();
+    virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     class CastRejuvenationOnPartyAction : public HealPartyMemberAction
@@ -45,6 +47,7 @@ namespace ai
         CastRejuvenationOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "rejuvenation") {}
 
         virtual const char* getName() { return "rejuvenation on party"; }
+        virtual NextAction** getPrerequisites();
     };
 
     class CastRegrowthOnPartyAction : public HealPartyMemberAction
@@ -52,6 +55,7 @@ namespace ai
     public:
         CastRegrowthOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "regrowth") {}
         virtual const char* getName() { return "regrowth on party"; }
+        virtual NextAction** getPrerequisites();
     };
 
     BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
@@ -68,5 +72,27 @@ namespace ai
     END_ACTION()
 
     BEGIN_SPELL_ACTION(CastThornsAction, "thorns")
+    END_SPELL_ACTION()
+
+    //--------------------------------------------------------------------------------------
+    BEGIN_SPELL_ACTION(CastCatFormAction, "cat form")
+        virtual BOOL isPossible();
+        virtual BOOL isUseful();
+    END_SPELL_ACTION()
+
+    BEGIN_DEBUFF_ACTION(CastRakeAction, "rake")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastClawAction, "claw") // main nuke
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastFerociousBiteAction, "ferocious bite")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastRipAction, "rip")
+        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 }

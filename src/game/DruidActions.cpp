@@ -74,3 +74,55 @@ BOOL CastSwipeAction::isPossible()
 {
     return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
 }
+
+BOOL CastCatFormAction::isPossible()
+{
+    return CastSpellAction::isPossible() && !ai->HasAura("cat form");
+}
+
+BOOL CastCatFormAction::isUseful()
+{
+    return CastSpellAction::isUseful() && !ai->HasAura("cat form");
+}
+
+
+NextAction** CastRakeAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), new NextAction("cat form"), NULL), CastDebuffSpellAction::getPrerequisites());
+}
+
+NextAction** CastClawAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
+}
+
+NextAction** CastFerociousBiteAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
+}
+
+NextAction** CastRipAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
+}
+
+
+NextAction** CastRegrowthAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastRejuvenationAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastRegrowthOnPartyAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastRejuvenationOnPartyAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}

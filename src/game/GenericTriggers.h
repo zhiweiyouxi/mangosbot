@@ -60,6 +60,20 @@ namespace ai
         int amount;
     };
 
+    class ComboPointsAvailable : public Trigger
+    {
+    public:
+        ComboPointsAvailable(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
+        {
+            this->amount = amount;
+        }
+    public: 
+        virtual BOOL IsActive();
+
+    protected:
+        int amount;
+    };
+
     class AttackerCountTrigger : public Trigger
     {
     public:

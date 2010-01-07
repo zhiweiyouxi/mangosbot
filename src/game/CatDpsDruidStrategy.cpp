@@ -1,17 +1,101 @@
 #include "pchdef.h"
 #include "DruidTriggers.h"
 #include "DruidMultipliers.h"
+#include "DruidActions.h"
 #include "CatDpsDruidStrategy.h"
 
 using namespace ai;
 
-void CatDpsDruidStrategy::InitTriggers(std::list<Trigger*> &triggers)
+
+NextAction** CatDpsDruidStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("faerie fire", 30.0f), new NextAction("claw", 10.0f), NULL);
+}
+
+void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericDruidStrategy::InitTriggers(triggers);
-    triggers.push_back(new EnemyOutOfMeleeTrigger(ai));
+
+    triggers.push_back(new TriggerNode(
+        new EnemyOutOfMeleeTrigger(ai), 
+        NextAction::array(0, new NextAction("melee", 10.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NoAttackersTrigger(ai),
+        NextAction::array(0, new NextAction("attack least threat", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new RakeTrigger(ai), 
+        NextAction::array(0, new NextAction("rake", 15.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new ComboPointsAvailable(ai, 3), 
+        NextAction::array(0, new NextAction("ferocious bite", 20.0f), NULL)));
 }
 
 void CatDpsDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 {
 
+}
+
+
+ActionNode* CatDpsDruidStrategy::createAction(const char* name)
+{
+    if (!strcmp("reach melee", name)) 
+    {
+        return new ActionNode (new ReachMeleeAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("cat form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("melee", name)) 
+    {
+        return new ActionNode (new MeleeAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("cat form"), new NextAction("reach melee"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("faerie fire", name)) 
+    {
+        return new ActionNode (new CastFaerieFireAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("cat form", name)) 
+    {
+        return new ActionNode (new CastCatFormAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("claw", name)) 
+    {
+        return new ActionNode (new CastClawAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("claw", 15.0f), NULL));
+    }
+    else if (!strcmp("rake", name)) 
+    {
+        return new ActionNode (new CastRakeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("claw", 15.0f), NULL));
+    }
+    else if (!strcmp("ferocious bite", name)) 
+    {
+        return new ActionNode (new CastFerociousBiteAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("rip"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("claw", 10.0f), NULL));
+    }
+    else if (!strcmp("rip", name)) 
+    {
+        return new ActionNode (new CastRipAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("claw", 10.0f), NULL));
+    }
+    else return GenericDruidStrategy::createAction(name);
 }

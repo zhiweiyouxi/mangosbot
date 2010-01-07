@@ -28,6 +28,11 @@ BOOL RageAvailable::IsActive()
     return ai->GetRage() >= amount;
 }
 
+BOOL ComboPointsAvailable::IsActive()
+{
+    return ai->GetComboPoints() >= amount;
+}
+
 BOOL LowHealthTrigger::IsActive()
 {
     return ai->GetHealthPercent() < EAT_DRINK_PERCENT;

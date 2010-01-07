@@ -41,6 +41,7 @@ namespace ai
         virtual BOOL IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
         virtual Player* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
         virtual void RemoveAura(const char* spell);
+        virtual uint8 GetComboPoints() { return ai->GetPlayerBot()->GetComboPoints(); }
         virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
         virtual uint8 GetTargetHealthPercent() { return ai->GetHealthPercent(*ai->GetCurrentTarget()); }
         virtual uint8 GetPetHealthPercent() { return ai->GetHealthPercent(*ai->GetPlayerBot()->GetPet()); }

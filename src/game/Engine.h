@@ -48,6 +48,7 @@ namespace ai
         Engine(PlayerbotAIFacade* const ai, ActionFactory *factory) : PlayerbotAIFacadeAware(ai) 
         {
             actionFactory = factory;
+            lastRelevance = 0.0f;
         }
 
 	    void Init();
@@ -87,6 +88,7 @@ namespace ai
 	    Player* bot;
         ActionFactory* actionFactory;
         std::list<Strategy*> strategies;
+        float lastRelevance;
 
     private:
         ActionExecutionListeners actionExecutionListeners;

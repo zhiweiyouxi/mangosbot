@@ -35,11 +35,6 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new AttackerCountTrigger(ai, 2),
         NextAction::array(0, new NextAction("demoralizing roar", 20.0f), NULL)));
 
-    // TODO: maybe move to other strategy?
-    triggers.push_back(new TriggerNode(
-        new DruidPartyMemberLowHealthTrigger(ai),
-        NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
-
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai),
         NextAction::array(0, new NextAction("attack bigger threat", 50.0f), NULL)));
@@ -66,13 +61,6 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), new NextAction("dire bear form", 15.0f), NULL));
-    }
-    else if (!strcmp("caster form", name)) 
-    {
-        return new ActionNode (new CastCasterFormAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
     }
     else if (!strcmp("bear form", name)) 
     {
@@ -102,34 +90,6 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
-    else if (!strcmp("regrowth", name)) 
-    {
-        return new ActionNode (new CastRegrowthAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
-            /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
-    }
-    else if (!strcmp("rejuvenation", name)) 
-    {
-        return new ActionNode (new CastRejuvenationAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("regrowth on party", name)) 
-    {
-        return new ActionNode (new CastRegrowthOnPartyAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("caster form"), new NextAction("rejuvenation on party"), NULL),
-            /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
-    }
-    else if (!strcmp("rejuvenation on party", name)) 
-    {
-        return new ActionNode (new CastRejuvenationOnPartyAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
     else if (!strcmp("growl", name)) 
     {
         return new ActionNode (new CastGrowlAction(ai),  
@@ -144,5 +104,5 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
-    else return NULL;
+    else return GenericDruidStrategy::createAction(name);
 }

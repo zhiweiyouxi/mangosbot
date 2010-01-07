@@ -14,11 +14,11 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     
     triggers.push_back(new TriggerNode(
         new RendDebuffTrigger(ai), 
-        NextAction::array(0, new NextAction("rend", 1.0f), NULL)));
+        NextAction::array(0, new NextAction("rend", 1.3f), NULL)));
     
     triggers.push_back(new TriggerNode(
         new DisarmDebuffTrigger(ai), 
-        NextAction::array(0, new NextAction("disarm", 1.0f), NULL)));
+        NextAction::array(0, new NextAction("disarm", 1.2f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new SunderArmorDebuffTrigger(ai), 

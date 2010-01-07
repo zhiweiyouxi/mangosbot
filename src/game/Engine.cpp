@@ -110,7 +110,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
             {
                 if (action->isUseful())
                 {
-                    if (!skipPrerequisites && MultiplyAndPush(action->getPrerequisites(), relevance + 1))
+                    if ((!skipPrerequisites || lastRelevance-relevance > 0.02) && MultiplyAndPush(action->getPrerequisites(), relevance + 0.01))
                     {
                         //sLog.outBasic("A:%s - prerequisites", action->getName());
                         NextAction** prerequisites = new NextAction*[2];
@@ -118,9 +118,10 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                         prerequisites[1] = NULL;
                         MultiplyAndPush(prerequisites, relevance, TRUE);
                         delete action;
-                        if (depth < 5)
-                            DoNextAction(unit, depth + 1);
-                        break;
+                        continue;
+                        //if (depth < 5)
+                        //    DoNextAction(unit, depth + 1);
+                        //break;
                     }
 
                     //sLog.outBasic("A:%s", action->getName());
@@ -133,24 +134,28 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
                     if (actionExecuted)
                     {
                         MultiplyAndPush(action->getContinuers());
+                        lastRelevance = relevance;
                         delete action;
                         break;
                     }
                     else
                     {
-                        //sLog.outBasic("A:%s - n/a", action->getName());
                         MultiplyAndPush(action->getAlternatives(), relevance);
                     }
                 }
                 else
                 {
+                    lastRelevance = relevance;
                     //sLog.outBasic("A:%s - useless", action->getName());
                 }
             }
             else 
             {
                 //sLog.outBasic("A:%s - n/a", action->getName());
-                MultiplyAndPush(action->getAlternatives(), relevance);
+                if (action->isUseful())
+                    MultiplyAndPush(action->getAlternatives(), relevance);
+                else
+                    lastRelevance = relevance;
             }
             delete action;
         }
@@ -160,6 +165,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth)
     if (!basket)
     {
         //sLog.outBasic("--- queue is empty ---");
+        lastRelevance = 0.0f;
         PushDefaultActions();
         if (queue.Peek() && depth < 5)
             return DoNextAction(unit, depth + 1);
