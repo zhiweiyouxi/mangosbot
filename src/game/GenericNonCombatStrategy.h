@@ -74,4 +74,14 @@ namespace ai
         virtual const char* getName() { return "loot"; }
     };
 
+    class RandomEmoteStrategy : public Strategy
+    {
+    public:
+        RandomEmoteStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+
+    public:
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+        virtual const char* getName() { return "emote"; }
+        virtual ActionNode* createAction(const char* name);
+   };
 }

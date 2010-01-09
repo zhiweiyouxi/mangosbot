@@ -164,4 +164,19 @@ namespace ai
 
     BEGIN_ACTION(LootAction, "loot")
     END_ACTION()
+
+    class EmoteAction : public Action
+    {
+    public:
+        EmoteAction(PlayerbotAIFacade* const ai, uint32 name) : Action(ai)
+        {
+            this->name = name;
+        }
+
+        BOOL Execute();
+        virtual const char* getName() { return "emote"; }
+
+    protected:
+        uint32 name;
+    };
 }

@@ -70,6 +70,8 @@ namespace ai
         virtual BOOL HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
         virtual BOOL HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
 
+        virtual void Emote(uint32 emote);
+
     protected:
         static BOOL isHealingPotion(const ItemPrototype* pItemProto);
         static BOOL isManaPotion(const ItemPrototype* pItemProto);

@@ -121,6 +121,9 @@ Strategy* ActionFactory::createStrategy(const char* name)
     
     if (!strcmp("goaway", name))
         return new GoAwayNonCombatStrategy(ai);
+    
+    if (!strcmp("emote", name))
+        return new RandomEmoteStrategy(ai);
 
     return NULL;
 }

@@ -22,6 +22,7 @@ class NonCombatEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( tankNonCombat );
   CPPUNIT_TEST( loot );
   CPPUNIT_TEST( goaway );
+  CPPUNIT_TEST( emote );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -166,6 +167,21 @@ protected:
         std::cout << ai->buffer;
 
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">eat>drink"));
+    }
+
+    void emote()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new ActionFactory(ai));
+        engine.addStrategy("emote");
+        engine.Init();
+
+        for (int i=0; i<100; i++)
+            engine.DoNextAction(NULL);
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(strstr(ai->buffer.c_str(), ">emote"));
     }
 };
 

@@ -92,3 +92,24 @@ ActionNode* GoAwayNonCombatStrategy::createAction(const char* name)
     }
     else return NULL;
 }
+
+
+
+void RandomEmoteStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+    triggers.push_back(new TriggerNode(
+        new RandomTrigger(ai, 20), 
+        NextAction::array(0, new NextAction("emote", 1.0f), NULL)));
+}
+
+ActionNode* RandomEmoteStrategy::createAction(const char* name)
+{
+    if (!strcmp("emote", name)) 
+    {
+        return new ActionNode (new EmoteAction(ai, 0),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else return NULL;
+}

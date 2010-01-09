@@ -149,4 +149,19 @@ namespace ai
 
     BEGIN_TRIGGER(LootAvailableTrigger, Trigger)
     END_TRIGGER()
+
+    class RandomTrigger : public Trigger
+    {
+    public:
+        RandomTrigger(PlayerbotAIFacade* const ai, int probability) : Trigger(ai) 
+        {
+            this->probability = probability;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "random"; }
+
+    protected:
+        int probability;
+    };
 }

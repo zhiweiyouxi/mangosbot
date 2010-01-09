@@ -462,3 +462,8 @@ BOOL PlayerbotAIFacade::IsMounted()
 {
     return ai->GetPlayerBot()->IsMounted();
 }
+
+void PlayerbotAIFacade::Emote(uint32 emote)
+{
+    ai->GetPlayerBot()->HandleEmoteCommand(emote);
+}

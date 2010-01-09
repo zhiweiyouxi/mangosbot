@@ -67,6 +67,7 @@ namespace ai
         virtual Player* GetPartyMinHealthPlayer() { return (Player*)0xEEEEEE; }
         virtual uint8 GetPartyMinHealthPercent() { return partyMinHealth; }
 
+        virtual void Emote(uint32 emote) { buffer.append(">emote"); }
     public:
         void resetSpells() {spellCooldowns.clear(); }
 

@@ -1,6 +1,7 @@
 #include "pchdef.h"
 #include "GenericActions.h"
 #include "PlayerbotAIFacade.h"
+#include <math.h>
 
 using namespace ai;
 
@@ -156,5 +157,16 @@ BOOL CastDebuffSpellAction::isPossible()
 BOOL LootAction::Execute()
 {
     ai->Loot();
+    return TRUE;
+}
+
+BOOL EmoteAction::Execute()
+{
+    if (!name)
+    {
+        name = rand() % 450;
+    }
+    ai->Emote(name);
+
     return TRUE;
 }

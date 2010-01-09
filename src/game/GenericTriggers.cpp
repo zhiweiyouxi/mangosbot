@@ -2,6 +2,7 @@
 #include "GenericTriggers.h"
 #include "Unit.h"
 #include "PlayerbotAIFacade.h"
+#include <math.h>
 
 using namespace ai;
 
@@ -93,4 +94,10 @@ BOOL SpellAvailableTrigger::IsActive()
 BOOL LootAvailableTrigger::IsActive()
 {   
     return ai->CanLoot();
+}
+
+BOOL RandomTrigger::IsActive()
+{
+    int vl  = rand() % probability;
+    return vl == 0;
 }
