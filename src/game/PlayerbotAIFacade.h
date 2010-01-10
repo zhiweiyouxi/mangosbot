@@ -57,6 +57,7 @@ namespace ai
         virtual BOOL HaveTarget() { return ai->GetCurrentTarget() != NULL; }
         virtual bool CanLoot() { return ai->CanLoot(); }
         virtual void Loot() { ai->DoLoot(); }
+        virtual void TellMaster(const char* text) { ai->TellMaster(text); }
 
         virtual void AttackLeastThreat();
         virtual void AttackBiggerThreat();

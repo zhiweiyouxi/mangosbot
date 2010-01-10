@@ -66,6 +66,7 @@ namespace ai
 
         virtual Player* GetPartyMinHealthPlayer() { return (Player*)0xEEEEEE; }
         virtual uint8 GetPartyMinHealthPercent() { return partyMinHealth; }
+        virtual void TellMaster(const char* text) { buffer.append(text); }
 
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
     public:

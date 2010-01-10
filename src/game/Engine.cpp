@@ -186,7 +186,8 @@ ActionNode* Engine::createAction(const char* name)
     ActionNode* node = actionFactory->createAction(name);
     if (!node)
     {
-        throw new std::exception("no one creates this action");
+        ai->TellMaster("no one creates this action: ");
+        ai->TellMaster(name);
     }
     return node;
 }
@@ -282,4 +283,20 @@ void Engine::PushDefaultActions()
         Strategy* strategy = *i;
         MultiplyAndPush(strategy->getDefaultActions());
     }
+}
+
+string Engine::ListStrategies()
+{
+    string s = "Strategies: ";
+    
+    if (strategies.empty())
+        return s;
+    
+    for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+    {
+        Strategy* strategy = *i;
+        s.append(strategy->getName());
+        s.append(", ");
+    }
+    return s.substr(0, s.length() - 2);
 }

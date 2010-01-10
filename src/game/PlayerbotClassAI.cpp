@@ -51,6 +51,9 @@ void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e )
     case '-':
         e->removeStrategy(name+1);
         break;
+    case '?':
+        m_ai->TellMaster(e->ListStrategies());
+        break;
     }
     
 }

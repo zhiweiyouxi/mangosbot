@@ -55,6 +55,7 @@ namespace ai
         void addStrategy(const char* name);
         void removeStrategy(const char* name);
         void clearStrategies();
+        std::string ListStrategies();
 
     public:
 	    virtual BOOL DoNextAction(Unit*, int depth = 0);

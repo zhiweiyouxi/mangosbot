@@ -184,7 +184,8 @@ class EngineTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( EngineTestCase );
       CPPUNIT_TEST( engineMustRepeatActions );
-      CPPUNIT_TEST( addRemoveStrategies);
+      CPPUNIT_TEST( addRemoveStrategies );
+      CPPUNIT_TEST( listStrategies );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -230,6 +231,17 @@ protected:
 
         engine.DoNextAction(NULL);
         CPPUNIT_ASSERT(TriggeredAction::fired);
+    }
+
+    void listStrategies()
+    {
+        Engine engine(NULL, new TestActionFactory(NULL));
+        engine.addStrategy("AnotherTestStrategy");
+        engine.addStrategy("TestStrategy");
+        engine.Init();
+
+        std::string s = engine.ListStrategies();
+        CPPUNIT_ASSERT(s == "Strategies: AnotherTestStrategy, TestStrategy");
     }
 };
 
