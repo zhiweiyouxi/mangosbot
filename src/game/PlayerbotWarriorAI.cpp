@@ -78,13 +78,13 @@ PlayerbotWarriorAI::PlayerbotWarriorAI(Player* const master, Player* const bot, 
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
 
     engine = new ai::Engine(facade, new ai::WarriorActionFactory(facade));
-    engine->addStrategy("tank warrior");
+    engine->addStrategy("tank");
     engine->addStrategy("assist");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::WarriorActionFactory(facade));
-    nonCombatEngine->addStrategy("warrior non combat");
-    nonCombatEngine->addStrategy("tank non combat");
+    nonCombatEngine->addStrategy("nc");
+    nonCombatEngine->addStrategy("tank");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
     nonCombatEngine->Init();

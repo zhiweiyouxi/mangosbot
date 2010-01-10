@@ -79,12 +79,12 @@ PlayerbotHunterAI::PlayerbotHunterAI(Player* const master, Player* const bot, Pl
     m_rangedCombat = true;
 
     engine = new ai::Engine(facade, new ai::HunterActionFactory(facade));
-    engine->addStrategy("dps hunter");
+    engine->addStrategy("dps");
     engine->addStrategy("assist");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::HunterActionFactory(facade));
-    nonCombatEngine->addStrategy("hunter non combat");
+    nonCombatEngine->addStrategy("nc");
     nonCombatEngine->addStrategy("assist");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");

@@ -33,7 +33,7 @@ public:
         ai = new MockPlayerbotAIFacade();
 
         engine = new Engine(ai, new WarriorActionFactory(ai));
-        engine->addStrategy("tank warrior");
+        engine->addStrategy("tank");
         engine->Init();
         ai->spellCooldowns.push_back("revenge");
         ai->auras.push_back("battle shout");

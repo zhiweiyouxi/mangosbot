@@ -137,7 +137,7 @@ protected:
 
         Engine engine(ai, new ActionFactory(ai));
         engine.addStrategy("stay");
-        engine.addStrategy("tank non combat");
+        engine.addStrategy("tank");
         engine.Init();
 
         engine.DoNextAction(NULL);

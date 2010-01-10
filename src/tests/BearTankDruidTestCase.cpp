@@ -37,7 +37,7 @@ public:
         ai = new MockPlayerbotAIFacade();
 
         engine = new Engine(ai, new DruidActionFactory(ai));
-        engine->addStrategy("bear tank");
+        engine->addStrategy("tank");
         engine->Init();
     }
 

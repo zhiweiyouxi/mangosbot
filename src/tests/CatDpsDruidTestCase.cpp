@@ -33,7 +33,7 @@ public:
         ai = new MockPlayerbotAIFacade();
 
         engine = new Engine(ai, new DruidActionFactory(ai));
-        engine->addStrategy("cat dps");
+        engine->addStrategy("dps");
         engine->Init();
     }
 

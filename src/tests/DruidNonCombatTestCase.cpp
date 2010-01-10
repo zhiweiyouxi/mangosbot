@@ -34,7 +34,7 @@ protected:
 
         Engine engine(ai, new DruidActionFactory(ai));
         engine.addStrategy("follow");
-        engine.addStrategy("druid non combat");
+        engine.addStrategy("nc");
         engine.Init();
 
         ai->attackerCount = 0;
@@ -55,7 +55,7 @@ protected:
         ai = new MockPlayerbotAIFacade();
 
         Engine engine(ai, new DruidActionFactory(ai));
-        engine.addStrategy("druid non combat");
+        engine.addStrategy("nc");
         engine.Init();
 
         engine.DoNextAction(NULL);

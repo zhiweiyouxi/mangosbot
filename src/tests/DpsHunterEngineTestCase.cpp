@@ -30,7 +30,7 @@ public:
         ai = new MockPlayerbotAIFacade();
 
         engine = new Engine(ai, new HunterActionFactory(ai));
-        engine->addStrategy("dps hunter");
+        engine->addStrategy("dps");
         engine->Init();
     }
 

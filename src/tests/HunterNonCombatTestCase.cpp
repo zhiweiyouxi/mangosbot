@@ -29,7 +29,7 @@ public:
         ai = new MockPlayerbotAIFacade();
 
         engine = new Engine(ai, new HunterActionFactory(ai));
-        engine->addStrategy("hunter non combat");
+        engine->addStrategy("nc");
         engine->Init();
     }
 

@@ -31,7 +31,7 @@ protected:
         ai = new MockPlayerbotAIFacade();
 
         Engine engine(ai, new DruidActionFactory(ai));
-        engine.addStrategy("bear tank");
+        engine.addStrategy("tank");
         engine.Init();
 
         ai->health = 1;

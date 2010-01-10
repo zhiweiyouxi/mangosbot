@@ -9,18 +9,18 @@ using namespace ai;
 
 Strategy* WarriorActionFactory::createStrategy(const char* name)
 {
+    if (!strcmp("tank", name))
+        return new TankWarriorStrategy(ai);
+
+    if (!strcmp("dps", name))
+        return new DpsWarriorStrategy(ai);
+
+    if (!strcmp("nc", name))
+        return new GenericWarriorNonCombatStrategy(ai);
+
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)
         return strategy;
-
-    if (!strcmp("tank warrior", name))
-        return new TankWarriorStrategy(ai);
-
-    if (!strcmp("dps warrior", name))
-        return new DpsWarriorStrategy(ai);
-
-    if (!strcmp("warrior non combat", name))
-        return new GenericWarriorNonCombatStrategy(ai);
 
     return new GenericWarriorStrategy(ai);
 }

@@ -8,15 +8,14 @@ using namespace ai;
 
 Strategy* HunterActionFactory::createStrategy(const char* name)
 {
+    if (!strcmp("dps", name))
+        return new DpsHunterStrategy(ai);
+
+    if (!strcmp("nc", name))
+        return new GenericHunterNonCombatStrategy(ai);
+
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)
         return strategy;
-
-    if (!strcmp("dps hunter", name))
-        return new DpsHunterStrategy(ai);
-
-    if (!strcmp("hunter non combat", name))
-        return new GenericHunterNonCombatStrategy(ai);
-
     return new GenericHunterStrategy(ai);
 }
