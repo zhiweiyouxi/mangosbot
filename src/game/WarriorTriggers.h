@@ -11,7 +11,7 @@ namespace ai
         virtual const char* getName() { return "heroic strike available"; }
     };
 
-    BUFF_TRIGGER(DefensiveStanceTrigger, "defensive stance", "defensive stance")
+    BUFF_TRIGGER(BattleShoutTrigger, "battle shout", "battle shout")
 
     DEBUFF_TRIGGER(RendDebuffTrigger, "rend", "rend")
     DEBUFF_TRIGGER(DisarmDebuffTrigger, "disarm", "disarm")

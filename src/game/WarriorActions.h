@@ -49,10 +49,15 @@ namespace ai
     END_SPELL_ACTION()
 
     // buffs
-    BEGIN_MELEE_SPELL_ACTION(CastBattleShoutAction, "battle shout")
+    BEGIN_SPELL_ACTION(CastBattleShoutAction, "battle shout")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDefensiveStanceAction, "defensive stance")
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastBattleStanceAction, "battle stance")
+    END_SPELL_ACTION()
+
+    BEGIN_RANGED_SPELL_ACTION(CastChargeAction, "charge")
+    END_SPELL_ACTION()
 }

@@ -15,7 +15,7 @@ using namespace ai;
 class WarriorNonCombatTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( WarriorNonCombatTestCase );
-        CPPUNIT_TEST( buff );
+    //CPPUNIT_TEST( buff );
     CPPUNIT_TEST_SUITE_END();
 
 protected:

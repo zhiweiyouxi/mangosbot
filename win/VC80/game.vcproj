@@ -2009,6 +2009,14 @@
 					Name="Strategies"
 					>
 					<File
+						RelativePath="..\..\src\game\DpsWarriorStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DpsWarriorStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericWarriorNonCombatStrategy.cpp"
 						>
 					</File>

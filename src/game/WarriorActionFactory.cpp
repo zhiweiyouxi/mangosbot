@@ -3,6 +3,7 @@
 #include "WarriorActionFactory.h"
 #include "GenericWarriorNonCombatStrategy.h"
 #include "TankWarriorStrategy.h"
+#include "DpsWarriorStrategy.h"
 
 using namespace ai;
 
@@ -14,6 +15,9 @@ Strategy* WarriorActionFactory::createStrategy(const char* name)
 
     if (!strcmp("tank warrior", name))
         return new TankWarriorStrategy(ai);
+
+    if (!strcmp("dps warrior", name))
+        return new DpsWarriorStrategy(ai);
 
     if (!strcmp("warrior non combat", name))
         return new GenericWarriorNonCombatStrategy(ai);

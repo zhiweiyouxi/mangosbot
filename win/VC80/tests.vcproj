@@ -681,6 +681,10 @@
 			Name="Warrior"
 			>
 			<File
+				RelativePath="..\..\src\tests\DpsWarriorTestCase.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\TankWarriorTestCase.cpp"
 				>
 			</File>
