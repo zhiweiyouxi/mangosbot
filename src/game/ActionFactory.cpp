@@ -113,7 +113,7 @@ Strategy* ActionFactory::createStrategy(const char* name)
     if (!strcmp("assist", name))
         return new AssistNonCombatStrategy(ai);
 
-    if (!strcmp("tank", name))
+    if (!strcmp("tank nc", name))
         return new TankNonCombatStrategy(ai);
 
     if (!strcmp("loot", name))

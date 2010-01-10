@@ -64,7 +64,7 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastMockingBlowAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
-            /*A*/ NextAction::array(0, new NextAction("taunt"), NULL), 
+            /*A*/ NextAction::array(0, NULL), 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
     else return GenericWarriorStrategy::createAction(name);

@@ -32,7 +32,7 @@ protected:
         ai = new MockPlayerbotAIFacade();
 
         Engine engine(ai, new WarriorActionFactory(ai));
-        engine.addStrategy("warrior non combat");
+        engine.addStrategy("nc");
         engine.Init();
 
         engine.DoNextAction(NULL);
