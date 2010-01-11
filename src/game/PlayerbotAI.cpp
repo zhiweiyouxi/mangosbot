@@ -293,8 +293,8 @@ void PlayerbotAI::SendNotEquipList(Player& player)
         }
     }
 
-    TellMaster("Here's all the items in my inventory that I can equip.");
-    ChatHandler ch(GetMaster());
+    //TellMaster("Here's all the items in my inventory that I can equip.");
+    /*ChatHandler ch(GetMaster());
 
     const std::string descr[] = { "head", "neck", "shoulders", "body", "chest",
             "waist", "legs", "feet", "wrists", "hands", "finger1", "finger2",
@@ -322,7 +322,7 @@ void PlayerbotAI::SendNotEquipList(Player& player)
         ch.SendSysMessage(out.str().c_str());
 
         delete itemListForEqSlot; // delete list of Item*
-    }
+    }*/
 }
 
 void PlayerbotAI::SendQuestItemList( Player& player )
@@ -2519,9 +2519,9 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
 
         std::list<uint32> itemIds;
         extractItemIds(text, itemIds);
-        if (itemIds.size() == 0)
+        /*if (itemIds.size() == 0)
             SendWhisper("Show me what item you want by shift clicking the item in the chat window.", fromPlayer);
-        else if( !strncmp( text.c_str(), "nt ", 3 ) ) 
+        else*/ if( !strncmp( text.c_str(), "nt ", 3 ) )
         {
             if( itemIds.size() > 1 )
                 SendWhisper( "There is only one 'Will not be traded' slot. Shift-click just one item, please!", fromPlayer );
@@ -2557,10 +2557,10 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         m_lootCurrent = 0;
 		m_targetCombat = 0;
 		// do we want to reset all states on this command?
-//		m_combatOrder = ORDERS_NONE;
-//		m_targetCombat = 0;
-//		m_targetAssisst = 0;
-//		m_targetProtect = 0;
+		m_combatOrder = ORDERS_NONE;
+		m_targetCombat = 0;
+		//m_targetAssisst = 0;
+		//m_targetProtect = 0;
     }
     else if (text == "report")
         SendQuestItemList( *GetMaster() );
@@ -2569,7 +2569,16 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
     else if (text == "follow" || text == "come")
         SetMovementOrder( MOVEMENT_FOLLOW, GetMaster() );
     else if (text == "stay" || text == "stop")
+	{
         SetMovementOrder( MOVEMENT_STAY );
+		SetIgnoreUpdateTime(600);
+	}
+    else if (text == "drink")
+		Drink();
+    else if (text == "eat")
+		Eat();
+    else if (text == "bandage")
+		Bandage();
     else if (text == "attack")
     {
         uint64 attackOnGuid = fromPlayer.GetSelection();
@@ -2773,10 +2782,35 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         	}
 
     	}
-        else {
+        /*else {
             std::string msg = "What? follow, stay, (c)ast <spellname>, spells, (e)quip <itemlink>, (u)se <itemlink>, drop <questlink>, report, quests";
             SendWhisper(msg, fromPlayer);
             m_bot->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
-        }
+        }*/
+    }
+}
+
+void PlayerbotAI::Drink()
+{
+    UseLongTimeItem(FindDrink());
+}
+
+void PlayerbotAI::Eat()
+{
+    UseLongTimeItem(FindFood());
+}
+
+void PlayerbotAI::Bandage()
+{
+    UseLongTimeItem(FindBandage(), 8);
+}
+
+void PlayerbotAI::UseLongTimeItem(Item* pItem, uint8 time)
+{
+    if (pItem != NULL)
+    {
+        UseItem(*pItem);
+        SetIgnoreUpdateTime(time);
+        return;
     }
 }
