@@ -5,6 +5,8 @@
     Version : 0.42
 */
 #include "PlayerbotDruidAI.h"
+#include "PlayerbotAIFacade.h"
+#include "BearTankDruidStrategy.h"
 
 class PlayerbotAI;
 
@@ -63,9 +65,24 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 	// racial
 	SHADOWMELD              = ai->getSpellId("shadowmeld"); // night elf
 	WAR_STOMP               = ai->getSpellId("war stomp"); // tauren
+
+    engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
+    engine->addStrategy("tank");
+    engine->addStrategy("assist");
+    engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
+    nonCombatEngine->addStrategy("nc");
+    nonCombatEngine->addStrategy("tank nc");
+    nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("loot");
+    nonCombatEngine->Init();
 }
 
-PlayerbotDruidAI::~PlayerbotDruidAI() {}
+PlayerbotDruidAI::~PlayerbotDruidAI()
+{
+    PlayerbotClassAI::~PlayerbotClassAI();
+}
 
 void PlayerbotDruidAI::HealTarget(Unit &target, uint8 hp)
 {
@@ -106,6 +123,9 @@ void PlayerbotDruidAI::DoNextCombatManeuver(Unit *pTarget)
             ai->CastSpell(MOONFIRE);
             return;
     }
+
+    engine->DoNextAction(pTarget);
+    return;
 
     uint32 masterHP = GetMaster()->GetHealth()*100 / GetMaster()->GetMaxHealth();
 
@@ -580,6 +600,9 @@ void PlayerbotDruidAI::DoNonCombatActions()
         return;
 
 	PlayerbotAI* ai = GetAI();
+    
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     if(m_bot->HasAura(CAT_FORM, 0))
     {

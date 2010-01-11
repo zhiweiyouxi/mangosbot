@@ -14,7 +14,9 @@ class PlayerbotClassAI;
 class PlayerbotMgr;
 
 #define BOTLOOT_DISTANCE 25.0f
-#define EAT_DRINK_PERCENT 25
+#define EAT_DRINK_PERCENT 40
+#define SPELL_DISTANCE 25.0f
+#define BOT_REACT_DISTANCE 50.0f
 
 class MANGOS_DLL_SPEC PlayerbotAI
 {
@@ -94,6 +96,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
     public:
         PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot);
+        PlayerbotAI() : m_mgr(NULL), m_bot(NULL) {} // for mocking purpose
         virtual ~PlayerbotAI();
 
         // This is called from Unit.cpp and is called every second (I think)
@@ -122,7 +125,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
         // finds spell ID for matching substring args
         // in priority of full text match, spells not taking reagents, and highest rank
-        uint32 getSpellId(const char* args, bool master = false) const;
+        virtual uint32 getSpellId(const char* args, bool master = false) const;
 
         // extracts item ids from links
         void extractItemIds(const std::string& text, std::list<uint32>& itemIds) const;
@@ -153,16 +156,26 @@ class MANGOS_DLL_SPEC PlayerbotAI
         uint8 GetManaPercent() const;
         uint8 GetRageAmount(const Unit& target) const;
         uint8 GetRageAmount() const;
+        uint8 GetRagePercent(const Unit& target) const;
+        uint8 GetRagePercent() const;
         uint8 GetEnergyAmount(const Unit& target) const;
         uint8 GetEnergyAmount() const;
         uint8 GetRunicPower(const Unit& target) const;
         uint8 GetRunicPower() const;
 
-        Item* FindFood() const;
-        Item* FindDrink() const;
-        Item* FindBandage() const;
-        Item* FindPoison() const;
+        Item* FindFood() { return FindUsableItem(isFood); }
+        static BOOL isFood(const ItemPrototype* pItemProto);
+        Item* FindDrink() const { return FindUsableItem(isDrink); }
+        static BOOL isDrink(const ItemPrototype* pItemProto);
+        Item* FindBandage() { return FindUsableItem(isBandage); }
+        static BOOL isBandage(const ItemPrototype* pItemProto);
+        Item* FindPoison() { return FindUsableItem(isPoison); }
+        static BOOL isPoison(const ItemPrototype* pItemProto);
+
+
+        Item* FindUsableItem(BOOL predicate(const ItemPrototype*)) const;
         Item* FindMount(uint32 matchingRidingSkill) const;
+
 
         // ******* Actions ****************************************
         // Your handlers can call these actions to make the bot do things.
@@ -172,6 +185,11 @@ class MANGOS_DLL_SPEC PlayerbotAI
         bool CastSpell(const char* args);
         bool CastSpell(uint32 spellId);
         bool CastSpell(uint32 spellId, Unit& target);
+        bool CastSpell(uint32 spellId, Unit* target)
+        {
+            return target ? CastSpell(spellId, *target) : CastSpell(spellId);
+        }
+
         void UseItem(Item& item);
         void EquipItem(Item& item);
         //void Stay();
@@ -196,6 +214,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		void SendOrders( Player& player );
         bool FollowCheckTeleport( WorldObject &obj );
         void DoLoot();
+        bool CanLoot() { return !m_lootCreature.empty(); }
 
         void AcceptQuest( Quest const *qInfo, Player *pGiver );
         void TurnInQuests( WorldObject *questgiver );
@@ -218,6 +237,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		void Bandage();
 		void UseLongTimeItem(Item* pItem, uint8 time = 30);
         void SetInFront( const Unit* obj );
+        void Attack(Unit* thingToAttack);
 
         void ItemLocalization(std::string& itemName, const uint32 itemID) const;
         void QuestLocalization(std::string& questTitle, const uint32 questID) const;
@@ -276,6 +296,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		Unit *m_targetProtect;	// check 
 
 		Unit *m_followTarget;	// whom to follow in non combat situation?
+
 };
 
 #endif

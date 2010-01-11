@@ -11,8 +11,13 @@
 #include "SharedDefines.h"
 #include "PlayerbotAI.h"
 
+#include "Engine.h"
+#include "PlayerbotAIFacade.h"
+
 class Player;
 class PlayerbotAI;
+
+#include "Engine.h"
 
 class MANGOS_DLL_SPEC PlayerbotClassAI
 {
@@ -35,11 +40,22 @@ class MANGOS_DLL_SPEC PlayerbotClassAI
         Player* GetPlayerBot() {return m_bot;}
         PlayerbotAI* GetAI (){return m_ai;};
 
+        virtual void DoSpecificAction(const char* name) { if (engine) engine->ExecuteAction(name); }
+        void ChangeStrategy( const char* name, ai::Engine* e );
+        void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, engine); }
+        void ChangeNonCombatStrategy(const char* name) { ChangeStrategy(name, nonCombatEngine); }
 
     private:
         Player* m_master;
         Player* m_bot;
         PlayerbotAI* m_ai;
+
+protected:
+        ai::PlayerbotAIFacade *facade;
+
+protected:
+        ai::Engine* engine;
+        ai::Engine* nonCombatEngine;
 };
 
 #endif

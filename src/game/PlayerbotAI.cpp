@@ -833,6 +833,16 @@ uint8 PlayerbotAI::GetRageAmount(const Unit& target) const
     return (static_cast<float> (target.GetPower(POWER_RAGE)));
 }
 
+uint8 PlayerbotAI::GetRagePercent(const Unit& target) const
+{
+    return (static_cast<float> (target.GetPower(POWER_RAGE)) / target.GetMaxPower(POWER_RAGE)) * 100;
+}
+
+uint8 PlayerbotAI::GetRagePercent() const
+{
+    return GetRagePercent(*m_bot);
+}
+
 uint8 PlayerbotAI::GetRageAmount() const
 {
     return GetRageAmount(*m_bot);
@@ -933,120 +943,20 @@ Item* PlayerbotAI::FindMount(uint32 matchingRidingSkill) const
     return partialMatch;
 }
 
-Item* PlayerbotAI::FindFood() const
+
+BOOL PlayerbotAI::isDrink(const ItemPrototype* pItemProto)
 {
-    // list out items in main backpack
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (pItem)
-        {
-            const ItemPrototype* const pItemProto = pItem->GetProto();
-            if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                continue;
-
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-            {
-                // if is FOOD
-                // this enum is no longer defined in mangos. Is it no longer valid?
-                // according to google it was 11
-                if (pItemProto->Spells[0].SpellCategory == 11)
-                    return pItem;
-            }
-        }
-    }
-    // list out items in other removable backpacks
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (pBag)
-        {
-            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-            {
-                Item* const pItem = m_bot->GetItemByPos(bag, slot);
-                if (pItem)
-                {
-                    const ItemPrototype* const pItemProto = pItem->GetProto();
-
-                    if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                        continue;
-
-                    // this enum is no longer defined in mangos. Is it no longer valid?
-                    // according to google it was 11
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-                    {
-                        // if is FOOD
-                        // this enum is no longer defined in mangos. Is it no longer valid?
-                        // according to google it was 11
-                        // if (pItemProto->Spells[0].SpellCategory == SPELL_CATEGORY_FOOD)
-                        if (pItemProto->Spells[0].SpellCategory == 11)
-                            return pItem;
-                    }
-                }
-            }
-        }
-    }
-    return NULL;
+    return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
+        pItemProto->Spells[0].SpellCategory == 59);
 }
 
-Item* PlayerbotAI::FindDrink() const
+BOOL PlayerbotAI::isFood(const ItemPrototype* pItemProto)
 {
-    // list out items in main backpack
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (pItem)
-        {
-            const ItemPrototype* const pItemProto = pItem->GetProto();
-
-            if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                continue;
-
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-            {
-                // if (pItemProto->Spells[0].SpellCategory == SPELL_CATEGORY_DRINK)
-
-                // this enum is no longer defined in mangos. Is it no longer valid?
-                // according to google it was 59
-                // if (pItemProto->Spells[0].SpellCategory == 59)
-                if (pItemProto->Spells[0].SpellCategory == 59)
-                    return pItem;
-            }
-        }
-    }
-    // list out items in other removable backpacks
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (pBag)
-        {
-            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-            {
-                Item* const pItem = m_bot->GetItemByPos(bag, slot);
-                if (pItem)
-                {
-                    const ItemPrototype* const pItemProto = pItem->GetProto();
-
-                    if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                        continue;
-
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD)
-                    {
-                        // if is WATER
-                        // SPELL_CATEGORY_DRINK is no longer defined in an enum in mangos
-                        // google says the valus is 59. Is this still valid?
-                        // if (pItemProto->Spells[0].SpellCategory == SPELL_CATEGORY_DRINK)
-                        if (pItemProto->Spells[0].SpellCategory == 59)
-                            return pItem;
-                    }
-                }
-            }
-        }
-    }
-    return NULL;
+    return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
+        pItemProto->Spells[0].SpellCategory == 11);
 }
 
-Item* PlayerbotAI::FindBandage() const
+Item* PlayerbotAI::FindUsableItem(BOOL predicate(const ItemPrototype*)) const
 {
     // list out items in main backpack
     for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
@@ -1059,7 +969,7 @@ Item* PlayerbotAI::FindBandage() const
             if (!pItemProto || !m_bot->CanUseItem(pItemProto))
                 continue;
 
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_BANDAGE)
+            if (predicate(pItemProto))
                 return pItem;
         }
     }
@@ -1079,7 +989,7 @@ Item* PlayerbotAI::FindBandage() const
                     if (!pItemProto || !m_bot->CanUseItem(pItemProto))
                         continue;
 
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_BANDAGE)
+                    if (predicate(pItemProto))
                         return pItem;
                 }
             }
@@ -1087,47 +997,15 @@ Item* PlayerbotAI::FindBandage() const
     }
     return NULL;
 }
-//Find Poison ...Natsukawa
-Item* PlayerbotAI::FindPoison() const
+
+BOOL PlayerbotAI::isBandage(const ItemPrototype* pItemProto)
 {
-    // list out items in main backpack
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (pItem)
-        {
-            const ItemPrototype* const pItemProto = pItem->GetProto();
+    return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_BANDAGE;
+}
 
-            if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                continue;
-
-            if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == 6)
-                return pItem;
-        }
-    }
-    // list out items in other removable backpacks
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (pBag)
-        {
-            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-            {
-                Item* const pItem = m_bot->GetItemByPos(bag, slot);
-                if (pItem)
-                {
-                    const ItemPrototype* const pItemProto = pItem->GetProto();
-
-                    if (!pItemProto || !m_bot->CanUseItem(pItemProto))
-                        continue;
-
-                    if (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == 6)
-                        return pItem;
-                }
-            }
-        }
-    }
-    return NULL;
+BOOL PlayerbotAI::isPoison(const ItemPrototype* pItemProto)
+{
+    return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == 6;
 }
 
 void PlayerbotAI::InterruptCurrentCastingSpell()
@@ -1277,17 +1155,33 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
     m_bot->Attack(m_targetCombat, true);
 
     // add thingToAttack to loot list
-    m_lootCreature.push_back( m_targetCombat->GetGUID() );
-
+    uint64 guid = m_targetCombat->GetGUID();
+    for (std::list<uint64>::iterator i = m_lootCreature.begin(); i != m_lootCreature.end(); i++)
+    {
+        if (*i == guid) 
+        {
+            guid = NULL;
+            break;
+        }
+    }
+    if (guid)
+    {
+        m_lootCreature.push_front( guid );
+        if (m_lootCreature.size() > 50)
+        {
+            for (int i=0; i<50; i++) 
+                m_lootCreature.pop_back();
+        }
+    }
 	// set movement generators for combat movement
-	MovementClear();
+	//MovementClear();
     return;
 }
 
 void PlayerbotAI::DoNextCombatManeuver()
 {
     // check for new targets
-	GetCombatTarget();
+	//GetCombatTarget();
 	// check if we have a target - fixes crash reported by rrtn (kill hunter's pet bug)
 	// if current target for attacks doesn't make sense anymore
     // clear our orders so we can get orders in next update
@@ -1300,6 +1194,8 @@ void PlayerbotAI::DoNextCombatManeuver()
 		m_targetCombat = 0;
         m_targetChanged = false;
         m_targetType = TARGET_NORMAL;
+
+        (GetClassAI())->DoNonCombatActions();
         return;
     }
 
@@ -1313,7 +1209,7 @@ void PlayerbotAI::DoNextCombatManeuver()
     }
 
     // do normal combat movement
-	DoCombatMovement();
+	//DoCombatMovement();
 
     if (GetClassAI() && !m_targetChanged )
         (GetClassAI())->DoNextCombatManeuver( m_targetCombat );
@@ -1334,7 +1230,7 @@ void PlayerbotAI::DoCombatMovement() {
 		// ranged combat - just move within spell range
 		// TODO: just follow in spell range! how to determine bots spell range?
 		if( targetDist>25.0f ) {
-			m_bot->GetMotionMaster()->MoveChase( m_targetCombat );
+			m_bot->GetMotionMaster()->MoveChase( m_targetCombat, SPELL_DISTANCE );
 		} else {
 			MovementClear();
 		}
@@ -1914,7 +1810,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
         return;
 
     // default updates occur every two seconds
-    m_ignoreAIUpdatesUntilTime = time(0) + 2;
+    m_ignoreAIUpdatesUntilTime = time(0) + 1;
 
 	// send heartbeat
 	MovementUpdate();
@@ -2006,21 +1902,21 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
             DoNextCombatManeuver();
 
         // bot was in combat recently - loot now
-        else if (m_botState == BOTSTATE_COMBAT)
+/*        else if (m_botState == BOTSTATE_COMBAT)
         {
             SetState( BOTSTATE_LOOTING );
             m_attackerInfo.clear();
         }
         else if (m_botState == BOTSTATE_LOOTING)
             DoLoot();
-/*
+
         // are we sitting, if so feast if possible
         else if (m_bot->getStandState() == UNIT_STAND_STATE_SIT)
         Feast();
 */
         // if commanded to follow master and not already following master then follow master
-        else if (!m_bot->isInCombat() && !IsMoving() )
-            MovementReset();
+/*        else if (!m_bot->isInCombat() && !IsMoving() )
+            MovementReset();*/
 
         // do class specific non combat actions
         else if (GetClassAI())
@@ -2119,6 +2015,12 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
             m_bot->SetInFront(pTarget);
         	MovementUpdate();
         }
+    }
+
+    // sometimes target is not selected
+    if (!pTarget)
+    {
+        pTarget = m_bot;
     }
 
     if (HasAura(spellId, *pTarget))
@@ -2571,7 +2473,7 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
     else if (text == "stay" || text == "stop")
 	{
         SetMovementOrder( MOVEMENT_STAY );
-		SetIgnoreUpdateTime(600);
+		SetIgnoreUpdateTime(255);
 	}
     else if (text == "drink")
 		Drink();
@@ -2585,8 +2487,7 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         if (attackOnGuid)
         {
             Unit* thingToAttack = ObjectAccessor::GetUnit(*m_bot, attackOnGuid);
-            if (!m_bot->IsFriendlyTo(thingToAttack) && m_bot->IsWithinLOSInMap(thingToAttack))
-                GetCombatTarget( thingToAttack );
+            Attack(thingToAttack);
         }
         else
         {
@@ -2611,6 +2512,24 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
             m_spellIdCommand = spellId;
             m_targetGuidCommand = castOnGuid;
         }
+    }
+
+    else if (text.size() > 2 && text.substr(0, 2) == "d " || text.size() > 3 && text.substr(0, 3) == "do ")
+    {
+        std::string action = text.substr(text.find(" ") + 1);
+        GetClassAI()->DoSpecificAction(action.c_str());
+    }
+
+    else if (text.size() > 3 && text.substr(0, 3) == "co ")
+    {
+        std::string strategy = text.substr(text.find(" ") + 1);
+        GetClassAI()->ChangeCombatStrategy(strategy.c_str());
+    }
+
+    else if (text.size() > 3 && text.substr(0, 3) == "nc ")
+    {
+        std::string strategy = text.substr(text.find(" ") + 1);
+        GetClassAI()->ChangeNonCombatStrategy(strategy.c_str());
     }
 
     // use items
@@ -2813,4 +2732,17 @@ void PlayerbotAI::UseLongTimeItem(Item* pItem, uint8 time)
         SetIgnoreUpdateTime(time);
         return;
     }
+}
+
+void PlayerbotAI::Attack(Unit* thingToAttack)
+{
+    if (m_bot->IsFriendlyTo(thingToAttack))
+    {
+        TellMaster("I cannot attack this");
+    }
+    else if (!m_bot->IsWithinLOSInMap(thingToAttack))
+    {
+        TellMaster("This is not in my sight, maybe later?");
+    }
+    else GetCombatTarget( thingToAttack );
 }
