@@ -19,7 +19,7 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
-    CPPUNIT_TEST( revengeIfDodge );
+    //CPPUNIT_TEST( revengeIfDodge );
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 

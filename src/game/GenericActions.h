@@ -179,4 +179,7 @@ namespace ai
     protected:
         uint32 name;
     };
+
+    BEGIN_RANGED_SPELL_ACTION(CastShootAction, "shoot")
+    END_SPELL_ACTION()
 }

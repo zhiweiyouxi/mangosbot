@@ -1,5 +1,6 @@
 
 #include "PlayerbotPriestAI.h"
+#include "PriestActionFactory.h"
 
 class PlayerbotAI;
 
@@ -67,6 +68,16 @@ PlayerbotPriestAI::PlayerbotPriestAI(Player* const master, Player* const bot, Pl
 	SHADOWMELD              = ai->getSpellId("shadowmeld"); // night elf
 	BERSERKING              = ai->getSpellId("berserking"); // troll
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
+
+    engine = new ai::Engine(facade, new ai::PriestActionFactory(facade));
+    engine->addStrategy("dps");
+    engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::PriestActionFactory(facade));
+    nonCombatEngine->addStrategy("nc");
+    nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("loot");
+    nonCombatEngine->Init();
 }
 
 PlayerbotPriestAI::~PlayerbotPriestAI() {}
@@ -123,6 +134,9 @@ void PlayerbotPriestAI::DoNextCombatManeuver(Unit *pTarget)
     PlayerbotAI* ai = GetAI();
     if (!ai)
         return;
+
+    engine->DoNextAction(pTarget);
+    return;
 
     switch (ai->GetScenarioType())
     {
@@ -388,6 +402,9 @@ void PlayerbotPriestAI::DoNonCombatActions()
     Player * m_bot = GetPlayerBot();
     if (!m_bot)
         return;
+
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     SpellSequence = SPELL_HOLY;
 
