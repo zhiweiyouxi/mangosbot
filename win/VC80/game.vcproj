@@ -2042,6 +2042,62 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Priest"
+				>
+				<File
+					RelativePath="..\..\src\game\PriestActionFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PriestActionFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PriestActions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PriestActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PriestMultipliers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PriestMultipliers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PriestTriggers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PriestTriggers.h"
+					>
+				</File>
+				<Filter
+					Name="Strategies"
+					>
+					<File
+						RelativePath="..\..\src\game\DpsPriestStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DpsPriestStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\HealPriestStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\HealPriestStrategy.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"

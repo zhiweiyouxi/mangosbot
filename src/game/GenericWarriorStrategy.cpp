@@ -11,9 +11,9 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new BattleShoutTrigger(ai), 
         NextAction::array(0, new NextAction("battle shout", 80.0f), NULL)));
 
-    triggers.push_back(new TriggerNode(
+    /*triggers.push_back(new TriggerNode(
         new RevengeAvailableTrigger(ai), 
-        NextAction::array(0, new NextAction("revenge", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("revenge", 50.0f), NULL)));*/
     
     triggers.push_back(new TriggerNode(
         new RendDebuffTrigger(ai), 
