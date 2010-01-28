@@ -23,6 +23,7 @@ class NonCombatEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( loot );
   CPPUNIT_TEST( goaway );
   CPPUNIT_TEST( emote );
+  CPPUNIT_TEST( passive );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -183,6 +184,26 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(strstr(ai->buffer.c_str(), ">emote"));
     }
+
+    void passive()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new ActionFactory(ai));
+        engine.addStrategy("stay");
+        engine.addStrategy("passive");
+        engine.Init();
+
+        engine.DoNextAction(NULL);
+        ai->myAttackerCount = 0;
+        engine.DoNextAction(NULL);
+        ai->myAttackerCount = 1;
+
+        std::cout << ai->buffer;
+
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">stay>stay"));
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( NonCombatEngineTestCase );

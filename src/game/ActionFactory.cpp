@@ -125,5 +125,8 @@ Strategy* ActionFactory::createStrategy(const char* name)
     if (!strcmp("emote", name))
         return new RandomEmoteStrategy(ai);
 
+    if (!strcmp("passive", name))
+        return new PassiveStrategy(ai);
+
     return NULL;
 }

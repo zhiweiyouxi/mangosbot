@@ -84,4 +84,14 @@ namespace ai
         virtual const char* getName() { return "emote"; }
         virtual ActionNode* createAction(const char* name);
    };
+
+    class PassiveStrategy : public Strategy
+    {
+    public:
+        PassiveStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+
+    public:
+        virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
+        virtual const char* getName() { return "passive"; }
+    };
 }

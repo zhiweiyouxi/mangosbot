@@ -21,11 +21,11 @@ void HealPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai),
-        NextAction::array(0, new NextAction("power word: shield", 60.0f), new NextAction("lesser heal", 60.0f), NULL)));
+        NextAction::array(0, new NextAction("power word: shield", 60.0f), new NextAction("heal", 60.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PartyMemberLowHealthTrigger(ai),
-        NextAction::array(0, new NextAction("power word: shield on party", 50.0f), new NextAction("lesser heal on party", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("power word: shield on party", 50.0f), new NextAction("heal on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
@@ -85,18 +85,32 @@ ActionNode* HealPriestStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("heal", name)) 
+    {
+        return new ActionNode (new CastHealAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("lesser heal"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("heal on party", name)) 
+    {
+        return new ActionNode (new CastHealOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("lesser heal on party"), NULL), 
+            /*C*/ NULL);
+    }
     else if (!strcmp("lesser heal", name)) 
     {
         return new ActionNode (new CastLesserHealAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("lesser heal"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("lesser heal on party", name)) 
     {
         return new ActionNode (new CastLesserHealOnPartyAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("lesser heal on party"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("attack least threat", name)) 

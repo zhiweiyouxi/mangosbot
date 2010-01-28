@@ -1833,6 +1833,14 @@
 					RelativePath="..\..\src\game\NonCombatActions.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\game\PassiveMultiplier.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PassiveMultiplier.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Hunter"

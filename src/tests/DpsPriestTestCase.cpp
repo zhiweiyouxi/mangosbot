@@ -68,10 +68,10 @@ protected:
         // heal if need
         ai->health = 1;
         engine->DoNextAction(NULL); // shirld
-        engine->DoNextAction(NULL); // lesser heal
+        engine->DoNextAction(NULL); // heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadow word: pain>mind blast>shoot>power word: shield>lesser heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadow word: pain>mind blast>shoot>power word: shield>heal"));
     }
 };
 

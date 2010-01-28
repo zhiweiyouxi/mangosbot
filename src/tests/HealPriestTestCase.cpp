@@ -50,17 +50,16 @@ protected:
     {
         ai->health = 1;
         engine->DoNextAction(NULL); // power word: shield
-        engine->DoNextAction(NULL); // lesser heal
+        engine->DoNextAction(NULL); // heal
 
         engine->DoNextAction(NULL); // renew
         
-        ai->spellCooldowns.remove("lesser heal");
         engine->DoNextAction(NULL); // lesser heal
 
         ai->health = 70;
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>lesser heal>renew>lesser heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>heal>renew>lesser heal"));
     }
 
     void healOthers()
@@ -69,16 +68,15 @@ protected:
 
         ai->partyMinHealth = 1;
         engine->DoNextAction(NULL); // power word: shield
-        engine->DoNextAction(NULL); // lesser heal
+        engine->DoNextAction(NULL); // heal
 
         engine->DoNextAction(NULL); // renew
-        ai->spellCooldowns.remove("lesser heal");
         engine->DoNextAction(NULL); // lesser heal
 
         ai->partyMinHealth = 70;
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude on party>power word: shield on party>lesser heal on party>renew on party>lesser heal on party"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude on party>power word: shield on party>heal on party>renew on party>lesser heal on party"));
     }
 
     void buff()

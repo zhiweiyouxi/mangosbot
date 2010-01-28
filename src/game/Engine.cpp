@@ -213,8 +213,12 @@ BOOL Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, BOOL sk
                 if (forceRelevance > 0.0f)
                     k = forceRelevance;
 
-                queue.Push(new ActionBasket(action, k, skipPrerequisites));
-                pushed = TRUE;
+                if (k > 0)
+                {
+                    queue.Push(new ActionBasket(action, k, skipPrerequisites));
+                    pushed = TRUE;
+                }
+
                 delete nextAction;
             }
             else 
