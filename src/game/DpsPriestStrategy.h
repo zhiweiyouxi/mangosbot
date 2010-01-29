@@ -14,7 +14,7 @@ namespace ai
         virtual NextAction** getDefaultActions();
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
-        virtual const char* getName() { return "dps priest"; }
+        virtual const char* getName() { return "dps"; }
         virtual ActionNode* createAction(const char* name);
 
     };
