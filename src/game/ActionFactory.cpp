@@ -127,6 +127,9 @@ Strategy* ActionFactory::createStrategy(const char* name)
 
     if (!strcmp("passive", name))
         return new PassiveStrategy(ai);
+    
+    if (!strcmp("low mana", name))
+        return new LowManaStrategy(ai);
 
     return NULL;
 }

@@ -19,6 +19,7 @@ class HealPriestTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( buff );
+    CPPUNIT_TEST( nonCombat );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -48,6 +49,8 @@ public:
 protected:
     void healHimself()
     {
+        ai->partyAuras.push_back("power word: fortitude");
+
         ai->health = 1;
         engine->DoNextAction(NULL); // power word: shield
         engine->DoNextAction(NULL); // heal
@@ -57,7 +60,33 @@ protected:
         engine->DoNextAction(NULL); // lesser heal
 
         ai->health = 70;
+
+        engine->DoNextAction(NULL); // shoot
         
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>heal>renew>lesser heal>shoot"));
+    }
+
+    void nonCombat()
+    {
+        engine->removeStrategy("heal");
+        engine->addStrategy("nc");
+        engine->Init();
+
+        ai->partyAuras.push_back("power word: fortitude");
+
+        ai->health = 1;
+        engine->DoNextAction(NULL); // power word: shield
+        engine->DoNextAction(NULL); // heal
+
+        engine->DoNextAction(NULL); // renew
+
+        engine->DoNextAction(NULL); // lesser heal
+
+        ai->health = 70;
+
+        engine->DoNextAction(NULL);
+
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>heal>renew>lesser heal"));
     }

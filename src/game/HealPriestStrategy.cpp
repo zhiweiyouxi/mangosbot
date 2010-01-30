@@ -6,7 +6,7 @@
 
 using namespace ai;
 
-void HealPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     CombatStrategy::InitTriggers(triggers);
 
@@ -32,12 +32,12 @@ void HealPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("attack least threat", 20.0f), NULL)));
 }
 
-void HealPriestStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
+void HealPriestNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 {
     CombatStrategy::InitMultipliers(multipliers);
 }
 
-ActionNode* HealPriestStrategy::createAction(const char* name)
+ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
 {
     ActionNode* node = CombatStrategy::createAction(name);
     if (node)
@@ -122,3 +122,27 @@ ActionNode* HealPriestStrategy::createAction(const char* name)
     }
     else return NULL;
 }
+
+
+
+NextAction** HealPriestStrategy::getDefaultActions()
+{
+    return NextAction::array(0, new NextAction("shoot", 10.0f), NULL);
+}
+
+ActionNode* HealPriestStrategy::createAction(const char* name)
+{
+    ActionNode* node = HealPriestNonCombatStrategy::createAction(name);
+    if (node)
+        return node;
+
+    if (!strcmp("shoot", name)) 
+    {
+        return new ActionNode (new CastShootAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else return NULL;
+}
+

@@ -4,6 +4,7 @@
 #include "GenericActions.h"
 #include "NonCombatActions.h"
 #include "PassiveMultiplier.h"
+#include "LowManaMultiplier.h"
 
 using namespace ai;
 
@@ -118,4 +119,9 @@ ActionNode* RandomEmoteStrategy::createAction(const char* name)
 void PassiveStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 {
     multipliers.push_back(new PassiveMultiplier());
+}
+
+void LowManaStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
+{
+    multipliers.push_back(new LowManaMultiplier());
 }

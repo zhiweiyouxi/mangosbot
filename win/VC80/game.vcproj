@@ -1826,6 +1826,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\LowManaMultiplier.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\LowManaMultiplier.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\NonCombatActions.cpp"
 					>
 				</File>

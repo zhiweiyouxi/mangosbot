@@ -94,4 +94,14 @@ namespace ai
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
         virtual const char* getName() { return "passive"; }
     };
+
+    class LowManaStrategy : public Strategy
+    {
+    public:
+        LowManaStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+
+    public:
+        virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
+        virtual const char* getName() { return "low mana"; }
+    };
 }
