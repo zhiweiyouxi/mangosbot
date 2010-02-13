@@ -51,8 +51,15 @@ namespace ai
     BEGIN_SPELL_ACTION(CastPowerWordFortitudeAction, "power word: fortitude")
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastDivineSpiritAction, "divine spirit")
+    END_SPELL_ACTION()
+
     BEGIN_BUFF_ON_PARTY_ACTION(CastPowerWordFortitudeOnPartyAction, "power word: fortitude")
     virtual const char* getName() { return "power word: fortitude on party";}
+    END_ACTION()
+
+    BEGIN_BUFF_ON_PARTY_ACTION(CastDivineSpiritOnPartyAction, "divine spirit")
+        virtual const char* getName() { return "divine spirit on party";}
     END_ACTION()
 
 

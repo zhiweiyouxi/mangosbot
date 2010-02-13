@@ -67,13 +67,13 @@ BOOL PanicTrigger::IsActive()
 
 BOOL BuffTrigger::IsActive()
 {
-    return !ai->HasAura(spell);
+    return !ai->HasAura(spell) && ai->canCastSpell(spell);
 }
 
 
 BOOL BuffOnPartyTrigger::IsActive()
 {
-    return !ai->IsAllPartyHasAura(spell);
+    return !ai->IsAllPartyHasAura(spell) && ai->canCastSpell(spell);
 }
 
 BOOL NoAttackersTrigger::IsActive()

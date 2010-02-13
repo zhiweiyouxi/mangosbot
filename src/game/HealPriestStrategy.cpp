@@ -18,6 +18,14 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
         new PowerWordFortitudeOnPartyTrigger(ai), 
         NextAction::array(0, new NextAction("power word: fortitude on party", 50.0f), NULL)));
 
+    triggers.push_back(new TriggerNode(
+        new DivineSpiritTrigger(ai), 
+        NextAction::array(0, new NextAction("divine spirit", 40.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new DivineSpiritOnPartyTrigger(ai), 
+        NextAction::array(0, new NextAction("divine spirit on party", 30.0f), NULL)));
+
 
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai),
@@ -53,6 +61,20 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     else if (!strcmp("power word: fortitude on party", name)) 
     {
         return new ActionNode (new CastPowerWordFortitudeOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("divine spirit", name)) 
+    {
+        return new ActionNode (new CastDivineSpiritAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("divine spirit on party", name)) 
+    {
+        return new ActionNode (new CastDivineSpiritOnPartyAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

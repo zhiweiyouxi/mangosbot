@@ -36,6 +36,9 @@ public:
         engine->Init();
 
         ai->auras.push_back("power word: fortitude");
+        ai->auras.push_back("divine spirit");
+        ai->partyAuras.push_back("power word: fortitude");
+        ai->partyAuras.push_back("divine spirit");
     }
 
     void tearDown()
@@ -93,7 +96,7 @@ protected:
 
     void healOthers()
     {
-        engine->DoNextAction(NULL); // power word: fortitude on party
+        engine->DoNextAction(NULL); // shoot
 
         ai->partyMinHealth = 1;
         engine->DoNextAction(NULL); // power word: shield
@@ -105,13 +108,15 @@ protected:
         ai->partyMinHealth = 70;
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude on party>power word: shield on party>heal on party>renew on party>lesser heal on party"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>power word: shield on party>heal on party>renew on party>lesser heal on party"));
     }
 
     void buff()
     {
         ai->auras.remove("power word: fortitude");
-        ai->spellCooldowns.remove("power word: fortitude on party");
+        ai->auras.remove("divine spirit");
+        ai->partyAuras.remove("power word: fortitude");
+        ai->partyAuras.remove("divine spirit");
 
         engine->DoNextAction(NULL); // power word: fortitude
         ai->auras.push_back("power word: fortitude");
@@ -119,10 +124,14 @@ protected:
         ai->spellCooldowns.remove("power word: fortitude");
         engine->DoNextAction(NULL); // power word: fortitude on party
 
-        ai->partyMinHealth = 70;
+        engine->DoNextAction(NULL); // divine spirit
+        ai->auras.push_back("divine spirit");
+
+        ai->spellCooldowns.remove("divine spirit");
+        engine->DoNextAction(NULL); // divine spirit on party
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude>power word: fortitude on party"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude>power word: fortitude on party>divine spirit>divine spirit on party"));
     }
 };
 

@@ -34,7 +34,9 @@ public:
         engine->Init();
 
         ai->auras.push_back("power word: fortitude");
+        ai->auras.push_back("divine spirit");
         ai->partyAuras.push_back("power word: fortitude");
+        ai->partyAuras.push_back("divine spirit");
     }
 
     void tearDown()
