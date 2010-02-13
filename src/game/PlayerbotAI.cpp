@@ -205,7 +205,7 @@ uint32 PlayerbotAI::getSpellId(const char* args, bool master) const
         {
             if (isExactMatch && !foundExactMatch) {}
             else if (usesNoReagents && !foundMatchUsesNoReagents) {}
-            else if (spellId > foundSpellId) {}
+            else if (spellId > foundSpellId && isExactMatch) {}
             else
                 useThisSpell = false;
         }
