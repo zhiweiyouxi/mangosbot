@@ -109,6 +109,7 @@ protected:
 
     void healHimself()
     {
+        ai->spellCooldowns.push_back("gift of the naaru");
         engine->DoNextAction(NULL); // faerie fire
         engine->DoNextAction(NULL); // cat form
         ai->auras.push_back("cat form");
@@ -154,6 +155,7 @@ protected:
         ai->health = 1;
         ai->auras.remove("rejuvenation");
         engine->DoNextAction(NULL); // life blood
+        engine->DoNextAction(NULL); // gift of the naaru
         ai->auras.push_back("lifeblood");
 
         ai->spellCooldowns.remove("rejuvenation");
@@ -164,7 +166,7 @@ protected:
         engine->DoNextAction(NULL); // regrowth
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>-cat form>regrowth"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>-cat form>regrowth"));
     }
 
     void healOthers()

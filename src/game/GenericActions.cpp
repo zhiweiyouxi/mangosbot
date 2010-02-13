@@ -66,6 +66,11 @@ BOOL CastLifeBloodAction::isUseful()
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
+BOOL CastGiftOfTheNaaruAction::isUseful()
+{
+    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 
 BOOL UseHealingPotion::Execute()

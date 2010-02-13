@@ -22,6 +22,10 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 2), 
         NextAction::array(0, new NextAction("demoralizing shout", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new LowHealthTrigger(ai), 
+        NextAction::array(0, new NextAction("lifeblood", 60.0f), NULL)));
 }
 
 
@@ -30,6 +34,13 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
     if (!strcmp("defensive stance", name)) 
     {
         return new ActionNode (new CastDefensiveStanceAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("gift of the naaru", name)) 
+    {
+        return new ActionNode (new CastGiftOfTheNaaruAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

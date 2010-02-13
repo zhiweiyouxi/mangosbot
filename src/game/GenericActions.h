@@ -111,6 +111,11 @@ namespace ai
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastGiftOfTheNaaruAction, "gift of the naaru")
+        virtual BOOL isUseful();
+    END_SPELL_ACTION()
+        
+
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_ACTION(UseHealingPotion, "healing potion")

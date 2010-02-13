@@ -40,7 +40,14 @@ ActionNode* ActionFactory::createAction(const char* name)
     {
         return new ActionNode (new CastLifeBloodAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("regrowth"), NULL), 
+            /*A*/ NextAction::array(0, new NextAction("gift of the naaru"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("gift of the naaru", name)) 
+    {
+        return new ActionNode (new CastGiftOfTheNaaruAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("healing potion"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("panic potion", name)) 

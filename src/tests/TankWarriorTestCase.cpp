@@ -19,7 +19,7 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
-    //CPPUNIT_TEST( revengeIfDodge );
+    CPPUNIT_TEST( healing );
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
@@ -48,6 +48,16 @@ public:
     }
 
 protected:
+    void healing()
+    {
+        ai->distanceToEnemy = 0.0f; 
+        ai->health = 1;
+        engine->DoNextAction(NULL); // gift of the naaru
+        engine->DoNextAction(NULL); // regrowth
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru"));
+    }
     void buff()
     {
         ai->auras.remove("battle shout");

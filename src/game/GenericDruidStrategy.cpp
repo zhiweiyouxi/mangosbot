@@ -34,6 +34,13 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("gift of the naaru", name)) 
+    {
+        return new ActionNode (new CastGiftOfTheNaaruAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("regrowth"), NULL), 
+            /*C*/ NULL);
+    }
     else if (!strcmp("regrowth", name)) 
     {
         return new ActionNode (new CastRegrowthAction(ai),  
