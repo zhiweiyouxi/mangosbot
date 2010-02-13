@@ -66,6 +66,9 @@ Player* PlayerbotAIFacade::findPlayer(BOOL predicate(Player*, FindPlayerParam&),
             if( !player || !player->isAlive() || player == ai->GetPlayerBot())
                 continue;
 
+            if (ai->GetPlayerBot()->GetDistance(player) > SPELL_DISTANCE)
+                continue;
+
             FindPlayerParam pp; pp.ai = ai; pp.param = param;
             if (predicate(player, pp))
                 return player;

@@ -58,7 +58,7 @@ namespace ai
         virtual NextAction** getPrerequisites();
     };
 
-    BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
+    BEGIN_RANGED_SPELL_ACTION(CastGrowlAction, "growl")
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")

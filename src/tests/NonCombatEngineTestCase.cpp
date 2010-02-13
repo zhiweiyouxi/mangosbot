@@ -156,7 +156,7 @@ protected:
         ai = new MockPlayerbotAIFacade();
 
         Engine engine(ai, new ActionFactory(ai));
-        engine.addStrategy("follow");
+        engine.addStrategy("food");
         engine.Init();
 
         ai->health = 1;

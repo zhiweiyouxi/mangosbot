@@ -131,5 +131,8 @@ Strategy* ActionFactory::createStrategy(const char* name)
     if (!strcmp("low mana", name))
         return new LowManaStrategy(ai);
 
+    if (!strcmp("food", name))
+        return new UseFoodStrategy(ai);
+
     return NULL;
 }

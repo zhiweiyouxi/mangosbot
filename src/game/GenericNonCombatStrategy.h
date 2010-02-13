@@ -10,8 +10,6 @@ namespace ai
     public:
         GenericNonCombatStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
 
-    public:
-        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
     };
 
     class FollowMasterNonCombatStrategy : public GenericNonCombatStrategy
@@ -103,5 +101,15 @@ namespace ai
     public:
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
         virtual const char* getName() { return "low mana"; }
+    };
+
+    class UseFoodStrategy : public Strategy
+    {
+    public:
+        UseFoodStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+
+    public:
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+        virtual const char* getName() { return "food"; }
     };
 }

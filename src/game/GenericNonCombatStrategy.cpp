@@ -8,7 +8,7 @@
 
 using namespace ai;
 
-void GenericNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+void UseFoodStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     Strategy::InitTriggers(triggers);
     

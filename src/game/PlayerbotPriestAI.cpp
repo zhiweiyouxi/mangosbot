@@ -77,6 +77,7 @@ PlayerbotPriestAI::PlayerbotPriestAI(Player* const master, Player* const bot, Pl
     nonCombatEngine->addStrategy("nc");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
+    nonCombatEngine->addStrategy("food");
     nonCombatEngine->Init();
 }
 
