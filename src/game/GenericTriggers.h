@@ -89,13 +89,35 @@ namespace ai
         int amount;
     };
 
-    BEGIN_TRIGGER(LowHealthTrigger, Trigger)
+    class LowHealthTrigger : public Trigger
+    {
+    public:
+        LowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT) : Trigger(ai) 
+        {
+            this->value = value;
+        }
+    public: 
+        virtual BOOL IsActive();
         virtual const char* getName() { return "low health"; }
-    END_TRIGGER()
 
-    BEGIN_TRIGGER(PartyMemberLowHealthTrigger, Trigger)
+    protected:
+        float value;
+    };
+
+    class PartyMemberLowHealthTrigger : public LowHealthTrigger
+    {
+    public:
+        PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT) : LowHealthTrigger(ai, value) 
+        {
+            this->value = value;
+        }
+    public: 
+        virtual BOOL IsActive();
         virtual const char* getName() { return "party member low health"; }
-    END_TRIGGER()
+
+    protected:
+        float value;
+    };
 
     BEGIN_TRIGGER(LowManaTrigger, Trigger)
         virtual const char* getName() { return "low mana"; }

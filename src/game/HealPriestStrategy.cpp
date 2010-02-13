@@ -28,11 +28,11 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
 
 
     triggers.push_back(new TriggerNode(
-        new LowHealthTrigger(ai),
+        new LowHealthTrigger(ai, 50),
         NextAction::array(0, new NextAction("power word: shield", 60.0f), new NextAction("heal", 60.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new PartyMemberLowHealthTrigger(ai),
+        new PartyMemberLowHealthTrigger(ai, 50),
         NextAction::array(0, new NextAction("power word: shield on party", 50.0f), new NextAction("heal on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(

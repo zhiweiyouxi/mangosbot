@@ -120,7 +120,7 @@ BOOL HealPartyMemberAction::Execute()
 
 BOOL HealPartyMemberAction::isUseful()
 {
-    return ai->GetPartyMinHealthPercent() < EAT_DRINK_PERCENT;
+    return ai->GetPartyMinHealthPercent() < 75;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -58,6 +58,7 @@ namespace ai
         virtual bool CanLoot() { return ai->CanLoot(); }
         virtual void Loot() { ai->DoLoot(); }
         virtual void TellMaster(const char* text) { ai->TellMaster(text); }
+        virtual BOOL HasSpell(const char* spell) { return ai->getSpellId(spell) > 0; }
 
         virtual void AttackLeastThreat();
         virtual void AttackBiggerThreat();

@@ -70,6 +70,7 @@ namespace ai
 
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
         virtual float GetFollowAngle() { return 0; }
+        virtual BOOL HasSpell(const char* spell) { return TRUE; }
     public:
         void resetSpells() {spellCooldowns.clear(); }
 

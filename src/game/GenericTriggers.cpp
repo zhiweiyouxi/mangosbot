@@ -36,12 +36,12 @@ BOOL ComboPointsAvailable::IsActive()
 
 BOOL LowHealthTrigger::IsActive()
 {
-    return ai->GetHealthPercent() < EAT_DRINK_PERCENT;
+    return ai->GetHealthPercent() < value;
 }
 
 BOOL PartyMemberLowHealthTrigger::IsActive()
 {
-    return ai->GetPartyMinHealthPercent() < EAT_DRINK_PERCENT;
+    return ai->GetPartyMinHealthPercent() < value;
 }
 
 BOOL LowManaTrigger::IsActive()
@@ -67,13 +67,13 @@ BOOL PanicTrigger::IsActive()
 
 BOOL BuffTrigger::IsActive()
 {
-    return !ai->HasAura(spell) && ai->canCastSpell(spell);
+    return !ai->HasAura(spell) && ai->HasSpell(spell);
 }
 
 
 BOOL BuffOnPartyTrigger::IsActive()
 {
-    return !ai->IsAllPartyHasAura(spell) && ai->canCastSpell(spell);
+    return !ai->IsAllPartyHasAura(spell) && ai->HasSpell(spell);
 }
 
 BOOL NoAttackersTrigger::IsActive()
