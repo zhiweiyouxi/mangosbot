@@ -69,6 +69,7 @@ namespace ai
         virtual void TellMaster(const char* text) { buffer.append(text); }
 
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
+        virtual float GetFollowAngle() { return 0; }
     public:
         void resetSpells() {spellCooldowns.clear(); }
 
