@@ -25,8 +25,8 @@ namespace ai
 
     public:
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
-        virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 2.0f, GetFollowAngle()); }
-        virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 2.0f, GetFollowAngle()); }
+        virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
+        virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void Melee() { ai->Attack(ai->GetCurrentTarget()); }
         virtual void Flee(float distance = SPELL_DISTANCE);
         virtual void GoAway(float distance = SPELL_DISTANCE);

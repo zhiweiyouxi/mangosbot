@@ -264,6 +264,15 @@ protected:
 
         ai->aurasToDispel = DISPEL_POISON;
         engine->DoNextAction(NULL); // caster form
+        engine->DoNextAction(NULL); // abolish poison
+        ai->aurasToDispel = 0;
+
+        ai->partyAurasToDispel = DISPEL_POISON;
+        ai->spellCooldowns.remove("abolish poison");
+        engine->DoNextAction(NULL); // abolish poison on party
+        ai->partyAurasToDispel = 0;
+
+        ai->aurasToDispel = DISPEL_POISON;
         engine->DoNextAction(NULL); // cure poison
         ai->aurasToDispel = 0;
 
@@ -277,7 +286,7 @@ protected:
         engine->DoNextAction(NULL); // continue as usual with bear form
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>cure poison>cure poison on party>dire bear form"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>abolish poison>abolish poison on party>cure poison>cure poison on party>dire bear form"));
     }
 };
 

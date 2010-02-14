@@ -19,11 +19,11 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new NeedCureTrigger(ai, "cure poison", DISPEL_POISON),
-        NextAction::array(0, new NextAction("cure poison", 40.0f), NULL)));
+        NextAction::array(0, new NextAction("abolish poison", 40.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PartyMemberNeedCureTrigger(ai, "cure poison", DISPEL_POISON),
-        NextAction::array(0, new NextAction("cure poison on party", 40.0f), NULL)));
+        NextAction::array(0, new NextAction("abolish poison on party", 40.0f), NULL)));
 }
 
 ActionNode* GenericDruidStrategy::createAction(const char* name)
@@ -87,6 +87,20 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
     else if (!strcmp("cure poison on party", name)) 
     {
         return new ActionNode (new CastCurePoisonOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("abolish poison", name)) 
+    {
+        return new ActionNode (new CastAbolishPoisonAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("abolish poison on party", name)) 
+    {
+        return new ActionNode (new CastAbolishPoisonOnPartyAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);

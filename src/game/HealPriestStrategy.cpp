@@ -49,11 +49,11 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
 
     triggers.push_back(new TriggerNode(
         new NeedCureTrigger(ai, "cure disease", DISPEL_DISEASE),
-        NextAction::array(0, new NextAction("cure disease", 31.0f), NULL)));
+        NextAction::array(0, new NextAction("abolish disease", 31.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PartyMemberNeedCureTrigger(ai, "cure disease", DISPEL_DISEASE),
-        NextAction::array(0, new NextAction("cure disease on party", 30.0f), NULL)));
+        NextAction::array(0, new NextAction("abolish disease on party", 30.0f), NULL)));
 }
 
 void HealPriestNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -182,6 +182,20 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     else if (!strcmp("cure disease on party", name)) 
     {
         return new ActionNode (new CastCureDiseaseOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("abolish disease", name)) 
+    {
+        return new ActionNode (new CastAbolishDiseaseAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("abolish disease on party", name)) 
+    {
+        return new ActionNode (new CastAbolishDiseaseOnPartyAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

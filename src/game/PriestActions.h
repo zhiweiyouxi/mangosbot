@@ -79,6 +79,18 @@ namespace ai
         virtual const char* getName() { return "cure disease on party"; }
     };
 
+    BEGIN_SPELL_ACTION(CastAbolishDiseaseAction, "abolish disease")
+        virtual NextAction** getAlternatives();
+    END_SPELL_ACTION()
+
+    class CastAbolishDiseaseOnPartyAction : public CurePartyMemberAction
+    {
+    public:
+        CastAbolishDiseaseOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "abolish disease", DISPEL_DISEASE) {}
+        virtual const char* getName() { return "abolish disease on party"; }
+        virtual NextAction** getAlternatives();
+    };
+
     BEGIN_SPELL_ACTION(CastDispelMagicAction, "dispel magic")
     END_SPELL_ACTION()
 

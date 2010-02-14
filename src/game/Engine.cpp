@@ -265,6 +265,8 @@ void Engine::removeStrategy(const char* name)
             break;
         }
     }
+
+    Init();
 }
 
 void Engine::ProcessTriggers()

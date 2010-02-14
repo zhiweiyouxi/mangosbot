@@ -149,6 +149,15 @@ protected:
         ai->partyAurasToDispel = 0;
 
 
+        ai->aurasToDispel = DISPEL_DISEASE;
+        engine->DoNextAction(NULL); // abolish disease
+        ai->aurasToDispel = 0;
+
+        ai->partyAurasToDispel = DISPEL_DISEASE;
+        ai->spellCooldowns.remove("abolish disease");
+        engine->DoNextAction(NULL); // abolish disease on party
+        ai->partyAurasToDispel = 0;
+
 
         ai->aurasToDispel = DISPEL_DISEASE;
         engine->DoNextAction(NULL); // cure disease
@@ -163,7 +172,7 @@ protected:
         engine->DoNextAction(NULL); // shoot
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>dispel magic>dispel magic on party>cure disease>cure disease on party>shoot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>dispel magic>dispel magic on party>abolish disease>abolish disease on party>cure disease>cure disease on party>shoot"));
     }
 
 };

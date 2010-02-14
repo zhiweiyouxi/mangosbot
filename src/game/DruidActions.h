@@ -110,4 +110,19 @@ namespace ai
         virtual NextAction** getPrerequisites();
     };
 
+    BEGIN_SPELL_ACTION(CastAbolishPoisonAction, "abolish poison")
+        virtual NextAction** getPrerequisites();
+        virtual NextAction** getAlternatives();
+    END_SPELL_ACTION()
+
+    class CastAbolishPoisonOnPartyAction : public CurePartyMemberAction
+    {
+    public:
+        CastAbolishPoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "abolish poison", DISPEL_POISON) {}
+
+        virtual const char* getName() { return "abolish poison on party"; }
+        virtual NextAction** getPrerequisites();
+        virtual NextAction** getAlternatives();
+    };
+
 }
