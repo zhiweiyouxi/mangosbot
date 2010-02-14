@@ -125,6 +125,14 @@ BOOL HealPartyMemberAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
+BOOL CurePartyMemberAction::Execute()
+{
+    ai->CastSpell(spell, ai->GetPartyMemberToDispell(dispelType));
+    return TRUE;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 BOOL BuffOnPartyAction::Execute()
 {
     ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));

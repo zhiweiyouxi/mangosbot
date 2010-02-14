@@ -24,6 +24,7 @@ class BearTankDruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
+    CPPUNIT_TEST( curePoison );
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
@@ -254,6 +255,29 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party>dire bear form"));
+    }
+    void curePoison() 
+    {
+        engine->DoNextAction(NULL); // faerie fire
+        engine->DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
+
+        ai->aurasToDispel = DISPEL_POISON;
+        engine->DoNextAction(NULL); // caster form
+        engine->DoNextAction(NULL); // cure poison
+        ai->aurasToDispel = 0;
+
+        ai->partyAurasToDispel = DISPEL_POISON;
+        ai->spellCooldowns.remove("cure poison");
+        engine->DoNextAction(NULL); // cure poison on party
+        ai->partyAurasToDispel = 0;
+
+        ai->resetSpells();
+        ai->auras.clear();
+        engine->DoNextAction(NULL); // continue as usual with bear form
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>cure poison>cure poison on party>dire bear form"));
     }
 };
 

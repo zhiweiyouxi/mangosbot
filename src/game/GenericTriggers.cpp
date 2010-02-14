@@ -44,6 +44,16 @@ BOOL PartyMemberLowHealthTrigger::IsActive()
     return ai->GetPartyMinHealthPercent() < value;
 }
 
+BOOL NeedCureTrigger::IsActive()
+{
+    return ai->HasAuraToDispel(dispelType) && ai->HasSpell(spell);
+}
+
+BOOL PartyMemberNeedCureTrigger::IsActive()
+{
+    return ai->GetPartyMemberToDispell(dispelType) && ai->HasSpell(spell);
+}
+
 BOOL LowManaTrigger::IsActive()
 {
     return ai->GetManaPercent() != 0 && ai->GetManaPercent() < EAT_DRINK_PERCENT;

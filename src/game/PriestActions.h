@@ -68,4 +68,24 @@ namespace ai
 
     BEGIN_RANGED_SPELL_ACTION(CastMindBlastAction, "mind blast")
     END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastCureDiseaseAction, "cure disease")
+    END_SPELL_ACTION()
+
+    class CastCureDiseaseOnPartyAction : public CurePartyMemberAction
+    {
+    public:
+        CastCureDiseaseOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "cure disease", DISPEL_DISEASE) {}
+        virtual const char* getName() { return "cure disease on party"; }
+    };
+
+    BEGIN_SPELL_ACTION(CastDispelMagicAction, "dispel magic")
+    END_SPELL_ACTION()
+
+    class CastDispelMagicOnPartyAction : public CurePartyMemberAction
+    {
+    public:
+        CastDispelMagicOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "dispel magic", DISPEL_MAGIC) {}
+        virtual const char* getName() { return "dispel magic on party"; }
+    };
 }

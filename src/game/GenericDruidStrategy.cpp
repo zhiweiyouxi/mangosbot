@@ -16,6 +16,14 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new DruidPartyMemberLowHealthTrigger(ai),
         NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NeedCureTrigger(ai, "cure poison", DISPEL_POISON),
+        NextAction::array(0, new NextAction("cure poison", 40.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberNeedCureTrigger(ai, "cure poison", DISPEL_POISON),
+        NextAction::array(0, new NextAction("cure poison on party", 40.0f), NULL)));
 }
 
 ActionNode* GenericDruidStrategy::createAction(const char* name)
@@ -65,6 +73,20 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
     else if (!strcmp("rejuvenation on party", name)) 
     {
         return new ActionNode (new CastRejuvenationOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("cure poison", name)) 
+    {
+        return new ActionNode (new CastCurePoisonAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("cure poison on party", name)) 
+    {
+        return new ActionNode (new CastCurePoisonOnPartyAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);

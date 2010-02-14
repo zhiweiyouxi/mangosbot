@@ -12,32 +12,48 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
 
     triggers.push_back(new TriggerNode(
         new PowerWordFortitudeTrigger(ai), 
-        NextAction::array(0, new NextAction("power word: fortitude", 60.0f), NULL)));
+        NextAction::array(0, new NextAction("power word: fortitude", 21.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PowerWordFortitudeOnPartyTrigger(ai), 
-        NextAction::array(0, new NextAction("power word: fortitude on party", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("power word: fortitude on party", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new DivineSpiritTrigger(ai), 
-        NextAction::array(0, new NextAction("divine spirit", 40.0f), NULL)));
+        NextAction::array(0, new NextAction("divine spirit", 21.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new DivineSpiritOnPartyTrigger(ai), 
-        NextAction::array(0, new NextAction("divine spirit on party", 30.0f), NULL)));
+        NextAction::array(0, new NextAction("divine spirit on party", 20.0f), NULL)));
 
 
     triggers.push_back(new TriggerNode(
-        new LowHealthTrigger(ai, 50),
+        new LowHealthTrigger(ai, 40),
         NextAction::array(0, new NextAction("power word: shield", 60.0f), new NextAction("heal", 60.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new PartyMemberLowHealthTrigger(ai, 50),
+        new PartyMemberLowHealthTrigger(ai, 40),
         NextAction::array(0, new NextAction("power word: shield on party", 50.0f), new NextAction("heal on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack least threat", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NeedCureTrigger(ai, "dispel magic", DISPEL_MAGIC),
+        NextAction::array(0, new NextAction("dispel magic", 41.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberNeedCureTrigger(ai, "dispel magic", DISPEL_MAGIC),
+        NextAction::array(0, new NextAction("dispel magic on party", 40.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NeedCureTrigger(ai, "cure disease", DISPEL_DISEASE),
+        NextAction::array(0, new NextAction("cure disease", 31.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberNeedCureTrigger(ai, "cure disease", DISPEL_DISEASE),
+        NextAction::array(0, new NextAction("cure disease on party", 30.0f), NULL)));
 }
 
 void HealPriestNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -138,6 +154,34 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     else if (!strcmp("attack least threat", name)) 
     {
         return new ActionNode (new AttackLeastThreatAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("dispel magic", name)) 
+    {
+        return new ActionNode (new CastDispelMagicAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("dispel magic on party", name)) 
+    {
+        return new ActionNode (new CastDispelMagicOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("cure disease", name)) 
+    {
+        return new ActionNode (new CastCureDiseaseAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("cure disease on party", name)) 
+    {
+        return new ActionNode (new CastCureDiseaseOnPartyAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

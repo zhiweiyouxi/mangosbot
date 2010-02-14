@@ -1,9 +1,11 @@
 #include "pchdef.h"
-#include "PlayerbotAIFacade.h"
 #include "DBCStructure.h"
 #include "Spell.h"
 #include "Group.h"
 #include "Creature.h"
+#include "Unit.h"
+#include "SpellAuras.h"
+#include "PlayerbotAIFacade.h"
 
 using namespace ai;
 
@@ -490,3 +492,40 @@ float PlayerbotAIFacade::GetFollowAngle()
     }
     return 0;
 }
+
+Player* PlayerbotAIFacade::GetPartyMemberToDispell(uint32 dispelType)
+{
+    Group* group = ai->GetMaster()->GetGroup();
+    if (group)
+    {
+        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+        {
+            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
+            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
+                continue;
+
+            if (HasAuraToDispel(player, dispelType))
+                return player;
+        }
+    }
+    return NULL;
+}
+
+BOOL PlayerbotAIFacade::HasAuraToDispel(Player* player, uint32 dispelType) 
+{
+    Unit::AuraMap &uAuras = player->GetAuras();
+    for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)
+    {
+        const SpellEntry* entry = itr->second->GetSpellProto();
+        uint32 spellId = entry->Id;
+        if (IsPositiveSpell(spellId))
+            continue;
+
+        if (entry->Dispel == dispelType) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+

@@ -71,6 +71,10 @@ namespace ai
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
         virtual float GetFollowAngle() { return 0; }
         virtual BOOL HasSpell(const char* spell) { return TRUE; }
+
+        virtual Player* GetPartyMemberToDispell(uint32 dispelType) { return partyAurasToDispel == dispelType ? (Player*)0xEEEEEE : NULL; }
+        virtual BOOL HasAuraToDispel(uint32 dispelType) { return aurasToDispel == dispelType; }
+
     public:
         void resetSpells() {spellCooldowns.clear(); }
 
@@ -90,6 +94,7 @@ namespace ai
         int myAttackerCount;
         int partyMinHealth;
         bool lootAvailable;
+        uint32 partyAurasToDispel, aurasToDispel;
     };
 
 }

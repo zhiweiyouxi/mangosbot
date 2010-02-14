@@ -141,8 +141,24 @@ namespace ai
     public:
         HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
-        virtual BOOL Execute();
         virtual BOOL isUseful();
+        virtual BOOL Execute();
+    };
+
+    //---------------------------------------------------------------------------------------------------------------------
+
+    class CurePartyMemberAction : public CastSpellAction
+    {
+    public:
+        CurePartyMemberAction(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : CastSpellAction(ai, spell) 
+        {
+            this->dispelType = dispelType;
+        }
+
+        virtual BOOL Execute();
+
+    protected:
+        uint32 dispelType;
     };
 
     //---------------------------------------------------------------------------------------------------------------------

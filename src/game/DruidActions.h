@@ -95,4 +95,19 @@ namespace ai
     BEGIN_MELEE_SPELL_ACTION(CastRipAction, "rip")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
+
+
+    BEGIN_SPELL_ACTION(CastCurePoisonAction, "cure poison")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    class CastCurePoisonOnPartyAction : public CurePartyMemberAction
+    {
+    public:
+        CastCurePoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "cure poison", DISPEL_POISON) {}
+
+        virtual const char* getName() { return "cure poison on party"; }
+        virtual NextAction** getPrerequisites();
+    };
+
 }

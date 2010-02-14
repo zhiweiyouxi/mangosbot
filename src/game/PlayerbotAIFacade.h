@@ -74,6 +74,8 @@ namespace ai
         virtual BOOL HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
 
         virtual void Emote(uint32 emote);
+        virtual Player* GetPartyMemberToDispell(uint32 dispelType);
+        virtual BOOL HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(ai->GetPlayerBot(), dispelType); }
 
     protected:
         static BOOL isHealingPotion(const ItemPrototype* pItemProto);
@@ -86,6 +88,7 @@ namespace ai
         static BOOL isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);
         void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
+        BOOL HasAuraToDispel(Player* player, uint32 dispelType);
 
     protected:
         PlayerbotAI *ai;

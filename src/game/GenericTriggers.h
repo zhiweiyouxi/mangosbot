@@ -107,16 +107,38 @@ namespace ai
     class PartyMemberLowHealthTrigger : public LowHealthTrigger
     {
     public:
-        PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT) : LowHealthTrigger(ai, value) 
-        {
-            this->value = value;
-        }
+        PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT) : LowHealthTrigger(ai, value) {}
+
     public: 
         virtual BOOL IsActive();
         virtual const char* getName() { return "party member low health"; }
+    };
+
+    class NeedCureTrigger : public Trigger
+    {
+    public:
+        NeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : Trigger(ai) 
+        {
+            this->dispelType = dispelType;
+            this->spell = spell;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "need cure"; }
 
     protected:
-        float value;
+        uint32 dispelType;
+        const char* spell;
+    };
+
+    class PartyMemberNeedCureTrigger : public NeedCureTrigger
+    {
+    public:
+        PartyMemberNeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : NeedCureTrigger(ai, spell, dispelType) {}
+
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "party member need cure"; }
     };
 
     BEGIN_TRIGGER(LowManaTrigger, Trigger)

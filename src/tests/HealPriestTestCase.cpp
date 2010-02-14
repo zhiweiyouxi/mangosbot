@@ -20,6 +20,7 @@ class HealPriestTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST( nonCombat );
+    CPPUNIT_TEST( dispel );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -131,8 +132,40 @@ protected:
         engine->DoNextAction(NULL); // divine spirit on party
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude>power word: fortitude on party>divine spirit>divine spirit on party"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude>divine spirit>power word: fortitude on party>divine spirit on party"));
     }
+
+    void dispel() 
+    {
+        engine->DoNextAction(NULL); // shoot
+
+        ai->aurasToDispel = DISPEL_MAGIC;
+        engine->DoNextAction(NULL); // dispel magic
+        ai->aurasToDispel = 0;
+
+        ai->partyAurasToDispel = DISPEL_MAGIC;
+        ai->spellCooldowns.remove("dispel magic");
+        engine->DoNextAction(NULL); // dispel magic on party
+        ai->partyAurasToDispel = 0;
+
+
+
+        ai->aurasToDispel = DISPEL_DISEASE;
+        engine->DoNextAction(NULL); // cure disease
+        ai->aurasToDispel = 0;
+
+        ai->partyAurasToDispel = DISPEL_DISEASE;
+        ai->spellCooldowns.remove("cure disease");
+        engine->DoNextAction(NULL); // cure disease on party
+        ai->partyAurasToDispel = 0;
+
+        ai->spellCooldowns.remove("shoot");
+        engine->DoNextAction(NULL); // shoot
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>dispel magic>dispel magic on party>cure disease>cure disease on party>shoot"));
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( HealPriestTestCase );
