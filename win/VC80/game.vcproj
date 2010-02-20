@@ -2105,6 +2105,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\HealPriestNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\HealPriestNonCombatStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\HealPriestStrategy.cpp"
 						>
 					</File>

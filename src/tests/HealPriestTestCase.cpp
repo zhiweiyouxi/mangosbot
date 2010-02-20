@@ -55,20 +55,24 @@ protected:
     {
         ai->partyAuras.push_back("power word: fortitude");
 
-        ai->health = 1;
+        ai->health = 39;
         engine->DoNextAction(NULL); // power word: shield
         engine->DoNextAction(NULL); // heal
-
         engine->DoNextAction(NULL); // renew
-        
         engine->DoNextAction(NULL); // lesser heal
 
         ai->health = 70;
-
         engine->DoNextAction(NULL); // shoot
-        
+
+        ai->health = 59;
+        engine->DoNextAction(NULL); // flash heal
+        ai->health = 70;
+
+        ai->spellCooldowns.remove("shoot");
+        engine->DoNextAction(NULL); // shoot
+
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>heal>renew>lesser heal>shoot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>heal>renew>lesser heal>shoot>flash heal>shoot"));
     }
 
     void nonCombat()
@@ -102,14 +106,23 @@ protected:
         ai->partyMinHealth = 1;
         engine->DoNextAction(NULL); // power word: shield
         engine->DoNextAction(NULL); // heal
-
         engine->DoNextAction(NULL); // renew
         engine->DoNextAction(NULL); // lesser heal
 
         ai->partyMinHealth = 70;
+        ai->spellCooldowns.remove("shoot");
+        engine->DoNextAction(NULL); // shoot
+
+        ai->partyMinHealth = 59;
+        engine->DoNextAction(NULL); // flash heal
+        ai->partyMinHealth = 70;
+
+        ai->spellCooldowns.remove("shoot");
+        engine->DoNextAction(NULL); // shoot
+
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>power word: shield on party>heal on party>renew on party>lesser heal on party"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>power word: shield on party>heal on party>renew on party>lesser heal on party>shoot>flash heal on party>shoot"));
     }
 
     void buff()

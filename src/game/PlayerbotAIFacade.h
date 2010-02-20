@@ -69,6 +69,8 @@ namespace ai
         virtual void UsePanicPotion()  { FindAndUse(isPanicPotion); }
         virtual void UseFood();
         virtual void UseDrink();
+        virtual BOOL HasFood() { return ai->FindUsableItem(isFood) != NULL; }
+        virtual BOOL HasDrink() { return ai->FindUsableItem(isDrink) != NULL; }
         virtual BOOL HasHealingPotion() { return ai->FindUsableItem(isHealingPotion) != NULL; }
         virtual BOOL HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
         virtual BOOL HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }

@@ -36,12 +36,14 @@ BOOL ComboPointsAvailable::IsActive()
 
 BOOL LowHealthTrigger::IsActive()
 {
-    return ai->GetHealthPercent() < value;
+    float health = ai->GetHealthPercent();
+    return health < value && health > minValue;
 }
 
 BOOL PartyMemberLowHealthTrigger::IsActive()
 {
-    return ai->GetPartyMinHealthPercent() < value;
+    float health = ai->GetPartyMinHealthPercent();
+    return health < value && health > minValue;
 }
 
 BOOL NeedCureTrigger::IsActive()
@@ -77,13 +79,12 @@ BOOL PanicTrigger::IsActive()
 
 BOOL BuffTrigger::IsActive()
 {
-    return !ai->HasAura(spell) && ai->HasSpell(spell);
+    return !ai->HasAura(spell) && ai->HasSpell(spell) && ai->GetManaPercent() > 30;
 }
-
 
 BOOL BuffOnPartyTrigger::IsActive()
 {
-    return !ai->IsAllPartyHasAura(spell) && ai->HasSpell(spell);
+    return !ai->IsAllPartyHasAura(spell) && ai->HasSpell(spell) && ai->GetManaPercent() > 50;
 }
 
 BOOL NoAttackersTrigger::IsActive()
@@ -110,4 +111,17 @@ BOOL RandomTrigger::IsActive()
 {
     int vl  = rand() % probability;
     return vl == 0;
+}
+
+BOOL AndTrigger::IsActive()
+{
+    return ls->IsActive() && rs->IsActive();
+}
+
+const char* AndTrigger::getName()
+{
+    std::string name(ls->getName());
+    name = name + " and ";
+    name = name + rs->getName();
+    return name.c_str();
 }

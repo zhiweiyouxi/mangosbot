@@ -15,6 +15,17 @@ namespace ai
         virtual const char* getName() { return "lesser heal on party"; }
     };
 
+    BEGIN_SPELL_ACTION(CastFlashHealAction, "flash heal")
+    END_SPELL_ACTION()
+
+    class CastFlashHealOnPartyAction : public HealPartyMemberAction
+    {
+    public:
+        CastFlashHealOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "flash heal") {}
+
+        virtual const char* getName() { return "flash heal on party"; }
+    };
+
     BEGIN_SPELL_ACTION(CastHealAction, "heal")
     END_SPELL_ACTION()
 

@@ -49,6 +49,9 @@ namespace ai
         virtual void UsePanicPotion() { buffer.append(">pp"); }
         virtual void UseFood() { buffer.append(">eat"); }
         virtual void UseDrink() { buffer.append(">drink"); }
+        virtual BOOL HasFood() { return TRUE; }
+        virtual BOOL HasDrink() { return TRUE; }
+
 
         virtual uint8 GetPetHealthPercent() { return petHealth; }
         virtual BOOL HasPet() { return hasPet; }

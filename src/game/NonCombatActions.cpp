@@ -45,7 +45,7 @@ BOOL DrinkAction::Execute()
 
 BOOL DrinkAction::isUseful()
 {
-    return ai->GetManaPercent() < EAT_DRINK_PERCENT && !ai->HasAura("drink");
+    return ai->GetManaPercent() < EAT_DRINK_PERCENT && !ai->HasAura("drink") && ai->HasDrink();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -58,5 +58,5 @@ BOOL EatAction::Execute()
 
 BOOL EatAction::isUseful()
 {
-    return ai->GetHealthPercent() < EAT_DRINK_PERCENT && !ai->HasAura("eat");
+    return ai->GetHealthPercent() < EAT_DRINK_PERCENT && !ai->HasAura("eat") && ai->HasFood();
 }

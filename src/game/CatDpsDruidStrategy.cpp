@@ -51,7 +51,7 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
     else if (!strcmp("melee", name)) 
     {
         return new ActionNode (new MeleeAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("cat form"), new NextAction("reach melee"), NULL),
+            /*P*/ NextAction::array(0, new NextAction("reach melee"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }

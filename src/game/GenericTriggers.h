@@ -92,22 +92,23 @@ namespace ai
     class LowHealthTrigger : public Trigger
     {
     public:
-        LowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT) : Trigger(ai) 
+        LowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) : Trigger(ai) 
         {
             this->value = value;
+            this->minValue = minValue;
         }
     public: 
         virtual BOOL IsActive();
         virtual const char* getName() { return "low health"; }
 
     protected:
-        float value;
+        float value, minValue;
     };
 
     class PartyMemberLowHealthTrigger : public LowHealthTrigger
     {
     public:
-        PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT) : LowHealthTrigger(ai, value) {}
+        PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) : LowHealthTrigger(ai, value, minValue) {}
 
     public: 
         virtual BOOL IsActive();
@@ -207,5 +208,27 @@ namespace ai
 
     protected:
         int probability;
+    };
+
+    class AndTrigger : public Trigger
+    {
+    public:
+        AndTrigger(PlayerbotAIFacade* const ai, Trigger* ls, Trigger* rs) : Trigger(ai) 
+        {
+            this->ls = ls;
+            this->rs = rs;
+        }
+        virtual ~AndTrigger() 
+        {
+            delete ls;
+            delete rs;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName();
+
+    protected:
+        Trigger* ls;
+        Trigger* rs;
     };
 }
