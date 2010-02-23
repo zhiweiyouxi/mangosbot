@@ -660,6 +660,14 @@
 		<Filter
 			Name="Mage"
 			>
+			<File
+				RelativePath="..\..\src\tests\FrostMageTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MageNonCombatTestCase.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Generic"

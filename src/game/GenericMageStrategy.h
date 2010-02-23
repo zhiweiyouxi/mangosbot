@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Strategy.h"
-#include "MageActionFactory.h"
 
 namespace ai
 {
@@ -9,10 +8,10 @@ namespace ai
     {
     public:
         GenericMageStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
-
+        virtual const char* getName() { return "mage"; }
+    
     public:
-        virtual void InitTriggers(std::list<Trigger*> &triggers);
-        virtual ActionFactory* createActionFactory() { return new MageActionFactory(ai); }
-        virtual const char* getName() { return "generic mage"; }
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+        virtual ActionNode* createAction(const char* name);
     };
 }

@@ -2023,8 +2023,8 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
         pTarget = m_bot;
     }
 
-    if (HasAura(spellId, *pTarget))
-        return false;
+//    if (HasAura(spellId, *pTarget))
+//        return false;
 
     // stop movement to prevent cancel spell casting
     MovementClear();

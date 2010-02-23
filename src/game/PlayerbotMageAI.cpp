@@ -1,7 +1,9 @@
 
 #include "PlayerbotMageAI.h"
 #include "PlayerbotAIFacade.h"
-//#include "FrostMageStrategy.h"
+
+#include "MageActionFactory.h"
+#include "FrostMageStrategy.h"
 
 class PlayerbotAI;
 
@@ -62,13 +64,19 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 	BERSERKING              = ai->getSpellId("berserking"); // troll
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
 
-    /*engine = new ai::Engine(facade, new ai::MageActionFactory(facade));
-    engine->addStrategy("frost mage");
+    engine = new ai::Engine(facade, new ai::MageActionFactory(facade));
+    engine->addStrategy("frost");
+    engine->addStrategy("assist");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::MageActionFactory(facade));
-    nonCombatEngine->addStrategy("mage");
-    nonCombatEngine->Init();*/
+    nonCombatEngine->addStrategy("nc");
+    nonCombatEngine->addStrategy("assist");
+    nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("loot");
+    nonCombatEngine->addStrategy("emote");
+    nonCombatEngine->addStrategy("food");
+    nonCombatEngine->Init();
 }
 
 PlayerbotMageAI::~PlayerbotMageAI() 
@@ -91,8 +99,8 @@ void PlayerbotMageAI::DoNextCombatManeuver(Unit *pTarget)
     }
 
     // ------- Non Duel combat ----------
-    //engine->DoNextAction(pTarget);
-    //return;
+    engine->DoNextAction(pTarget);
+    return;
 
 	//ai->SetMovementOrder( PlayerbotAI::MOVEMENT_FOLLOW, GetMaster() ); // dont want to melee mob
 
@@ -355,8 +363,8 @@ void PlayerbotMageAI::DoNonCombatActions()
     if (!m_bot)
         return;
 
-    //nonCombatEngine->DoNextAction(NULL);
-    //return;
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     SpellSequence = SPELL_FROST;
 	PlayerbotAI* ai = GetAI();

@@ -4,4 +4,3 @@
 
 using namespace ai;
 
-BOOL MageEnemyTooCloseTrigger::IsActive() { return EnemyTooCloseTrigger::IsActive(); }

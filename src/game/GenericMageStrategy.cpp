@@ -1,10 +1,71 @@
 #include "pchdef.h"
 #include "MageTriggers.h"
+#include "MageMultipliers.h"
 #include "GenericMageStrategy.h"
+#include "MageActions.h"
 
 using namespace ai;
 
-void GenericMageStrategy::InitTriggers(std::list<Trigger*> &triggers)
+void GenericMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    triggers.push_back(new MageEnemyTooCloseTrigger(ai));
+    Strategy::InitTriggers(triggers);
+    
+    
+    triggers.push_back(new TriggerNode(
+        new NoAttackersTrigger(ai), 
+        NextAction::array(0, new NextAction("attack least threat", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NeedCureTrigger(ai, "remove curse", DISPEL_CURSE),
+        NextAction::array(0, new NextAction("remove curse", 41.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberNeedCureTrigger(ai, "remove curse", DISPEL_CURSE),
+        NextAction::array(0, new NextAction("remove curse on party", 40.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new EnemyTooCloseTrigger(ai),
+        NextAction::array(0, new NextAction("frost nova", 50.0f), NULL)));
+
+}
+
+
+ActionNode* GenericMageStrategy::createAction(const char* name)
+{
+    if (!strcmp("frostbolt", name)) 
+    {
+        return new ActionNode (new CastFrostboltAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("shoot"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("frost nova", name)) 
+    {
+        return new ActionNode (new CastFrostNovaAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("flee"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("flee"), NULL));
+    }
+    else if (!strcmp("remove curse", name)) 
+    {
+        return new ActionNode (new CastRemoveCurseAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("remove curse on party", name)) 
+    {
+        return new ActionNode (new CastRemoveCurseOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("shoot", name)) 
+    {
+        return new ActionNode (new CastShootAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else return NULL;
 }
