@@ -6,7 +6,9 @@ using namespace ai;
 
 BOOL HunterNoStingsActiveTrigger::IsActive()
 {
-    return !ai->TargetHasAura("serpent sting") && !ai->TargetHasAura("scorpid sting");
+    return ai->GetTargetHealthPercent() > 40 &&
+        !ai->TargetHasAura("serpent sting") && 
+        !ai->TargetHasAura("scorpid sting");
 }
 
 BOOL HunterHasNoPetTrigger::IsActive()
