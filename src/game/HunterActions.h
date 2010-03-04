@@ -42,4 +42,10 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastRevivePetAction, "revive pet")
     END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastRapidFireAction, "rapid fire")
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastReadynessAction, "readyness")
+    END_SPELL_ACTION()
 }

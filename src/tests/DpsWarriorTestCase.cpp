@@ -20,6 +20,7 @@ class DpsWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( pickNewTarget );
+    CPPUNIT_TEST( boost );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -142,6 +143,25 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>reach melee>melee>rend>heroic strike>melee>heroic strike"));
+    }
+
+    void boost()
+    {
+        engine->addStrategy("boost");
+
+        ai->distanceToEnemy = 0.0f; 
+        engine->DoNextAction(NULL); // battle stance
+
+        ai->balancePercent = 1;
+
+        engine->DoNextAction(NULL); // death wish
+        engine->DoNextAction(NULL); // heroic strike
+        ai->balancePercent = 100;
+
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>death wish>charge>melee"));
     }
 };
 

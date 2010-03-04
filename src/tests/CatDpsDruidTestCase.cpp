@@ -21,6 +21,7 @@ class CatDpsDruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( pickNewTarget );
+    CPPUNIT_TEST( boost );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -192,6 +193,28 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>-cat form>rejuvenation on party>regrowth on party>cat form>reach melee>rake"));
+    }
+
+    void boost()
+    {
+        engine->addStrategy("boost");
+
+        engine->DoNextAction(NULL); // faerie fire
+        engine->DoNextAction(NULL); // cat form
+        ai->auras.push_back("cat form");
+
+        ai->balancePercent = 1;
+        engine->DoNextAction(NULL); // berserk
+        engine->DoNextAction(NULL); // cat form
+        
+        ai->balancePercent = 100;
+
+        ai->resetSpells();
+        ai->auras.clear();
+        engine->DoNextAction(NULL); // continue as usual with cat form
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>berserk>reach melee>rake"));
     }
 };
 

@@ -14,6 +14,9 @@ Strategy* MageActionFactory::createStrategy(const char* name)
     if (!strcmp("nc", name))
         return new GenericMageNonCombatStrategy(ai);
 
+    if (!strcmp("boost", name))
+        return new MageBoostStrategy(ai);
+
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)
         return strategy;

@@ -17,6 +17,9 @@ Strategy* PriestActionFactory::createStrategy(const char* name)
     if (!strcmp("nc", name))
         return new HealPriestNonCombatStrategy(ai);
 
+    if (!strcmp("boost", name))
+        return new PriestBoostStrategy(ai);
+
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)
         return strategy;

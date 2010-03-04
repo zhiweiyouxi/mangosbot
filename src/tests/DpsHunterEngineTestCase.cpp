@@ -18,6 +18,7 @@ class DpsHunterEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( pickNewTarget );
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST( summonPet );
+  CPPUNIT_TEST( boost );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -102,6 +103,27 @@ protected:
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>hunter's mark"));
     }
 
+
+    void boost()
+    {
+        engine->addStrategy("boost");
+
+        engine->DoNextAction(NULL);
+        ai->spellCooldowns.push_back("serpent sting");
+
+        ai->balancePercent = 1;
+        engine->DoNextAction(NULL); // rapid fire
+        engine->DoNextAction(NULL); // readyness
+
+        ai->balancePercent = 100;
+
+        ai->resetSpells();
+        ai->auras.clear();
+        engine->DoNextAction(NULL); // continue as usual 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>rapid fire>readyness>serpent sting"));
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( DpsHunterEngineTestCase );

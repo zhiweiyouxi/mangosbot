@@ -54,3 +54,9 @@ ActionNode* DpsPriestStrategy::createAction(const char* name)
     }
     else return NULL;
 }
+
+
+void PriestBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+}
+

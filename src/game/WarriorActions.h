@@ -60,4 +60,7 @@ namespace ai
 
     BEGIN_RANGED_SPELL_ACTION(CastChargeAction, "charge")
     END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastDeathWishAction, "death wish")
+    END_SPELL_ACTION()   
 }

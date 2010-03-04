@@ -19,6 +19,7 @@ class FrostMageTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( pickNewTarget );
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST( dispel );
+  CPPUNIT_TEST( boost );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -92,6 +93,25 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>remove curse>remove curse on party>shoot"));
+    }
+
+    void boost() 
+    {
+        engine->addStrategy("boost");
+
+        engine->DoNextAction(NULL); // frostbolt
+
+        ai->balancePercent = 1;
+        engine->DoNextAction(NULL); // icy veins
+
+        ai->spellCooldowns.remove("frostbolt");
+        engine->DoNextAction(NULL); // frostbolt
+        ai->balancePercent = 100;
+
+        engine->DoNextAction(NULL); // shoot
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>icy veins>frostbolt>shoot"));
     }
 
 };

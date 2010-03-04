@@ -130,5 +130,5 @@ const char* AndTrigger::getName()
 
 BOOL BoostTrigger::IsActive()
 {
-    return ai->GetBalancePercent() <= balance && BuffTrigger::IsActive();
+    return ai->HasSpell(spell) && !ai->HasAura(spell) && ai->GetBalancePercent() <= balance;
 }

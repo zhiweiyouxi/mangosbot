@@ -67,5 +67,21 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, NULL), 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }
+    else if (!strcmp("death wish", name)) 
+    {
+        return new ActionNode (new CastDeathWishAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else return GenericWarriorStrategy::createAction(name);
+}
+
+
+void WarriorBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+    triggers.push_back(new TriggerNode(
+        new BoostTrigger(ai, "death wish", 45),
+        NextAction::array(0, new NextAction("death wish", 40.0f), NULL)));
+
 }
