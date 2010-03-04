@@ -127,3 +127,8 @@ const char* AndTrigger::getName()
     name = name + rs->getName();
     return name.c_str();
 }
+
+BOOL BoostTrigger::IsActive()
+{
+    return ai->GetBalancePercent() <= balance && BuffTrigger::IsActive();
+}

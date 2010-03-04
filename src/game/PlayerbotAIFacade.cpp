@@ -529,3 +529,56 @@ BOOL PlayerbotAIFacade::HasAuraToDispel(Player* player, uint32 dispelType)
     return FALSE;
 }
 
+float PlayerbotAIFacade::GetBalancePercent()
+{
+    uint32 playerLevel = 0,
+        attackerLevel = 0;
+
+    Group* group = ai->GetMaster()->GetGroup();
+    if (group)
+    {
+        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+        {
+            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
+            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
+                continue;
+
+            playerLevel += player->getLevel();
+        }
+    }
+
+    std::list<ThreatManager*> attackers;
+    findAllAttackers(attackers);
+    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+    {  
+        Unit* unit = (*i)->getOwner();
+        if (unit || !unit->isAlive())
+            continue;
+
+        uint32 level = unit->getLevel();
+
+        Creature* creature = dynamic_cast<Creature*>(unit);
+        if (creature)
+        {
+            switch (creature->GetCreatureInfo()->rank) {
+            case CREATURE_ELITE_RARE:
+                level *= 2;
+                break;
+            case CREATURE_ELITE_ELITE:
+                level *= 3;
+                break;
+            case CREATURE_ELITE_RAREELITE:
+                level *= 5;
+                break;
+            case CREATURE_ELITE_WORLDBOSS:
+                level *= 10;
+                break;
+            }
+        }
+        attackerLevel += level;
+    }
+
+    return playerLevel * 100 / attackerLevel;
+}
+

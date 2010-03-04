@@ -15,6 +15,7 @@ namespace ai
             attackerCount = 1;myAttackerCount = 1;
             comboPoints = 0;
             lootAvailable = false;
+            balancePercent = 100;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -77,6 +78,7 @@ namespace ai
 
         virtual Player* GetPartyMemberToDispell(uint32 dispelType) { return partyAurasToDispel == dispelType ? (Player*)0xEEEEEE : NULL; }
         virtual BOOL HasAuraToDispel(uint32 dispelType) { return aurasToDispel == dispelType; }
+        virtual float GetBalancePercent() { return balancePercent; }
 
     public:
         void resetSpells() {spellCooldowns.clear(); }
@@ -98,6 +100,7 @@ namespace ai
         int partyMinHealth;
         bool lootAvailable;
         uint32 partyAurasToDispel, aurasToDispel;
+        float balancePercent;
     };
 
 }

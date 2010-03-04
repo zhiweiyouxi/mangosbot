@@ -173,6 +173,20 @@ namespace ai
        virtual BOOL IsActive();
     };
 
+    class BoostTrigger : public BuffTrigger
+    {
+    public:
+        BoostTrigger(PlayerbotAIFacade* const ai, const char* spell, float balance) : BuffTrigger(ai, spell) 
+        {
+            this->balance = balance;
+        }
+    public: 
+        virtual BOOL IsActive();
+
+    protected:
+        float balance;
+    };
+
     BEGIN_TRIGGER(NoAttackersTrigger, Trigger)
     END_TRIGGER()
 
