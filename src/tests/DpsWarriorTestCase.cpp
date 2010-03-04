@@ -21,6 +21,7 @@ class DpsWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( boost );
+    CPPUNIT_TEST( execute );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -163,6 +164,22 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>death wish>berserker rage>charge>melee"));
+    }
+
+    void execute()
+    {
+        engine->DoNextAction(NULL); // battle stance
+        ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // charge
+
+        ai->targetHealth = 24;
+        engine->DoNextAction(NULL); // execute
+        ai->targetHealth = 100;
+
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>execute>melee"));
     }
 };
 

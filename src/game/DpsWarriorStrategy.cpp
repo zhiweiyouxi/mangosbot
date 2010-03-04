@@ -30,6 +30,10 @@ void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack least threat", 90.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new TargetLowHealthTrigger(ai, 25), 
+        NextAction::array(0, new NextAction("execute", 60.0f), NULL)));
 }
 
 void DpsWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -79,6 +83,13 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
         return new ActionNode (new CastBerserkerRageAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("execute", name)) 
+    {
+        return new ActionNode (new CastExecuteAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
+            /*A*/ NextAction::array(0, new NextAction("heroic strike"), NULL), 
             /*C*/ NULL);
     }
     else return GenericWarriorStrategy::createAction(name);

@@ -132,3 +132,9 @@ BOOL BoostTrigger::IsActive()
 {
     return ai->HasSpell(spell) && !ai->HasAura(spell) && ai->GetBalancePercent() <= balance;
 }
+
+BOOL TargetLowHealthTrigger::IsActive()
+{
+    float health = ai->GetTargetHealthPercent();
+    return health < value && health > minValue;
+}

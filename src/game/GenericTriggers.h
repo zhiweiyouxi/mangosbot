@@ -245,4 +245,22 @@ namespace ai
         Trigger* ls;
         Trigger* rs;
     };
+
+    class TargetLowHealthTrigger : public Trigger
+    {
+    public:
+        TargetLowHealthTrigger(PlayerbotAIFacade* const ai, float value, float minValue = 0) : Trigger(ai) 
+        {
+            this->value = value;
+            this->minValue = minValue;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "target low health"; }
+
+    protected:
+        float value, minValue;
+    };
+
+
 }
