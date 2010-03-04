@@ -24,7 +24,7 @@ void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("mocking blow", 30.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new HeroicStrikeAvailable(ai), 
+        new RageAvailable(ai, 15), 
         NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -43,7 +43,14 @@ void DpsWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 
 ActionNode* DpsWarriorStrategy::createAction(const char* name)
 {
-    if (!strcmp("melee", name)) 
+    if (!strcmp("overpower", name)) 
+    {
+        return new ActionNode (new CastOverpowerAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("melee", name)) 
     {
         return new ActionNode (new MeleeAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("charge"), NULL),

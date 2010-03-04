@@ -582,3 +582,8 @@ float PlayerbotAIFacade::GetBalancePercent()
     return !attackerLevel ? 100 : playerLevel * 100 / attackerLevel;
 }
 
+bool PlayerbotAIFacade::IsTargetMoving()
+{
+    Unit *target = ai->GetCurrentTarget();
+    return target && target->GetMotionMaster()->GetCurrentMovementGeneratorType() != IDLE_MOTION_TYPE;
+}

@@ -26,12 +26,23 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai), 
         NextAction::array(0, new NextAction("lifeblood", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new SnareTargetTrigger(ai, "hamstring"), 
+        NextAction::array(0, new NextAction("hamstring", 50.0f), NULL)));
 }
 
 
 ActionNode* GenericWarriorStrategy::createAction(const char* name)
 {
-    if (!strcmp("defensive stance", name)) 
+    if (!strcmp("hamstring", name)) 
+    {
+        return new ActionNode (new CastHamstringAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("defensive stance", name)) 
     {
         return new ActionNode (new CastDefensiveStanceAction(ai),  
             /*P*/ NULL,
@@ -69,7 +80,7 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
     else if (!strcmp("battle shout", name)) 
     {
         return new ActionNode (new CastBattleShoutAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
     }

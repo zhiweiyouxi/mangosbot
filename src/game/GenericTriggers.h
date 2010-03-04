@@ -262,5 +262,19 @@ namespace ai
         float value, minValue;
     };
 
+    class SnareTargetTrigger : public Trigger
+    {
+    public:
+        SnareTargetTrigger(PlayerbotAIFacade* const ai, const char* aura) : Trigger(ai) 
+        {
+            this->aura = aura;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "target is moving"; }
+
+    protected:
+        const char* aura;
+    };
 
 }

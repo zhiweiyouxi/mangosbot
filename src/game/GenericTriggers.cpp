@@ -138,3 +138,8 @@ BOOL TargetLowHealthTrigger::IsActive()
     float health = ai->GetTargetHealthPercent();
     return health < value && health > minValue;
 }
+
+BOOL SnareTargetTrigger::IsActive()
+{
+    return ai->IsTargetMoving() && !ai->TargetHasAura(aura) && ai->HasSpell(aura);
+}

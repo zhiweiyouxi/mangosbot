@@ -79,6 +79,7 @@ namespace ai
         virtual Player* GetPartyMemberToDispell(uint32 dispelType);
         virtual BOOL HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(ai->GetPlayerBot(), dispelType); }
         virtual float GetBalancePercent();
+        virtual bool IsTargetMoving();
 
     protected:
         static BOOL isHealingPotion(const ItemPrototype* pItemProto);

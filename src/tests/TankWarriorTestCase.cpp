@@ -21,6 +21,7 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( healing );
     CPPUNIT_TEST( pickNewTarget );
+    CPPUNIT_TEST( hamstring );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -37,6 +38,7 @@ public:
         engine->Init();
         ai->spellCooldowns.push_back("revenge");
         ai->auras.push_back("battle shout");
+        ai->spellCooldowns.push_back("defensive stance");
     }
 
     void tearDown()
@@ -60,17 +62,20 @@ protected:
     }
     void buff()
     {
+        ai->spellCooldowns.remove("defensive stance");
         ai->auras.remove("battle shout");
         engine->Init();
+        engine->DoNextAction(NULL); // battle stance
         engine->DoNextAction(NULL); // battle shout
 
+        engine->DoNextAction(NULL); // defensive stance
         engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0;
         engine->DoNextAction(NULL); // melee
         engine->DoNextAction(NULL); // battle shout
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle shout>reach melee>melee>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>defensive stance>reach melee>melee>heroic strike"));
 
     }
     void pickNewTarget()
@@ -88,7 +93,7 @@ protected:
         engine->DoNextAction(NULL); // reach melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>attack bigger threat>defensive stance"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>attack bigger threat>rend"));
 
     }
 
@@ -108,12 +113,13 @@ protected:
 
     void warriorMustHoldAggro()
     {
+        ai->spellCooldowns.remove("defensive stance");
+        engine->DoNextAction(NULL); // defensive stance
         engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0;
         engine->DoNextAction(NULL); // melee
 
         ai->aggro = FALSE;
-        engine->DoNextAction(NULL); // defensive stance
         engine->DoNextAction(NULL); // mocking blow
         ai->aggro = TRUE;
         
@@ -126,7 +132,7 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>mocking blow>heroic strike>taunt>rend"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>mocking blow>heroic strike>taunt>rend"));
     }
 
     void combatVsMelee()
@@ -160,7 +166,7 @@ protected:
 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>rend>heroic strike>disarm>sunder armor>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>rend>heroic strike>disarm>sunder armor>melee>heroic strike"));
     }
 
     void revengeIfDodge()
@@ -176,6 +182,24 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>revenge"));
     }
+
+    void hamstring()
+    {
+        engine->DoNextAction(NULL); // reach melee
+        ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // melee
+
+        ai->targetIsMoving = true;
+        engine->DoNextAction(NULL); // battle stance
+        engine->DoNextAction(NULL); // hamstring
+        ai->spellCooldowns.remove("defensive stance");
+        engine->DoNextAction(NULL); // defensive stance
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>battle stance>hamstring>defensive stance>rend"));
+    }
+    
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TankWarriorTestCase );

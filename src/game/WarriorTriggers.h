@@ -3,14 +3,6 @@
 
 namespace ai
 {
-    class HeroicStrikeAvailable : public RageAvailable
-    {
-    public:
-        HeroicStrikeAvailable(PlayerbotAIFacade* const ai) : RageAvailable(ai, 15)  {}
-    public: 
-        virtual const char* getName() { return "heroic strike available"; }
-    };
-
     BUFF_TRIGGER(BattleShoutTrigger, "battle shout", "battle shout")
 
     DEBUFF_TRIGGER(RendDebuffTrigger, "rend", "rend")

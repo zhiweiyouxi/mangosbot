@@ -60,7 +60,7 @@ protected:
         engine->DoNextAction(NULL); // battle shout
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle shout>battle stance>charge"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>charge"));
 
     }
     void pickNewTarget()

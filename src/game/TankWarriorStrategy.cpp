@@ -32,7 +32,7 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("mocking blow", 30.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new HeroicStrikeAvailable(ai), 
+        new RageAvailable(ai, 15), 
         NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -47,7 +47,14 @@ void TankWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 
 ActionNode* TankWarriorStrategy::createAction(const char* name)
 {
-    if (!strcmp("rend", name)) 
+    if (!strcmp("melee", name)) 
+    {
+        return new ActionNode (new MeleeAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("defensive stance"), new NextAction("reach melee"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("rend", name)) 
     {
         return new ActionNode (new CastRendAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("defensive stance"), NULL),

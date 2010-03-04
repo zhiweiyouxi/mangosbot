@@ -15,6 +15,12 @@ namespace ai
     BEGIN_MELEE_SPELL_ACTION(CastExecuteAction, "execute")
     END_SPELL_ACTION()
 
+    BEGIN_MELEE_SPELL_ACTION(CastOverpowerAction, "overpower")
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastHamstringAction, "hamstring")
+    END_SPELL_ACTION()
+
     BEGIN_RANGED_SPELL_ACTION(CastTauntAction, "taunt")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
