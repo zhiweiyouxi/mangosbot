@@ -579,6 +579,6 @@ float PlayerbotAIFacade::GetBalancePercent()
         attackerLevel += level;
     }
 
-    return playerLevel * 100 / attackerLevel;
+    return !attackerLevel ? 100 : playerLevel * 100 / attackerLevel;
 }
 
