@@ -26,10 +26,6 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai), 
         NextAction::array(0, new NextAction("lifeblood", 60.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        new SnareTargetTrigger(ai, "hamstring"), 
-        NextAction::array(0, new NextAction("hamstring", 50.0f), NULL)));
 }
 
 

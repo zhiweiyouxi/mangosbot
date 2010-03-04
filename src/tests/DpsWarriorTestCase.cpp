@@ -22,6 +22,7 @@ class DpsWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( boost );
     CPPUNIT_TEST( execute );
+    CPPUNIT_TEST( hamstring );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -180,6 +181,23 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>execute>melee"));
+    }
+
+
+    void hamstring()
+    {
+        engine->DoNextAction(NULL); // reach melee
+        ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // melee
+
+        ai->targetIsMoving = true;
+        engine->DoNextAction(NULL); // battle stance
+        engine->DoNextAction(NULL); // hamstring
+        ai->spellCooldowns.remove("defensive stance");
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>hamstring>rend"));
     }
 };
 

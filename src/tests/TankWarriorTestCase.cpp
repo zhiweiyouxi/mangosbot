@@ -21,7 +21,6 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( healing );
     CPPUNIT_TEST( pickNewTarget );
-    CPPUNIT_TEST( hamstring );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -181,23 +180,6 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>revenge"));
-    }
-
-    void hamstring()
-    {
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // melee
-
-        ai->targetIsMoving = true;
-        engine->DoNextAction(NULL); // battle stance
-        engine->DoNextAction(NULL); // hamstring
-        ai->spellCooldowns.remove("defensive stance");
-        engine->DoNextAction(NULL); // defensive stance
-        engine->DoNextAction(NULL); // melee
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>battle stance>hamstring>defensive stance>rend"));
     }
     
 };

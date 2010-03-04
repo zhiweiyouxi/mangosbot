@@ -34,6 +34,10 @@ void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new TargetLowHealthTrigger(ai, 25), 
         NextAction::array(0, new NextAction("execute", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new SnareTargetTrigger(ai, "hamstring"), 
+        NextAction::array(0, new NextAction("hamstring", 50.0f), NULL)));
 }
 
 void DpsWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
