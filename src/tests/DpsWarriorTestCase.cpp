@@ -155,13 +155,14 @@ protected:
         ai->balancePercent = 1;
 
         engine->DoNextAction(NULL); // death wish
+        engine->DoNextAction(NULL); // berserker rage
         engine->DoNextAction(NULL); // heroic strike
         ai->balancePercent = 100;
 
         engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>death wish>charge>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>death wish>berserker rage>charge>melee"));
     }
 };
 

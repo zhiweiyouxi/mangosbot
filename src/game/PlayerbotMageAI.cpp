@@ -67,6 +67,7 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
     engine = new ai::Engine(facade, new ai::MageActionFactory(facade));
     engine->addStrategy("frost");
     engine->addStrategy("assist");
+    engine->addStrategy("boost");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::MageActionFactory(facade));

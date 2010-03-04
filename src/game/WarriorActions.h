@@ -63,4 +63,7 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastDeathWishAction, "death wish")
     END_SPELL_ACTION()   
+
+    BEGIN_SPELL_ACTION(CastBerserkerRageAction, "berserker rage")
+    END_SPELL_ACTION()   
 }

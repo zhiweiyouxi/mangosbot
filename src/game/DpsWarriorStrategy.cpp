@@ -71,6 +71,13 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastDeathWishAction(ai),  
             /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("berserker rage"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("berserker rage", name)) 
+    {
+        return new ActionNode (new CastBerserkerRageAction(ai),  
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }
