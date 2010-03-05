@@ -575,17 +575,17 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
                     p << GetMaster()->GetGUID();
                     m_bot->GetSession()->HandleGroupSetLeaderOpcode(p);
                 }
-                else
+                /*else
                 {
                     p.clear(); // not really needed
                     m_bot->GetSession()->HandleGroupDisbandOpcode(p); // packet not used updated code
-                }
+                }*/
             }
             return;
         }
 
         // If the master leaves the group, then the bot leaves too
-        case SMSG_PARTY_COMMAND_RESULT:
+        /*case SMSG_PARTY_COMMAND_RESULT:
         {
             WorldPacket p(packet);
             uint32 operation;
@@ -601,7 +601,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
                     m_bot->GetSession()->HandleGroupDisbandOpcode(p); // packet not used updated code
             }
             return;
-        }
+        }*/
 
         // Handle Group invites (auto accept if master is in group, otherwise decline & send message
         case SMSG_GROUP_INVITE:
@@ -658,8 +658,21 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
                     return;
                 }
 
-                // list out items available for trade
-                std::ostringstream out;
+                // calculate how much money bot has
+                uint32 copper = m_bot->GetMoney();
+                uint32 gold = uint32(copper / 10000);
+                copper -= (gold * 10000);
+                uint32 silver = uint32(copper / 100);
+                copper -= (silver * 100);
+
+                // send bot the message
+                std::ostringstream whisper;
+                whisper << "I have |cff00ff00" << gold
+                    << "|r|cfffffc00g|r|cff00ff00" << silver
+                    << "|r|cffcdcdcds|r|cff00ff00" << copper
+                    << "|r|cffffd333c|r" << " and the following items:";
+                SendWhisper(whisper.str().c_str(), *(m_bot->GetTrader()));
+                ChatHandler ch(m_bot->GetTrader());
 
                 // list out items in main backpack
                 for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
@@ -672,10 +685,12 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
                         std::string itemName = pItemProto->Name1;
                         ItemLocalization(itemName, pItemProto->ItemId);
 
+                        std::ostringstream out;
                         out << " |cffffffff|Hitem:" << pItemProto->ItemId
                             << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r";
                         if (pItem->GetCount() > 1)
                             out << "x" << pItem->GetCount() << ' ';
+                        ch.SendSysMessage(out.str().c_str());
                     }
                 }
                 // list out items in other removable backpacks
@@ -696,32 +711,18 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 
                                 // item link format: http://www.wowwiki.com/ItemString
                                 // itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId
+                                std::ostringstream out;
                                 out << " |cffffffff|Hitem:" << pItemProto->ItemId
                                     << ":0:0:0:0:0:0:0" << "|h[" << itemName
                                     << "]|h|r";
                                 if (pItem->GetCount() > 1)
                                     out << "x" << pItem->GetCount() << ' ';
+                                ch.SendSysMessage(out.str().c_str());
                             }
                         }
                     }
                 }
 
-                // calculate how much money bot has
-                uint32 copper = m_bot->GetMoney();
-                uint32 gold = uint32(copper / 10000);
-                copper -= (gold * 10000);
-                uint32 silver = uint32(copper / 100);
-                copper -= (silver * 100);
-
-                // send bot the message
-                std::ostringstream whisper;
-                whisper << "I have |cff00ff00" << gold
-                        << "|r|cfffffc00g|r|cff00ff00" << silver
-                        << "|r|cffcdcdcds|r|cff00ff00" << copper
-                        << "|r|cffffd333c|r" << " and the following items:";
-                SendWhisper(whisper.str().c_str(), *(m_bot->GetTrader()));
-                ChatHandler ch(m_bot->GetTrader());
-                ch.SendSysMessage(out.str().c_str());
             }
             return;
         }
