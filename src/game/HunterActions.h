@@ -27,6 +27,10 @@ namespace ai
     virtual BOOL isUseful();
     END_SPELL_ACTION()
 
+    BEGIN_RANGED_SPELL_ACTION(CastViperStingAction, "viper sting")
+    virtual BOOL isUseful();
+    END_SPELL_ACTION()
+
     BEGIN_RANGED_SPELL_ACTION(CastScorpidStingAction, "scorpid sting")
     END_SPELL_ACTION()
 
@@ -39,6 +43,10 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastAspectOfThePackAction, "aspect of the pack")
+        virtual BOOL isUseful();
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastAspectOfTheViperAction, "aspect of the viper")
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 

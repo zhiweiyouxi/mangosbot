@@ -8,7 +8,8 @@ BOOL HunterNoStingsActiveTrigger::IsActive()
 {
     return ai->GetTargetHealthPercent() > 40 &&
         !ai->TargetHasAura("serpent sting") && 
-        !ai->TargetHasAura("scorpid sting");
+        !ai->TargetHasAura("scorpid sting") &&
+        !ai->TargetHasAura("viper sting");
 }
 
 BOOL HunterHasNoPetTrigger::IsActive()

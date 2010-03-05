@@ -18,7 +18,9 @@ class DpsHunterEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( pickNewTarget );
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST( summonPet );
+  CPPUNIT_TEST( lowMana );
   CPPUNIT_TEST( boost );
+  CPPUNIT_TEST( viperSting );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -46,6 +48,22 @@ public:
     }
 
 protected:
+    void viperSting()
+	{
+        engine->DoNextAction(NULL); // hunter's mark
+        engine->DoNextAction(NULL); // concussive shot
+        ai->spellCooldowns.push_back("serpent sting"); // simulate low mana - cannot perform
+        ai->mana = 40;
+        engine->DoNextAction(NULL); // aspect of the viper
+        engine->DoNextAction(NULL); // viper sting
+        ai->mana = 60;
+        ai->targetAuras.push_back("viper sting");
+        engine->DoNextAction(NULL); // auto shot
+                        
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>serpent sting>aspect of the viper>viper sting>arcane shot"));
+
+	}
  	void combatVsMelee()
 	{
         ai->auras.remove("aspect of the hawk");
@@ -90,6 +108,25 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>serpent sting"));
+
+    }
+
+    void lowMana()
+    {
+        ai->spellCooldowns.push_back("serpent sting");
+        ai->spellCooldowns.push_back("concussive shot"); // this will not be available as we do not have any target
+        ai->auras.remove("aspect of the hawk");
+        ai->mana = 30;
+        engine->DoNextAction(NULL); // aspect of the viper
+        engine->DoNextAction(NULL);
+        ai->mana = 60;
+        ai->resetSpells();
+        engine->DoNextAction(NULL); // aspect of the hawk
+        engine->DoNextAction(NULL); 
+        engine->DoNextAction(NULL); 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the viper>hunter's mark>aspect of the hawk>serpent sting>arcane shot"));
 
     }
 

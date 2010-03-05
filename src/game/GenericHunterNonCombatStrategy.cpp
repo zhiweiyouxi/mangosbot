@@ -15,6 +15,10 @@ void GenericHunterNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trigg
         NextAction::array(0, new NextAction("aspect of the pack", 1.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
+        new AttackerCountTrigger(ai, 1), 
+        NextAction::array(0, new NextAction("aspect of the hawk", 90.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new HunterHasNoPetTrigger(ai), 
         NextAction::array(0, new NextAction("call pet", 60.0f), NULL)));
 
@@ -61,6 +65,13 @@ ActionNode* GenericHunterNonCombatStrategy::createAction(const char* name)
     else if (!strcmp("aspect of the cheetah", name)) 
     {
         return new ActionNode (new CastAspectOfTheCheetahAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("aspect of the hawk", name)) 
+    {
+        return new ActionNode (new CastAspectOfTheHawkAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

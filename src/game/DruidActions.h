@@ -28,6 +28,7 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")
         virtual BOOL isUseful();
+        virtual BOOL isPossible() { return TRUE; }
         virtual BOOL ExecuteResult();
     END_SPELL_ACTION()
 
