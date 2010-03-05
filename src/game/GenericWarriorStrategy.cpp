@@ -69,6 +69,13 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("shield block", name)) 
+    {
+        return new ActionNode (new CastShieldBlockAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else if (!strcmp("bloodrage", name)) 
     {
         return new ActionNode (new CastBloodrageAction(ai),  

@@ -32,7 +32,7 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new LowHealthTrigger(ai), 
+        new LowHealthTrigger(ai, 60, 40), 
         NextAction::array(0, new NextAction("shield wall", 50.0f), NULL)));
 }
 
@@ -48,6 +48,13 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
         return new ActionNode (new MeleeAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("defensive stance"), new NextAction("reach melee"), NULL),
             /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("shield wall", name)) 
+    {
+        return new ActionNode (new CastShieldWallAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("shield block"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("rend", name)) 

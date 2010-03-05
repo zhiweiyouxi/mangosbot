@@ -73,9 +73,10 @@ protected:
         ai->health = 50;
         engine->DoNextAction(NULL); // defensive stance
         engine->DoNextAction(NULL); // shield wall
+        engine->DoNextAction(NULL); // shield block
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>defensive stance>shield wall"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>defensive stance>shield wall>shield block"));
     }
     void buff()
     {

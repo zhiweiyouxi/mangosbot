@@ -67,6 +67,12 @@ namespace ai
         }
     };
 
+    // battle
+    class CastShieldBlockAction : public CastDefensiveMeleeSpellAction {
+    public:
+        CastShieldBlockAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "shield block") {}
+    };
+
     // defensive
     class CastShieldWallAction : public CastSpellAction {
     public:
