@@ -16,6 +16,10 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     GenericHunterStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
+        new HunterAspectOfTheHawkTrigger(ai), 
+        NextAction::array(0, new NextAction("aspect of the hawk", 90.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new HunterNoStingsActiveTrigger(ai), 
         NextAction::array(0, new NextAction("serpent sting", 50.0f), NULL)));
     

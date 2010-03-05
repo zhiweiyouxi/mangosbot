@@ -59,6 +59,13 @@ ActionNode* GenericHunterStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("aspect of the hawk", name)) 
+    {
+        return new ActionNode (new CastAspectOfTheHawkAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else return NULL;
 }
 

@@ -7,7 +7,8 @@ namespace ai
     END_TRIGGER()
 
     BUFF_TRIGGER(HunterAspectOfTheHawkTrigger, "aspect of the hawk", "aspect of the hawk")
-    
+    BUFF_TRIGGER(HunterAspectOfThePackTrigger, "aspect of the pack", "aspect of the pack")
+
     BEGIN_TRIGGER(HunterHasNoPetTrigger, Trigger)
     END_TRIGGER()
 

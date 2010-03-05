@@ -33,6 +33,8 @@ public:
         engine = new Engine(ai, new HunterActionFactory(ai));
         engine->addStrategy("dps");
         engine->Init();
+
+        ai->auras.push_back("aspect of the hawk");
     }
 
     void tearDown()
@@ -46,6 +48,11 @@ public:
 protected:
  	void combatVsMelee()
 	{
+        ai->auras.remove("aspect of the hawk");
+        
+        engine->DoNextAction(NULL); // aspect of the hawk
+        ai->auras.push_back("aspect of the hawk");
+
         engine->DoNextAction(NULL); // hunter's mark
         engine->DoNextAction(NULL); // concussive shot
         engine->DoNextAction(NULL); // serpent sting
@@ -65,7 +72,7 @@ protected:
         engine->DoNextAction(NULL); // auto shot
                 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>serpent sting>arcane shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the hawk>hunter's mark>serpent sting>arcane shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
 
 	}
 
@@ -79,7 +86,7 @@ protected:
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
         ai->resetSpells();
-        engine->DoNextAction(NULL); // concussive shot
+        engine->DoNextAction(NULL); // serpent sting
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>serpent sting"));
@@ -119,10 +126,11 @@ protected:
 
         ai->resetSpells();
         ai->auras.clear();
+        engine->DoNextAction(NULL); // aspect of the hawk
         engine->DoNextAction(NULL); // continue as usual 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>rapid fire>readyness>serpent sting"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>rapid fire>readyness>aspect of the hawk>serpent sting"));
     }
 };
 

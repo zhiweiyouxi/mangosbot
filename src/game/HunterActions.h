@@ -31,6 +31,15 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastAspectOfTheHawkAction, "aspect of the hawk")
+        virtual BOOL isUseful();
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastAspectOfTheCheetahAction, "aspect of the cheetah")
+        virtual BOOL isUseful();
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastAspectOfThePackAction, "aspect of the pack")
+        virtual BOOL isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastCallPetAction, "call pet")

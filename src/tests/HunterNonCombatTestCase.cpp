@@ -44,11 +44,11 @@ public:
 protected:
     void buff()
     {
-        engine->DoNextAction(NULL);
-        ai->auras.push_back("aspect of the hawk");
+        engine->DoNextAction(NULL);     
+        engine->DoNextAction(NULL);     
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the hawk"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the pack"));
     }
     void summonPet()
     {
@@ -68,7 +68,7 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>aspect of the pack"));
     }
     
 };
