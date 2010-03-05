@@ -30,6 +30,10 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new LowHealthTrigger(ai), 
+        NextAction::array(0, new NextAction("shield wall", 50.0f), NULL)));
 }
 
 void TankWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

@@ -56,8 +56,12 @@ protected:
         engine->DoNextAction(NULL); // gift of the naaru
         engine->DoNextAction(NULL); // regrowth
 
+        ai->health = 50;
+        engine->DoNextAction(NULL); // defensive stance
+        engine->DoNextAction(NULL); // shield wall
+
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>defensive stance>shield wall"));
     }
     void buff()
     {

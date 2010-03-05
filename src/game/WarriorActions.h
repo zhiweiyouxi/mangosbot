@@ -67,6 +67,15 @@ namespace ai
         }
     };
 
+    // defensive
+    class CastShieldWallAction : public CastSpellAction {
+    public:
+        CastShieldWallAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "shield wall") {}
+        virtual NextAction** getPrerequisites() {
+            return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastSpellAction::getPrerequisites());
+        }
+    };
+
     // after dodge
     BEGIN_MELEE_SPELL_ACTION(CastRevengeAction, "revenge")
         virtual NextAction** getPrerequisites();
