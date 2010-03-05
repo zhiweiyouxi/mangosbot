@@ -53,6 +53,20 @@ namespace ai
         int amount;
     };
 
+    class InterruptSpellTrigger : public Trigger {
+    public:
+        InterruptSpellTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai, "interrupt spell") {
+            this->spell = spell;
+        }
+
+        virtual BOOL IsActive() {
+            return ai->IsTargetCastingNonMeleeSpell() && ai->canCastSpell(spell);
+        }
+
+    protected:
+        const char* spell;
+    };
+
     class ComboPointsAvailable : public Trigger
     {
     public:

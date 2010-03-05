@@ -27,6 +27,10 @@ void GenericMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new EnemyTooCloseTrigger(ai),
         NextAction::array(0, new NextAction("frost nova", 50.0f), NULL)));
 
+    triggers.push_back(new TriggerNode(
+        new InterruptSpellTrigger(ai, "counterspell"), 
+        NextAction::array(0, new NextAction("counterspell", 40.0f), NULL)));
+
 }
 
 
@@ -45,6 +49,13 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("flee"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("flee"), NULL));
+    }
+    else if (!strcmp("counterspell", name)) 
+    {
+        return new ActionNode (new CastCounterspellAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
     }
     else if (!strcmp("remove curse", name)) 
     {

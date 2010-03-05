@@ -20,6 +20,7 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( healing );
+    CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
@@ -50,6 +51,18 @@ public:
     }
 
 protected:
+    void interruptSpells() 
+    {
+        ai->distanceToEnemy = 0.0f; 
+        ai->targetIsCastingNonMeleeSpell = true;
+        engine->DoNextAction(NULL); // shield bash
+        ai->targetIsCastingNonMeleeSpell = false;
+        
+        engine->DoNextAction(NULL); // rend
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shield bash>defensive stance"));
+    }
     void healing()
     {
         ai->distanceToEnemy = 0.0f; 

@@ -17,6 +17,7 @@ namespace ai
             lootAvailable = false;
             balancePercent = 100;
             targetIsMoving = false;
+            targetIsCastingNonMeleeSpell = false;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -81,6 +82,7 @@ namespace ai
         virtual BOOL HasAuraToDispel(uint32 dispelType) { return aurasToDispel == dispelType; }
         virtual float GetBalancePercent() { return balancePercent; }
         virtual bool IsTargetMoving() { return targetIsMoving; }
+        virtual bool IsTargetCastingNonMeleeSpell() { return targetIsCastingNonMeleeSpell; }
 
     public:
         void resetSpells() {spellCooldowns.clear(); }
@@ -104,6 +106,7 @@ namespace ai
         uint32 partyAurasToDispel, aurasToDispel;
         float balancePercent;
         bool targetIsMoving;
+        bool targetIsCastingNonMeleeSpell;
     };
 
 }

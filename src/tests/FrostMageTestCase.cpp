@@ -20,6 +20,7 @@ class FrostMageTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST( dispel );
   CPPUNIT_TEST( boost );
+  CPPUNIT_TEST( interruptSpells );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -112,6 +113,17 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>icy veins>frostbolt>shoot"));
+    }
+    void interruptSpells() 
+    {
+        ai->targetIsCastingNonMeleeSpell = true;
+        engine->DoNextAction(NULL); // counterspell
+        ai->targetIsCastingNonMeleeSpell = false;
+
+        engine->DoNextAction(NULL); // frostbolt
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">counterspell>frostbolt"));
     }
 
 };

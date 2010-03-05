@@ -22,6 +22,9 @@ namespace ai
     BEGIN_SPELL_ACTION(CastIcyVeinsAction, "icy veins")
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastCounterspellAction, "counterspell")
+    END_SPELL_ACTION()
+
     class CastRemoveCurseOnPartyAction : public CurePartyMemberAction
     {
     public:

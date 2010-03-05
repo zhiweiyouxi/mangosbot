@@ -587,3 +587,9 @@ bool PlayerbotAIFacade::IsTargetMoving()
     Unit *target = ai->GetCurrentTarget();
     return target && target->GetMotionMaster()->GetCurrentMovementGeneratorType() != IDLE_MOTION_TYPE;
 }
+
+bool PlayerbotAIFacade::IsTargetCastingNonMeleeSpell() {
+    Unit *target = ai->GetCurrentTarget();
+    return target && target->IsNonMeleeSpellCasted(true);
+}
+
