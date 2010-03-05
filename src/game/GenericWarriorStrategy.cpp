@@ -10,6 +10,10 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new RageAvailable(ai, 40), 
         NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
+    
+    triggers.push_back(new TriggerNode(
+        new AndTrigger(ai, new RageAvailable(ai, 40), new AttackerCountTrigger(ai, 2)),
+        NextAction::array(0, new NextAction("cleave", 21.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new EnemyOutOfMeleeTrigger(ai), 
@@ -29,7 +33,7 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 2), 
-        NextAction::array(0, new NextAction("demoralizing shout", 20.0f), NULL)));
+        NextAction::array(0, new NextAction("demoralizing shout", 23.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai), 
@@ -70,6 +74,13 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
     else if (!strcmp("heroic strike", name)) 
     {
         return new ActionNode (new CastHeroicStrikeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("cleave", name)) 
+    {
+        return new ActionNode (new CastCleaveAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

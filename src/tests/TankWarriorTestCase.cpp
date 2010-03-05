@@ -107,11 +107,16 @@ protected:
         engine->DoNextAction(NULL); // melee
 
         ai->attackerCount = 3;
+        ai->rage = 41;
         engine->DoNextAction(NULL); // demoralizing shout
+        engine->DoNextAction(NULL); // cleave
+        engine->DoNextAction(NULL); // heroic strike
+
+        ai->rage = 0;
         engine->DoNextAction(NULL); // rend
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>demoralizing shout>rend"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>demoralizing shout>cleave>heroic strike>rend"));
     }
 
     void warriorMustHoldAggro()
