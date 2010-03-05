@@ -24,10 +24,6 @@ void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("mocking blow", 30.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new RageAvailable(ai, 15), 
-        NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack least threat", 90.0f), NULL)));
 
@@ -73,14 +69,14 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
         return new ActionNode (new CastRendAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*C*/ NULL);
     }
     else if (!strcmp("mocking blow", name)) 
     {
         return new ActionNode (new CastMockingBlowAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
             /*A*/ NextAction::array(0, NULL), 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*C*/ NULL);
     }
     else if (!strcmp("death wish", name)) 
     {

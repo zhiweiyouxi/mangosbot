@@ -111,7 +111,7 @@ protected:
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>mocking blow>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>mocking blow>rend"));
     }
 
     void combatVsMelee()
@@ -133,15 +133,15 @@ protected:
         ai->spellCooldowns.remove("rend");
         ai->targetAuras.push_back("rend");
 
+        ai->rage = 41;
         engine->DoNextAction(NULL); // heroic strike
 
         engine->DoNextAction(NULL); // melee
 
         ai->distanceToEnemy = 0.0f; 
-        ai->rage = 15;
         ai->spellCooldowns.remove("heroic strike");
         engine->DoNextAction(NULL); // heroic strike
-
+        ai->rage = 0;
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>reach melee>melee>rend>heroic strike>melee>heroic strike"));
@@ -158,7 +158,7 @@ protected:
 
         engine->DoNextAction(NULL); // death wish
         engine->DoNextAction(NULL); // berserker rage
-        engine->DoNextAction(NULL); // heroic strike
+        engine->DoNextAction(NULL); // 
         ai->balancePercent = 100;
 
         engine->DoNextAction(NULL); // melee
