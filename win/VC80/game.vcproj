@@ -1918,6 +1918,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\RangeTriggers.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\ReachTargetActions.h"
 					>
 				</File>

@@ -21,14 +21,18 @@ namespace ai
     class Trigger : public PlayerbotAIFacadeAware
 	{
 	public:
-        Trigger(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
+        Trigger(PlayerbotAIFacade* const ai, const char* name = NULL) : PlayerbotAIFacadeAware(ai) {
+            this->name = name;
+        }
         virtual ~Trigger() {}
 
 	public:
 		virtual BOOL IsActive() = NULL;
         virtual NextAction** getHandlers() { return NULL; }
-        virtual const char* getName() { return "Trigger"; }
+        virtual const char* getName() { return name ? name : "trigger"; }
 
+    protected:
+        const char* name;
 	};
 
 

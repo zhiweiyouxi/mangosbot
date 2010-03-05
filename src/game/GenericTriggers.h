@@ -29,20 +29,10 @@ class clazz : public SpellAvailableTrigger \
         clazz(PlayerbotAIFacade* const ai) : SpellAvailableTrigger(ai, spell) {} \
     };
 
+#include "RangeTriggers.h"
+
 namespace ai
 {
-    BEGIN_TRIGGER(EnemyTooCloseTrigger, Trigger)
-        virtual const char* getName() { return "too close"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(EnemyOutOfMeleeTrigger, Trigger)
-        virtual const char* getName() { return "out of melee range"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(EnemyOutOfSpellRangeTrigger, Trigger)
-        virtual const char* getName() { return "out of spell range"; }
-    END_TRIGGER()
-
     BEGIN_TRIGGER(LoseAggroTrigger, Trigger)
     END_TRIGGER()
 

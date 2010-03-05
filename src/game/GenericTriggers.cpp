@@ -6,24 +6,6 @@
 
 using namespace ai;
 
-BOOL EnemyTooCloseTrigger::IsActive()
-{
-    float distance = ai->GetDistanceToEnemy(ATTACK_DISTANCE + 1);
-    return distance <= ATTACK_DISTANCE;
-}
-
-BOOL EnemyOutOfMeleeTrigger::IsActive()
-{
-    float distance = ai->GetDistanceToEnemy();
-    return distance > ATTACK_DISTANCE;
-}
-
-BOOL EnemyOutOfSpellRangeTrigger::IsActive()
-{
-    float distance = ai->GetDistanceToEnemy();
-    return distance > SPELL_DISTANCE; // TODO: externalize
-}
-
 BOOL RageAvailable::IsActive()
 {
     return ai->GetRage() >= amount;
