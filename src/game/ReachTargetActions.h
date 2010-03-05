@@ -23,7 +23,7 @@ namespace ai
 
     class ReachMeleeAction : public ReachTargetAction {
     public:
-        ReachMeleeAction(PlayerbotAIFacade* const ai) : ReachTargetAction(ai, "reach melee", CONTACT_DISTANCE) {}
+        ReachMeleeAction(PlayerbotAIFacade* const ai) : ReachTargetAction(ai, "reach melee", 1.5f) {}
     };
 
     class ReachSpellAction : public ReachTargetAction {

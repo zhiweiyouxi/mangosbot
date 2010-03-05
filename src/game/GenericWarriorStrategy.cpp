@@ -33,7 +33,7 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 2), 
-        NextAction::array(0, new NextAction("demoralizing shout", 23.0f), NULL)));
+        NextAction::array(0, new NextAction("demoralizing shout", 23.0f), new NextAction("thunder clap", 23.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 3), 
