@@ -21,9 +21,13 @@ namespace ai
     BEGIN_MELEE_SPELL_ACTION(CastHamstringAction, "hamstring")
     END_SPELL_ACTION()
 
-    BEGIN_RANGED_SPELL_ACTION(CastTauntAction, "taunt")
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
+    class CastTauntAction : public CastRangedSpellAction {
+    public:
+        CastTauntAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "taunt") {}
+        virtual NextAction** getPrerequisites() {
+            return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastRangedSpellAction::getPrerequisites());
+        }
+    };
 
     // after dodge
     BEGIN_MELEE_SPELL_ACTION(CastRevengeAction, "revenge")
@@ -62,9 +66,15 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDefensiveStanceAction, "defensive stance")
+        virtual BOOL isUseful() {
+            return CastSpellAction::isUseful() && !ai->HasAura("defensive stance");
+        }
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastBattleStanceAction, "battle stance")
+    virtual BOOL isUseful() {
+        return CastSpellAction::isUseful() && !ai->HasAura("battle stance");
+    }
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastChargeAction, "charge")

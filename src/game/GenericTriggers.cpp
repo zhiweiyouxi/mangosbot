@@ -39,13 +39,13 @@ BOOL PanicTrigger::IsActive()
 
 BOOL BuffTrigger::IsActive()
 {
-    return !ai->HasAura(spell) && ai->HasSpell(spell) && 
+    return !ai->HasAura(spell) && ai->canCastSpell(spell) &&
         (ai->GetManaPercent() > 30 || !ai->GetManaPercent());
 }
 
 BOOL BuffOnPartyTrigger::IsActive()
 {
-    return !ai->IsAllPartyHasAura(spell) && ai->HasSpell(spell) && 
+    return !ai->IsAllPartyHasAura(spell) && ai->canCastSpell(spell) && 
         (ai->GetManaPercent() > 50 || !ai->GetManaPercent());
 }
 
