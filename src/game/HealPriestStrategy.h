@@ -11,6 +11,7 @@ namespace ai
         HealPriestStrategy(PlayerbotAIFacade* const ai) : HealPriestNonCombatStrategy(ai) {}
 
     public:
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual NextAction** HealPriestStrategy::getDefaultActions();
         virtual const char* getName() { return "heal"; }
         virtual ActionNode* createAction(const char* name);

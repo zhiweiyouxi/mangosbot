@@ -11,6 +11,15 @@ NextAction** HealPriestStrategy::getDefaultActions()
     return NextAction::array(0, new NextAction("shoot", 10.0f), NULL);
 }
 
+void HealPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+    HealPriestNonCombatStrategy::InitTriggers(triggers);
+
+    triggers.push_back(new TriggerNode(
+                       new MyAttackerCountTrigger(ai, 2),
+                       NextAction::array(0, new NextAction("fade", 90.0f), NULL)));
+}
+
 ActionNode* HealPriestStrategy::createAction(const char* name)
 {
     ActionNode* node = HealPriestNonCombatStrategy::createAction(name);

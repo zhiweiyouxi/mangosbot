@@ -54,6 +54,11 @@ BOOL NoAttackersTrigger::IsActive()
     return !ai->HaveTarget() && (ai->GetAttackerCount() > 0 && ai->GetMyAttackerCount() == 0);
 }
 
+BOOL MyAttackerCountTrigger::IsActive()
+{
+    return ai->GetMyAttackerCount() >= amount;
+}
+
 BOOL DebuffTrigger::IsActive()
 {
     return !ai->TargetHasAura(spell) && ai->canCastSpell(spell) && ai->GetTargetHealthPercent() > 40;

@@ -69,6 +69,11 @@ namespace ai
         virtual const char* getName() { return "renew on party"; }
     };
 
+    class CastFadeAction : public CastSpellAction {
+    public:
+        CastFadeAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "fade") {}
+    };
+
     BEGIN_SPELL_ACTION(CastPowerWordShieldAction, "power word: shield")
     END_SPELL_ACTION()
 

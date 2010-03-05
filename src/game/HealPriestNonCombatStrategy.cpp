@@ -236,6 +236,13 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("fade", name)) 
+    {
+        return new ActionNode (new CastFadeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else return NULL;
 }
 

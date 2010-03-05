@@ -21,6 +21,7 @@ class HealPriestTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST( nonCombat );
     CPPUNIT_TEST( dispel );
+    CPPUNIT_TEST( fade );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -148,6 +149,21 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude>divine spirit>power word: fortitude on party>divine spirit on party"));
+    }
+
+    void fade()
+    {
+        engine->DoNextAction(NULL); 
+        
+        ai->myAttackerCount = 2;
+        engine->DoNextAction(NULL); // fade
+        ai->myAttackerCount = 0;
+
+        ai->spellCooldowns.remove("shoot");
+        engine->DoNextAction(NULL); 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>fade>attack least threat"));
     }
 
     void dispel() 

@@ -96,6 +96,15 @@ namespace ai
         int amount;
     };    
 
+    class MyAttackerCountTrigger : public AttackerCountTrigger
+    {
+    public:
+        MyAttackerCountTrigger(PlayerbotAIFacade* const ai, int amount) : AttackerCountTrigger(ai, amount) {}
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "my attacker count"; }
+    };    
+
     class BuffTrigger : public Trigger
     {
     public:
