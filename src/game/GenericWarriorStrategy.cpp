@@ -42,6 +42,10 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai), 
         NextAction::array(0, new NextAction("lifeblood", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new BloodrageDebuffTrigger(ai), 
+        NextAction::array(0, new NextAction("bloodrage", 40.0f), NULL)));
 }
 
 
@@ -51,6 +55,13 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastHamstringAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("bloodrage", name)) 
+    {
+        return new ActionNode (new CastBloodrageAction(ai),  
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }

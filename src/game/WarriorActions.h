@@ -1,5 +1,5 @@
 #pragma once
-
+#include "PlayerbotAIFacade.h"
 #include "GenericActions.h"
 
 namespace ai
@@ -75,6 +75,12 @@ namespace ai
             return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastSpellAction::getPrerequisites());
         }
     };
+
+    class CastBloodrageAction : public CastSpellAction {
+    public:
+        CastBloodrageAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "bloodrage") {}
+    };
+
 
     // after dodge
     BEGIN_MELEE_SPELL_ACTION(CastRevengeAction, "revenge")

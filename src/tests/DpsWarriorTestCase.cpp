@@ -39,6 +39,7 @@ public:
         engine->Init();
         ai->spellCooldowns.push_back("revenge");
         ai->auras.push_back("battle shout");
+        ai->rage = 20;
     }
 
     void tearDown()

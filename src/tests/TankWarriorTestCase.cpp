@@ -38,6 +38,7 @@ public:
 
         // this buff is combat-only, so skip for most test cases
         ai->auras.push_back("battle shout");
+        ai->rage = 20;
     }
 
     void tearDown()
@@ -65,6 +66,7 @@ protected:
     }
     void buff()
     {
+        ai->rage = 0;
         ai->auras.remove("battle shout");
 
         engine->Init();
@@ -74,11 +76,12 @@ protected:
         engine->DoNextAction(NULL); // defensive stance
         engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // bloodrage
         engine->DoNextAction(NULL); // melee
         engine->DoNextAction(NULL); // battle shout
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>defensive stance>reach melee>melee>rend"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>defensive stance>reach melee>melee>bloodrage>rend"));
 
     }
     void pickNewTarget()
@@ -117,7 +120,7 @@ protected:
         engine->DoNextAction(NULL); // cleave
         engine->DoNextAction(NULL); // heroic strike
 
-        ai->rage = 0;
+        ai->rage = 20;
 
         ai->attackerCount = 3;
         engine->DoNextAction(NULL); // challenging shout
@@ -184,7 +187,7 @@ protected:
 
         ai->spellCooldowns.remove("heroic strike");
         engine->DoNextAction(NULL); // heroic strike
-        ai->rage = 0;
+        ai->rage = 20;
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>rend>disarm>heroic strike>sunder armor>melee>heroic strike"));
