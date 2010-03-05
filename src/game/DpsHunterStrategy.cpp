@@ -26,7 +26,11 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new HunterNoStingsActiveTrigger(ai), 
         NextAction::array(0, new NextAction("serpent sting", 50.0f), NULL)));
-    
+
+    triggers.push_back(new TriggerNode(
+        new LowManaTrigger(ai), 
+        NextAction::array(0, new NextAction("viper sting", 51.0f), NULL)));
+
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
@@ -98,7 +102,7 @@ ActionNode* DpsHunterStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastSerpentStingAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("viper sting"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("viper sting", name)) 

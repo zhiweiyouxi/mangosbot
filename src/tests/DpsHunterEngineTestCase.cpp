@@ -20,7 +20,6 @@ class DpsHunterEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( summonPet );
   CPPUNIT_TEST( lowMana );
   CPPUNIT_TEST( boost );
-  CPPUNIT_TEST( viperSting );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -48,22 +47,6 @@ public:
     }
 
 protected:
-    void viperSting()
-	{
-        engine->DoNextAction(NULL); // hunter's mark
-        engine->DoNextAction(NULL); // concussive shot
-        ai->spellCooldowns.push_back("serpent sting"); // simulate low mana - cannot perform
-        ai->mana = 40;
-        engine->DoNextAction(NULL); // aspect of the viper
-        engine->DoNextAction(NULL); // viper sting
-        ai->mana = 60;
-        ai->targetAuras.push_back("viper sting");
-        engine->DoNextAction(NULL); // auto shot
-                        
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>serpent sting>aspect of the viper>viper sting>arcane shot"));
-
-	}
  	void combatVsMelee()
 	{
         ai->auras.remove("aspect of the hawk");
@@ -126,7 +109,7 @@ protected:
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the viper>hunter's mark>aspect of the hawk>serpent sting>arcane shot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the viper>viper sting>aspect of the hawk>hunter's mark>serpent sting"));
 
     }
 
