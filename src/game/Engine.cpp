@@ -45,18 +45,18 @@ Engine::~Engine(void)
 
 void Engine::Reset()
 {
-	ActionNode* action = NULL;
-	do 
-	{
-		action = queue.Pop();
-	} while (action);
-	
+    ActionNode* action = NULL;
+    do 
+    {
+        action = queue.Pop();
+    } while (action);
+
     for (std::list<TriggerNode*>::iterator i = triggers.begin(); i != triggers.end(); i++)
-	{
-		TriggerNode* trigger = *i;
-		delete trigger;
-	}
-	triggers.clear();
+    {
+        TriggerNode* trigger = *i;
+        delete trigger;
+    }
+    triggers.clear();
 
     for (std::list<Multiplier*>::iterator i = multipliers.begin(); i != multipliers.end(); i++)
     {
@@ -90,84 +90,57 @@ void Engine::Init()
 }
 
 
-BOOL Engine::DoNextAction(Unit* unit, int depth)
-{
+BOOL Engine::DoNextAction(Unit* unit, int depth) {
     BOOL actionExecuted = FALSE;
     ActionBasket* basket = NULL;
 
     ProcessTriggers();
 
-    do 
-    {
+    do {
         basket = queue.Peek();
-        if (basket)
-        {
+        if (basket) {
             float relevance = basket->getRelevance(); // just for reference
             BOOL skipPrerequisites = basket->isSkipPrerequisites();
-            ActionNode* action = queue.Pop();
+            ActionNode* actionNode = queue.Pop();
 
-            if (action->isPossible())
-            {
-                if (action->isUseful())
-                {
-                    if ((!skipPrerequisites || lastRelevance-relevance > 0.02) && MultiplyAndPush(action->getPrerequisites(), relevance + 0.01))
-                    {
-                        //sLog.outBasic("A:%s - prerequisites", action->getName());
-                        NextAction** prerequisites = new NextAction*[2];
-                        prerequisites[0] = new NextAction(action->getName(), relevance);
-                        prerequisites[1] = NULL;
-                        MultiplyAndPush(prerequisites, relevance, TRUE);
-                        delete action;
+            if (actionNode->isUseful()) {
+                if (actionNode->isPossible()) {
+                    if ((!skipPrerequisites || lastRelevance-relevance > 0.02) && 
+                            MultiplyAndPush(actionNode->getPrerequisites(), relevance + 0.01)) {
+                        PushAgain(actionNode, relevance);
                         continue;
-                        //if (depth < 5)
-                        //    DoNextAction(unit, depth + 1);
-                        //break;
                     }
 
-                    sLog.outBasic("A:%s", action->getName());
+                    //sLog.outBasic("A:%s", action->getName());
 
-                    if (actionExecutionListeners.ActionExecuted(action->getAction()))
-                    {
-                        actionExecuted = action->Execute();
-                    }
+                    if (actionExecutionListeners.ActionExecuted(actionNode->getAction()))
+                        actionExecuted = actionNode->Execute();
 
-                    if (actionExecuted)
-                    {
-                        MultiplyAndPush(action->getContinuers());
+                    if (actionExecuted) {
+                        MultiplyAndPush(actionNode->getContinuers());
                         lastRelevance = relevance;
-                        delete action;
+                        delete actionNode;
                         break;
                     }
-                    else
-                    {
-                        MultiplyAndPush(action->getAlternatives(), relevance);
+                    else {
+                        MultiplyAndPush(actionNode->getAlternatives(), relevance);
                     }
                 }
-                else
-                {
-                    lastRelevance = relevance;
-                    //sLog.outBasic("A:%s - useless", action->getName());
-                }
+                else 
+                    MultiplyAndPush(actionNode->getAlternatives(), relevance);
             }
-            else 
-            {
-                //sLog.outBasic("A:%s - n/a", action->getName());
-                if (action->isUseful())
-                    MultiplyAndPush(action->getAlternatives(), relevance);
-                else
-                    lastRelevance = relevance;
-            }
-            delete action;
+            else
+                lastRelevance = relevance;
+            delete actionNode;
         }
     }
     while (basket);
-	
-    if (!basket)
-    {
+
+    if (!basket) {
         //sLog.outBasic("--- queue is empty ---");
         lastRelevance = 0.0f;
         PushDefaultActions();
-        if (queue.Peek() && depth < 5)
+        if (queue.Peek() && depth < 3)
             return DoNextAction(unit, depth + 1);
     }
 
@@ -246,7 +219,7 @@ void Engine::addStrategy(const char* name)
 {
     removeStrategy(name);
     strategies.push_back(actionFactory->createStrategy(name));
-    
+
     Init();
 }
 
@@ -294,10 +267,10 @@ void Engine::PushDefaultActions()
 string Engine::ListStrategies()
 {
     string s = "Strategies: ";
-    
+
     if (strategies.empty())
         return s;
-    
+
     for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
     {
         Strategy* strategy = *i;
@@ -305,4 +278,14 @@ string Engine::ListStrategies()
         s.append(", ");
     }
     return s.substr(0, s.length() - 2);
+
+    void PushAgain( ActionNode* actionNode, float relevance );
+}
+
+void Engine::PushAgain( ActionNode* actionNode, float relevance ) {
+    NextAction** nextAction = new NextAction*[2];
+    nextAction[0] = new NextAction(actionNode->getName(), relevance);
+    nextAction[1] = NULL;
+    MultiplyAndPush(nextAction, relevance, TRUE);
+    delete actionNode;
 }
