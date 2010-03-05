@@ -16,28 +16,6 @@ BOOL ComboPointsAvailable::IsActive()
     return ai->GetComboPoints() >= amount;
 }
 
-BOOL LowHealthTrigger::IsActive()
-{
-    float health = ai->GetHealthPercent();
-    return health < value && health > minValue;
-}
-
-BOOL PartyMemberLowHealthTrigger::IsActive()
-{
-    float health = ai->GetPartyMinHealthPercent();
-    return health < value && health > minValue;
-}
-
-BOOL NeedCureTrigger::IsActive()
-{
-    return ai->HasAuraToDispel(dispelType) && ai->HasSpell(spell);
-}
-
-BOOL PartyMemberNeedCureTrigger::IsActive()
-{
-    return ai->GetPartyMemberToDispell(dispelType) && ai->HasSpell(spell);
-}
-
 BOOL LowManaTrigger::IsActive()
 {
     return ai->GetManaPercent() != 0 && ai->GetManaPercent() < EAT_DRINK_PERCENT;
@@ -115,11 +93,6 @@ BOOL BoostTrigger::IsActive()
     return ai->HasSpell(spell) && !ai->HasAura(spell) && ai->GetBalancePercent() <= balance;
 }
 
-BOOL TargetLowHealthTrigger::IsActive()
-{
-    float health = ai->GetTargetHealthPercent();
-    return health < value && health > minValue;
-}
 
 BOOL SnareTargetTrigger::IsActive()
 {

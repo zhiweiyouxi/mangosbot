@@ -30,9 +30,12 @@ class clazz : public SpellAvailableTrigger \
     };
 
 #include "RangeTriggers.h"
+#include "HealthTriggers.h"
+#include "CureTriggers.h"
 
 namespace ai
 {
+
     BEGIN_TRIGGER(LoseAggroTrigger, Trigger)
     END_TRIGGER()
 
@@ -77,68 +80,7 @@ namespace ai
 
     protected:
         int amount;
-    };
-
-    class LowHealthTrigger : public Trigger
-    {
-    public:
-        LowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) : Trigger(ai) 
-        {
-            this->value = value;
-            this->minValue = minValue;
-        }
-    public: 
-        virtual BOOL IsActive();
-        virtual const char* getName() { return "low health"; }
-
-    protected:
-        float value, minValue;
-    };
-
-    class PartyMemberLowHealthTrigger : public LowHealthTrigger
-    {
-    public:
-        PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) : LowHealthTrigger(ai, value, minValue) {}
-
-    public: 
-        virtual BOOL IsActive();
-        virtual const char* getName() { return "party member low health"; }
-    };
-
-    class NeedCureTrigger : public Trigger
-    {
-    public:
-        NeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : Trigger(ai) 
-        {
-            this->dispelType = dispelType;
-            this->spell = spell;
-        }
-    public: 
-        virtual BOOL IsActive();
-        virtual const char* getName() { return "need cure"; }
-
-    protected:
-        uint32 dispelType;
-        const char* spell;
-    };
-
-    class PartyMemberNeedCureTrigger : public NeedCureTrigger
-    {
-    public:
-        PartyMemberNeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : NeedCureTrigger(ai, spell, dispelType) {}
-
-    public: 
-        virtual BOOL IsActive();
-        virtual const char* getName() { return "party member need cure"; }
-    };
-
-    BEGIN_TRIGGER(LowManaTrigger, Trigger)
-        virtual const char* getName() { return "low mana"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(PanicTrigger, Trigger)
-        virtual const char* getName() { return "panic"; }
-    END_TRIGGER()
+    };    
 
     class BuffTrigger : public Trigger
     {
@@ -236,22 +178,6 @@ namespace ai
         Trigger* rs;
     };
 
-    class TargetLowHealthTrigger : public Trigger
-    {
-    public:
-        TargetLowHealthTrigger(PlayerbotAIFacade* const ai, float value, float minValue = 0) : Trigger(ai) 
-        {
-            this->value = value;
-            this->minValue = minValue;
-        }
-    public: 
-        virtual BOOL IsActive();
-        virtual const char* getName() { return "target low health"; }
-
-    protected:
-        float value, minValue;
-    };
-
     class SnareTargetTrigger : public Trigger
     {
     public:
@@ -266,5 +192,12 @@ namespace ai
     protected:
         const char* aura;
     };
+    BEGIN_TRIGGER(LowManaTrigger, Trigger)
+        virtual const char* getName() { return "low mana"; }
+    END_TRIGGER()
+
+        BEGIN_TRIGGER(PanicTrigger, Trigger)
+        virtual const char* getName() { return "panic"; }
+    END_TRIGGER()
 
 }
