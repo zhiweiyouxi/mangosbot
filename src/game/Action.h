@@ -6,9 +6,8 @@
 class clazz : public Action \
     { \
     public: \
-        clazz(PlayerbotAIFacade* const ai) : Action(ai) {} \
-        virtual BOOL Execute(); \
-        virtual const char* getName() { return name; }
+        clazz(PlayerbotAIFacade* const ai) : Action(ai, name) {} \
+        virtual BOOL Execute();
 
 #define ACTION_KIND(value) \
     virtual int getKind() { return value; }
@@ -56,7 +55,9 @@ namespace ai
     class Action : public PlayerbotAIFacadeAware
 	{
 	public:
-        Action(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
+        Action(PlayerbotAIFacade* const ai, const char* name = NULL) : PlayerbotAIFacadeAware(ai) {
+            this->name = name;
+        }
         virtual ~Action(void) {}
 
     public:
@@ -66,8 +67,11 @@ namespace ai
         virtual NextAction** getPrerequisites() { return NULL; }
         virtual NextAction** getAlternatives() { return NULL; }
         virtual NextAction** getContinuers() { return NULL; }
-        virtual const char* getName() { return "action"; }
+        virtual const char* getName() { return !name ? "action" : name; }
         virtual int getKind() { return 0; }
+
+    protected:
+        const char* name;
 	};
 
     class ActionNode
