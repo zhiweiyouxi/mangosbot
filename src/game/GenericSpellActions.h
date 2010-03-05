@@ -99,6 +99,14 @@ namespace ai
         
     //---------------------------------------------------------------------------------------------------------------------
     
+    class CastHealingSpellAction : public CastSpellAction
+    {
+    public:
+        CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+        virtual BOOL isUseful() {
+            return CastSpellAction::isUseful() && ai->GetHealthPercent() < 70;
+        }
+    };
     class HealPartyMemberAction : public CastSpellAction
     {
     public:

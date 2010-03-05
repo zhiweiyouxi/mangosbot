@@ -37,11 +37,11 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
 
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 40),
-        NextAction::array(0, new NextAction("power word: shield", 60.0f), new NextAction("heal", 60.0f), NULL)));
+        NextAction::array(0, new NextAction("power word: shield", 60.0f), new NextAction("greater heal", 60.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PartyMemberLowHealthTrigger(ai, 40),
-        NextAction::array(0, new NextAction("power word: shield on party", 50.0f), new NextAction("heal on party", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("power word: shield on party", 50.0f), new NextAction("greater heal on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
@@ -129,6 +129,20 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
         return new ActionNode (new CastRenewOnPartyAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("greater heal", name)) 
+    {
+        return new ActionNode (new CastGreaterHealAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("heal"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("greater heal on party", name)) 
+    {
+        return new ActionNode (new CastGreaterHealOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("heal on party"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("heal", name)) 

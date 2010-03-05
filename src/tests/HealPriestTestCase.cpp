@@ -57,8 +57,9 @@ protected:
 
         ai->health = 39;
         engine->DoNextAction(NULL); // power word: shield
-        engine->DoNextAction(NULL); // heal
+        engine->DoNextAction(NULL); // greater heal
         engine->DoNextAction(NULL); // renew
+        engine->DoNextAction(NULL); // heal
         engine->DoNextAction(NULL); // lesser heal
 
         ai->health = 70;
@@ -72,7 +73,7 @@ protected:
         engine->DoNextAction(NULL); // shoot
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>heal>renew>lesser heal>shoot>flash heal>shoot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>greater heal>renew>heal>lesser heal>shoot>flash heal>shoot"));
     }
 
     void nonCombat()
@@ -85,18 +86,18 @@ protected:
 
         ai->health = 1;
         engine->DoNextAction(NULL); // power word: shield
-        engine->DoNextAction(NULL); // heal
+        engine->DoNextAction(NULL); // greater heal
 
         engine->DoNextAction(NULL); // renew
 
         engine->DoNextAction(NULL); // lesser heal
 
-        ai->health = 70;
+        ai->health = 90;
 
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>heal>renew>lesser heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>greater heal>renew>heal"));
     }
 
     void healOthers()
@@ -105,8 +106,9 @@ protected:
 
         ai->partyMinHealth = 1;
         engine->DoNextAction(NULL); // power word: shield
-        engine->DoNextAction(NULL); // heal
+        engine->DoNextAction(NULL); // greater heal
         engine->DoNextAction(NULL); // renew
+        engine->DoNextAction(NULL); // heal
         engine->DoNextAction(NULL); // lesser heal
 
         ai->partyMinHealth = 70;
@@ -122,7 +124,7 @@ protected:
 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>power word: shield on party>heal on party>renew on party>lesser heal on party>shoot>flash heal on party>shoot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>power word: shield on party>greater heal on party>renew on party>heal on party>lesser heal on party>shoot>flash heal on party>shoot"));
     }
 
     void buff()

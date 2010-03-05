@@ -4,8 +4,23 @@
 
 namespace ai
 {
-    BEGIN_SPELL_ACTION(CastLesserHealAction, "lesser heal")
-    END_SPELL_ACTION()
+    class CastGreaterHealAction : public CastHealingSpellAction {
+    public:
+        CastGreaterHealAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "greater heal") {}
+    };
+
+    class CastGreaterHealOnPartyAction : public HealPartyMemberAction
+    {
+    public:
+        CastGreaterHealOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "greater heal") {}
+
+        virtual const char* getName() { return "greater heal on party"; }
+    };
+
+    class CastLesserHealAction : public CastHealingSpellAction {
+    public:
+        CastLesserHealAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "lesser heal") {}
+    };
 
     class CastLesserHealOnPartyAction : public HealPartyMemberAction
     {
@@ -15,8 +30,10 @@ namespace ai
         virtual const char* getName() { return "lesser heal on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastFlashHealAction, "flash heal")
-    END_SPELL_ACTION()
+    class CastFlashHealAction : public CastHealingSpellAction {
+    public:
+        CastFlashHealAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "flash heal") {}
+    };
 
     class CastFlashHealOnPartyAction : public HealPartyMemberAction
     {
@@ -26,8 +43,10 @@ namespace ai
         virtual const char* getName() { return "flash heal on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastHealAction, "heal")
-    END_SPELL_ACTION()
+    class CastHealAction : public CastHealingSpellAction {
+    public:
+        CastHealAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "heal") {}
+    };
 
     class CastHealOnPartyAction : public HealPartyMemberAction
     {
@@ -37,8 +56,10 @@ namespace ai
         virtual const char* getName() { return "heal on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastRenewAction, "renew")
-    END_SPELL_ACTION()
+    class CastRenewAction : public CastHealingSpellAction {
+    public:
+        CastRenewAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "renew") {}
+    };
 
     class CastRenewOnPartyAction : public HealPartyMemberAction
     {
