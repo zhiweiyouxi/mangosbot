@@ -44,7 +44,7 @@ BOOL CastRegrowthAction::isUseful()
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
-BOOL CastCasterFormAction::Execute()
+BOOL CastCasterFormAction::ExecuteResult()
 {
     if (ai->HasAura("dire bear form")) 
         ai->RemoveAura("dire bear form");

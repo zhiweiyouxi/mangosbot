@@ -8,16 +8,16 @@ namespace ai
     class AttackLeastThreatAction : public Action {
     public:
         AttackLeastThreatAction(PlayerbotAIFacade* const ai) : Action(ai, "attack least threat") {}
-        virtual BOOL Execute() {
-            ai->AttackLeastThreat(); return TRUE;
+        virtual void Execute() {
+            ai->AttackLeastThreat();
         }
     };   
     
     class AttackBiggerThreatAction : public Action {
     public:
         AttackBiggerThreatAction(PlayerbotAIFacade* const ai) : Action(ai, "attack bigger threat") {}
-        virtual BOOL Execute() {
-            ai->AttackBiggerThreat(); return TRUE;
+        virtual void Execute() {
+            ai->AttackBiggerThreat();
         }
     };   
   

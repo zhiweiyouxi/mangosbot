@@ -19,7 +19,7 @@ BOOL CastGiftOfTheNaaruAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL HealPartyMemberAction::Execute()
+BOOL HealPartyMemberAction::ExecuteResult()
 {
     ai->CastSpell(spell, ai->GetPartyMinHealthPlayer());
     return TRUE;
@@ -32,7 +32,7 @@ BOOL HealPartyMemberAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL CurePartyMemberAction::Execute()
+BOOL CurePartyMemberAction::ExecuteResult()
 {
     ai->CastSpell(spell, ai->GetPartyMemberToDispell(dispelType));
     return TRUE;
@@ -40,7 +40,7 @@ BOOL CurePartyMemberAction::Execute()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL BuffOnPartyAction::Execute()
+BOOL BuffOnPartyAction::ExecuteResult()
 {
     ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
     return TRUE;

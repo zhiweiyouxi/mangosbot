@@ -52,7 +52,7 @@ namespace ai
             this->spell = spell;
         }
 
-        BOOL Execute() { return ai->CastSpell(spell); }
+        BOOL ExecuteResult() { return ai->CastSpell(spell); }
         virtual BOOL isPossible() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
 
     protected:
@@ -105,7 +105,7 @@ namespace ai
         HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
         virtual BOOL isUseful();
-        virtual BOOL Execute();
+        virtual BOOL ExecuteResult();
     };
 
     //---------------------------------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ namespace ai
             this->dispelType = dispelType;
         }
 
-        virtual BOOL Execute();
+        virtual BOOL ExecuteResult();
 
     protected:
         uint32 dispelType;
@@ -131,7 +131,7 @@ namespace ai
     public:
         BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
     public: 
-        virtual BOOL Execute();
+        virtual BOOL ExecuteResult();
         virtual BOOL isUseful();
     };
 

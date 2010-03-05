@@ -11,24 +11,24 @@ namespace ai
     class FleeAction : public Action {
     public:
         FleeAction(PlayerbotAIFacade* const ai) : Action(ai, "flee") {}
-        virtual BOOL Execute() {
-            ai->Flee(); return TRUE;
+        virtual void Execute() {
+            ai->Flee(); 
         }
     };
 
     class MeleeAction : public Action {
     public:
         MeleeAction(PlayerbotAIFacade* const ai) : Action(ai, "melee") {}
-        virtual BOOL Execute() {
-            ai->Melee(); return TRUE;
+        virtual void Execute() {
+            ai->Melee();
         }
     };
 
     class UseHealingPotion : public Action {
     public:
         UseHealingPotion(PlayerbotAIFacade* const ai) : Action(ai, "healing potion") {}
-        virtual BOOL Execute() {
-            ai->UseHealingPotion(); return TRUE;
+        virtual void Execute() {
+            ai->UseHealingPotion(); 
         }
         virtual BOOL isPossible() {
             return ai->HasHealingPotion();
@@ -38,8 +38,8 @@ namespace ai
     class UseManaPotion : public Action {
     public:
         UseManaPotion(PlayerbotAIFacade* const ai) : Action(ai, "mana potion") {}
-        virtual BOOL Execute() {
-            ai->UseManaPotion(); return TRUE;
+        virtual void Execute() {
+            ai->UseManaPotion(); 
         }
         virtual BOOL isPossible() {
             return ai->HasManaPotion();
@@ -49,8 +49,8 @@ namespace ai
     class UsePanicPotion : public Action {
     public:
         UsePanicPotion(PlayerbotAIFacade* const ai) : Action(ai, "panic potion") {}
-        virtual BOOL Execute() {
-            ai->UsePanicPotion(); return TRUE;
+        virtual void Execute() {
+            ai->UsePanicPotion(); 
         }
         virtual BOOL isPossible() {
             return ai->HasPanicPotion();
@@ -60,8 +60,8 @@ namespace ai
     class LootAction : public Action {
     public:
         LootAction(PlayerbotAIFacade* const ai) : Action(ai, "loot") {}
-        virtual BOOL Execute() {
-            ai->Loot(); return TRUE;
+        virtual void Execute() {
+            ai->Loot();
         }
     };
 
@@ -72,9 +72,8 @@ namespace ai
             this->type = type;
         }
 
-        BOOL Execute() {
+        virtual void Execute() {
             ai->Emote(type ? type : rand() % 450);
-            return TRUE;
         }
 
     protected:

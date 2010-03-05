@@ -10,8 +10,8 @@ namespace ai
         ReachTargetAction(PlayerbotAIFacade* const ai, const char* name, float distance) : Action(ai, name) {
             this->distance = distance;
         }
-        virtual BOOL Execute() {
-            ai->MoveToTarget(distance); return TRUE;
+        virtual void Execute() {
+            ai->MoveToTarget(distance); 
         }
         virtual BOOL isUseful() {
             return ai->GetDistanceToEnemy() > distance;
