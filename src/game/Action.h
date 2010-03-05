@@ -1,21 +1,6 @@
 #pragma once
 #include "PlayerbotAIFacadeAware.h"
 
-
-#define BEGIN_ACTION(clazz, name) \
-class clazz : public Action \
-    { \
-    public: \
-        clazz(PlayerbotAIFacade* const ai) : Action(ai, name) {} \
-        virtual BOOL ExecuteResult();
-
-#define ACTION_KIND(value) \
-    virtual int getKind() { return value; }
-
-#define END_ACTION() \
-    };
-
-
 namespace ai
 {
     class NextAction

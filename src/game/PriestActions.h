@@ -67,11 +67,11 @@ namespace ai
 
     BEGIN_BUFF_ON_PARTY_ACTION(CastPowerWordFortitudeOnPartyAction, "power word: fortitude")
     virtual const char* getName() { return "power word: fortitude on party";}
-    END_ACTION()
+    END_SPELL_ACTION()
 
     BEGIN_BUFF_ON_PARTY_ACTION(CastDivineSpiritOnPartyAction, "divine spirit")
         virtual const char* getName() { return "divine spirit on party";}
-    END_ACTION()
+    END_SPELL_ACTION()
 
 
     BEGIN_DEBUFF_ACTION(CastPowerWordPainAction, "shadow word: pain")

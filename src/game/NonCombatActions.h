@@ -5,22 +5,26 @@
 
 namespace ai
 {
-    BEGIN_ACTION(FollowAction, "follow")
-        virtual BOOL isUseful();
-    END_ACTION()
+    class DrinkAction : public Action {
+    public:
+        DrinkAction(PlayerbotAIFacade* const ai) : Action(ai, "drink") {}
+        virtual void Execute() {
+            ai->UseDrink();
+        }
+        virtual BOOL isUseful() {
+            return ai->GetManaPercent() < EAT_DRINK_PERCENT && !ai->HasAura("drink") && ai->HasDrink();
+        }
+    };
 
-    BEGIN_ACTION(StayAction, "stay")
-    END_ACTION()
+    class EatAction : public Action {
+    public:
+        EatAction(PlayerbotAIFacade* const ai) : Action(ai, "eat") {}
+        virtual void Execute() {
+            ai->UseFood();
+        }
+        virtual BOOL isUseful() {
+            return ai->GetHealthPercent() < EAT_DRINK_PERCENT && !ai->HasAura("eat") && ai->HasFood();
+        }
+    };
 
-    BEGIN_ACTION(DrinkAction, "drink")
-        virtual BOOL isUseful();
-    END_ACTION()
-
-    BEGIN_ACTION(EatAction, "eat")
-        virtual BOOL isUseful();
-    END_ACTION()
-
-    BEGIN_ACTION(GoAwayAction, "goaway")
-        virtual BOOL isUseful();
-    END_ACTION()
 }

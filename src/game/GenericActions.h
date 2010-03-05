@@ -16,6 +16,30 @@ namespace ai
         }
     };
 
+    class FollowAction : public Action {
+    public:
+        FollowAction(PlayerbotAIFacade* const ai) : Action(ai, "follow") {}
+        virtual void Execute() {
+            ai->FollowMaster(); 
+        }
+    };
+
+    class StayAction : public Action {
+    public:
+        StayAction(PlayerbotAIFacade* const ai) : Action(ai, "stay") {}
+        virtual void Execute() {
+            ai->Stay(); 
+        }
+    };
+
+    class GoAwayAction : public Action {
+    public:
+        GoAwayAction(PlayerbotAIFacade* const ai) : Action(ai, "goaway") {}
+        virtual void Execute() {
+            ai->GoAway(); 
+        }
+    };
+
     class MeleeAction : public Action {
     public:
         MeleeAction(PlayerbotAIFacade* const ai) : Action(ai, "melee") {}

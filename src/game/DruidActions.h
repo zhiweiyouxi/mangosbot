@@ -26,8 +26,9 @@ namespace ai
         virtual BOOL isPossible();
     END_SPELL_ACTION()
 
-    BEGIN_ACTION(CastCasterFormAction, "caster form")
+    BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")
         virtual BOOL isUseful();
+        virtual BOOL ExecuteResult();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
@@ -69,7 +70,7 @@ namespace ai
 
     BEGIN_BUFF_ON_PARTY_ACTION(CastMarkOfTheWildOnPartyAction, "mark of the wild")
         virtual const char* getName() { return "mark of the wild on party";}
-    END_ACTION()
+    END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastThornsAction, "thorns")
     END_SPELL_ACTION()
