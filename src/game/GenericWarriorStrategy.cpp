@@ -36,6 +36,10 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("demoralizing shout", 23.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
+        new AttackerCountTrigger(ai, 3), 
+        NextAction::array(0, new NextAction("challenging shout", 23.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai), 
         NextAction::array(0, new NextAction("lifeblood", 60.0f), NULL)));
 }
@@ -88,6 +92,13 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
     else if (!strcmp("demoralizing shout", name)) 
     {
         return new ActionNode (new CastDemoralizingShoutAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("challenging shout", name)) 
+    {
+        return new ActionNode (new CastChallengingShoutAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

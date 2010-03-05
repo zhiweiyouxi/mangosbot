@@ -89,6 +89,9 @@ namespace ai
     BEGIN_MELEE_SPELL_ACTION(CastDemoralizingShoutAction, "demoralizing shout")
     END_SPELL_ACTION()
 
+    BEGIN_MELEE_SPELL_ACTION(CastChallengingShoutAction, "challenging shout")
+    END_SPELL_ACTION()
+
     // stuns
     BEGIN_MELEE_SPELL_ACTION(CastShieldBashAction, "shield bash")
     END_SPELL_ACTION()
