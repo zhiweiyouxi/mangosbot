@@ -1874,6 +1874,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\GenericSpellActions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GenericSpellActions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\GenericTriggers.cpp"
 					>
 				</File>

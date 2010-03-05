@@ -5,26 +5,11 @@
 
 using namespace ai;
 
-NextAction** CastRangedSpellAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("reach spell"), NULL), CastSpellAction::getPrerequisites());
-}
-
 BOOL FleeAction::Execute()
 {
     // TODO: move away from battle
     ai->Flee();
     return TRUE;
-}
-
-BOOL CastMeleeSpellAction::isPossible()
-{
-    return CastSpellAction::isPossible();
-}
-
-NextAction** CastMeleeSpellAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), NULL), CastSpellAction::getPrerequisites());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -57,18 +42,6 @@ BOOL ReachSpellAction::Execute()
 BOOL ReachSpellAction::isUseful()
 {
     return ai->GetDistanceToEnemy() > SPELL_DISTANCE;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-BOOL CastLifeBloodAction::isUseful()
-{
-    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
-}
-
-BOOL CastGiftOfTheNaaruAction::isUseful()
-{
-    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -112,40 +85,6 @@ BOOL UsePanicPotion::isPossible()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL HealPartyMemberAction::Execute()
-{
-    ai->CastSpell(spell, ai->GetPartyMinHealthPlayer());
-    return TRUE;
-}
-
-BOOL HealPartyMemberAction::isUseful()
-{
-    return ai->GetPartyMinHealthPercent() < 75;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-BOOL CurePartyMemberAction::Execute()
-{
-    ai->CastSpell(spell, ai->GetPartyMemberToDispell(dispelType));
-    return TRUE;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-BOOL BuffOnPartyAction::Execute()
-{
-    ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
-    return TRUE;
-}
-
-BOOL BuffOnPartyAction::isUseful()
-{
-    return !ai->IsAllPartyHasAura(spell);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
 BOOL AttackLeastThreatAction::Execute()
 {
     ai->AttackLeastThreat();
@@ -161,11 +100,6 @@ BOOL AttackBiggerThreatAction::Execute()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-
-BOOL CastDebuffSpellAction::isPossible()
-{
-    return CastSpellAction::isPossible() && !ai->TargetHasAura(spell);
-}
 
 BOOL LootAction::Execute()
 {
