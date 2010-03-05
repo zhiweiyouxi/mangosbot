@@ -3,72 +3,81 @@
 #include "Action.h"
 #include "PlayerbotAIFacade.h"
 #include "GenericSpellActions.h"
+#include "ReachTargetActions.h"
+#include "ChooseTargetActions.h"
 
 namespace ai
 {
-    BEGIN_ACTION(FleeAction, "flee")
-    END_ACTION()
+    class FleeAction : public Action {
+    public:
+        FleeAction(PlayerbotAIFacade* const ai) : Action(ai, "flee") {}
+        virtual BOOL Execute() {
+            ai->Flee(); return TRUE;
+        }
+    };
 
-    //---------------------------------------------------------------------------------------------------------------------
+    class MeleeAction : public Action {
+    public:
+        MeleeAction(PlayerbotAIFacade* const ai) : Action(ai, "melee") {}
+        virtual BOOL Execute() {
+            ai->Melee(); return TRUE;
+        }
+    };
 
-    BEGIN_ACTION(MeleeAction, "melee")
-    END_ACTION()
+    class UseHealingPotion : public Action {
+    public:
+        UseHealingPotion(PlayerbotAIFacade* const ai) : Action(ai, "healing potion") {}
+        virtual BOOL Execute() {
+            ai->UseHealingPotion(); return TRUE;
+        }
+        virtual BOOL isPossible() {
+            return ai->HasHealingPotion();
+        }
+    };
 
-    BEGIN_ACTION(ReachMeleeAction, "reach melee")
-        virtual BOOL isUseful();
-    END_ACTION()
+    class UseManaPotion : public Action {
+    public:
+        UseManaPotion(PlayerbotAIFacade* const ai) : Action(ai, "mana potion") {}
+        virtual BOOL Execute() {
+            ai->UseManaPotion(); return TRUE;
+        }
+        virtual BOOL isPossible() {
+            return ai->HasManaPotion();
+        }
+    };
 
-    //---------------------------------------------------------------------------------------------------------------------
+    class UsePanicPotion : public Action {
+    public:
+        UsePanicPotion(PlayerbotAIFacade* const ai) : Action(ai, "panic potion") {}
+        virtual BOOL Execute() {
+            ai->UsePanicPotion(); return TRUE;
+        }
+        virtual BOOL isPossible() {
+            return ai->HasPanicPotion();
+        }
+    };
 
-    BEGIN_ACTION(ReachSpellAction, "reach spell")
-        virtual BOOL isUseful();
-    END_ACTION()
-        
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(UseHealingPotion, "healing potion")
-        virtual BOOL isPossible();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(UseManaPotion, "mana potion")
-        virtual BOOL isPossible();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(UsePanicPotion, "panic potion")
-        virtual BOOL isPossible();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-    
-    BEGIN_ACTION(AttackLeastThreatAction, "attack least threat")
-    END_ACTION()
-  
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(AttackBiggerThreatAction, "attack bigger threat")
-    END_ACTION()
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(LootAction, "loot")
-    END_ACTION()
+    class LootAction : public Action {
+    public:
+        LootAction(PlayerbotAIFacade* const ai) : Action(ai, "loot") {}
+        virtual BOOL Execute() {
+            ai->Loot(); return TRUE;
+        }
+    };
 
     class EmoteAction : public Action
     {
     public:
-        EmoteAction(PlayerbotAIFacade* const ai, uint32 name) : Action(ai)
-        {
-            this->name = name;
+        EmoteAction(PlayerbotAIFacade* const ai, uint32 type) : Action(ai, "emote") {
+            this->type = type;
         }
 
-        BOOL Execute();
-        virtual const char* getName() { return "emote"; }
+        BOOL Execute() {
+            ai->Emote(type ? type : rand() % 450);
+            return TRUE;
+        }
 
     protected:
-        uint32 name;
+        uint32 type;
     };
 }

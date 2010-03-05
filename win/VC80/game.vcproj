@@ -1858,6 +1858,10 @@
 				Name="Generic"
 				>
 				<File
+					RelativePath="..\..\src\game\ChooseTargetActions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\GenericActions.cpp"
 					>
 				</File>
@@ -1911,6 +1915,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\PassiveMultiplier.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ReachTargetActions.h"
 					>
 				</File>
 			</Filter>

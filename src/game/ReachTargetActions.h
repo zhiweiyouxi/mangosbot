@@ -1,0 +1,33 @@
+#pragma once
+
+#include "Action.h"
+#include "PlayerbotAIFacade.h"
+
+namespace ai
+{
+    class ReachTargetAction : public Action {
+    public:
+        ReachTargetAction(PlayerbotAIFacade* const ai, const char* name, float distance) : Action(ai, name) {
+            this->distance = distance;
+        }
+        virtual BOOL Execute() {
+            ai->MoveToTarget(distance); return TRUE;
+        }
+        virtual BOOL isUseful() {
+            return ai->GetDistanceToEnemy() > distance;
+        }
+
+    protected:
+        float distance;
+    };
+
+    class ReachMeleeAction : public ReachTargetAction {
+    public:
+        ReachMeleeAction(PlayerbotAIFacade* const ai) : ReachTargetAction(ai, "reach melee", CONTACT_DISTANCE) {}
+    };
+
+    class ReachSpellAction : public ReachTargetAction {
+    public:
+        ReachSpellAction(PlayerbotAIFacade* const ai) : ReachTargetAction(ai, "reach spell", SPELL_DISTANCE) {}
+    };
+}
