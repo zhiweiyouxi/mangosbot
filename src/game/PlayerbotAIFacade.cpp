@@ -447,7 +447,7 @@ void PlayerbotAIFacade::AttackBiggerThreat()
     std::list<ThreatManager*> attackers;
     findAllAttackers(attackers);
 
-    float maxThreat = 1e8;
+    float maxThreat = -1;
     Unit* target = NULL;
     for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
     {  
