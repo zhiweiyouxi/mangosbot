@@ -56,8 +56,8 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
     else if (!strcmp("mocking blow", name)) 
     {
         return new ActionNode (new CastMockingBlowAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("defensive stance"), NULL),
-            /*A*/ NextAction::array(0, new NextAction("taunt"), NULL), 
+            /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("taunt", name)) 

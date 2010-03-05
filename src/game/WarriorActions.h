@@ -4,23 +4,55 @@
 
 namespace ai
 {
-    // main
-    BEGIN_MELEE_SPELL_ACTION(CastHeroicStrikeAction, "heroic strike")
-    END_SPELL_ACTION()
+    // battle
+    class CastBattleMeleeSpellAction : public CastMeleeSpellAction {
+    public:
+        CastBattleMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastMeleeSpellAction(ai, spell) {}
+        virtual NextAction** getPrerequisites() {
+            return NextAction::merge( NextAction::array(0, new NextAction("battle stance"), NULL), CastMeleeSpellAction::getPrerequisites());
+        }
+    };
 
-    // attack me
-    BEGIN_MELEE_SPELL_ACTION(CastMockingBlowAction, "mocking blow")
-    END_SPELL_ACTION()
+    // defensive
+    class CastDefensiveMeleeSpellAction : public CastMeleeSpellAction {
+    public:
+        CastDefensiveMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastMeleeSpellAction(ai, spell) {}
+        virtual NextAction** getPrerequisites() {
+            return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastMeleeSpellAction::getPrerequisites());
+        }
+    };
 
-    BEGIN_MELEE_SPELL_ACTION(CastExecuteAction, "execute")
-    END_SPELL_ACTION()
+    // all
+    class CastHeroicStrikeAction : public CastMeleeSpellAction {
+    public:
+        CastHeroicStrikeAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "heroic strike") {}
+    };
 
-    BEGIN_MELEE_SPELL_ACTION(CastOverpowerAction, "overpower")
-    END_SPELL_ACTION()
+    // battle, berserker
+    class CastMockingBlowAction : public CastMeleeSpellAction {
+    public:
+        CastMockingBlowAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "mocking blow") {}
+    };
 
-    BEGIN_MELEE_SPELL_ACTION(CastHamstringAction, "hamstring")
-    END_SPELL_ACTION()
+    // battle, berserker
+    class CastExecuteAction : public CastMeleeSpellAction {
+    public:
+        CastExecuteAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "execute") {}
+    };
 
+    // battle
+    class CastOverpowerAction : public CastBattleMeleeSpellAction {
+    public:
+        CastOverpowerAction(PlayerbotAIFacade* const ai) : CastBattleMeleeSpellAction(ai, "overpower") {}
+    };
+
+    // battle, berserker
+    class CastHamstringAction : public CastMeleeSpellAction {
+    public:
+        CastHamstringAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "hamstring") {}
+    };
+
+    // defensive
     class CastTauntAction : public CastRangedSpellAction {
     public:
         CastTauntAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "taunt") {}

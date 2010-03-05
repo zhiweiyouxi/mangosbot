@@ -129,13 +129,16 @@ protected:
         engine->DoNextAction(NULL); // rend
 
         ai->aggro = FALSE;
+        engine->DoNextAction(NULL); // battle stance
         engine->DoNextAction(NULL); // mocking blow
         ai->aggro = TRUE;
         
+        ai->spellCooldowns.remove("defensive stance");
+        engine->DoNextAction(NULL);
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>taunt>rend>mocking blow>disarm"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>taunt>rend>battle stance>mocking blow>defensive stance>disarm"));
     }
 
     void combatVsMelee()
