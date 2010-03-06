@@ -18,6 +18,7 @@ float LowManaMultiplier::GetValue(Action* action)
 
     // Priest
     if (!strcmp("shadow word: pain", action->getName()) || 
+        !strcmp("devouring plague", action->getName()) || 
         !strcmp("mind blast", action->getName()) 
         ) return !(rand() % 50) ? 1 : 0;
 
