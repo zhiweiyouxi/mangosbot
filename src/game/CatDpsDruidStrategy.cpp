@@ -31,6 +31,10 @@ void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new ComboPointsAvailable(ai, 5), 
         NextAction::array(0, new NextAction("ferocious bite", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new MyAttackerCountTrigger(ai, 2),
+        NextAction::array(0, new NextAction("cower", 90.0f), NULL)));
 }
 
 void CatDpsDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -96,6 +100,13 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("claw", 10.0f), NULL));
+    }
+    else if (!strcmp("cower", name)) 
+    {
+        return new ActionNode (new CastCowerAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
     }
     else return GenericDruidStrategy::createAction(name);
 }

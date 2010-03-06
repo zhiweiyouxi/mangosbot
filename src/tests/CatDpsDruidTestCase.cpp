@@ -22,6 +22,7 @@ class CatDpsDruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( boost );
+    CPPUNIT_TEST( cower );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -217,6 +218,25 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>berserk>tiger's fury>reach melee>rake"));
     }
+
+    void cower()
+    {
+        engine->DoNextAction(NULL); // faerie fire
+        engine->DoNextAction(NULL); // cat form
+        ai->auras.push_back("cat form");
+
+        ai->myAttackerCount = 2;
+        ai->attackerCount = 3;
+        engine->DoNextAction(NULL); // cower
+        ai->myAttackerCount = 0;
+        ai->attackerCount = 1;
+
+        engine->DoNextAction(NULL); 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>cower>attack least threat"));
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CatDpsDruidTestCase );

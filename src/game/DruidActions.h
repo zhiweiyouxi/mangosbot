@@ -83,6 +83,10 @@ namespace ai
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastCowerAction, "cower")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+        
     BEGIN_DEBUFF_ACTION(CastRakeAction, "rake")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()

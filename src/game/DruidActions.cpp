@@ -81,6 +81,11 @@ NextAction** CastRakeAction::getPrerequisites()
     return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), new NextAction("cat form"), NULL), CastDebuffSpellAction::getPrerequisites());
 }
 
+NextAction** CastCowerAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastSpellAction::getPrerequisites());
+}
+
 NextAction** CastBerserkAction::getPrerequisites()
 {
     return NextAction::array(0, new NextAction("cat form"), NULL);
