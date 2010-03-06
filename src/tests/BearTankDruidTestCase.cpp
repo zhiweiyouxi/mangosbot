@@ -26,6 +26,7 @@ class BearTankDruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( curePoison );
     CPPUNIT_TEST( pickNewTarget );
+    CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -287,6 +288,22 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>abolish poison>abolish poison on party>cure poison>cure poison on party>dire bear form"));
+    }
+    void interruptSpells() 
+    {
+        engine->DoNextAction(NULL); // faerie fire
+        engine->DoNextAction(NULL); // dire bear form
+        ai->auras.push_back("dire bear form");
+        
+        ai->distanceToEnemy = 0.0f; 
+        ai->targetIsCastingNonMeleeSpell = true;
+        engine->DoNextAction(NULL); // bash
+        ai->targetIsCastingNonMeleeSpell = false;
+
+        engine->DoNextAction(NULL); // 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>bash>melee"));
     }
 };
 

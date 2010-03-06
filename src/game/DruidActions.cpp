@@ -65,16 +65,6 @@ BOOL CastCasterFormAction::isUseful()
         ai->HasAura("cat form") || ai->HasAura("travel form")); 
 }
 
-BOOL CastMaulAction::isPossible()
-{
-    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
-}
-
-BOOL CastSwipeAction::isPossible()
-{
-    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
-}
-
 BOOL CastCatFormAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->HasAura("cat form");

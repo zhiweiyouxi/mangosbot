@@ -19,11 +19,12 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastMaulAction, "maul")
-        virtual BOOL isPossible();
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastBashAction, "bash")
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastSwipeAction, "swipe")
-        virtual BOOL isPossible();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")

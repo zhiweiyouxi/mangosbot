@@ -38,6 +38,10 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai),
         NextAction::array(0, new NextAction("attack bigger threat", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new InterruptSpellTrigger(ai, "bash"),
+        NextAction::array(0, new NextAction("bash", 50.0f), NULL)));
 }
 
 void BearTankDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -79,6 +83,13 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
     else if (!strcmp("maul", name)) 
     {
         return new ActionNode (new CastMaulAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("bash", name)) 
+    {
+        return new ActionNode (new CastBashAction(ai),  
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
