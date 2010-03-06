@@ -29,7 +29,7 @@ void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("rake", 15.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new ComboPointsAvailable(ai, 3), 
+        new ComboPointsAvailable(ai, 5), 
         NextAction::array(0, new NextAction("ferocious bite", 20.0f), NULL)));
 }
 

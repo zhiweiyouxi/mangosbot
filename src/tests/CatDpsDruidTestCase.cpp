@@ -98,10 +98,10 @@ protected:
         engine->DoNextAction(NULL); // rake
         engine->DoNextAction(NULL); // claw
 
-        ai->comboPoints = 3;
+        ai->comboPoints = 5;
         engine->DoNextAction(NULL); // ferocious bite
 
-        ai->comboPoints = 3;
+        ai->comboPoints = 5;
         engine->DoNextAction(NULL); // rip
         
         std::cout << ai->buffer;
@@ -206,6 +206,7 @@ protected:
         ai->balancePercent = 1;
         engine->DoNextAction(NULL); // berserk
         engine->DoNextAction(NULL); // cat form
+        engine->DoNextAction(NULL); // tiger's fury
         
         ai->balancePercent = 100;
 
@@ -214,7 +215,7 @@ protected:
         engine->DoNextAction(NULL); // continue as usual with cat form
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>berserk>reach melee>rake"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>berserk>tiger's fury>reach melee>rake"));
     }
 };
 

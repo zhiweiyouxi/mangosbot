@@ -103,6 +103,11 @@ namespace ai
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastTigersFuryAction, "tiger's fury")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+        
+
     BEGIN_SPELL_ACTION(CastCurePoisonAction, "cure poison")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()

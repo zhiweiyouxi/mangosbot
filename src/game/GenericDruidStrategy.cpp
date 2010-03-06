@@ -112,6 +112,14 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("tiger's fury", name)) 
+    {
+        return new ActionNode (new CastTigersFuryAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    
     else return NULL;
 }
 
@@ -121,6 +129,6 @@ void DruidBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     triggers.push_back(new TriggerNode(
         new BoostTrigger(ai, "berserk", 45),
-        NextAction::array(0, new NextAction("berserk", 40.0f), NULL)));
+        NextAction::array(0, new NextAction("berserk", 40.0f), new NextAction("tiger's fury", 40.0f), NULL)));
 
 }
