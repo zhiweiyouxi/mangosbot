@@ -58,7 +58,7 @@ protected:
         engine->DoNextAction(NULL); // concussive shot
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>devouring plague"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>mind flay"));
 
     }
 
@@ -67,6 +67,11 @@ protected:
         engine->DoNextAction(NULL); // shadow word: pain
         engine->DoNextAction(NULL); // devouring plague
         engine->DoNextAction(NULL); // mind blast
+        engine->DoNextAction(NULL); // holy nova
+        ai->myAttackerCount = 0;
+        engine->DoNextAction(NULL); // mind flay
+        ai->myAttackerCount = 1;
+        engine->DoNextAction(NULL); // smite
         engine->DoNextAction(NULL); // shoot
 
         // heal if need
@@ -75,7 +80,7 @@ protected:
         engine->DoNextAction(NULL); // greater heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">devouring plague>shadow word: pain>mind blast>shoot>power word: shield>greater heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">devouring plague>shadow word: pain>mind blast>holy fire>attack least threat>mind flay>shoot>power word: shield>greater heal"));
     }
 };
 

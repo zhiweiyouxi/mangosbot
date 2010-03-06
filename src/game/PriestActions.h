@@ -97,6 +97,12 @@ namespace ai
     BEGIN_SPELL_ACTION(CastHolyNovaAction, "holy nova")
     END_SPELL_ACTION()
 
+    BEGIN_RANGED_SPELL_ACTION(CastHolyFireAction, "holy fire")
+    END_SPELL_ACTION()
+
+    BEGIN_RANGED_SPELL_ACTION(CastSmiteAction, "smite")
+    END_SPELL_ACTION()
+
     BEGIN_BUFF_ON_PARTY_ACTION(CastPowerWordFortitudeOnPartyAction, "power word: fortitude")
     virtual const char* getName() { return "power word: fortitude on party";}
     END_SPELL_ACTION()
@@ -113,6 +119,9 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastMindBlastAction, "mind blast")
+    END_SPELL_ACTION()
+
+    BEGIN_RANGED_SPELL_ACTION(CastMindFlayAction, "mind flay")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastCureDiseaseAction, "cure disease")
