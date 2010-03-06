@@ -8,7 +8,7 @@ using namespace ai;
 
 NextAction** DpsPriestStrategy::getDefaultActions()
 {
-    return NextAction::array(0, new NextAction("holy fire", 9.0f), new NextAction("mind blast", 10.0f), NULL);
+    return NextAction::array(0, new NextAction("holy fire", 9.0f), new NextAction("mind blast", 10.0f), new NextAction("smite", 5.0f), NULL);
 }
 
 void DpsPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
@@ -64,7 +64,7 @@ ActionNode* DpsPriestStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastHolyFireAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("smite"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("smite", name)) 

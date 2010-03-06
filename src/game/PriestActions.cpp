@@ -14,3 +14,7 @@ NextAction** CastAbolishDiseaseOnPartyAction::getAlternatives()
 {
     return NextAction::merge(NextAction::array(0, new NextAction("cure disease on party"), NULL), CastSpellAction::getAlternatives());
 }
+
+BOOL CastHolyNovaAction::isUseful() {
+    return ai->GetPartyMinHealthPercent() <= 80;
+}

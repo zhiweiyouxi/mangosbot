@@ -95,6 +95,7 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastHolyNovaAction, "holy nova")
+        virtual BOOL isUseful();
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastHolyFireAction, "holy fire")

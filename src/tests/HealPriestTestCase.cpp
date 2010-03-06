@@ -161,10 +161,12 @@ protected:
         
         ai->myAttackerCount = 2;
         ai->attackerCount = 3;
+        ai->partyMinHealth = 75;
         engine->DoNextAction(NULL); // fade
         engine->DoNextAction(NULL); // holy nova
         ai->myAttackerCount = 0;
         ai->attackerCount = 1;
+        ai->partyMinHealth = 100;
 
         ai->spellCooldowns.remove("shoot");
         engine->DoNextAction(NULL); 

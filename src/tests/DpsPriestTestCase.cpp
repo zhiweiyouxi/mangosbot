@@ -80,7 +80,7 @@ protected:
         engine->DoNextAction(NULL); // greater heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">devouring plague>shadow word: pain>mind blast>holy fire>attack least threat>mind flay>shoot>power word: shield>greater heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">devouring plague>shadow word: pain>mind blast>holy fire>attack least threat>mind flay>smite>power word: shield>greater heal"));
     }
 };
 
