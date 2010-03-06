@@ -51,7 +51,7 @@ namespace ai
         virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
-        virtual int GetAttackerCount();
+        virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
         virtual int GetMyAttackerCount();
         virtual BOOL IsMounted();
         virtual BOOL HaveTarget() { return ai->GetCurrentTarget() != NULL; }

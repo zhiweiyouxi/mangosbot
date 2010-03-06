@@ -160,14 +160,17 @@ protected:
         engine->DoNextAction(NULL); 
         
         ai->myAttackerCount = 2;
+        ai->attackerCount = 3;
         engine->DoNextAction(NULL); // fade
+        engine->DoNextAction(NULL); // holy nova
         ai->myAttackerCount = 0;
+        ai->attackerCount = 1;
 
         ai->spellCooldowns.remove("shoot");
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>fade>attack least threat"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>fade>holy nova>attack least threat"));
     }
 
     void dispel() 

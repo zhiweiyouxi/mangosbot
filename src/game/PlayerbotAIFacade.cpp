@@ -200,11 +200,19 @@ uint8 PlayerbotAIFacade::GetPartyMinHealthPercent()
 }
 
 
-int PlayerbotAIFacade::GetAttackerCount()
+int PlayerbotAIFacade::GetAttackerCount(float distance)
 {
     std::list<ThreatManager*> attackers;
     findAllAttackers(attackers);
-    return attackers.size();
+    
+    Player* bot = ai->GetPlayerBot();
+    int count = 0;
+    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i != attackers.end(); i++) {
+        ThreatManager *cur = *i;
+        if (bot->GetDistance(cur->getOwner()) <= distance) 
+            count++;
+    }
+    return count;
 }
 
 

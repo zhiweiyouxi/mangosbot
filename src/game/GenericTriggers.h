@@ -84,16 +84,20 @@ namespace ai
     class AttackerCountTrigger : public Trigger
     {
     public:
-        AttackerCountTrigger(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
+        AttackerCountTrigger(PlayerbotAIFacade* const ai, int amount, float distance = BOT_REACT_DISTANCE) : Trigger(ai) 
         {
             this->amount = amount;
+            this->distance = distance;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual BOOL IsActive() {
+            return ai->GetAttackerCount(distance) >= amount;
+        }
         virtual const char* getName() { return "attacker count"; }
 
     protected:
         int amount;
+        float distance;
     };    
 
     class MyAttackerCountTrigger : public AttackerCountTrigger

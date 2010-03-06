@@ -66,6 +66,10 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
     triggers.push_back(new TriggerNode(
         new PartyMemberNeedCureTrigger(ai, "cure disease", DISPEL_DISEASE),
         NextAction::array(0, new NextAction("abolish disease on party", 30.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new AttackerCountTrigger(ai, 3, 10.0f),
+        NextAction::array(0, new NextAction("holy nova", 25.0f), NULL)));
 }
 
 void HealPriestNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -82,6 +86,13 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     if (!strcmp("inner fire", name)) 
     {
         return new ActionNode (new CastInnerFireAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("holy nova", name)) 
+    {
+        return new ActionNode (new CastHolyNovaAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
