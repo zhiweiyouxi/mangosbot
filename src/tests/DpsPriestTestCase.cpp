@@ -35,6 +35,7 @@ public:
 
         ai->auras.push_back("power word: fortitude");
         ai->auras.push_back("divine spirit");
+        ai->auras.push_back("inner fire");
         ai->partyAuras.push_back("power word: fortitude");
         ai->partyAuras.push_back("divine spirit");
     }
@@ -57,13 +58,14 @@ protected:
         engine->DoNextAction(NULL); // concussive shot
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>shadow word: pain"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>devouring plague"));
 
     }
 
     void combat()
     {
         engine->DoNextAction(NULL); // shadow word: pain
+        engine->DoNextAction(NULL); // devouring plague
         engine->DoNextAction(NULL); // mind blast
         engine->DoNextAction(NULL); // shoot
 
@@ -73,7 +75,7 @@ protected:
         engine->DoNextAction(NULL); // greater heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadow word: pain>mind blast>shoot>power word: shield>greater heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">devouring plague>shadow word: pain>mind blast>shoot>power word: shield>greater heal"));
     }
 };
 

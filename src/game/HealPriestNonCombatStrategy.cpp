@@ -27,6 +27,10 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
         NextAction::array(0, new NextAction("divine spirit on party", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
+        new InnerFireTrigger(ai), 
+        NextAction::array(0, new NextAction("inner fire", 21.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 60, 40),
         NextAction::array(0, new NextAction("flash heal", 25.0f), NULL)));
 
@@ -75,7 +79,14 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     if (node)
         return node;
 
-    if (!strcmp("power word: fortitude", name)) 
+    if (!strcmp("inner fire", name)) 
+    {
+        return new ActionNode (new CastInnerFireAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("power word: fortitude", name)) 
     {
         return new ActionNode (new CastPowerWordFortitudeAction(ai),  
             /*P*/ NULL,

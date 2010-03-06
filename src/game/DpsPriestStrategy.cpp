@@ -16,6 +16,10 @@ void DpsPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     HealPriestStrategy::InitTriggers(triggers);
     
     triggers.push_back(new TriggerNode(
+        new DevouringPlagueTrigger(ai), 
+        NextAction::array(0, new NextAction("devouring plague", 12.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new PowerWordPainTrigger(ai), 
         NextAction::array(0, new NextAction("shadow word: pain", 11.0f), NULL)));
 }
@@ -34,6 +38,13 @@ ActionNode* DpsPriestStrategy::createAction(const char* name)
     if (!strcmp("shadow word: pain", name)) 
     {
         return new ActionNode (new CastPowerWordPainAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("devouring plague", name)) 
+    {
+        return new ActionNode (new CastDevouringPlagueAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

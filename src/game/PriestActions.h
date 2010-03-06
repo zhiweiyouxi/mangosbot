@@ -91,6 +91,9 @@ namespace ai
     BEGIN_SPELL_ACTION(CastDivineSpiritAction, "divine spirit")
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastInnerFireAction, "inner fire")
+    END_SPELL_ACTION()
+
     BEGIN_BUFF_ON_PARTY_ACTION(CastPowerWordFortitudeOnPartyAction, "power word: fortitude")
     virtual const char* getName() { return "power word: fortitude on party";}
     END_SPELL_ACTION()
@@ -101,6 +104,9 @@ namespace ai
 
 
     BEGIN_DEBUFF_ACTION(CastPowerWordPainAction, "shadow word: pain")
+    END_SPELL_ACTION()
+
+    BEGIN_DEBUFF_ACTION(CastDevouringPlagueAction, "devouring plague")
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastMindBlastAction, "mind blast")

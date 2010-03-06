@@ -39,6 +39,7 @@ public:
 
         ai->auras.push_back("power word: fortitude");
         ai->auras.push_back("divine spirit");
+        ai->auras.push_back("inner fire");
         ai->partyAuras.push_back("power word: fortitude");
         ai->partyAuras.push_back("divine spirit");
     }
@@ -132,6 +133,7 @@ protected:
     {
         ai->auras.remove("power word: fortitude");
         ai->auras.remove("divine spirit");
+        ai->auras.remove("inner fire");
         ai->partyAuras.remove("power word: fortitude");
         ai->partyAuras.remove("divine spirit");
 
@@ -141,6 +143,8 @@ protected:
         ai->spellCooldowns.remove("power word: fortitude");
         engine->DoNextAction(NULL); // power word: fortitude on party
 
+        engine->DoNextAction(NULL); // inner fire
+
         engine->DoNextAction(NULL); // divine spirit
         ai->auras.push_back("divine spirit");
 
@@ -148,7 +152,7 @@ protected:
         engine->DoNextAction(NULL); // divine spirit on party
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude>divine spirit>power word: fortitude on party>divine spirit on party"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: fortitude>divine spirit>inner fire>power word: fortitude on party>divine spirit on party"));
     }
 
     void fade()
