@@ -150,6 +150,14 @@ namespace ai
     BEGIN_SPELL_ACTION(CastDispelMagicAction, "dispel magic")
     END_SPELL_ACTION()
 
+    class CastDispelMagicOnTargetAction : public CastSpellAction {
+    public:
+        CastDispelMagicOnTargetAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "dispel magic") {}
+        virtual BOOL ExecuteResult() {
+            return ai->CastSpellOnCurrentTarget(spell);
+        }
+    };
+
     class CastDispelMagicOnPartyAction : public CurePartyMemberAction
     {
     public:

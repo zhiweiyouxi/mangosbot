@@ -520,7 +520,27 @@ Player* PlayerbotAIFacade::GetPartyMemberToDispell(uint32 dispelType)
     return NULL;
 }
 
-BOOL PlayerbotAIFacade::HasAuraToDispel(Player* player, uint32 dispelType) 
+bool PlayerbotAIFacade::TargetHasAuraToDispel(uint32 dispelType) {
+    Unit* target = ai->GetCurrentTarget();
+    if (!target) return false;
+
+
+    Unit::AuraMap &uAuras = target->GetAuras();
+    for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)
+    {
+        const SpellEntry* entry = itr->second->GetSpellProto();
+        uint32 spellId = entry->Id;
+        if (!IsPositiveSpell(spellId))
+            continue;
+
+        if (entry->Dispel == dispelType) {
+            return true;
+        }
+    }
+    return false;
+}
+
+BOOL PlayerbotAIFacade::HasAuraToDispel(Unit* player, uint32 dispelType) 
 {
     Unit::AuraMap &uAuras = player->GetAuras();
     for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)

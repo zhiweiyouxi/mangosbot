@@ -28,6 +28,7 @@ namespace ai
         virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }
         virtual void Stay() { buffer.append(">stay"); }
         virtual BOOL CastSpell(const char* spell, Unit* target = NULL);
+        virtual BOOL CastSpellOnCurrentTarget(const char* spell);
         virtual BOOL canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
         virtual uint8 GetRage() { return rage; } 
@@ -83,6 +84,7 @@ namespace ai
         virtual float GetBalancePercent() { return balancePercent; }
         virtual bool IsTargetMoving() { return targetIsMoving; }
         virtual bool IsTargetCastingNonMeleeSpell() { return targetIsCastingNonMeleeSpell; }
+        virtual bool TargetHasAuraToDispel(uint32 dispelType) { return targetAurasToDispel == dispelType; }
 
     public:
         void resetSpells() {spellCooldowns.clear(); }
@@ -103,7 +105,7 @@ namespace ai
         int myAttackerCount;
         int partyMinHealth;
         bool lootAvailable;
-        uint32 partyAurasToDispel, aurasToDispel;
+        uint32 partyAurasToDispel, aurasToDispel, targetAurasToDispel;
         float balancePercent;
         bool targetIsMoving;
         bool targetIsCastingNonMeleeSpell;

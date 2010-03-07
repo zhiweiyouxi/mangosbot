@@ -32,6 +32,7 @@ namespace ai
         virtual void GoAway(float distance = SPELL_DISTANCE);
         virtual void MoveToTarget(float distance = 0.0f) { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
         virtual void Stay() {ai->MovementClear();}
+        virtual BOOL CastSpellOnCurrentTarget(const char* spell) { return ai->CastSpell(ai->getSpellId(spell), ai->GetCurrentTarget()); }
         virtual BOOL CastSpell(const char* spell, Unit* target = NULL) { return ai->CastSpell(ai->getSpellId(spell), target); }
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
@@ -81,6 +82,7 @@ namespace ai
         virtual float GetBalancePercent();
         virtual bool IsTargetMoving();
         virtual bool IsTargetCastingNonMeleeSpell();
+        virtual bool TargetHasAuraToDispel(uint32 dispelType);
 
     protected:
         static BOOL isHealingPotion(const ItemPrototype* pItemProto);
@@ -93,7 +95,7 @@ namespace ai
         static BOOL isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);
         void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
-        BOOL HasAuraToDispel(Player* player, uint32 dispelType);
+        BOOL HasAuraToDispel(Unit* player, uint32 dispelType);
 
     protected:
         PlayerbotAI *ai;

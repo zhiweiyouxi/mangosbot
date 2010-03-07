@@ -70,6 +70,11 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 3, 10.0f),
         NextAction::array(0, new NextAction("holy nova", 25.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new TargetAuraDispelTrigger(ai, "dispel magic", DISPEL_MAGIC),
+        NextAction::array(0, new NextAction("dispel magic on target", 40.0f), NULL)));
+
 }
 
 void HealPriestNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -226,6 +231,13 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     else if (!strcmp("dispel magic on party", name)) 
     {
         return new ActionNode (new CastDispelMagicOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("dispel magic on target", name)) 
+    {
+        return new ActionNode (new CastDispelMagicOnTargetAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
