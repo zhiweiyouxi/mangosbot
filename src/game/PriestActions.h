@@ -113,13 +113,21 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastHolyNovaAction, "holy nova")
-        virtual BOOL isUseful();
+    virtual BOOL isUseful() {
+        return !ai->HasAura("shadowform") && ai->GetPartyMinHealthPercent() <= 80;
+    }
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastHolyFireAction, "holy fire")
+        virtual BOOL isUseful() {
+            return !ai->HasAura("shadowform");
+        }
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastSmiteAction, "smite")
+        virtual BOOL isUseful() {
+            return !ai->HasAura("shadowform");
+        }
     END_SPELL_ACTION()
 
     BEGIN_BUFF_ON_PARTY_ACTION(CastPowerWordFortitudeOnPartyAction, "power word: fortitude")

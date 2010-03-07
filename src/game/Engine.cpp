@@ -111,7 +111,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
                         continue;
                     }
 
-                    //sLog.outBasic("A:%s", action->getName());
+                    sLog.outBasic("A:%s", actionNode->getName());
 
                     if (actionExecutionListeners.ActionExecuted(actionNode->getAction()))
                         actionExecuted = actionNode->Execute();

@@ -70,11 +70,9 @@ protected:
         engine->DoNextAction(NULL); // shadow word: pain
         engine->DoNextAction(NULL); // devouring plague
         engine->DoNextAction(NULL); // mind blast
-        engine->DoNextAction(NULL); // holy nova
         ai->myAttackerCount = 0;
         engine->DoNextAction(NULL); // mind flay
         ai->myAttackerCount = 1;
-        engine->DoNextAction(NULL); // smite
         engine->DoNextAction(NULL); // shoot
 
         // heal if need
@@ -84,7 +82,7 @@ protected:
         engine->DoNextAction(NULL); // greater heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadowform>devouring plague>shadow word: pain>mind blast>holy fire>attack least threat>mind flay>smite>power word: shield>-shadowform>greater heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadowform>devouring plague>shadow word: pain>mind blast>attack least threat>mind flay>power word: shield>-shadowform>greater heal"));
     }
 };
 
