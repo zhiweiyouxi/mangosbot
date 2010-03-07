@@ -10,11 +10,15 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     CombatStrategy::InitTriggers(triggers);
     
     triggers.push_back(new TriggerNode(
-        new DruidLowHealthTrigger(ai),
+        new LowHealthTrigger(ai, 40, 25),
         NextAction::array(0, new NextAction("lifeblood", 60.0f), new NextAction("rejuvenation", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new DruidPartyMemberLowHealthTrigger(ai),
+        new LowHealthTrigger(ai, 25),
+        NextAction::array(0, new NextAction("survival instincts", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberLowHealthTrigger(ai),
         NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -32,6 +36,13 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
     {
         return new ActionNode (new MeleeAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("reach melee"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("survival instincts", name)) 
+    {
+        return new ActionNode (new CastSurvivalInstinctsAction(ai),  
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }

@@ -117,7 +117,7 @@ protected:
         ai->auras.push_back("cat form");
 
         ai->distanceToEnemy = 0.0f; 
-        ai->health = 1;
+        ai->health = 39;
         engine->DoNextAction(NULL); // life blood
         ai->auras.push_back("lifeblood");
 
@@ -132,7 +132,7 @@ protected:
         ai->auras.push_back("cat form");
         engine->DoNextAction(NULL); // melee
         
-        ai->health = 1;
+        ai->health = 39;
         engine->DoNextAction(NULL); // rejuvenation
 
         engine->DoNextAction(NULL); // melee
@@ -154,7 +154,7 @@ protected:
         ai->auras.remove("rejuvenation");
 
         ai->distanceToEnemy = 0.0f; 
-        ai->health = 1;
+        ai->health = 39;
         ai->auras.remove("rejuvenation");
         engine->DoNextAction(NULL); // life blood
         engine->DoNextAction(NULL); // gift of the naaru
@@ -177,7 +177,7 @@ protected:
         engine->DoNextAction(NULL); // dire bear form
         ai->auras.push_back("cat form");
 
-        ai->partyMinHealth = 1;
+        ai->partyMinHealth = 39;
         engine->DoNextAction(NULL); // caster form
         ai->auras.remove("cat form");
         ai->spellCooldowns.remove("cat form");

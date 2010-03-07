@@ -19,14 +19,6 @@ namespace ai
         virtual const char* getName() { return "swipe available"; }
     };
 
-    BEGIN_TRIGGER(DruidLowHealthTrigger, LowHealthTrigger)
-        virtual const char* getName() { return "low health"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(DruidPartyMemberLowHealthTrigger, PartyMemberLowHealthTrigger)
-        virtual const char* getName() { return "party member low health"; }
-    END_TRIGGER()
-
     BEGIN_TRIGGER(BearTankDruidLoseAggroTrigger, LoseAggroTrigger)
       virtual const char* getName() { return "lose aggro"; }
     END_TRIGGER()

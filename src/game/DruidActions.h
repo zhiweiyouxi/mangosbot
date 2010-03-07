@@ -74,6 +74,9 @@ namespace ai
         virtual const char* getName() { return "mark of the wild on party";}
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastSurvivalInstinctsAction, "survival instincts")
+    END_SPELL_ACTION()
+
     BEGIN_SPELL_ACTION(CastThornsAction, "thorns")
     END_SPELL_ACTION()
 

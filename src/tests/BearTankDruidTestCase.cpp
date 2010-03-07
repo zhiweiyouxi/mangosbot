@@ -186,7 +186,7 @@ protected:
         ai->auras.push_back("dire bear form");
 
         ai->distanceToEnemy = 0.0f; 
-        ai->health = 1;
+        ai->health = 39;
         engine->DoNextAction(NULL); // life blood
         ai->auras.push_back("lifeblood");
 
@@ -199,7 +199,7 @@ protected:
         ai->auras.push_back("bear form");
         engine->DoNextAction(NULL); // melee
         
-        ai->health = 1;
+        ai->health = 39;
         engine->DoNextAction(NULL); // rejuvenation
 
         engine->DoNextAction(NULL); // melee
@@ -220,7 +220,7 @@ protected:
         ai->auras.remove("rejuvenation");
 
         ai->distanceToEnemy = 0.0f; 
-        ai->health = 1;
+        ai->health = 39;
         ai->auras.remove("rejuvenation");
         engine->DoNextAction(NULL); // life blood
         engine->DoNextAction(NULL); // gift of the naaru
@@ -229,12 +229,12 @@ protected:
         ai->spellCooldowns.remove("rejuvenation");
         ai->auras.remove("rejuvenation");
         engine->DoNextAction(NULL); // caster form
-        ai->spellCooldowns.remove("rejuvenation");
-        ai->auras.remove("rejuvenation");
+        ai->health = 1;
         engine->DoNextAction(NULL); // regrowth
+        engine->DoNextAction(NULL); // survival instincts
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>-dire bear form>regrowth"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>-dire bear form>regrowth>survival instincts"));
     }
 
     void healOthers()
@@ -243,7 +243,7 @@ protected:
         engine->DoNextAction(NULL); // dire bear form
         ai->auras.push_back("dire bear form");
 
-        ai->partyMinHealth = 1;
+        ai->partyMinHealth = 39;
         engine->DoNextAction(NULL); // caster form
         engine->DoNextAction(NULL); // rejuvenation on party
         engine->DoNextAction(NULL); // regrowth on party
