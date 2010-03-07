@@ -95,10 +95,24 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("shadowform", name)) 
+    {
+        return new ActionNode (new CastShadowformAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("remove shadowform", name)) 
+    {
+        return new ActionNode (new CastRemoveShadowformAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else if (!strcmp("holy nova", name)) 
     {
         return new ActionNode (new CastHolyNovaAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
@@ -147,21 +161,21 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     else if (!strcmp("renew", name)) 
     {
         return new ActionNode (new CastRenewAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("renew on party", name)) 
     {
         return new ActionNode (new CastRenewOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("greater heal", name)) 
     {
         return new ActionNode (new CastGreaterHealAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NextAction::array(0, new NextAction("heal"), NULL), 
             /*C*/ NULL);
     }
@@ -175,42 +189,42 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
     else if (!strcmp("heal", name)) 
     {
         return new ActionNode (new CastHealAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NextAction::array(0, new NextAction("lesser heal"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("heal on party", name)) 
     {
         return new ActionNode (new CastHealOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NextAction::array(0, new NextAction("lesser heal on party"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("lesser heal", name)) 
     {
         return new ActionNode (new CastLesserHealAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("lesser heal on party", name)) 
     {
         return new ActionNode (new CastLesserHealOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("flash heal", name)) 
     {
         return new ActionNode (new CastFlashHealAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("flash heal on party", name)) 
     {
         return new ActionNode (new CastFlashHealOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }

@@ -42,21 +42,21 @@ ActionNode* DpsPriestStrategy::createAction(const char* name)
     if (!strcmp("shadow word: pain", name)) 
     {
         return new ActionNode (new CastPowerWordPainAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("devouring plague", name)) 
     {
         return new ActionNode (new CastDevouringPlagueAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("mind flay", name)) 
     {
         return new ActionNode (new CastMindFlayAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
@@ -77,7 +77,7 @@ ActionNode* DpsPriestStrategy::createAction(const char* name)
     else if (!strcmp("mind blast", name)) 
     {
         return new ActionNode (new CastMindBlastAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("shadowform"), NULL),
             /*A*/ NextAction::array(0, new NextAction("shoot"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("shoot"), NULL));
     }

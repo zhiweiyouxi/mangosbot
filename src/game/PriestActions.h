@@ -74,6 +74,24 @@ namespace ai
         CastFadeAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "fade") {}
     };
 
+    class CastShadowformAction : public CastSpellAction {
+    public:
+        CastShadowformAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "shadowform") {}
+        virtual BOOL isUseful() { return !ai->HasAura("shadowform"); }
+    };
+
+    class CastRemoveShadowformAction : public Action {
+    public:
+        CastRemoveShadowformAction(PlayerbotAIFacade* const ai) : Action(ai) {}
+        virtual BOOL isUseful() { return ai->HasAura("shadowform"); }
+        virtual BOOL isPossible() { return TRUE; }
+        virtual BOOL ExecuteResult() {
+            if (ai->HasAura("shadowform")) 
+                ai->RemoveAura("shadowform");
+            return TRUE;
+        }
+    };
+
     BEGIN_SPELL_ACTION(CastPowerWordShieldAction, "power word: shield")
     END_SPELL_ACTION()
 

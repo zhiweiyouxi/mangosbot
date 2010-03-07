@@ -55,15 +55,18 @@ protected:
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
         ai->resetSpells();
-        engine->DoNextAction(NULL); // concussive shot
+        engine->DoNextAction(NULL); // shadowform
+        engine->DoNextAction(NULL); // 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>mind flay"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>shadowform>mind flay"));
 
     }
 
     void combat()
     {
+        engine->DoNextAction(NULL); // shadowform
+        ai->auras.push_back("shadowform");
         engine->DoNextAction(NULL); // shadow word: pain
         engine->DoNextAction(NULL); // devouring plague
         engine->DoNextAction(NULL); // mind blast
@@ -77,10 +80,11 @@ protected:
         // heal if need
         ai->health = 1;
         engine->DoNextAction(NULL); // shirld
+        engine->DoNextAction(NULL); // -shadowform
         engine->DoNextAction(NULL); // greater heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">devouring plague>shadow word: pain>mind blast>holy fire>attack least threat>mind flay>smite>power word: shield>greater heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadowform>devouring plague>shadow word: pain>mind blast>holy fire>attack least threat>mind flay>smite>power word: shield>-shadowform>greater heal"));
     }
 };
 
