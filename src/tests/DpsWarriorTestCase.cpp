@@ -135,17 +135,16 @@ protected:
         ai->targetAuras.push_back("rend");
 
         ai->rage = 41;
-        engine->DoNextAction(NULL); // heroic strike
+        engine->DoNextAction(NULL); // bloodthirst
 
         engine->DoNextAction(NULL); // melee
 
         ai->distanceToEnemy = 0.0f; 
-        ai->spellCooldowns.remove("heroic strike");
         engine->DoNextAction(NULL); // heroic strike
         ai->rage = 0;
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>reach melee>melee>rend>heroic strike>melee>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>reach melee>melee>rend>bloodthirst>heroic strike>melee"));
     }
 
     void boost()

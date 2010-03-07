@@ -40,6 +40,11 @@ namespace ai
         CastMockingBlowAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "mocking blow") {}
     };
 
+    class CastBloodthirstAction : public CastMeleeSpellAction {
+    public:
+        CastBloodthirstAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "bloodthirst") {}
+    };
+
     // battle, berserker
     class CastExecuteAction : public CastMeleeSpellAction {
     public:
