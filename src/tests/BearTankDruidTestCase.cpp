@@ -228,13 +228,14 @@ protected:
 
         ai->spellCooldowns.remove("rejuvenation");
         ai->auras.remove("rejuvenation");
-        engine->DoNextAction(NULL); // caster form
         ai->health = 1;
-        engine->DoNextAction(NULL); // regrowth
         engine->DoNextAction(NULL); // survival instincts
+        ai->health = 39;
+        engine->DoNextAction(NULL); // caster form
+        engine->DoNextAction(NULL); // regrowth
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>-dire bear form>regrowth>survival instincts"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>survival instincts>-dire bear form>regrowth"));
     }
 
     void healOthers()

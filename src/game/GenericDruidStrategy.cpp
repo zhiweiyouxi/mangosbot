@@ -15,7 +15,7 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 25),
-        NextAction::array(0, new NextAction("survival instincts", 60.0f), NULL)));
+        NextAction::array(0, new NextAction("survival instincts", 80.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PartyMemberLowHealthTrigger(ai),
@@ -43,7 +43,7 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastSurvivalInstinctsAction(ai),  
             /*P*/ NULL,
-            /*A*/ NULL, 
+            /*A*/ NextAction::array(0, new NextAction("rejuvenation"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("caster form", name)) 
