@@ -66,7 +66,7 @@ protected:
         engine->DoNextAction(NULL); // reach melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>attack bigger threat>reach melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>attack bigger threat>feral charge - bear"));
 
     }
 
@@ -95,7 +95,7 @@ protected:
         engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach spell>faerie fire>dire bear form>reach melee>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach spell>faerie fire>dire bear form>feral charge - bear>melee"));
     }
 
     void druidMustDemoralizeAttackers()
@@ -130,7 +130,7 @@ protected:
         engine->DoNextAction(NULL); // melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>growl>reach melee>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>growl>feral charge - bear>melee"));
     }
 
     void druidMustDoMauls()
@@ -149,7 +149,7 @@ protected:
         engine->DoNextAction(NULL); // maul
     
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>reach melee>melee>maul>maul"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>maul>maul"));
     }
 
     void combatVsMelee()
@@ -160,6 +160,7 @@ protected:
         ai->auras.push_back("dire bear form");
 
         ai->distanceToEnemy = 15.0f; // enemy too far
+        engine->DoNextAction(NULL); // feral charge - bear
         engine->DoNextAction(NULL); // reach melee
         engine->DoNextAction(NULL); // melee
 
@@ -174,7 +175,7 @@ protected:
         engine->DoNextAction(NULL); // melee
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>reach melee>melee>maul>swipe>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>reach melee>maul>swipe>melee"));
     }
 
     void healHimself()

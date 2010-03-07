@@ -55,8 +55,15 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
     else if (!strcmp("melee", name)) 
     {
         return new ActionNode (new MeleeAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("reach melee"), NULL),
+            /*P*/ NextAction::array(0, new NextAction("cat form"), new NextAction("feral charge - cat"), NULL),
             /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("feral charge - cat", name)) 
+    {
+        return new ActionNode (new CastFeralChargeCatAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("reach melee"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("faerie fire", name)) 

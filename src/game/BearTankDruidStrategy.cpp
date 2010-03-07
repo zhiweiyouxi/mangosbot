@@ -55,8 +55,15 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
     if (!strcmp("melee", name)) 
     {
         return new ActionNode (new MeleeAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("dire bear form"), new NextAction("reach melee"), NULL),
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), new NextAction("feral charge - bear"), NULL),
             /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("feral charge - bear", name)) 
+    {
+        return new ActionNode (new CastFeralChargeBearAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("reach melee"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("faerie fire", name)) 

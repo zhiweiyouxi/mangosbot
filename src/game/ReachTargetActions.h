@@ -21,6 +21,19 @@ namespace ai
         float distance;
     };
 
+    class CastReachTargetSpellAction : public CastSpellAction {
+    public:
+        CastReachTargetSpellAction(PlayerbotAIFacade* const ai, const char* spell, float distance) : CastSpellAction(ai, spell) {
+            this->distance = distance;
+        }
+        virtual BOOL isUseful() {
+            return ai->GetDistanceToEnemy() > distance;
+        }
+
+    protected:
+        float distance;
+    };
+
     class ReachMeleeAction : public ReachTargetAction {
     public:
         ReachMeleeAction(PlayerbotAIFacade* const ai) : ReachTargetAction(ai, "reach melee", 1.5f) {}

@@ -44,6 +44,16 @@ namespace ai
     virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
+    class CastFeralChargeBearAction : public CastReachTargetSpellAction {
+    public:
+        CastFeralChargeBearAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - bear", 1.5f) {}
+    };
+
+    class CastFeralChargeCatAction : public CastReachTargetSpellAction {
+    public:
+        CastFeralChargeCatAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - cat", 1.5f) {}
+    };
+    
     class CastRejuvenationOnPartyAction : public HealPartyMemberAction
     {
     public:
