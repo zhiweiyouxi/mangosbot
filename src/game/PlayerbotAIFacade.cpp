@@ -520,6 +520,30 @@ Player* PlayerbotAIFacade::GetPartyMemberToDispell(uint32 dispelType)
     return NULL;
 }
 
+bool canDispel(const SpellEntry* entry, uint32 dispelType) {
+    if (entry->Dispel == dispelType) {
+        SpellSpecific ss = GetSpellSpecific(entry->Id);
+        return ss != SPELL_BLESSING         
+            && ss != SPELL_STING            
+            && ss != SPELL_ASPECT           
+            && ss != SPELL_TRACKER          
+            && ss != SPELL_WARLOCK_ARMOR    
+            && ss != SPELL_MAGE_ARMOR       
+            && ss != SPELL_POSITIVE_SHOUT   
+            && ss != SPELL_JUDGEMENT        
+            && ss != SPELL_BATTLE_ELIXIR    
+            && ss != SPELL_GUARDIAN_ELIXIR  
+            && ss != SPELL_FLASK_ELIXIR     
+            && ss != SPELL_PRESENCE         
+            && ss != SPELL_HAND             
+            && ss != SPELL_WELL_FED         
+            && ss != SPELL_FOOD             
+            && ss != SPELL_DRINK            
+            && ss != SPELL_FOOD_AND_DRINK;
+    }
+    return false;
+}
+
 bool PlayerbotAIFacade::TargetHasAuraToDispel(uint32 dispelType) {
     Unit* target = ai->GetCurrentTarget();
     if (!target) return false;
@@ -533,9 +557,8 @@ bool PlayerbotAIFacade::TargetHasAuraToDispel(uint32 dispelType) {
         if (!IsPositiveSpell(spellId))
             continue;
 
-        if (entry->Dispel == dispelType) {
+        if (canDispel(entry, dispelType))
             return true;
-        }
     }
     return false;
 }
@@ -550,9 +573,8 @@ BOOL PlayerbotAIFacade::HasAuraToDispel(Unit* player, uint32 dispelType)
         if (IsPositiveSpell(spellId))
             continue;
 
-        if (entry->Dispel == dispelType) {
+        if (canDispel(entry, dispelType))
             return TRUE;
-        }
     }
     return FALSE;
 }
