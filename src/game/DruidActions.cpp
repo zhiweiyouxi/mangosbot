@@ -101,6 +101,11 @@ NextAction** CastClawAction::getPrerequisites()
     return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
 }
 
+NextAction** CastMangleCatAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
+}
+
 NextAction** CastFerociousBiteAction::getPrerequisites()
 {
     return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());

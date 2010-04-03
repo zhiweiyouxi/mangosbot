@@ -97,7 +97,7 @@ protected:
 
         ai->distanceToEnemy = 0.0f; 
         engine->DoNextAction(NULL); // rake
-        engine->DoNextAction(NULL); // claw
+        engine->DoNextAction(NULL); // mangle
 
         ai->comboPoints = 5;
         engine->DoNextAction(NULL); // ferocious bite
@@ -106,7 +106,7 @@ protected:
         engine->DoNextAction(NULL); // rip
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>reach melee>rake>claw>ferocious bite>rip"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>reach melee>rake>mangle>ferocious bite>rip"));
     }
 
     void healHimself()
@@ -138,6 +138,8 @@ protected:
         engine->DoNextAction(NULL); // melee
 
         ai->resetSpells(); // continue as began
+        ai->spellCooldowns.push_back("mangle");
+        ai->spellCooldowns.push_back("rake");
         ai->health = 70;
         ai->auras.remove("cat form");
         ai->spellCooldowns.remove("cat form");
@@ -145,7 +147,7 @@ protected:
         engine->DoNextAction(NULL); // dire bear form
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>lifeblood>-cat form>regrowth>cat form>claw>-cat form>rejuvenation>cat form>claw"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>lifeblood>-cat form>regrowth>cat form>mangle>-cat form>rejuvenation>cat form>claw"));
     }
 
     void intensiveHealing()

@@ -9,7 +9,7 @@ using namespace ai;
 
 NextAction** CatDpsDruidStrategy::getDefaultActions()
 {
-    return NextAction::array(0, new NextAction("faerie fire", 30.0f), new NextAction("claw", 10.0f), NULL);
+    return NextAction::array(0, new NextAction("faerie fire", 30.0f), new NextAction("mangle (cat)", 10.0f), NULL);
 }
 
 void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
@@ -87,26 +87,33 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("claw", 15.0f), NULL));
     }
+    else if (!strcmp("mangle (cat)", name)) 
+    {
+        return new ActionNode (new CastMangleCatAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("claw"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("mangle (cat)", 15.0f), NULL));
+    }
     else if (!strcmp("rake", name)) 
     {
         return new ActionNode (new CastRakeAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("claw", 15.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("mangle (cat)", 15.0f), NULL));
     }
     else if (!strcmp("ferocious bite", name)) 
     {
         return new ActionNode (new CastFerociousBiteAction(ai),  
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("rip"), NULL), 
-            /*C*/ NextAction::array(0, new NextAction("claw", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("mangle (cat)", 10.0f), NULL));
     }
     else if (!strcmp("rip", name)) 
     {
         return new ActionNode (new CastRipAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("claw", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("mangle (cat)", 10.0f), NULL));
     }
     else if (!strcmp("cower", name)) 
     {

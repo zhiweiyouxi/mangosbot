@@ -108,6 +108,10 @@ namespace ai
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
+    BEGIN_MELEE_SPELL_ACTION(CastMangleCatAction, "mangle (cat)") // main nuke
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
     BEGIN_MELEE_SPELL_ACTION(CastFerociousBiteAction, "ferocious bite")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()

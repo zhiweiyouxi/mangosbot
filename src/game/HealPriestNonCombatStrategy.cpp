@@ -67,13 +67,6 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
         new PartyMemberNeedCureTrigger(ai, "cure disease", DISPEL_DISEASE),
         NextAction::array(0, new NextAction("abolish disease on party", 30.0f), NULL)));
 
-    triggers.push_back(new TriggerNode(
-        new AttackerCountTrigger(ai, 3, 10.0f),
-        NextAction::array(0, new NextAction("holy nova", 25.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        new TargetAuraDispelTrigger(ai, "dispel magic", DISPEL_MAGIC),
-        NextAction::array(0, new NextAction("dispel magic on target", 40.0f), NULL)));
 
 }
 

@@ -26,6 +26,10 @@ void DpsPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("mind flay", 20.0f), NULL)));
+
+    /*triggers.push_back(new TriggerNode(
+        new TargetAuraDispelTrigger(ai, "dispel magic", DISPEL_MAGIC),
+        NextAction::array(0, new NextAction("dispel magic on target", 10.0f), NULL)));*/
 }
 
 void DpsPriestStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

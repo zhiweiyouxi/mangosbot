@@ -2737,6 +2737,9 @@ void PlayerbotAI::UseLongTimeItem(Item* pItem, uint8 time)
 
 void PlayerbotAI::Attack(Unit* thingToAttack)
 {
+    if (!thingToAttack)
+        return;
+
     if (m_bot->IsFriendlyTo(thingToAttack))
     {
         TellMaster("I cannot attack this");

@@ -163,7 +163,7 @@ protected:
         ai->attackerCount = 3;
         ai->partyMinHealth = 75;
         engine->DoNextAction(NULL); // fade
-        engine->DoNextAction(NULL); // holy nova
+        //engine->DoNextAction(NULL); // holy nova
         ai->myAttackerCount = 0;
         ai->attackerCount = 1;
         ai->partyMinHealth = 100;
@@ -172,7 +172,7 @@ protected:
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>fade>holy nova>attack least threat"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>fade>attack least threat"));
     }
 
     void dispel() 
@@ -208,16 +208,16 @@ protected:
         engine->DoNextAction(NULL); // cure disease on party
         ai->partyAurasToDispel = 0;
 
-        ai->targetAurasToDispel = DISPEL_MAGIC;
+        /*ai->targetAurasToDispel = DISPEL_MAGIC;
         ai->spellCooldowns.remove("dispel magic");
         engine->DoNextAction(NULL); // dispel magic on target
-        ai->targetAurasToDispel = 0;
+        ai->targetAurasToDispel = 0;*/
 
         ai->spellCooldowns.remove("shoot");
         engine->DoNextAction(NULL); // shoot
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>dispel magic>dispel magic on party>abolish disease>abolish disease on party>cure disease>cure disease on party>dispel magic on target>shoot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>dispel magic>dispel magic on party>abolish disease>abolish disease on party>cure disease>cure disease on party>shoot"));
     }
 
 };
