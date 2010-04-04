@@ -143,13 +143,14 @@ protected:
         engine->DoNextAction(NULL); // melee
     
         ai->distanceToEnemy = 0.0f; 
-        ai->rage = 10;
+        ai->rage = 40;
+        engine->DoNextAction(NULL); // mangle (bear)
         engine->DoNextAction(NULL); // maul
         ai->spellCooldowns.remove("maul");
         engine->DoNextAction(NULL); // maul
     
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>maul>maul"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>mangle (bear)>maul>maul"));
     }
 
     void combatVsMelee()
@@ -165,17 +166,17 @@ protected:
         engine->DoNextAction(NULL); // melee
 
         ai->distanceToEnemy = 0.0f; 
-        ai->rage = 10;
-        engine->DoNextAction(NULL); // maul
+        ai->rage = 40;
+        engine->DoNextAction(NULL); // mangle (bear)
 
-        ai->rage = 15;
+        ai->rage = 50;
         engine->DoNextAction(NULL); // swipe
 
         ai->rage = 0;
         engine->DoNextAction(NULL); // melee
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>reach melee>maul>swipe>melee"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>reach melee>mangle (bear)>swipe>maul"));
     }
 
     void healHimself()

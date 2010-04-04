@@ -24,11 +24,11 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("growl", 30.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new MaulAvailable(ai),
-        NextAction::array(0, new NextAction("maul", 20.0f), NULL)));
+        new RageAvailable(ai, 20),
+        NextAction::array(0, new NextAction("mangle (bear)", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new SwipeAvailable(ai),
+        new RageAvailable(ai, 50),
         NextAction::array(0, new NextAction("swipe", 20.0f), new NextAction("maul", 10.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -85,6 +85,13 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
         return new ActionNode (new CastDireBearFormAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("mangle (bear)", name)) 
+    {
+        return new ActionNode (new CastMangleBearAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("maul"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
     else if (!strcmp("maul", name)) 
