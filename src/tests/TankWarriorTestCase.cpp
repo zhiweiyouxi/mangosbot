@@ -115,7 +115,7 @@ protected:
         engine->DoNextAction(NULL); // reach melee
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>attack bigger threat>rend"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>attack bigger threat>devastate"));
 
     }
 
@@ -141,7 +141,7 @@ protected:
         engine->DoNextAction(NULL); // rend
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>demoralizing shout>thunder clap>cleave>heroic strike>challenging shout>rend"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>demoralizing shout>thunder clap>cleave>heroic strike>challenging shout>devastate"));
     }
 
     void warriorMustHoldAggro()
@@ -168,21 +168,28 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>taunt>rend>battle stance>mocking blow>defensive stance>disarm"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>taunt>devastate>battle stance>mocking blow>defensive stance>revenge"));
     }
 
     void combatVsMelee()
     {
         ai->distanceToEnemy = 15.0f; // enemy too far
+        ai->rage = 11;
         
         engine->DoNextAction(NULL); // defensive stance
         engine->DoNextAction(NULL); // reach melee
         ai->distanceToEnemy = 0.0f; 
         engine->DoNextAction(NULL); // melee
 
+        engine->DoNextAction(NULL); // bloodrage
         engine->DoNextAction(NULL); // rend
         ai->spellCooldowns.remove("rend");
         ai->targetAuras.push_back("rend");
+
+        ai->rage = 21;
+        engine->DoNextAction(NULL); // devastate
+        engine->DoNextAction(NULL); // revenge
+        engine->DoNextAction(NULL); // sunder armor
 
         engine->DoNextAction(NULL); // disarm
         ai->spellCooldowns.remove("disarm");
@@ -194,6 +201,7 @@ protected:
         engine->DoNextAction(NULL); 
         ai->spellCooldowns.remove("disarm");
         ai->targetAuras.push_back("disarm");
+        ai->spellCooldowns.remove("devastate");
 
         engine->DoNextAction(NULL); 
         ai->spellCooldowns.remove("sunder armor");
@@ -204,7 +212,7 @@ protected:
         ai->rage = 20;
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>rend>disarm>heroic strike>sunder armor>melee>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>disarm>heroic strike>melee>devastate>heroic strike"));
     }
 
     void revengeIfDodge()

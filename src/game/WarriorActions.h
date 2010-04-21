@@ -79,12 +79,9 @@ namespace ai
     };
 
     // defensive
-    class CastShieldWallAction : public CastSpellAction {
+    class CastShieldWallAction : public CastDefensiveMeleeSpellAction {
     public:
-        CastShieldWallAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "shield wall") {}
-        virtual NextAction** getPrerequisites() {
-            return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastSpellAction::getPrerequisites());
-        }
+        CastShieldWallAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "shield wall") {}
     };
 
     class CastBloodrageAction : public CastSpellAction {
@@ -92,6 +89,17 @@ namespace ai
         CastBloodrageAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "bloodrage") {}
     };
 
+    // defensive
+    class CastDevastateAction : public CastDefensiveMeleeSpellAction {
+    public:
+        CastDevastateAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "devastate") {}
+    };
+
+    // all
+    class CastSlamAction : public CastMeleeSpellAction {
+    public:
+        CastSlamAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "slam") {}
+    };
 
     // after dodge
     BEGIN_MELEE_SPELL_ACTION(CastRevengeAction, "revenge")

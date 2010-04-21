@@ -20,8 +20,8 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new SunderArmorDebuffTrigger(ai), 
-        NextAction::array(0, new NextAction("sunder armor", 1.0f), NULL)));
+        new RageAvailable(ai, 20), 
+        NextAction::array(0, new NextAction("devastate", 1.4f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new DisarmDebuffTrigger(ai), 
@@ -86,7 +86,14 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastRevengeAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
+            /*A*/ NextAction::array(0, new NextAction("slam"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("slam", name)) 
+    {
+        return new ActionNode (new CastSlamAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("disarm", name)) 
@@ -102,6 +109,13 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
+    }
+    else if (!strcmp("devastate", name)) 
+    {
+        return new ActionNode (new CastDevastateAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("sunder armor"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("revenge", 10.0f), NULL));
     }
     else if (!strcmp("shield bash", name)) 
     {
