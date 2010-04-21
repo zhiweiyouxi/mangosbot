@@ -22,6 +22,7 @@ class HealPriestTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( nonCombat );
     CPPUNIT_TEST( dispel );
     CPPUNIT_TEST( fade );
+    CPPUNIT_TEST( enemyTooClose );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -173,6 +174,21 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>fade>attack least threat"));
+    }
+
+    void enemyTooClose()
+    {
+        engine->DoNextAction(NULL); 
+
+        ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // flee
+        engine->DoNextAction(NULL); // fade
+        ai->distanceToEnemy = 15;
+        ai->spellCooldowns.remove("shoot");
+        engine->DoNextAction(NULL); 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shoot>fade>flee>shoot"));
     }
 
     void dispel() 

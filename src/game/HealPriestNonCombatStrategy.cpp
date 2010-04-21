@@ -67,6 +67,9 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
         new PartyMemberNeedCureTrigger(ai, "cure disease", DISPEL_DISEASE),
         NextAction::array(0, new NextAction("abolish disease on party", 30.0f), NULL)));
 
+    triggers.push_back(new TriggerNode(
+        new EnemyTooCloseTrigger(ai), 
+        NextAction::array(0, new NextAction("fade", 50.0f), new NextAction("flee", 50.0f), NULL)));    
 
 }
 

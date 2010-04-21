@@ -23,7 +23,8 @@
 [v] reach melee: CONTACT_DISTANCE vs ATTACK_DISTANCE
 [v] do not dispel demon skin
 
-[ ] mangle
+[v] mangle
+[v] devastate, slam
 [ ] travel strategy (ignore if mounted/umount if attacked)
 [ ] cat form if mounted
 [ ] move dispel to dps
