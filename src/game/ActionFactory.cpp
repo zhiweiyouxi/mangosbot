@@ -40,7 +40,14 @@ ActionNode* ActionFactory::createAction(const char* name)
     {
         return new ActionNode (new CastLifeBloodAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("regrowth"), NULL), 
+            /*A*/ NextAction::array(0, new NextAction("gift of the naaru"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("gift of the naaru", name)) 
+    {
+        return new ActionNode (new CastGiftOfTheNaaruAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("healing potion"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("panic potion", name)) 
@@ -124,6 +131,15 @@ Strategy* ActionFactory::createStrategy(const char* name)
     
     if (!strcmp("emote", name))
         return new RandomEmoteStrategy(ai);
+
+    if (!strcmp("passive", name))
+        return new PassiveStrategy(ai);
+    
+    if (!strcmp("low mana", name))
+        return new LowManaStrategy(ai);
+
+    if (!strcmp("food", name))
+        return new UseFoodStrategy(ai);
 
     return NULL;
 }

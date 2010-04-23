@@ -1,22 +1,6 @@
 #pragma once
 #include "PlayerbotAIFacadeAware.h"
 
-
-#define BEGIN_ACTION(clazz, name) \
-class clazz : public Action \
-    { \
-    public: \
-        clazz(PlayerbotAIFacade* const ai) : Action(ai) {} \
-        virtual BOOL Execute(); \
-        virtual const char* getName() { return name; }
-
-#define ACTION_KIND(value) \
-    virtual int getKind() { return value; }
-
-#define END_ACTION() \
-    };
-
-
 namespace ai
 {
     class NextAction
@@ -56,18 +40,24 @@ namespace ai
     class Action : public PlayerbotAIFacadeAware
 	{
 	public:
-        Action(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
+        Action(PlayerbotAIFacade* const ai, const char* name = NULL) : PlayerbotAIFacadeAware(ai) {
+            this->name = name;
+        }
         virtual ~Action(void) {}
 
     public:
-        virtual BOOL Execute() { return TRUE; }
+        virtual BOOL ExecuteResult() { Execute(); return TRUE; }
+        virtual void Execute() { }
         virtual BOOL isPossible() { return TRUE; }
         virtual BOOL isUseful() { return TRUE; }
         virtual NextAction** getPrerequisites() { return NULL; }
         virtual NextAction** getAlternatives() { return NULL; }
         virtual NextAction** getContinuers() { return NULL; }
-        virtual const char* getName() { return "action"; }
+        virtual const char* getName() { return !name ? "action" : name; }
         virtual int getKind() { return 0; }
+
+    protected:
+        const char* name;
 	};
 
     class ActionNode
@@ -91,7 +81,7 @@ namespace ai
     public:
         Action* getAction() { return action; }
         const char* getName() { return action->getName(); }
-        virtual BOOL Execute() { return action->Execute(); }
+        virtual BOOL Execute() { return action->ExecuteResult(); }
         virtual BOOL isPossible() { return action->isPossible(); }
         virtual BOOL isUseful() { return action->isUseful(); }
 

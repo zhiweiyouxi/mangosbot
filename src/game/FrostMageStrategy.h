@@ -10,11 +10,11 @@ namespace ai
         FrostMageStrategy(PlayerbotAIFacade* const ai) : GenericMageStrategy(ai) {}
 
     public:
-        BEGIN_NEXT_ACTIONS(1)
-            NEXT_ACTION(0, "frostbolt", 1.0f)
-        END_NEXT_ACTIONS(1)
-
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
         virtual const char* getName() { return "frost mage"; }
+        virtual ActionNode* createAction(const char* name);
+        virtual NextAction** getDefaultActions();
+
     };
 }

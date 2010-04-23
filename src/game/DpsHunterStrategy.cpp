@@ -16,9 +16,21 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     GenericHunterStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
+        new HunterAspectOfTheViperTrigger(ai), 
+        NextAction::array(0, new NextAction("aspect of the viper", 91.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HunterAspectOfTheHawkTrigger(ai), 
+        NextAction::array(0, new NextAction("aspect of the hawk", 90.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new HunterNoStingsActiveTrigger(ai), 
         NextAction::array(0, new NextAction("serpent sting", 50.0f), NULL)));
-    
+
+    triggers.push_back(new TriggerNode(
+        new LowManaTrigger(ai), 
+        NextAction::array(0, new NextAction("viper sting", 51.0f), NULL)));
+
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
@@ -89,6 +101,13 @@ ActionNode* DpsHunterStrategy::createAction(const char* name)
     else if (!strcmp("serpent sting", name)) 
     {
         return new ActionNode (new CastSerpentStingAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+    }
+    else if (!strcmp("viper sting", name)) 
+    {
+        return new ActionNode (new CastViperStingAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));

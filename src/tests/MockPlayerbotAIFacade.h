@@ -15,6 +15,9 @@ namespace ai
             attackerCount = 1;myAttackerCount = 1;
             comboPoints = 0;
             lootAvailable = false;
+            balancePercent = 100;
+            targetIsMoving = false;
+            targetIsCastingNonMeleeSpell = false;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -25,8 +28,9 @@ namespace ai
         virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }
         virtual void Stay() { buffer.append(">stay"); }
         virtual BOOL CastSpell(const char* spell, Unit* target = NULL);
+        virtual BOOL CastSpellOnCurrentTarget(const char* spell);
         virtual BOOL canCastSpell(const char* spell);
-        virtual void MoveToTarget(float distance = 0.0f) {if (distance) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
+        virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
         virtual uint8 GetRage() { return rage; } 
         virtual BOOL HasAura(const char* spell);
         virtual BOOL TargetHasAura(const char* spell);
@@ -38,7 +42,7 @@ namespace ai
         virtual uint8 GetTargetHealthPercent() { return targetHealth; }
         virtual uint8 GetManaPercent() {return mana; }
         virtual BOOL HasAggro() { return aggro; }
-        virtual int GetAttackerCount() { return attackerCount; }
+        virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE) { return attackerCount; }
         virtual int GetMyAttackerCount() {return myAttackerCount; }
         virtual void RemoveAura(const char* name) {auras.remove(name); buffer.append(">-").append(name); }
         virtual bool CanLoot() { return lootAvailable; }
@@ -49,6 +53,9 @@ namespace ai
         virtual void UsePanicPotion() { buffer.append(">pp"); }
         virtual void UseFood() { buffer.append(">eat"); }
         virtual void UseDrink() { buffer.append(">drink"); }
+        virtual BOOL HasFood() { return TRUE; }
+        virtual BOOL HasDrink() { return TRUE; }
+
 
         virtual uint8 GetPetHealthPercent() { return petHealth; }
         virtual BOOL HasPet() { return hasPet; }
@@ -69,6 +76,16 @@ namespace ai
         virtual void TellMaster(const char* text) { buffer.append(text); }
 
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
+        virtual float GetFollowAngle() { return 0; }
+        virtual BOOL HasSpell(const char* spell) { return TRUE; }
+
+        virtual Player* GetPartyMemberToDispell(uint32 dispelType) { return partyAurasToDispel == dispelType ? (Player*)0xEEEEEE : NULL; }
+        virtual BOOL HasAuraToDispel(uint32 dispelType) { return aurasToDispel == dispelType; }
+        virtual float GetBalancePercent() { return balancePercent; }
+        virtual bool IsTargetMoving() { return targetIsMoving; }
+        virtual bool IsTargetCastingNonMeleeSpell() { return targetIsCastingNonMeleeSpell; }
+        virtual bool TargetHasAuraToDispel(uint32 dispelType) { return targetAurasToDispel == dispelType; }
+
     public:
         void resetSpells() {spellCooldowns.clear(); }
 
@@ -88,6 +105,10 @@ namespace ai
         int myAttackerCount;
         int partyMinHealth;
         bool lootAvailable;
+        uint32 partyAurasToDispel, aurasToDispel, targetAurasToDispel;
+        float balancePercent;
+        bool targetIsMoving;
+        bool targetIsCastingNonMeleeSpell;
     };
 
 }

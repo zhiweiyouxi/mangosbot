@@ -45,5 +45,45 @@ ActionNode* GenericHunterStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("rapid fire", name)) 
+    {
+        return new ActionNode (new CastRapidFireAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("readyness"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("readyness", name)) 
+    {
+        return new ActionNode (new CastReadynessAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("aspect of the hawk", name)) 
+    {
+        return new ActionNode (new CastAspectOfTheHawkAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("aspect of the viper", name)) 
+    {
+        return new ActionNode (new CastAspectOfTheViperAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else return NULL;
 }
+
+
+
+
+void HunterBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+    triggers.push_back(new TriggerNode(
+        new BoostTrigger(ai, "rapid fire", 45),
+        NextAction::array(0, new NextAction("rapid fire", 55.0f), NULL)));
+
+}
+

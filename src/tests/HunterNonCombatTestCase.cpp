@@ -31,6 +31,8 @@ public:
         engine = new Engine(ai, new HunterActionFactory(ai));
         engine->addStrategy("nc");
         engine->Init();
+
+        ai->attackerCount = 0;
     }
 
     void tearDown()
@@ -44,11 +46,14 @@ public:
 protected:
     void buff()
     {
-        engine->DoNextAction(NULL);
-        ai->auras.push_back("aspect of the hawk");
+        engine->DoNextAction(NULL);     
+        engine->DoNextAction(NULL);     
+        ai->attackerCount = 1;
+        engine->DoNextAction(NULL);     
+        ai->attackerCount = 0;
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the hawk"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the pack>aspect of the hawk"));
     }
     void summonPet()
     {
@@ -68,7 +73,7 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>aspect of the pack"));
     }
     
 };

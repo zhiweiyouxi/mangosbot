@@ -77,6 +77,7 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");
+    nonCombatEngine->addStrategy("food");
     nonCombatEngine->Init();
 }
 

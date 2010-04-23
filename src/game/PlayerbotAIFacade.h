@@ -25,13 +25,14 @@ namespace ai
 
     public:
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
-        virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 2.0f, 0); }
-        virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 2.0f, 0); }
+        virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
+        virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void Melee() { ai->Attack(ai->GetCurrentTarget()); }
         virtual void Flee(float distance = SPELL_DISTANCE);
         virtual void GoAway(float distance = SPELL_DISTANCE);
         virtual void MoveToTarget(float distance = 0.0f) { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
         virtual void Stay() {ai->MovementClear();}
+        virtual BOOL CastSpellOnCurrentTarget(const char* spell) { return ai->CastSpell(ai->getSpellId(spell), ai->GetCurrentTarget()); }
         virtual BOOL CastSpell(const char* spell, Unit* target = NULL) { return ai->CastSpell(ai->getSpellId(spell), target); }
         virtual BOOL canCastSpell( const char* spell );
         virtual uint8 GetRage();
@@ -51,27 +52,37 @@ namespace ai
         virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual BOOL HasAggro();
-        virtual int GetAttackerCount();
+        virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
         virtual int GetMyAttackerCount();
         virtual BOOL IsMounted();
         virtual BOOL HaveTarget() { return ai->GetCurrentTarget() != NULL; }
         virtual bool CanLoot() { return ai->CanLoot(); }
         virtual void Loot() { ai->DoLoot(); }
         virtual void TellMaster(const char* text) { ai->TellMaster(text); }
+        virtual BOOL HasSpell(const char* spell) { return ai->getSpellId(spell) > 0; }
 
         virtual void AttackLeastThreat();
         virtual void AttackBiggerThreat();
+        virtual float GetFollowAngle();
         
         virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
         virtual void UseManaPotion() { FindAndUse(isManaPotion); }
         virtual void UsePanicPotion()  { FindAndUse(isPanicPotion); }
         virtual void UseFood();
         virtual void UseDrink();
+        virtual BOOL HasFood() { return ai->FindUsableItem(isFood) != NULL; }
+        virtual BOOL HasDrink() { return ai->FindUsableItem(isDrink) != NULL; }
         virtual BOOL HasHealingPotion() { return ai->FindUsableItem(isHealingPotion) != NULL; }
         virtual BOOL HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
         virtual BOOL HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
 
         virtual void Emote(uint32 emote);
+        virtual Player* GetPartyMemberToDispell(uint32 dispelType);
+        virtual BOOL HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(ai->GetPlayerBot(), dispelType); }
+        virtual float GetBalancePercent();
+        virtual bool IsTargetMoving();
+        virtual bool IsTargetCastingNonMeleeSpell();
+        virtual bool TargetHasAuraToDispel(uint32 dispelType);
 
     protected:
         static BOOL isHealingPotion(const ItemPrototype* pItemProto);
@@ -84,6 +95,7 @@ namespace ai
         static BOOL isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);
         void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
+        BOOL HasAuraToDispel(Unit* player, uint32 dispelType);
 
     protected:
         PlayerbotAI *ai;

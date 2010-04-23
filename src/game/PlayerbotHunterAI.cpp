@@ -81,6 +81,7 @@ PlayerbotHunterAI::PlayerbotHunterAI(Player* const master, Player* const bot, Pl
     engine = new ai::Engine(facade, new ai::HunterActionFactory(facade));
     engine->addStrategy("dps");
     engine->addStrategy("assist");
+    engine->addStrategy("boost");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::HunterActionFactory(facade));
@@ -89,6 +90,7 @@ PlayerbotHunterAI::PlayerbotHunterAI(Player* const master, Player* const bot, Pl
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");
+    nonCombatEngine->addStrategy("food");
     nonCombatEngine->Init();
 
 }

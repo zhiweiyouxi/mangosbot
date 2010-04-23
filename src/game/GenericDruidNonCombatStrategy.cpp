@@ -11,7 +11,7 @@ void GenericDruidNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trigge
     GenericNonCombatStrategy::InitTriggers(triggers);
     
     triggers.push_back(new TriggerNode(
-        new DruidPartyMemberLowHealthTrigger(ai),
+        new PartyMemberLowHealthTrigger(ai),
         NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(

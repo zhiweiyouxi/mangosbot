@@ -19,15 +19,18 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastMaulAction, "maul")
-        virtual BOOL isPossible();
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastBashAction, "bash")
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastSwipeAction, "swipe")
-        virtual BOOL isPossible();
     END_SPELL_ACTION()
 
-    BEGIN_ACTION(CastCasterFormAction, "caster form")
+    BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")
         virtual BOOL isUseful();
+        virtual BOOL isPossible() { return TRUE; }
+        virtual BOOL ExecuteResult();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
@@ -41,6 +44,16 @@ namespace ai
     virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
+    class CastFeralChargeBearAction : public CastReachTargetSpellAction {
+    public:
+        CastFeralChargeBearAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - bear", 1.5f) {}
+    };
+
+    class CastFeralChargeCatAction : public CastReachTargetSpellAction {
+    public:
+        CastFeralChargeCatAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - cat", 1.5f) {}
+    };
+    
     class CastRejuvenationOnPartyAction : public HealPartyMemberAction
     {
     public:
@@ -58,7 +71,7 @@ namespace ai
         virtual NextAction** getPrerequisites();
     };
 
-    BEGIN_SPELL_ACTION(CastGrowlAction, "growl")
+    BEGIN_RANGED_SPELL_ACTION(CastGrowlAction, "growl")
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")
@@ -69,7 +82,10 @@ namespace ai
 
     BEGIN_BUFF_ON_PARTY_ACTION(CastMarkOfTheWildOnPartyAction, "mark of the wild")
         virtual const char* getName() { return "mark of the wild on party";}
-    END_ACTION()
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastSurvivalInstinctsAction, "survival instincts")
+    END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastThornsAction, "thorns")
     END_SPELL_ACTION()
@@ -80,12 +96,23 @@ namespace ai
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 
+    BEGIN_SPELL_ACTION(CastCowerAction, "cower")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+        
     BEGIN_DEBUFF_ACTION(CastRakeAction, "rake")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastClawAction, "claw") // main nuke
         virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastMangleCatAction, "mangle (cat)") // main nuke
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    BEGIN_MELEE_SPELL_ACTION(CastMangleBearAction, "mangle (bear)") // main nuke
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastFerociousBiteAction, "ferocious bite")
@@ -95,4 +122,42 @@ namespace ai
     BEGIN_MELEE_SPELL_ACTION(CastRipAction, "rip")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastBerserkAction, "berserk")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    BEGIN_SPELL_ACTION(CastTigersFuryAction, "tiger's fury")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+        
+
+    BEGIN_SPELL_ACTION(CastCurePoisonAction, "cure poison")
+        virtual NextAction** getPrerequisites();
+    END_SPELL_ACTION()
+
+    class CastCurePoisonOnPartyAction : public CurePartyMemberAction
+    {
+    public:
+        CastCurePoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "cure poison", DISPEL_POISON) {}
+
+        virtual const char* getName() { return "cure poison on party"; }
+        virtual NextAction** getPrerequisites();
+    };
+
+    BEGIN_SPELL_ACTION(CastAbolishPoisonAction, "abolish poison")
+        virtual NextAction** getPrerequisites();
+        virtual NextAction** getAlternatives();
+    END_SPELL_ACTION()
+
+    class CastAbolishPoisonOnPartyAction : public CurePartyMemberAction
+    {
+    public:
+        CastAbolishPoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "abolish poison", DISPEL_POISON) {}
+
+        virtual const char* getName() { return "abolish poison on party"; }
+        virtual NextAction** getPrerequisites();
+        virtual NextAction** getAlternatives();
+    };
+
 }

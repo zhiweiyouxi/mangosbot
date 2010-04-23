@@ -79,6 +79,7 @@ namespace ai
         void Reset();
         void ProcessTriggers();
         void PushDefaultActions();
+        void PushAgain(ActionNode* actionNode, float relevance);
         ActionNode* createAction(const char* name);
 
     protected:

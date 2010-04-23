@@ -2,184 +2,105 @@
 
 #include "Action.h"
 #include "PlayerbotAIFacade.h"
-
-#define BEGIN_SPELL_ACTION(clazz, name) \
-class clazz : public CastSpellAction \
-        { \
-        public: \
-        clazz(PlayerbotAIFacade* const ai) : CastSpellAction(ai, name) {} \
-
-
-#define END_SPELL_ACTION() \
-    };
-
-#define BEGIN_DEBUFF_ACTION(clazz, name) \
-class clazz : public CastDebuffSpellAction \
-        { \
-        public: \
-        clazz(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, name) {} \
-
-#define BEGIN_RANGED_SPELL_ACTION(clazz, name) \
-class clazz : public CastRangedSpellAction \
-        { \
-        public: \
-        clazz(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, name) {} \
-
-#define BEGIN_MELEE_SPELL_ACTION(clazz, name) \
-class clazz : public CastMeleeSpellAction \
-        { \
-        public: \
-        clazz(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, name) {} \
-
-
-#define END_RANGED_SPELL_ACTION() \
-    };
-
-
-#define BEGIN_BUFF_ON_PARTY_ACTION(clazz, name) \
-class clazz : public BuffOnPartyAction \
-        { \
-        public: \
-        clazz(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, name) {} 
+#include "GenericSpellActions.h"
+#include "ReachTargetActions.h"
+#include "ChooseTargetActions.h"
 
 namespace ai
 {
-    class CastSpellAction : public Action
-    {
+    class FleeAction : public Action {
     public:
-        CastSpellAction(PlayerbotAIFacade* const ai, const char* spell) : Action(ai)
-        {
-            this->spell = spell;
+        FleeAction(PlayerbotAIFacade* const ai) : Action(ai, "flee") {}
+        virtual void Execute() {
+            ai->Flee(); 
         }
-
-        BOOL Execute() { return ai->CastSpell(spell); }
-        virtual BOOL isPossible() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
-        virtual const char* getName() { return spell; }
-
-    protected:
-        const char* spell;
     };
 
-
-    //---------------------------------------------------------------------------------------------------------------------
-    class CastMeleeSpellAction : public CastSpellAction
-    {
+    class FollowAction : public Action {
     public:
-        CastMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual BOOL isPossible();
-        virtual NextAction** getPrerequisites();
+        FollowAction(PlayerbotAIFacade* const ai) : Action(ai, "follow") {}
+        virtual void Execute() {
+            ai->FollowMaster(); 
+        }
     };
-    //---------------------------------------------------------------------------------------------------------------------
 
-    class CastRangedSpellAction : public CastSpellAction
-    {
+    class StayAction : public Action {
     public:
-        CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual NextAction** getPrerequisites();
-
+        StayAction(PlayerbotAIFacade* const ai) : Action(ai, "stay") {}
+        virtual void Execute() {
+            ai->Stay(); 
+        }
     };
-    //---------------------------------------------------------------------------------------------------------------------
-    class CastDebuffSpellAction : public CastSpellAction
-    {
+
+    class GoAwayAction : public Action {
     public:
-        CastDebuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual BOOL isPossible();
+        GoAwayAction(PlayerbotAIFacade* const ai) : Action(ai, "goaway") {}
+        virtual void Execute() {
+            ai->GoAway(); 
+        }
     };
-    //---------------------------------------------------------------------------------------------------------------------
 
-    BEGIN_ACTION(FleeAction, "flee")
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(MeleeAction, "melee")
-    END_ACTION()
-
-    BEGIN_ACTION(ReachMeleeAction, "reach melee")
-        virtual BOOL isUseful();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(ReachSpellAction, "reach spell")
-        virtual BOOL isUseful();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_SPELL_ACTION(CastLifeBloodAction, "lifeblood")
-        virtual BOOL isUseful();
-    END_SPELL_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(UseHealingPotion, "healing potion")
-        virtual BOOL isPossible();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(UseManaPotion, "mana potion")
-        virtual BOOL isPossible();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-
-    BEGIN_ACTION(UsePanicPotion, "panic potion")
-        virtual BOOL isPossible();
-    END_ACTION()
-
-    //---------------------------------------------------------------------------------------------------------------------
-    
-    class HealPartyMemberAction : public CastSpellAction
-    {
+    class MeleeAction : public Action {
     public:
-        HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-
-        virtual BOOL Execute();
-        virtual BOOL isUseful();
+        MeleeAction(PlayerbotAIFacade* const ai) : Action(ai, "melee") {}
+        virtual void Execute() {
+            ai->Melee();
+        }
     };
 
-    //---------------------------------------------------------------------------------------------------------------------
-
-    class BuffOnPartyAction : public CastSpellAction
-    {
+    class UseHealingPotion : public Action {
     public:
-        BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-    public: 
-        virtual BOOL Execute();
-        virtual BOOL isUseful();
+        UseHealingPotion(PlayerbotAIFacade* const ai) : Action(ai, "healing potion") {}
+        virtual void Execute() {
+            ai->UseHealingPotion(); 
+        }
+        virtual BOOL isPossible() {
+            return ai->HasHealingPotion();
+        }
     };
 
-    //---------------------------------------------------------------------------------------------------------------------
-    
-    BEGIN_ACTION(AttackLeastThreatAction, "attack least threat")
-    END_ACTION()
-  
-    //---------------------------------------------------------------------------------------------------------------------
+    class UseManaPotion : public Action {
+    public:
+        UseManaPotion(PlayerbotAIFacade* const ai) : Action(ai, "mana potion") {}
+        virtual void Execute() {
+            ai->UseManaPotion(); 
+        }
+        virtual BOOL isPossible() {
+            return ai->HasManaPotion();
+        }
+    };
 
-    BEGIN_ACTION(AttackBiggerThreatAction, "attack bigger threat")
-    END_ACTION()
-    //---------------------------------------------------------------------------------------------------------------------
+    class UsePanicPotion : public Action {
+    public:
+        UsePanicPotion(PlayerbotAIFacade* const ai) : Action(ai, "panic potion") {}
+        virtual void Execute() {
+            ai->UsePanicPotion(); 
+        }
+        virtual BOOL isPossible() {
+            return ai->HasPanicPotion();
+        }
+    };
 
-    BEGIN_ACTION(LootAction, "loot")
-    END_ACTION()
+    class LootAction : public Action {
+    public:
+        LootAction(PlayerbotAIFacade* const ai) : Action(ai, "loot") {}
+        virtual void Execute() {
+            ai->Loot();
+        }
+    };
 
     class EmoteAction : public Action
     {
     public:
-        EmoteAction(PlayerbotAIFacade* const ai, uint32 name) : Action(ai)
-        {
-            this->name = name;
+        EmoteAction(PlayerbotAIFacade* const ai, uint32 type) : Action(ai, "emote") {
+            this->type = type;
         }
 
-        BOOL Execute();
-        virtual const char* getName() { return "emote"; }
+        virtual void Execute() {
+            ai->Emote(type ? type : rand() % 450);
+        }
 
     protected:
-        uint32 name;
+        uint32 type;
     };
-
-    BEGIN_RANGED_SPELL_ACTION(CastShootAction, "shoot")
-    END_SPELL_ACTION()
 }

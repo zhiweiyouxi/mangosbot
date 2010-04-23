@@ -6,24 +6,6 @@
 
 using namespace ai;
 
-BOOL EnemyTooCloseTrigger::IsActive()
-{
-    float distance = ai->GetDistanceToEnemy(ATTACK_DISTANCE + 1);
-    return distance <= ATTACK_DISTANCE;
-}
-
-BOOL EnemyOutOfMeleeTrigger::IsActive()
-{
-    float distance = ai->GetDistanceToEnemy();
-    return distance > ATTACK_DISTANCE;
-}
-
-BOOL EnemyOutOfSpellRangeTrigger::IsActive()
-{
-    float distance = ai->GetDistanceToEnemy();
-    return distance > SPELL_DISTANCE; // TODO: externalize
-}
-
 BOOL RageAvailable::IsActive()
 {
     return ai->GetRage() >= amount;
@@ -32,16 +14,6 @@ BOOL RageAvailable::IsActive()
 BOOL ComboPointsAvailable::IsActive()
 {
     return ai->GetComboPoints() >= amount;
-}
-
-BOOL LowHealthTrigger::IsActive()
-{
-    return ai->GetHealthPercent() < EAT_DRINK_PERCENT;
-}
-
-BOOL PartyMemberLowHealthTrigger::IsActive()
-{
-    return ai->GetPartyMinHealthPercent() < EAT_DRINK_PERCENT;
 }
 
 BOOL LowManaTrigger::IsActive()
@@ -54,12 +26,6 @@ BOOL LoseAggroTrigger::IsActive()
     return !ai->HasAggro();
 }
 
-BOOL AttackerCountTrigger::IsActive()
-{
-    return ai->GetAttackerCount() >= amount;
-}
-
-
 BOOL PanicTrigger::IsActive()
 {
     return ai->GetHealthPercent() < 25 && ai->GetManaPercent() != 0 && ai->GetManaPercent() < 25;
@@ -67,13 +33,14 @@ BOOL PanicTrigger::IsActive()
 
 BOOL BuffTrigger::IsActive()
 {
-    return !ai->HasAura(spell);
+    return !ai->HasAura(spell) && ai->canCastSpell(spell) &&
+        (ai->GetManaPercent() > 30 || !ai->GetManaPercent());
 }
-
 
 BOOL BuffOnPartyTrigger::IsActive()
 {
-    return !ai->IsAllPartyHasAura(spell);
+    return !ai->IsAllPartyHasAura(spell) && ai->canCastSpell(spell) && 
+        (ai->GetManaPercent() > 50 || !ai->GetManaPercent());
 }
 
 BOOL NoAttackersTrigger::IsActive()
@@ -81,9 +48,14 @@ BOOL NoAttackersTrigger::IsActive()
     return !ai->HaveTarget() && (ai->GetAttackerCount() > 0 && ai->GetMyAttackerCount() == 0);
 }
 
+BOOL MyAttackerCountTrigger::IsActive()
+{
+    return ai->GetMyAttackerCount() >= amount;
+}
+
 BOOL DebuffTrigger::IsActive()
 {
-    return !ai->TargetHasAura(spell) && ai->canCastSpell(spell);
+    return !ai->TargetHasAura(spell) && ai->canCastSpell(spell) && ai->GetTargetHealthPercent() > 40;
 }
 
 BOOL SpellAvailableTrigger::IsActive()
@@ -100,4 +72,28 @@ BOOL RandomTrigger::IsActive()
 {
     int vl  = rand() % probability;
     return vl == 0;
+}
+
+BOOL AndTrigger::IsActive()
+{
+    return ls->IsActive() && rs->IsActive();
+}
+
+const char* AndTrigger::getName()
+{
+    std::string name(ls->getName());
+    name = name + " and ";
+    name = name + rs->getName();
+    return name.c_str();
+}
+
+BOOL BoostTrigger::IsActive()
+{
+    return ai->HasSpell(spell) && !ai->HasAura(spell) && ai->GetBalancePercent() <= balance;
+}
+
+
+BOOL SnareTargetTrigger::IsActive()
+{
+    return ai->IsTargetMoving() && !ai->TargetHasAura(aura) && ai->HasSpell(aura);
 }

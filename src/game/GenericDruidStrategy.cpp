@@ -10,12 +10,24 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     CombatStrategy::InitTriggers(triggers);
     
     triggers.push_back(new TriggerNode(
-        new DruidLowHealthTrigger(ai),
+        new LowHealthTrigger(ai, 40, 25),
         NextAction::array(0, new NextAction("lifeblood", 60.0f), new NextAction("rejuvenation", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new DruidPartyMemberLowHealthTrigger(ai),
+        new LowHealthTrigger(ai, 25),
+        NextAction::array(0, new NextAction("survival instincts", 80.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberLowHealthTrigger(ai),
         NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NeedCureTrigger(ai, "cure poison", DISPEL_POISON),
+        NextAction::array(0, new NextAction("abolish poison", 40.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberNeedCureTrigger(ai, "cure poison", DISPEL_POISON),
+        NextAction::array(0, new NextAction("abolish poison on party", 40.0f), NULL)));
 }
 
 ActionNode* GenericDruidStrategy::createAction(const char* name)
@@ -27,11 +39,25 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("survival instincts", name)) 
+    {
+        return new ActionNode (new CastSurvivalInstinctsAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("rejuvenation"), NULL), 
+            /*C*/ NULL);
+    }
     else if (!strcmp("caster form", name)) 
     {
         return new ActionNode (new CastCasterFormAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("gift of the naaru", name)) 
+    {
+        return new ActionNode (new CastGiftOfTheNaaruAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("regrowth"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("regrowth", name)) 
@@ -62,5 +88,58 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("cure poison", name)) 
+    {
+        return new ActionNode (new CastCurePoisonAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("cure poison on party", name)) 
+    {
+        return new ActionNode (new CastCurePoisonOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("abolish poison", name)) 
+    {
+        return new ActionNode (new CastAbolishPoisonAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("abolish poison on party", name)) 
+    {
+        return new ActionNode (new CastAbolishPoisonOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("berserk", name)) 
+    {
+        return new ActionNode (new CastBerserkAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("tiger's fury", name)) 
+    {
+        return new ActionNode (new CastTigersFuryAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    
     else return NULL;
+}
+
+
+
+void DruidBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+    triggers.push_back(new TriggerNode(
+        new BoostTrigger(ai, "berserk", 45),
+        NextAction::array(0, new NextAction("berserk", 40.0f), new NextAction("tiger's fury", 40.0f), NULL)));
+
 }

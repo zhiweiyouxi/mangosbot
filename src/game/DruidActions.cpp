@@ -44,7 +44,7 @@ BOOL CastRegrowthAction::isUseful()
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
-BOOL CastCasterFormAction::Execute()
+BOOL CastCasterFormAction::ExecuteResult()
 {
     if (ai->HasAura("dire bear form")) 
         ai->RemoveAura("dire bear form");
@@ -65,16 +65,6 @@ BOOL CastCasterFormAction::isUseful()
         ai->HasAura("cat form") || ai->HasAura("travel form")); 
 }
 
-BOOL CastMaulAction::isPossible()
-{
-    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
-}
-
-BOOL CastSwipeAction::isPossible()
-{
-    return CastSpellAction::isPossible() && ai->GetDistanceToEnemy() <= ATTACK_DISTANCE;
-}
-
 BOOL CastCatFormAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->HasAura("cat form");
@@ -91,7 +81,27 @@ NextAction** CastRakeAction::getPrerequisites()
     return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), new NextAction("cat form"), NULL), CastDebuffSpellAction::getPrerequisites());
 }
 
+NextAction** CastCowerAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastBerserkAction::getPrerequisites()
+{
+    return NextAction::array(0, new NextAction("cat form"), NULL);
+}
+
+NextAction** CastTigersFuryAction::getPrerequisites()
+{
+    return NextAction::array(0, new NextAction("cat form"), NULL);
+}
+
 NextAction** CastClawAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
+}
+
+NextAction** CastMangleCatAction::getPrerequisites()
 {
     return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
 }
@@ -125,4 +135,36 @@ NextAction** CastRegrowthOnPartyAction::getPrerequisites()
 NextAction** CastRejuvenationOnPartyAction::getPrerequisites()
 {
     return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastCurePoisonAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastCurePoisonOnPartyAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+
+NextAction** CastAbolishPoisonAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastAbolishPoisonOnPartyAction::getPrerequisites()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
+}
+
+
+NextAction** CastAbolishPoisonAction::getAlternatives()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cure poison"), NULL), CastSpellAction::getPrerequisites());
+}
+
+NextAction** CastAbolishPoisonOnPartyAction::getAlternatives()
+{
+    return NextAction::merge( NextAction::array(0, new NextAction("cure poison on party"), NULL), CastSpellAction::getPrerequisites());
 }

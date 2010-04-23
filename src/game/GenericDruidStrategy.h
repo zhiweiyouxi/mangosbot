@@ -16,4 +16,14 @@ namespace ai
         virtual ActionNode* createAction(const char* name);
         virtual const char* getName() { return "druid"; }
     };
+
+    class DruidBoostStrategy : public Strategy
+    {
+    public:
+        DruidBoostStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+
+    public:
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+        virtual const char* getName() { return "druid boost"; }
+    };
 }

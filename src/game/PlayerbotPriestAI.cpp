@@ -70,13 +70,14 @@ PlayerbotPriestAI::PlayerbotPriestAI(Player* const master, Player* const bot, Pl
 	WILL_OF_THE_FORSAKEN    = ai->getSpellId("will of the forsaken"); // undead
 
     engine = new ai::Engine(facade, new ai::PriestActionFactory(facade));
-    engine->addStrategy("dps");
+    engine->addStrategy("heal");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::PriestActionFactory(facade));
     nonCombatEngine->addStrategy("nc");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
+    nonCombatEngine->addStrategy("food");
     nonCombatEngine->Init();
 }
 

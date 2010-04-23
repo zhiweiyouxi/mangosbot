@@ -15,7 +15,6 @@ class NonCombatEngineTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( NonCombatEngineTestCase );
   CPPUNIT_TEST( followMaster );
-  CPPUNIT_TEST( stayIfAttackers );
   CPPUNIT_TEST( stay );
   CPPUNIT_TEST( eatDrink );
   CPPUNIT_TEST( assist );
@@ -23,6 +22,7 @@ class NonCombatEngineTestCase : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST( loot );
   CPPUNIT_TEST( goaway );
   CPPUNIT_TEST( emote );
+  CPPUNIT_TEST( passive );
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -48,21 +48,7 @@ protected:
 
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">goaway"));
     }
-    void stayIfAttackers()
-    {
-        ai = new MockPlayerbotAIFacade();
-
-        Engine engine(ai, new ActionFactory(ai));
-        engine.addStrategy("follow");
-        engine.addStrategy("assist");
-        engine.Init();
-
-        ai->attackerCount = 1;
-        engine.DoNextAction(NULL);
-        std::cout << ai->buffer;
-
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), "")); // nothing to do
-    }
+    
     void followMaster()
     {
         ai = new MockPlayerbotAIFacade();
@@ -155,7 +141,7 @@ protected:
         ai = new MockPlayerbotAIFacade();
 
         Engine engine(ai, new ActionFactory(ai));
-        engine.addStrategy("follow");
+        engine.addStrategy("food");
         engine.Init();
 
         ai->health = 1;
@@ -183,6 +169,26 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(strstr(ai->buffer.c_str(), ">emote"));
     }
+
+    void passive()
+    {
+        ai = new MockPlayerbotAIFacade();
+
+        Engine engine(ai, new ActionFactory(ai));
+        engine.addStrategy("stay");
+        engine.addStrategy("passive");
+        engine.Init();
+
+        engine.DoNextAction(NULL);
+        ai->myAttackerCount = 0;
+        engine.DoNextAction(NULL);
+        ai->myAttackerCount = 1;
+
+        std::cout << ai->buffer;
+
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">stay>stay"));
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( NonCombatEngineTestCase );

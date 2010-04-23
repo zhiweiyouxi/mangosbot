@@ -1793,14 +1793,78 @@
 			<Filter
 				Name="Mage"
 				>
+				<File
+					RelativePath="..\..\src\game\MageActionFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MageActionFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MageActions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MageActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MageMultipliers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MageMultipliers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MageTriggers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MageTriggers.h"
+					>
+				</File>
 				<Filter
 					Name="Strategies"
 					>
+					<File
+						RelativePath="..\..\src\game\FrostMageStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\FrostMageStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericMageNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericMageNonCombatStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericMageStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericMageStrategy.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="Generic"
 				>
+				<File
+					RelativePath="..\..\src\game\ChooseTargetActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\CureTriggers.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\game\GenericActions.cpp"
 					>
@@ -1818,6 +1882,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\GenericSpellActions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GenericSpellActions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\GenericTriggers.cpp"
 					>
 				</File>
@@ -1826,11 +1898,39 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\HealthTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\LowManaMultiplier.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\LowManaMultiplier.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\NonCombatActions.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\game\NonCombatActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PassiveMultiplier.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PassiveMultiplier.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RangeTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ReachTargetActions.h"
 					>
 				</File>
 			</Filter>
@@ -2086,6 +2186,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\game\DpsPriestStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\HealPriestNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\HealPriestNonCombatStrategy.h"
 						>
 					</File>
 					<File

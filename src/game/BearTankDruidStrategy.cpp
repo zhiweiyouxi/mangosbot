@@ -24,11 +24,11 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("growl", 30.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new MaulAvailable(ai),
-        NextAction::array(0, new NextAction("maul", 20.0f), NULL)));
+        new RageAvailable(ai, 20),
+        NextAction::array(0, new NextAction("mangle (bear)", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new SwipeAvailable(ai),
+        new RageAvailable(ai, 50),
         NextAction::array(0, new NextAction("swipe", 20.0f), new NextAction("maul", 10.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -38,6 +38,10 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai),
         NextAction::array(0, new NextAction("attack bigger threat", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new InterruptSpellTrigger(ai, "bash"),
+        NextAction::array(0, new NextAction("bash", 50.0f), NULL)));
 }
 
 void BearTankDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -51,8 +55,15 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
     if (!strcmp("melee", name)) 
     {
         return new ActionNode (new MeleeAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("dire bear form"), new NextAction("reach melee"), NULL),
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), new NextAction("feral charge - bear"), NULL),
             /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("feral charge - bear", name)) 
+    {
+        return new ActionNode (new CastFeralChargeBearAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("reach melee"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("faerie fire", name)) 
@@ -76,9 +87,23 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
+    else if (!strcmp("mangle (bear)", name)) 
+    {
+        return new ActionNode (new CastMangleBearAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("maul"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
     else if (!strcmp("maul", name)) 
     {
         return new ActionNode (new CastMaulAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
+    else if (!strcmp("bash", name)) 
+    {
+        return new ActionNode (new CastBashAction(ai),  
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));

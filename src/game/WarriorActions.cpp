@@ -19,11 +19,6 @@ NextAction** CastSunderArmorAction::getPrerequisites()
     return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), NULL), CastDebuffSpellAction::getPrerequisites());
 }
 
-NextAction** CastTauntAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastRangedSpellAction::getPrerequisites());
-}
-
 NextAction** CastRevengeAction::getPrerequisites()
 {
     return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastMeleeSpellAction::getPrerequisites());

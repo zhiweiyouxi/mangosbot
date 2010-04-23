@@ -1,9 +1,11 @@
 #include "pchdef.h"
-#include "PlayerbotAIFacade.h"
 #include "DBCStructure.h"
 #include "Spell.h"
 #include "Group.h"
 #include "Creature.h"
+#include "Unit.h"
+#include "SpellAuras.h"
+#include "PlayerbotAIFacade.h"
 
 using namespace ai;
 
@@ -64,6 +66,9 @@ Player* PlayerbotAIFacade::findPlayer(BOOL predicate(Player*, FindPlayerParam&),
         {
             Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
             if( !player || !player->isAlive() || player == ai->GetPlayerBot())
+                continue;
+
+            if (ai->GetPlayerBot()->GetDistance(player) > SPELL_DISTANCE)
                 continue;
 
             FindPlayerParam pp; pp.ai = ai; pp.param = param;
@@ -195,11 +200,19 @@ uint8 PlayerbotAIFacade::GetPartyMinHealthPercent()
 }
 
 
-int PlayerbotAIFacade::GetAttackerCount()
+int PlayerbotAIFacade::GetAttackerCount(float distance)
 {
     std::list<ThreatManager*> attackers;
     findAllAttackers(attackers);
-    return attackers.size();
+    
+    Player* bot = ai->GetPlayerBot();
+    int count = 0;
+    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i != attackers.end(); i++) {
+        ThreatManager *cur = *i;
+        if (bot->GetDistance(cur->getOwner()) <= distance) 
+            count++;
+    }
+    return count;
 }
 
 
@@ -442,7 +455,7 @@ void PlayerbotAIFacade::AttackBiggerThreat()
     std::list<ThreatManager*> attackers;
     findAllAttackers(attackers);
 
-    float maxThreat = 1e8;
+    float maxThreat = -1;
     Unit* target = NULL;
     for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
     {  
@@ -467,3 +480,153 @@ void PlayerbotAIFacade::Emote(uint32 emote)
 {
     ai->GetPlayerBot()->HandleEmoteCommand(emote);
 }
+
+float PlayerbotAIFacade::GetFollowAngle() 
+{
+    Player* bot = ai->GetPlayerBot();
+    if (ai->GetPlayerBot()->GetGroup())
+    {
+        GroupReference *gref = bot->GetGroup()->GetFirstMember();
+        int index = 0;
+        while( gref )
+        {
+            if( gref->getSource() == bot)
+            {
+                return M_PI / 2.5f * index;
+            }
+            gref = gref->next();
+            index++;
+        }
+    }
+    return 0;
+}
+
+Player* PlayerbotAIFacade::GetPartyMemberToDispell(uint32 dispelType)
+{
+    Group* group = ai->GetMaster()->GetGroup();
+    if (group)
+    {
+        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+        {
+            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
+            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
+                continue;
+
+            if (HasAuraToDispel(player, dispelType))
+                return player;
+        }
+    }
+    return NULL;
+}
+
+bool canDispel(const SpellEntry* entry, uint32 dispelType) {
+    if (entry->Dispel == dispelType) {
+        return !entry->SpellName[0] ||
+            (strcmpi((const char*)entry->SpellName[0], "demon skin") &&
+               strcmpi((const char*)entry->SpellName[0], "mage armor") &&
+               strcmpi((const char*)entry->SpellName[0], "frost armor") &&
+               strcmpi((const char*)entry->SpellName[0], "ice armor"));
+    }
+    return false;
+}
+
+bool PlayerbotAIFacade::TargetHasAuraToDispel(uint32 dispelType) {
+    Unit* target = ai->GetCurrentTarget();
+    if (!target) return false;
+
+
+    Unit::AuraMap &uAuras = target->GetAuras();
+    for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)
+    {
+        const SpellEntry* entry = itr->second->GetSpellProto();
+        uint32 spellId = entry->Id;
+        if (!IsPositiveSpell(spellId))
+            continue;
+
+        if (canDispel(entry, dispelType))
+            return true;
+    }
+    return false;
+}
+
+BOOL PlayerbotAIFacade::HasAuraToDispel(Unit* player, uint32 dispelType) 
+{
+    Unit::AuraMap &uAuras = player->GetAuras();
+    for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)
+    {
+        const SpellEntry* entry = itr->second->GetSpellProto();
+        uint32 spellId = entry->Id;
+        if (IsPositiveSpell(spellId))
+            continue;
+
+        if (canDispel(entry, dispelType))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+float PlayerbotAIFacade::GetBalancePercent()
+{
+    uint32 playerLevel = 0,
+        attackerLevel = 0;
+
+    Group* group = ai->GetMaster()->GetGroup();
+    if (group)
+    {
+        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+        {
+            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
+            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
+                continue;
+
+            playerLevel += player->getLevel();
+        }
+    }
+
+    std::list<ThreatManager*> attackers;
+    findAllAttackers(attackers);
+    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+    {  
+        Unit* unit = (*i)->getOwner();
+        if (unit || !unit->isAlive())
+            continue;
+
+        uint32 level = unit->getLevel();
+
+        Creature* creature = dynamic_cast<Creature*>(unit);
+        if (creature)
+        {
+            switch (creature->GetCreatureInfo()->rank) {
+            case CREATURE_ELITE_RARE:
+                level *= 2;
+                break;
+            case CREATURE_ELITE_ELITE:
+                level *= 3;
+                break;
+            case CREATURE_ELITE_RAREELITE:
+                level *= 5;
+                break;
+            case CREATURE_ELITE_WORLDBOSS:
+                level *= 10;
+                break;
+            }
+        }
+        attackerLevel += level;
+    }
+
+    return !attackerLevel ? 100 : playerLevel * 100 / attackerLevel;
+}
+
+bool PlayerbotAIFacade::IsTargetMoving()
+{
+    Unit *target = ai->GetCurrentTarget();
+    return target && target->GetMotionMaster()->GetCurrentMovementGeneratorType() != IDLE_MOTION_TYPE;
+}
+
+bool PlayerbotAIFacade::IsTargetCastingNonMeleeSpell() {
+    Unit *target = ai->GetCurrentTarget();
+    return target && target->IsNonMeleeSpellCasted(true);
+}
+

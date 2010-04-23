@@ -20,6 +20,9 @@ class DpsWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( pickNewTarget );
+    CPPUNIT_TEST( boost );
+    CPPUNIT_TEST( execute );
+    CPPUNIT_TEST( hamstring );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -36,6 +39,7 @@ public:
         engine->Init();
         ai->spellCooldowns.push_back("revenge");
         ai->auras.push_back("battle shout");
+        ai->rage = 20;
     }
 
     void tearDown()
@@ -58,7 +62,7 @@ protected:
         engine->DoNextAction(NULL); // battle shout
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle shout>battle stance>charge"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>charge"));
 
     }
     void pickNewTarget()
@@ -108,7 +112,7 @@ protected:
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>mocking blow>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>mocking blow>rend"));
     }
 
     void combatVsMelee()
@@ -130,18 +134,70 @@ protected:
         ai->spellCooldowns.remove("rend");
         ai->targetAuras.push_back("rend");
 
-        engine->DoNextAction(NULL); // heroic strike
+        ai->rage = 41;
+        engine->DoNextAction(NULL); // bloodthirst
 
         engine->DoNextAction(NULL); // melee
 
         ai->distanceToEnemy = 0.0f; 
-        ai->rage = 15;
-        ai->spellCooldowns.remove("heroic strike");
         engine->DoNextAction(NULL); // heroic strike
-
+        ai->rage = 0;
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>reach melee>melee>rend>heroic strike>melee>heroic strike"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>reach melee>melee>rend>bloodthirst>heroic strike>melee"));
+    }
+
+    void boost()
+    {
+        engine->addStrategy("boost");
+
+        ai->distanceToEnemy = 0.0f; 
+        engine->DoNextAction(NULL); // battle stance
+
+        ai->balancePercent = 1;
+
+        engine->DoNextAction(NULL); // death wish
+        engine->DoNextAction(NULL); // berserker rage
+        engine->DoNextAction(NULL); // 
+        ai->balancePercent = 100;
+
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>death wish>berserker rage>charge>melee"));
+    }
+
+    void execute()
+    {
+        engine->DoNextAction(NULL); // battle stance
+        ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // charge
+
+        ai->targetHealth = 24;
+        engine->DoNextAction(NULL); // execute
+        ai->targetHealth = 100;
+
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>execute>melee"));
+    }
+
+
+    void hamstring()
+    {
+        engine->DoNextAction(NULL); // reach melee
+        ai->distanceToEnemy = 0;
+        engine->DoNextAction(NULL); // melee
+
+        ai->targetIsMoving = true;
+        engine->DoNextAction(NULL); // battle stance
+        engine->DoNextAction(NULL); // hamstring
+        ai->spellCooldowns.remove("defensive stance");
+        engine->DoNextAction(NULL); // melee
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>melee>hamstring>rend"));
     }
 };
 

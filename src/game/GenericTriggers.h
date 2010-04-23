@@ -29,19 +29,12 @@ class clazz : public SpellAvailableTrigger \
         clazz(PlayerbotAIFacade* const ai) : SpellAvailableTrigger(ai, spell) {} \
     };
 
+#include "RangeTriggers.h"
+#include "HealthTriggers.h"
+#include "CureTriggers.h"
+
 namespace ai
 {
-    BEGIN_TRIGGER(EnemyTooCloseTrigger, Trigger)
-        virtual const char* getName() { return "too close"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(EnemyOutOfMeleeTrigger, Trigger)
-        virtual const char* getName() { return "out of melee range"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(EnemyOutOfSpellRangeTrigger, Trigger)
-        virtual const char* getName() { return "out of spell range"; }
-    END_TRIGGER()
 
     BEGIN_TRIGGER(LoseAggroTrigger, Trigger)
     END_TRIGGER()
@@ -58,6 +51,20 @@ namespace ai
 
     protected:
         int amount;
+    };
+
+    class InterruptSpellTrigger : public Trigger {
+    public:
+        InterruptSpellTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai, "interrupt spell") {
+            this->spell = spell;
+        }
+
+        virtual BOOL IsActive() {
+            return ai->IsTargetCastingNonMeleeSpell() && ai->canCastSpell(spell);
+        }
+
+    protected:
+        const char* spell;
     };
 
     class ComboPointsAvailable : public Trigger
@@ -77,33 +84,30 @@ namespace ai
     class AttackerCountTrigger : public Trigger
     {
     public:
-        AttackerCountTrigger(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
+        AttackerCountTrigger(PlayerbotAIFacade* const ai, int amount, float distance = BOT_REACT_DISTANCE) : Trigger(ai) 
         {
             this->amount = amount;
+            this->distance = distance;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual BOOL IsActive() {
+            return ai->GetAttackerCount(distance) >= amount;
+        }
         virtual const char* getName() { return "attacker count"; }
 
     protected:
         int amount;
-    };
+        float distance;
+    };    
 
-    BEGIN_TRIGGER(LowHealthTrigger, Trigger)
-        virtual const char* getName() { return "low health"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(PartyMemberLowHealthTrigger, Trigger)
-        virtual const char* getName() { return "party member low health"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(LowManaTrigger, Trigger)
-        virtual const char* getName() { return "low mana"; }
-    END_TRIGGER()
-
-    BEGIN_TRIGGER(PanicTrigger, Trigger)
-        virtual const char* getName() { return "panic"; }
-    END_TRIGGER()
+    class MyAttackerCountTrigger : public AttackerCountTrigger
+    {
+    public:
+        MyAttackerCountTrigger(PlayerbotAIFacade* const ai, int amount) : AttackerCountTrigger(ai, amount) {}
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "my attacker count"; }
+    };    
 
     class BuffTrigger : public Trigger
     {
@@ -126,6 +130,20 @@ namespace ai
         BuffOnPartyTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
     public: 
        virtual BOOL IsActive();
+    };
+
+    class BoostTrigger : public BuffTrigger
+    {
+    public:
+        BoostTrigger(PlayerbotAIFacade* const ai, const char* spell, float balance) : BuffTrigger(ai, spell) 
+        {
+            this->balance = balance;
+        }
+    public: 
+        virtual BOOL IsActive();
+
+    protected:
+        float balance;
     };
 
     BEGIN_TRIGGER(NoAttackersTrigger, Trigger)
@@ -164,4 +182,49 @@ namespace ai
     protected:
         int probability;
     };
+
+    class AndTrigger : public Trigger
+    {
+    public:
+        AndTrigger(PlayerbotAIFacade* const ai, Trigger* ls, Trigger* rs) : Trigger(ai) 
+        {
+            this->ls = ls;
+            this->rs = rs;
+        }
+        virtual ~AndTrigger() 
+        {
+            delete ls;
+            delete rs;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName();
+
+    protected:
+        Trigger* ls;
+        Trigger* rs;
+    };
+
+    class SnareTargetTrigger : public Trigger
+    {
+    public:
+        SnareTargetTrigger(PlayerbotAIFacade* const ai, const char* aura) : Trigger(ai) 
+        {
+            this->aura = aura;
+        }
+    public: 
+        virtual BOOL IsActive();
+        virtual const char* getName() { return "target is moving"; }
+
+    protected:
+        const char* aura;
+    };
+    BEGIN_TRIGGER(LowManaTrigger, Trigger)
+        virtual const char* getName() { return "low mana"; }
+    END_TRIGGER()
+
+        BEGIN_TRIGGER(PanicTrigger, Trigger)
+        virtual const char* getName() { return "panic"; }
+    END_TRIGGER()
+
 }

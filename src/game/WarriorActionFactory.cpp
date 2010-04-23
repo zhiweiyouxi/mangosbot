@@ -18,6 +18,9 @@ Strategy* WarriorActionFactory::createStrategy(const char* name)
     if (!strcmp("nc", name))
         return new GenericWarriorNonCombatStrategy(ai);
 
+    if (!strcmp("boost", name))
+        return new WarriorBoostStrategy(ai);
+
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)
         return strategy;

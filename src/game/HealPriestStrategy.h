@@ -1,18 +1,19 @@
 #pragma once
 
 #include "Strategy.h"
+#include "HealPriestNonCombatStrategy.h"
 
 namespace ai
 {
-    class HealPriestStrategy : public CombatStrategy
+    class HealPriestStrategy : public HealPriestNonCombatStrategy
     {
     public:
-        HealPriestStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
+        HealPriestStrategy(PlayerbotAIFacade* const ai) : HealPriestNonCombatStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
-        virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
-        virtual const char* getName() { return "heal priest"; }
+        virtual NextAction** HealPriestStrategy::getDefaultActions();
+        virtual const char* getName() { return "heal"; }
         virtual ActionNode* createAction(const char* name);
 
     };

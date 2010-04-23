@@ -21,6 +21,8 @@ class CatDpsDruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( pickNewTarget );
+    CPPUNIT_TEST( boost );
+    CPPUNIT_TEST( cower );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -95,26 +97,27 @@ protected:
 
         ai->distanceToEnemy = 0.0f; 
         engine->DoNextAction(NULL); // rake
-        engine->DoNextAction(NULL); // claw
+        engine->DoNextAction(NULL); // mangle
 
-        ai->comboPoints = 3;
+        ai->comboPoints = 5;
         engine->DoNextAction(NULL); // ferocious bite
 
-        ai->comboPoints = 3;
+        ai->comboPoints = 5;
         engine->DoNextAction(NULL); // rip
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>reach melee>rake>claw>ferocious bite>rip"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>reach melee>rake>mangle (cat)>ferocious bite>rip"));
     }
 
     void healHimself()
     {
+        ai->spellCooldowns.push_back("gift of the naaru");
         engine->DoNextAction(NULL); // faerie fire
         engine->DoNextAction(NULL); // cat form
         ai->auras.push_back("cat form");
 
         ai->distanceToEnemy = 0.0f; 
-        ai->health = 1;
+        ai->health = 39;
         engine->DoNextAction(NULL); // life blood
         ai->auras.push_back("lifeblood");
 
@@ -129,12 +132,14 @@ protected:
         ai->auras.push_back("cat form");
         engine->DoNextAction(NULL); // melee
         
-        ai->health = 1;
+        ai->health = 39;
         engine->DoNextAction(NULL); // rejuvenation
 
         engine->DoNextAction(NULL); // melee
 
         ai->resetSpells(); // continue as began
+        ai->spellCooldowns.push_back("mangle (cat)");
+        ai->spellCooldowns.push_back("rake");
         ai->health = 70;
         ai->auras.remove("cat form");
         ai->spellCooldowns.remove("cat form");
@@ -142,7 +147,7 @@ protected:
         engine->DoNextAction(NULL); // dire bear form
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>lifeblood>-cat form>regrowth>cat form>claw>-cat form>rejuvenation>cat form>claw"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>lifeblood>-cat form>regrowth>cat form>mangle (cat)>-cat form>rejuvenation>cat form>claw"));
     }
 
     void intensiveHealing()
@@ -151,9 +156,10 @@ protected:
         ai->auras.remove("rejuvenation");
 
         ai->distanceToEnemy = 0.0f; 
-        ai->health = 1;
+        ai->health = 39;
         ai->auras.remove("rejuvenation");
         engine->DoNextAction(NULL); // life blood
+        engine->DoNextAction(NULL); // gift of the naaru
         ai->auras.push_back("lifeblood");
 
         ai->spellCooldowns.remove("rejuvenation");
@@ -164,7 +170,7 @@ protected:
         engine->DoNextAction(NULL); // regrowth
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>-cat form>regrowth"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>-cat form>regrowth"));
     }
 
     void healOthers()
@@ -173,7 +179,7 @@ protected:
         engine->DoNextAction(NULL); // dire bear form
         ai->auras.push_back("cat form");
 
-        ai->partyMinHealth = 1;
+        ai->partyMinHealth = 39;
         engine->DoNextAction(NULL); // caster form
         ai->auras.remove("cat form");
         ai->spellCooldowns.remove("cat form");
@@ -191,6 +197,48 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>-cat form>rejuvenation on party>regrowth on party>cat form>reach melee>rake"));
     }
+
+    void boost()
+    {
+        engine->addStrategy("boost");
+
+        engine->DoNextAction(NULL); // faerie fire
+        engine->DoNextAction(NULL); // cat form
+        ai->auras.push_back("cat form");
+
+        ai->balancePercent = 1;
+        engine->DoNextAction(NULL); // berserk
+        engine->DoNextAction(NULL); // cat form
+        engine->DoNextAction(NULL); // tiger's fury
+        
+        ai->balancePercent = 100;
+
+        ai->resetSpells();
+        ai->auras.clear();
+        engine->DoNextAction(NULL); // continue as usual with cat form
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>berserk>tiger's fury>reach melee>rake"));
+    }
+
+    void cower()
+    {
+        engine->DoNextAction(NULL); // faerie fire
+        engine->DoNextAction(NULL); // cat form
+        ai->auras.push_back("cat form");
+
+        ai->myAttackerCount = 2;
+        ai->attackerCount = 3;
+        engine->DoNextAction(NULL); // cower
+        ai->myAttackerCount = 0;
+        ai->attackerCount = 1;
+
+        engine->DoNextAction(NULL); 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>cower>attack least threat"));
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CatDpsDruidTestCase );

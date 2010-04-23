@@ -14,8 +14,18 @@ namespace ai
         virtual NextAction** getDefaultActions();
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
-        virtual const char* getName() { return "dps priest"; }
+        virtual const char* getName() { return "dps"; }
         virtual ActionNode* createAction(const char* name);
 
+    };
+
+    class PriestBoostStrategy : public Strategy
+    {
+    public:
+        PriestBoostStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+
+    public:
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+        virtual const char* getName() { return "priest boost"; }
     };
 }

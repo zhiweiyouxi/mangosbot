@@ -14,7 +14,7 @@ public:
     PrerequisiteAction(PlayerbotAIFacade* const ai) : Action(ai) {}
     virtual ~PrerequisiteAction() { destroyed = TRUE; }
 
-    BOOL Execute() { executed++; return TRUE; }
+    BOOL ExecuteResult() { executed++; return TRUE; }
     const char* getName() {return "PrerequisiteAction"; }
 
     static int executed;
@@ -30,7 +30,7 @@ public:
     AlternativeAction(PlayerbotAIFacade* const ai) : Action(ai) {}
     virtual ~AlternativeAction() {destroyed = TRUE;}
 
-    BOOL Execute() { executed++; return TRUE; }
+    BOOL ExecuteResult() { executed++; return TRUE; }
     const char* getName() {return "AlternativeAction"; }
 
     static int executed;
@@ -50,7 +50,7 @@ public:
 		destroyed++;
 	}
 
-    BOOL Execute() { executed++; return TRUE; }
+    BOOL ExecuteResult() { executed++; return TRUE; }
     const char* getName() {return "RepeatingAction"; }
     BOOL isPossible() { return available; }
 
@@ -69,7 +69,7 @@ public:
 	TriggeredAction(PlayerbotAIFacade* const ai) : Action(ai) { fired = false; }
 	virtual ~TriggeredAction() {}
 
-	BOOL Execute() { fired = TRUE; return TRUE; }
+	BOOL ExecuteResult() { fired = TRUE; return TRUE; }
     const char* getName() {return "TriggeredAction"; }
 
 	static int fired;

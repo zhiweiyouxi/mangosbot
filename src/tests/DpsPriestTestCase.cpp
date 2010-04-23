@@ -34,7 +34,10 @@ public:
         engine->Init();
 
         ai->auras.push_back("power word: fortitude");
+        ai->auras.push_back("divine spirit");
+        ai->auras.push_back("inner fire");
         ai->partyAuras.push_back("power word: fortitude");
+        ai->partyAuras.push_back("divine spirit");
     }
 
     void tearDown()
@@ -52,26 +55,34 @@ protected:
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
         ai->resetSpells();
-        engine->DoNextAction(NULL); // concussive shot
+        engine->DoNextAction(NULL); // shadowform
+        engine->DoNextAction(NULL); // 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>shadow word: pain"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>shadowform>mind flay"));
 
     }
 
     void combat()
     {
+        engine->DoNextAction(NULL); // shadowform
+        ai->auras.push_back("shadowform");
         engine->DoNextAction(NULL); // shadow word: pain
+        engine->DoNextAction(NULL); // devouring plague
         engine->DoNextAction(NULL); // mind blast
+        ai->myAttackerCount = 0;
+        engine->DoNextAction(NULL); // mind flay
+        ai->myAttackerCount = 1;
         engine->DoNextAction(NULL); // shoot
 
         // heal if need
         ai->health = 1;
         engine->DoNextAction(NULL); // shirld
-        engine->DoNextAction(NULL); // lesser heal
+        engine->DoNextAction(NULL); // -shadowform
+        engine->DoNextAction(NULL); // greater heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadow word: pain>mind blast>shoot>power word: shield>lesser heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadowform>devouring plague>shadow word: pain>mind blast>attack least threat>mind flay>power word: shield>-shadowform>greater heal"));
     }
 };
 

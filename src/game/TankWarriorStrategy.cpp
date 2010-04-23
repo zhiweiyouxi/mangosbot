@@ -14,30 +14,30 @@ NextAction** TankWarriorStrategy::getDefaultActions()
 void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericWarriorStrategy::InitTriggers(triggers);
-    
+
     triggers.push_back(new TriggerNode(
-        new SunderArmorDebuffTrigger(ai), 
-        NextAction::array(0, new NextAction("sunder armor", 1.0f), NULL)));
+        new RageAvailable(ai, 40), 
+        NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new RageAvailable(ai, 20), 
+        NextAction::array(0, new NextAction("devastate", 1.4f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new DisarmDebuffTrigger(ai), 
         NextAction::array(0, new NextAction("disarm", 1.2f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new EnemyOutOfMeleeTrigger(ai), 
-        NextAction::array(0, new NextAction("melee", 50.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new LoseAggroTrigger(ai), 
-        NextAction::array(0, new NextAction("mocking blow", 30.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        new HeroicStrikeAvailable(ai), 
-        NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
+        NextAction::array(0, new NextAction("taunt", 30.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new LowHealthTrigger(ai, 60, 40), 
+        NextAction::array(0, new NextAction("shield wall", 50.0f), NULL)));
 }
 
 void TankWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -47,61 +47,89 @@ void TankWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 
 ActionNode* TankWarriorStrategy::createAction(const char* name)
 {
-    if (!strcmp("rend", name)) 
+    if (!strcmp("melee", name)) 
+    {
+        return new ActionNode (new MeleeAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("defensive stance"), new NextAction("reach melee"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("shield wall", name)) 
+    {
+        return new ActionNode (new CastShieldWallAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("shield block"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("rend", name)) 
     {
         return new ActionNode (new CastRendAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("defensive stance"), NULL),
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*C*/ NULL);
     }
     else if (!strcmp("mocking blow", name)) 
     {
         return new ActionNode (new CastMockingBlowAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("defensive stance"), NULL),
-            /*A*/ NextAction::array(0, new NextAction("taunt"), NULL), 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
     }
     else if (!strcmp("taunt", name)) 
     {
         return new ActionNode (new CastTauntAction(ai),  
             /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*A*/ NextAction::array(0, new NextAction("mocking blow"), NULL), 
+            /*C*/ NULL);
     }
     else if (!strcmp("revenge", name)) 
     {
         return new ActionNode (new CastRevengeAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("melee"), NULL), 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*A*/ NextAction::array(0, new NextAction("slam"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("slam", name)) 
+    {
+        return new ActionNode (new CastSlamAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
     }
     else if (!strcmp("disarm", name)) 
     {
         return new ActionNode (new CastDisarmAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*C*/ NULL);
     }
     else if (!strcmp("sunder armor", name)) 
     {
         return new ActionNode (new CastSunderArmorAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*C*/ NULL);
+    }
+    else if (!strcmp("devastate", name)) 
+    {
+        return new ActionNode (new CastDevastateAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("sunder armor"), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("revenge", 10.0f), NULL));
     }
     else if (!strcmp("shield bash", name)) 
     {
         return new ActionNode (new CastShieldBashAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*C*/ NULL);
     }
     else if (!strcmp("intimidating shout", name)) 
     {
         return new ActionNode (new CastIntimidatingShoutAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL));
+            /*C*/ NULL);
     }
     else return GenericWarriorStrategy::createAction(name);
 }

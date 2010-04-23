@@ -3,14 +3,6 @@
 
 namespace ai
 {
-    class HeroicStrikeAvailable : public RageAvailable
-    {
-    public:
-        HeroicStrikeAvailable(PlayerbotAIFacade* const ai) : RageAvailable(ai, 15)  {}
-    public: 
-        virtual const char* getName() { return "heroic strike available"; }
-    };
-
     BUFF_TRIGGER(BattleShoutTrigger, "battle shout", "battle shout")
 
     DEBUFF_TRIGGER(RendDebuffTrigger, "rend", "rend")
@@ -18,4 +10,12 @@ namespace ai
     DEBUFF_TRIGGER(SunderArmorDebuffTrigger, "sunder armor", "sunder armor")
 
     SPELL_AVAILABLE_TRIGGER(RevengeAvailableTrigger, "revenge", 50.0f)
+
+    class BloodrageDebuffTrigger : public DebuffTrigger {
+    public:
+        BloodrageDebuffTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "bloodrage") {}
+        virtual BOOL IsActive() {
+            return DebuffTrigger::IsActive() && ai->GetHealthPercent() >= 75 && ai->GetRage() < 20;
+        }
+    };
 }
