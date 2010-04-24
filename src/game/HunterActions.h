@@ -14,6 +14,10 @@ namespace ai
         virtual BOOL isUseful();
     END_SPELL_ACTION()
 
+    BEGIN_RANGED_SPELL_ACTION(CastAimedShotAction, "aimed shot")
+        virtual BOOL isUseful();
+    END_SPELL_ACTION()
+
     BEGIN_RANGED_SPELL_ACTION(CastConcussiveShotAction, "concussive shot")
     END_SPELL_ACTION()
 

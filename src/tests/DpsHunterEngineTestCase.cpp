@@ -65,6 +65,7 @@ protected:
                 
         ai->distanceToEnemy = 15.0f; 
         ai->resetSpells();        
+        ai->spellCooldowns.push_back("aimed shot");
         engine->DoNextAction(NULL); // arcane shot
 
         ai->spellCooldowns.remove("arcane shot");        
@@ -73,7 +74,7 @@ protected:
         engine->DoNextAction(NULL); // auto shot
                 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the hawk>hunter's mark>serpent sting>arcane shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the hawk>hunter's mark>serpent sting>aimed shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
 
 	}
 
