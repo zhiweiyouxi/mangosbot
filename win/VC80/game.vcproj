@@ -2206,6 +2206,70 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Paladin"
+				>
+				<File
+					RelativePath="..\..\src\game\PaladinActionFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PaladinActionFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PaladinActions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PaladinActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PaladinMultipliers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PaladinMultipliers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PaladinTriggers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PaladinTriggers.h"
+					>
+				</File>
+				<Filter
+					Name="Strategies"
+					>
+					<File
+						RelativePath="..\..\src\game\GenericPaladinNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericPaladinNonCombatStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericPaladinStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericPaladinStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\TankPaladinStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\TankPaladinStrategy.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"
