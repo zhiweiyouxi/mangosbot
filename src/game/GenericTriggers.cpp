@@ -45,7 +45,7 @@ BOOL BuffOnPartyTrigger::IsActive()
 
 BOOL NoAttackersTrigger::IsActive()
 {
-    return !ai->HaveTarget() || (ai->GetAttackerCount() > 0 && ai->GetMyAttackerCount() == 0);
+    return (!ai->HaveTarget() || ai->GetMyAttackerCount() == 0) && ai->GetAttackerCount() > 0;
 }
 
 BOOL MyAttackerCountTrigger::IsActive()
