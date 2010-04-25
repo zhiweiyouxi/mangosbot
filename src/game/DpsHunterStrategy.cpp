@@ -36,7 +36,7 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new HunterHasNoPetTrigger(ai), 
+        new NoPetTrigger(ai), 
         NextAction::array(0, new NextAction("call pet", 60.0f), NULL)));
 
     triggers.push_back(new TriggerNode(

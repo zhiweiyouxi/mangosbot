@@ -97,3 +97,8 @@ BOOL SnareTargetTrigger::IsActive()
 {
     return ai->IsTargetMoving() && !ai->TargetHasAura(aura) && ai->HasSpell(aura);
 }
+
+BOOL NoPetTrigger::IsActive()
+{
+    return !ai->HasPet() && !ai->IsMounted();
+}

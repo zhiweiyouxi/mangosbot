@@ -12,10 +12,7 @@ BOOL HunterNoStingsActiveTrigger::IsActive()
         !ai->TargetHasAura("viper sting");
 }
 
-BOOL HunterHasNoPetTrigger::IsActive()
-{
-    return !ai->HasPet() && !ai->IsMounted();
-}
+
 
 BOOL HuntersPetDeadTrigger::IsActive()
 {
