@@ -236,8 +236,8 @@ void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Threat
 {
     while( ref )
     {
-        ThreatManager *target = ref->getSource();
-        Unit *attacker = target->getOwner();
+        ThreatManager *source = ref->getSource();
+        Unit *attacker = source->getOwner();
         if (attacker && !attacker->isDead())
         {
             BOOL found = FALSE;
@@ -251,7 +251,7 @@ void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Threat
                 }
             }
             if (!found)
-                out.push_back(target);
+                out.push_back(source);
         }
         ref = ref->next();
     }
@@ -469,6 +469,8 @@ void PlayerbotAIFacade::AttackBiggerThreat()
     }
     if (target && !ai->HasAura("polymorph", *target))
         ai->Attack(target);
+    else 
+        AttackLeastThreat();
 }
 
 BOOL PlayerbotAIFacade::IsMounted()
