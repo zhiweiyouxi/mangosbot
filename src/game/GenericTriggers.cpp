@@ -55,7 +55,8 @@ BOOL MyAttackerCountTrigger::IsActive()
 
 BOOL DebuffTrigger::IsActive()
 {
-    return !ai->TargetHasAura(spell) && ai->canCastSpell(spell) && ai->GetTargetHealthPercent() > 40;
+    return !ai->TargetHasAura(spell) && ai->canCastSpell(spell) && ai->GetTargetHealthPercent() > 40 &&
+        (ai->GetManaPercent() > 50 || !ai->GetManaPercent());
 }
 
 BOOL SpellAvailableTrigger::IsActive()

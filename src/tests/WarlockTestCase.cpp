@@ -56,9 +56,9 @@ protected:
         ai->health = 49;
         engine->DoNextAction(NULL); 
         ai->health = 70;
-        ai->mana = 10;
+        ai->targetIsCastingNonMeleeSpell = true;
         engine->DoNextAction(NULL); 
-        ai->mana = 100;
+        ai->targetIsCastingNonMeleeSpell = false;
 
         engine->DoNextAction(NULL); 
         engine->DoNextAction(NULL); 

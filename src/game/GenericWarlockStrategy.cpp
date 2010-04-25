@@ -40,7 +40,7 @@ void GenericWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("drain life", 40.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new LowManaTrigger(ai),
+        new InterruptSpellTrigger(ai, "drain mana"), // interrupt spell active means target has mana
         NextAction::array(0, new NextAction("drain mana", 35.0f), NULL)));
 }
 
