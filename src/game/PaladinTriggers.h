@@ -3,6 +3,8 @@
 
 namespace ai
 {
+    BUFF_TRIGGER(RighteousFuryTrigger, "righteous fury", "righteous fury")
+
     BUFF_TRIGGER(DevotionAuraTrigger, "devotion aura", "devotion aura")
     BUFF_TRIGGER(SealOfJusticeTrigger, "seal of justice", "seal of justice")
 

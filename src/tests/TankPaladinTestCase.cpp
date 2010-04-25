@@ -20,6 +20,7 @@ class TankPaladinTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( healing );
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( stopEnemyMove );
+    CPPUNIT_TEST( buff );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -38,6 +39,7 @@ public:
         ai->auras.push_back("devotion aura");
         ai->auras.push_back("seal of justice");
         ai->auras.push_back("blessing of kings");
+        ai->auras.push_back("righteous fury");
 
     }
 
@@ -51,6 +53,17 @@ public:
     }
 
 protected:
+    void buff()
+    {
+        ai->auras.remove("righteous fury");
+        engine->DoNextAction(NULL);
+
+        engine->DoNextAction(NULL); 
+
+        std::cout << ai->buffer;
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>righteous fury"));
+    }
+
     void healing()
     {
         ai->distanceToEnemy = 0.0f; 

@@ -19,6 +19,9 @@ namespace ai
         CastJudgementOfJusticeAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "judgement of justice") {}
     };
 
+    BEGIN_SPELL_ACTION(CastRighteousFuryAction, "righteous fury")
+    END_SPELL_ACTION()
+
     // buffs
     BEGIN_SPELL_ACTION(CastDevotionAuraAction, "devotion aura")
     END_SPELL_ACTION()

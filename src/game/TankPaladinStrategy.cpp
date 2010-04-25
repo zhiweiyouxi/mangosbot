@@ -20,6 +20,10 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("judgement of light", 1.2f), NULL)));
 
     triggers.push_back(new TriggerNode(
+        new RighteousFuryTrigger(ai), 
+        NextAction::array(0, new NextAction("righteous fury", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
         NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
 
@@ -52,6 +56,13 @@ ActionNode* TankPaladinStrategy::createAction(const char* name)
     else if (!strcmp("consecration", name)) 
     {
         return new ActionNode (new CastConsecrationAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("righteous fury", name)) 
+    {
+        return new ActionNode (new CastRighteousFuryAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
