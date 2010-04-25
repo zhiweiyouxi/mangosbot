@@ -110,8 +110,10 @@ protected:
         engine->DoNextAction(NULL); // melee
 
         ai->myAttackerCount = 0;
+        ai->haveTarget = FALSE;
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
         engine->DoNextAction(NULL); // reach melee
 
         std::cout << ai->buffer;

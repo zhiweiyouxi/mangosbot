@@ -67,8 +67,10 @@ protected:
     void pickNewTarget()
     {
         ai->myAttackerCount = 0;
+        ai->haveTarget = FALSE;
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
         ai->resetSpells();
         engine->DoNextAction(NULL); // frostbolt
 

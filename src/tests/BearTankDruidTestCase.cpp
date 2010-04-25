@@ -60,9 +60,11 @@ protected:
         engine->DoNextAction(NULL); // faerie fire
         engine->DoNextAction(NULL); // dire bear form
 
+        ai->haveTarget = FALSE;
         ai->myAttackerCount = 0;
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
         engine->DoNextAction(NULL); // reach melee
 
         std::cout << ai->buffer;

@@ -85,8 +85,10 @@ protected:
         ai->spellCooldowns.push_back("concussive shot"); // this will not be available as we do not have any target
         ai->spellCooldowns.push_back("hunter's mark");
         ai->myAttackerCount = 0;
+        ai->haveTarget = FALSE;
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
         ai->resetSpells();
         engine->DoNextAction(NULL); // serpent sting
 

@@ -1811,7 +1811,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
         return;
 
     // default updates occur every two seconds
-    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+    m_ignoreAIUpdatesUntilTime = time(0) + 2;
 
 	// send heartbeat
 	MovementUpdate();
