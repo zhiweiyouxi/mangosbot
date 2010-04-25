@@ -113,10 +113,14 @@ protected:
         engine->DoNextAction(NULL); // holy wrath
         engine->DoNextAction(NULL); // consecration
 
-        engine->DoNextAction(NULL); // consecration
+        ai->aggro = FALSE;
+        engine->DoNextAction(NULL); 
+        ai->aggro = TRUE;
+
+        engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>consecration>judgement of light"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>consecration>hand of reckoning>judgement of light"));
     }
 
     void combatVsMelee()

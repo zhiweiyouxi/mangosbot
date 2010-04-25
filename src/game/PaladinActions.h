@@ -161,6 +161,9 @@ namespace ai
         virtual const char* getName() { return "purify on party"; }
     };
 
+    BEGIN_SPELL_ACTION(CastHandOfReckoningAction, "hand of reckoning")
+    END_SPELL_ACTION()
+
     BEGIN_SPELL_ACTION(CastCleanseAction, "cleanse")
     END_SPELL_ACTION()
 
