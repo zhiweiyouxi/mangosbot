@@ -127,19 +127,19 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
                     else {
                         MultiplyAndPush(actionNode->getAlternatives(), relevance);
                         sLog.outBasic("NOT EXECUTED:%s", actionNode->getName());
-                        if (++count > 5) break;
+                        //if (++count > 5) break;
                     }
                 }
                 else {
                     MultiplyAndPush(actionNode->getAlternatives(), relevance);
                     sLog.outBasic("IMPOSSIBLE:%s", actionNode->getName());
-                    if (++count > 5) break;
+                    //if (++count > 5) break;
                 }
             }
             else {
                 lastRelevance = relevance;
                 sLog.outBasic("USELESS:%s", actionNode->getName());
-                if (++count > 5) break;
+                //if (++count > 5) break;
             }
             delete actionNode;
         }
