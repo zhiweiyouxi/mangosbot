@@ -1,7 +1,7 @@
 #include "pchdef.h"
 #include "PriestActions.h"
 #include "PriestActionFactory.h"
-#include "HealPriestStrategy.h"
+#include "HealPriestNonCombatStrategy.h"
 #include "DpsPriestStrategy.h"
 
 using namespace ai;

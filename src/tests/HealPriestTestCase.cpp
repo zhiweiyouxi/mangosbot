@@ -88,19 +88,11 @@ protected:
         ai->partyAuras.push_back("power word: fortitude");
 
         ai->health = 1;
-        engine->DoNextAction(NULL); // power word: shield
-        engine->DoNextAction(NULL); // greater heal
-
-        engine->DoNextAction(NULL); // renew
-
-        engine->DoNextAction(NULL); // lesser heal
-
+        engine->DoNextAction(NULL); 
         ai->health = 90;
 
-        engine->DoNextAction(NULL);
-
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">power word: shield>greater heal>renew>heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">flash heal"));
     }
 
     void healOthers()
@@ -132,7 +124,11 @@ protected:
 
     void buff()
     {
-        ai->auras.remove("power word: fortitude");
+        engine->removeStrategy("heal");
+        engine->addStrategy("nc");
+        engine->Init();
+        
+		ai->auras.remove("power word: fortitude");
         ai->auras.remove("divine spirit");
         ai->auras.remove("inner fire");
         ai->partyAuras.remove("power word: fortitude");

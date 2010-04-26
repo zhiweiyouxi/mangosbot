@@ -13,7 +13,7 @@ NextAction** HealPriestStrategy::getDefaultActions()
 
 void HealPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    HealPriestNonCombatStrategy::InitTriggers(triggers);
+    GenericPriestStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
                        new MyAttackerCountTrigger(ai, 2),
@@ -22,7 +22,7 @@ void HealPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
 ActionNode* HealPriestStrategy::createAction(const char* name)
 {
-    ActionNode* node = HealPriestNonCombatStrategy::createAction(name);
+    ActionNode* node = GenericPriestStrategy::createAction(name);
     if (node)
         return node;
 
