@@ -159,7 +159,6 @@ Player* PlayerbotAI::GetMaster() const
 
 // finds spell ID for matching substring args
 // in priority of full text match, spells not taking reagents, and highest rank
-std::map<std::string, uint32> PlayerbotAI::spellMap;
 uint32 PlayerbotAI::getSpellId(const char* args, bool master)
 {
 	string s = args;
@@ -168,10 +167,7 @@ uint32 PlayerbotAI::getSpellId(const char* args, bool master)
 		return spellMap[s];
 
 	uint32 id = findSpellId(args, master);
-	
-	if (id) 
-		spellMap.insert(pair<string, uint32>(s, id));
-
+	spellMap.insert(pair<string, uint32>(s, id));
 	return id;
 }
 

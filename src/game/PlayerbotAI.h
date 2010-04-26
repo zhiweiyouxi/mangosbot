@@ -301,7 +301,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
 		Unit *m_followTarget;	// whom to follow in non combat situation?
 
-		static std::map<std::string, uint32> spellMap;
+		std::map<std::string, uint32> spellMap;
 
 };
 
