@@ -4,6 +4,9 @@
 #include "Common.h"
 #include "QuestDef.h"
 
+using namespace std;
+
+
 class WorldPacket;
 class WorldObject;
 class Player;
@@ -125,7 +128,8 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
         // finds spell ID for matching substring args
         // in priority of full text match, spells not taking reagents, and highest rank
-        virtual uint32 getSpellId(const char* args, bool master = false) const;
+        virtual uint32 findSpellId(const char* args, bool master = false);
+		virtual uint32 getSpellId(const char* args, bool master = false);
 
         // extracts item ids from links
         void extractItemIds(const std::string& text, std::list<uint32>& itemIds) const;
@@ -144,9 +148,9 @@ class MANGOS_DLL_SPEC PlayerbotAI
         // get current casting spell (will return NULL if no spell!)
         Spell* GetCurrentSpell() const;
 
-        bool HasAura(uint32 spellId, const Unit& player) const;
-        bool HasAura(const char* spellName, const Unit& player) const;
-        bool HasAura(const char* spellName) const;
+        bool HasAura(uint32 spellId, const Unit& player);
+        bool HasAura(const char* spellName, const Unit& player);
+        bool HasAura(const char* spellName);
 
         uint8 GetHealthPercent(const Unit& target) const;
         uint8 GetHealthPercent() const;
@@ -296,6 +300,8 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		Unit *m_targetProtect;	// check 
 
 		Unit *m_followTarget;	// whom to follow in non combat situation?
+
+		static std::map<std::string, uint32> spellMap;
 
 };
 

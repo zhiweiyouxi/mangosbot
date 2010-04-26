@@ -26,6 +26,8 @@
 #include "Log.h"
 #include "GossipDef.h"
 
+using namespace std;
+
 // returns a float in range of..
 float rand_float(float low, float high)
 {
@@ -157,7 +159,23 @@ Player* PlayerbotAI::GetMaster() const
 
 // finds spell ID for matching substring args
 // in priority of full text match, spells not taking reagents, and highest rank
-uint32 PlayerbotAI::getSpellId(const char* args, bool master) const
+std::map<std::string, uint32> PlayerbotAI::spellMap;
+uint32 PlayerbotAI::getSpellId(const char* args, bool master)
+{
+	string s = args;
+
+	if (spellMap.find(s) != spellMap.end())
+		return spellMap[s];
+
+	uint32 id = findSpellId(args, master);
+	
+	if (id) 
+		spellMap.insert(pair<string, uint32>(s, id));
+
+	return id;
+}
+
+uint32 PlayerbotAI::findSpellId(const char* args, bool master)
 {
     if (!*args)
         return 0;
@@ -872,7 +890,7 @@ uint8 PlayerbotAI::GetRunicPower() const
 typedef std::pair<uint32, uint8> spellEffectPair;
 typedef std::multimap<spellEffectPair, Aura*> AuraMap;
 
-bool PlayerbotAI::HasAura(uint32 spellId, const Unit& player) const
+bool PlayerbotAI::HasAura(uint32 spellId, const Unit& player)
 {
     for (AuraMap::const_iterator iter = player.GetAuras().begin(); iter != player.GetAuras().end(); ++iter)
     {
@@ -882,12 +900,12 @@ bool PlayerbotAI::HasAura(uint32 spellId, const Unit& player) const
     return false;
 }
 
-bool PlayerbotAI::HasAura(const char* spellName) const
+bool PlayerbotAI::HasAura(const char* spellName)
 {
     return HasAura(spellName, *m_bot);
 }
 
-bool PlayerbotAI::HasAura(const char* spellName, const Unit& player) const
+bool PlayerbotAI::HasAura(const char* spellName, const Unit& player)
 {
     uint32 spellId = getSpellId(spellName);
     return (spellId) ? HasAura(spellId, player) : false;
