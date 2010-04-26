@@ -22,7 +22,7 @@ void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai),
-        NextAction::array(0, new NextAction("attack least threat", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("attack least threat", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new RakeTrigger(ai), 

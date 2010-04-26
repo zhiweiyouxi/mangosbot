@@ -57,8 +57,10 @@ protected:
         engine->DoNextAction(NULL); // cat form
         ai->spellCooldowns.remove("cat form");
 
+        ai->haveTarget = FALSE;
         ai->myAttackerCount = 0;
         engine->DoNextAction(NULL); // attack least threat
+        ai->haveTarget = TRUE;
         ai->myAttackerCount = 1;
         engine->DoNextAction(NULL); // reach melee
         engine->DoNextAction(NULL); // reach melee
@@ -230,10 +232,12 @@ protected:
         ai->myAttackerCount = 2;
         ai->attackerCount = 3;
         engine->DoNextAction(NULL); // cower
+        ai->haveTarget = FALSE;
         ai->myAttackerCount = 0;
         ai->attackerCount = 1;
 
         engine->DoNextAction(NULL); 
+        ai->haveTarget = TRUE;
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>cat form>cower>attack least threat"));

@@ -94,8 +94,10 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
     BOOL actionExecuted = FALSE;
     ActionBasket* basket = NULL;
 
+    time_t currentTime = time(0);
     ProcessTriggers();
 
+    int count = 0;
     do {
         basket = queue.Peek();
         if (basket) {
@@ -124,13 +126,21 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
                     }
                     else {
                         MultiplyAndPush(actionNode->getAlternatives(), relevance);
+                        sLog.outBasic("NOT EXECUTED:%s", actionNode->getName());
+                        //if (++count > 5) break;
                     }
                 }
-                else 
+                else {
                     MultiplyAndPush(actionNode->getAlternatives(), relevance);
+                    sLog.outBasic("IMPOSSIBLE:%s", actionNode->getName());
+                    //if (++count > 5) break;
+                }
             }
-            else
+            else {
                 lastRelevance = relevance;
+                sLog.outBasic("USELESS:%s", actionNode->getName());
+                //if (++count > 5) break;
+            }
             delete actionNode;
         }
     }
@@ -140,8 +150,12 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
         //sLog.outBasic("--- queue is empty ---");
         lastRelevance = 0.0f;
         PushDefaultActions();
-        if (queue.Peek() && depth < 3)
+        if (queue.Peek() && depth < 2)
             return DoNextAction(unit, depth + 1);
+    }
+
+    if (time(0) - currentTime > 1) {
+        sLog.outBasic("too long execution");
     }
 
     return actionExecuted;
@@ -218,7 +232,10 @@ void Engine::ExecuteAction(const char* name)
 void Engine::addStrategy(const char* name)
 {
     removeStrategy(name);
-    strategies.push_back(actionFactory->createStrategy(name));
+
+    Strategy* strategy = actionFactory->createStrategy(name);
+    if (strategy)
+        strategies.push_back(strategy);
 
     Init();
 }

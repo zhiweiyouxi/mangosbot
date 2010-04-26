@@ -36,7 +36,7 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new HunterHasNoPetTrigger(ai), 
+        new NoPetTrigger(ai), 
         NextAction::array(0, new NextAction("call pet", 60.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -68,63 +68,70 @@ ActionNode* DpsHunterStrategy::createAction(const char* name)
         return new ActionNode (new CastAutoShotAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+    }
+    else if (!strcmp("aimed shot", name)) 
+    {
+        return new ActionNode (new CastAimedShotAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("arcane shot", 10.0f), NULL), 
+            /*C*/ NextAction::array(0, new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("arcane shot", name)) 
     {
         return new ActionNode (new CastArcaneShotAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("concussive shot", name)) 
     {
         return new ActionNode (new CastConcussiveShotAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("distracting shot", name)) 
     {
         return new ActionNode (new CastDistractingShotAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("multi-shot", name)) 
     {
         return new ActionNode (new CastMultiShotAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("serpent sting", name)) 
     {
         return new ActionNode (new CastSerpentStingAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("viper sting", name)) 
     {
         return new ActionNode (new CastViperStingAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("scorpid sting", name)) 
     {
         return new ActionNode (new CastScorpidStingAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("hunter's mark", name)) 
     {
         return new ActionNode (new CastHuntersMarkAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("arcane shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("aimed shot", 11.0f), new NextAction("auto shot", 10.0f), NULL));
     }
     else if (!strcmp("mend pet", name)) 
     {

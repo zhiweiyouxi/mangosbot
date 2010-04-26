@@ -227,4 +227,7 @@ namespace ai
         virtual const char* getName() { return "panic"; }
     END_TRIGGER()
 
+
+    BEGIN_TRIGGER(NoPetTrigger, Trigger)
+    END_TRIGGER()
 }

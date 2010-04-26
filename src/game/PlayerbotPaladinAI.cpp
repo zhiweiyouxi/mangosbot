@@ -7,6 +7,8 @@
 
 #include "PlayerbotPaladinAI.h"
 #include "PlayerbotMgr.h"
+#include "PlayerbotAIFacade.h"
+#include "TankPaladinStrategy.h"
 
 class PlayerbotAI;
 
@@ -70,6 +72,20 @@ PlayerbotPaladinAI::PlayerbotPaladinAI(Player* const master, Player* const bot, 
 	GIFT_OF_THE_NAARU            = ai->getSpellId("gift of the naaru"); // draenei
 	STONEFORM                    = ai->getSpellId("stoneform"); // dwarf
 	EVERY_MAN_FOR_HIMSELF        = ai->getSpellId("every man for himself"); // human
+
+    engine = new ai::Engine(facade, new ai::PaladinActionFactory(facade));
+    engine->addStrategy("tank");
+    engine->addStrategy("assist");
+    engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::PaladinActionFactory(facade));
+    nonCombatEngine->addStrategy("nc");
+    nonCombatEngine->addStrategy("tank nc");
+    nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("loot");
+    nonCombatEngine->addStrategy("emote");
+    nonCombatEngine->addStrategy("food");
+    nonCombatEngine->Init();
 }
 
 PlayerbotPaladinAI::~PlayerbotPaladinAI() {}
@@ -106,6 +122,9 @@ void PlayerbotPaladinAI::DoNextCombatManeuver(Unit *pTarget)
                 ai->CastSpell(HAMMER_OF_JUSTICE);
             return;
     }
+
+    engine->DoNextAction(NULL);
+    return;
 
     // damage spells
     ai->SetInFront( pTarget );
@@ -319,6 +338,9 @@ void PlayerbotPaladinAI::DoNonCombatActions()
     Player * m_bot = GetPlayerBot();
     if (!m_bot)
         return;
+
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     // buff myself
 	if (GREATER_BLESSING_OF_MIGHT > 0 && !m_bot->HasAura(GREATER_BLESSING_OF_MIGHT, 0))

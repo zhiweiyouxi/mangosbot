@@ -89,8 +89,10 @@ protected:
 
         engine.DoNextAction(NULL);
         ai->myAttackerCount = 0;
+        ai->haveTarget = FALSE;
         engine.DoNextAction(NULL);
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
 
         std::cout << ai->buffer;
 
@@ -127,9 +129,11 @@ protected:
         engine.Init();
 
         engine.DoNextAction(NULL);
+        ai->haveTarget = FALSE;
         ai->myAttackerCount = 0;
         engine.DoNextAction(NULL);
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
 
         std::cout << ai->buffer;
 

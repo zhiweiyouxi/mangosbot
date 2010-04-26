@@ -1,5 +1,8 @@
 
 #include "PlayerbotWarlockAI.h"
+#include "GenericWarlockNonCombatStrategy.h"
+#include "GenericWarlockStrategy.h"
+#include "WarlockActionFactory.h"
 
 class PlayerbotAI;
 PlayerbotWarlockAI::PlayerbotWarlockAI(Player* const master, Player* const bot, PlayerbotAI* const ai): PlayerbotClassAI(master, bot, ai)
@@ -67,6 +70,22 @@ PlayerbotWarlockAI::PlayerbotWarlockAI(Player* const master, Player* const bot, 
 	WILL_OF_THE_FORSAKEN  = ai->getSpellId("will of the forsaken"); // undead
 
 	m_demonSummonFailed = false;
+
+    engine = new ai::Engine(facade, new ai::WarlockActionFactory(facade));
+    engine->addStrategy("dps");
+    engine->addStrategy("assist");
+    engine->addStrategy("boost");
+    engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::WarlockActionFactory(facade));
+    nonCombatEngine->addStrategy("nc");
+    nonCombatEngine->addStrategy("assist");
+    nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("loot");
+    nonCombatEngine->addStrategy("emote");
+    nonCombatEngine->addStrategy("food");
+    nonCombatEngine->Init();
+
 }
 
 PlayerbotWarlockAI::~PlayerbotWarlockAI() {}
@@ -86,6 +105,8 @@ void PlayerbotWarlockAI::DoNextCombatManeuver(Unit *pTarget)
     }
 
     // ------- Non Duel combat ----------
+    engine->DoNextAction(pTarget);
+    return;
 
 	//ai->SetMovementOrder( PlayerbotAI::MOVEMENT_FOLLOW, GetMaster() ); // dont want to melee mob
 
@@ -342,6 +363,10 @@ void PlayerbotWarlockAI::DoNonCombatActions()
     Player * m_bot = GetPlayerBot();
     if (!m_bot)
         return;
+
+
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     SpellSequence = SPELL_CURSES;
 

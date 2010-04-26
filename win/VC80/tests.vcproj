@@ -713,6 +713,30 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Paladin"
+			>
+			<File
+				RelativePath="..\..\src\tests\PaladinNonCombatTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\TankPaladinTestCase.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Warlock"
+			>
+			<File
+				RelativePath="..\..\src\tests\WarlockNonCombatTestCase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\WarlockTestCase.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\tests\main.cpp"
 			>

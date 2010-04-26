@@ -1148,7 +1148,7 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
     }
 
     m_bot->SetSelection(m_targetCombat->GetGUID());
-    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+    //m_ignoreAIUpdatesUntilTime = time(0) + 1;
 
     if (m_bot->getStandState() != UNIT_STAND_STATE_STAND)
         m_bot->SetStandState(UNIT_STAND_STATE_STAND);
@@ -1811,7 +1811,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
         return;
 
     // default updates occur every two seconds
-    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+    m_ignoreAIUpdatesUntilTime = time(0) + 2;
 
 	// send heartbeat
 	MovementUpdate();

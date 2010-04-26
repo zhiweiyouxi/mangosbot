@@ -34,9 +34,6 @@ namespace ai
         };
     };
 
-    BEGIN_TRIGGER(HunterHasNoPetTrigger, Trigger)
-    END_TRIGGER()
-
     BEGIN_TRIGGER(HuntersPetDeadTrigger, Trigger)
     END_TRIGGER()
 

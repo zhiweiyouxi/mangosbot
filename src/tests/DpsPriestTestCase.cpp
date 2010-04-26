@@ -52,8 +52,10 @@ protected:
     void pickNewTarget()
     {
         ai->myAttackerCount = 0;
+        ai->haveTarget = FALSE;
         engine->DoNextAction(NULL); // attack least threat
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
         ai->resetSpells();
         engine->DoNextAction(NULL); // shadowform
         engine->DoNextAction(NULL); // 
@@ -71,8 +73,10 @@ protected:
         engine->DoNextAction(NULL); // devouring plague
         engine->DoNextAction(NULL); // mind blast
         ai->myAttackerCount = 0;
-        engine->DoNextAction(NULL); // mind flay
+        ai->haveTarget = FALSE;
+        engine->DoNextAction(NULL); 
         ai->myAttackerCount = 1;
+        ai->haveTarget = TRUE;
         engine->DoNextAction(NULL); // shoot
 
         // heal if need

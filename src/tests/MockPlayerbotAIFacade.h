@@ -18,6 +18,7 @@ namespace ai
             balancePercent = 100;
             targetIsMoving = false;
             targetIsCastingNonMeleeSpell = false;
+            haveTarget = true;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -62,7 +63,7 @@ namespace ai
         virtual BOOL IsPetDead() { return petHealth <= 0; }
 
         virtual BOOL IsMounted() { return FALSE; }
-        virtual BOOL HaveTarget() { return FALSE; }
+        virtual BOOL HaveTarget() { return haveTarget; }
 
         virtual BOOL HasHealingPotion() { return FALSE; }
         virtual BOOL HasManaPotion() { return FALSE; }
@@ -109,6 +110,7 @@ namespace ai
         float balancePercent;
         bool targetIsMoving;
         bool targetIsCastingNonMeleeSpell;
+        bool haveTarget;
     };
 
 }

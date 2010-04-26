@@ -234,11 +234,17 @@ int PlayerbotAIFacade::GetMyAttackerCount()
 
 void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out)
 {
+    Player* bot = ai->GetPlayerBot();
     while( ref )
     {
-        ThreatManager *target = ref->getSource();
-        Unit *attacker = target->getOwner();
-        if (attacker && !attacker->isDead())
+        ThreatManager *source = ref->getSource();
+        Unit *attacker = source->getOwner();
+        if (attacker && 
+            !attacker->isDead() && 
+            !attacker->IsPolymorphed() && 
+            !attacker->isFrozen() && 
+            !attacker->IsFriendlyTo(bot) && 
+            bot->IsWithinLOSInMap(attacker))
         {
             BOOL found = FALSE;
             for (std::list<ThreatManager*>::iterator i = out.begin(); i != out.end(); i++)
@@ -251,7 +257,7 @@ void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Threat
                 }
             }
             if (!found)
-                out.push_back(target);
+                out.push_back(source);
         }
         ref = ref->next();
     }
@@ -260,23 +266,12 @@ void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Threat
 void PlayerbotAIFacade::findAllAttackers(std::list<ThreatManager*> &out)
 {
     Player* bot = ai->GetPlayerBot();
-    HostileReference *ref = bot->getHostileRefManager().getFirst();
-    findAllAttackers(ref, out);
-    
-    ref = ai->GetMaster()->getHostileRefManager().getFirst();
-    findAllAttackers(ref, out);
-
-    if (ai->GetPlayerBot()->GetGroup())
+    if (bot->GetGroup())
     {
         GroupReference *gref = bot->GetGroup()->GetFirstMember();
         while( gref )
         {
-            if( gref->getSource() == bot || gref->getSource() == ai->GetMaster() )
-            {
-                gref = gref->next();
-                continue;
-            }
-            ref = gref->getSource()->getHostileRefManager().getFirst();
+            HostileReference *ref = gref->getSource()->getHostileRefManager().getFirst();
             findAllAttackers(ref, out);
             gref = gref->next();
         }
@@ -446,7 +441,7 @@ void PlayerbotAIFacade::AttackLeastThreat()
             target = attacker->getOwner();
         }
     }
-    if (target && !ai->HasAura("polymorph", *target))
+    if (target)
         ai->Attack(target);
 }
 
@@ -467,7 +462,7 @@ void PlayerbotAIFacade::AttackBiggerThreat()
             target = attacker->getOwner();
         }
     }
-    if (target && !ai->HasAura("polymorph", *target))
+    if (target)
         ai->Attack(target);
 }
 
