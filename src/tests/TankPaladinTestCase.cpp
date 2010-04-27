@@ -114,6 +114,7 @@ protected:
         ai->attackerCount = 2;
         engine->DoNextAction(NULL); // holy wrath
         engine->DoNextAction(NULL); // consecration
+		engine->DoNextAction(NULL); // consecration
 
         ai->aggro = FALSE;
         engine->DoNextAction(NULL); 
@@ -122,7 +123,7 @@ protected:
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>consecration>hand of reckoning>judgement of light"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>avenger's shield>consecration>hand of reckoning>judgement of light"));
     }
 
     void combatVsMelee()

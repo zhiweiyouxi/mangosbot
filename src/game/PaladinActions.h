@@ -175,5 +175,7 @@ namespace ai
         virtual const char* getName() { return "cleanse on party"; }
     };
 
+    BEGIN_SPELL_ACTION(CastAvengersShieldAction, "avenger's shield")
+    END_SPELL_ACTION()
 
 }

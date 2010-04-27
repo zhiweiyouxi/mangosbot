@@ -29,7 +29,7 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 2), 
-        NextAction::array(0, new NextAction("holy wrath", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("holy wrath", 50.0f), new NextAction("avenger's shield", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new LoseAggroTrigger(ai), 
@@ -74,6 +74,13 @@ ActionNode* TankPaladinStrategy::createAction(const char* name)
     else if (!strcmp("hand of reckoning", name)) 
     {
         return new ActionNode (new CastHandOfReckoningAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("avenger's shield", name)) 
+    {
+        return new ActionNode (new CastAvengersShieldAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
