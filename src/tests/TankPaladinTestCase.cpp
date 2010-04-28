@@ -127,12 +127,13 @@ protected:
 
         ai->aggro = FALSE;
         engine->DoNextAction(NULL); 
+		engine->DoNextAction(NULL); 
         ai->aggro = TRUE;
 
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>avenger's shield>consecration>hand of reckoning>judgement of light"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>avenger's shield>consecration>hand of reckoning>exorcism>judgement of light"));
     }
 
     void combatVsMelee()
