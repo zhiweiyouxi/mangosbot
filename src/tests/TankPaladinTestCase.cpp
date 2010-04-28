@@ -146,8 +146,11 @@ protected:
         engine->DoNextAction(NULL); // melee
         engine->DoNextAction(NULL); // 
 
+		ai->targetHealth = 24;
+		engine->DoNextAction(NULL); // finish them
+
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>judgement of light"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>judgement of light>hammer of wrath"));
     }
 
     void stopEnemyMove()

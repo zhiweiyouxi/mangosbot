@@ -47,6 +47,10 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 		new PartyMemberLowHealthTrigger(ai, 25), 
 		NextAction::array(0, new NextAction("lay on hands on party", 90.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new TargetLowHealthTrigger(ai, 25), 
+		NextAction::array(0, new NextAction("hammer of wrath", 40.0f), NULL)));
+
 }
 
 
@@ -132,6 +136,13 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
 	else if (!strcmp("judgement of justice", name)) 
 	{
 		return new ActionNode (new CastJudgementOfJusticeAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("hammer of wrath", name)) 
+	{
+		return new ActionNode (new CastHammerOfWrathAction(ai),  
 			/*P*/ NULL,
 			/*A*/ NULL, 
 			/*C*/ NULL);

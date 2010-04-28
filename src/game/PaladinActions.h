@@ -150,6 +150,11 @@ namespace ai
         CastHammerOfJusticeAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "hammer of justice") {}
     };
 
+	class CastHammerOfWrathAction : public CastMeleeSpellAction {
+	public:
+		CastHammerOfWrathAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "hammer of wrath") {}
+	};
+
     BEGIN_SPELL_ACTION(CastPurifyAction, "purify")
     END_SPELL_ACTION()
 
