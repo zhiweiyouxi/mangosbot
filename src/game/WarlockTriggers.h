@@ -3,7 +3,12 @@
 
 namespace ai
 {
-    BUFF_TRIGGER(DemonArmorTrigger, "demon armor", "demon armor");
+	class DemonArmorTrigger : public BuffTrigger
+	{
+	public:
+		DemonArmorTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "demon armor") {}
+		virtual BOOL IsActive();
+	};
 
     DEBUFF_TRIGGER(CurseOfAgonyTrigger, "curse of agony", "curse of agony");
     DEBUFF_TRIGGER(CorruptionTrigger, "corruption", "corruption");

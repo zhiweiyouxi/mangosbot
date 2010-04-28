@@ -27,9 +27,16 @@ ActionNode* GenericWarlockNonCombatStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastDemonArmorAction(ai),  
             /*P*/ NULL,
-            /*A*/ NULL, 
+            /*A*/ NextAction::array(0, new NextAction("demon skin"), NULL), 
             /*C*/ NULL);
     }
+	else if (!strcmp("demon skin", name)) 
+	{
+		return new ActionNode (new CastDemonSkinAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
 
     return NULL;
 }

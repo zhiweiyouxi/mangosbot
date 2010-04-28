@@ -44,6 +44,10 @@ public:
 protected:
     void buff()
     {
+		ai->spellCooldowns.push_back("demon armor");
+		engine->DoNextAction(NULL);
+		ai->spellCooldowns.remove("demon armor");
+
         engine->DoNextAction(NULL);
         ai->auras.push_back("demon armor");
         ai->spellCooldowns.remove("demon armor");
@@ -51,7 +55,7 @@ protected:
         engine->DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">demon armor"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">demon skin>demon armor"));
     }
     
 };
