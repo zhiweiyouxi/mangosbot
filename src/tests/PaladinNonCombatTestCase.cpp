@@ -41,10 +41,13 @@ protected:
         ai->auras.push_back("devotion aura");
 
 		ai->spellCooldowns.push_back("seal of justice");
+		ai->spellCooldowns.push_back("seal of light");
 		engine->DoNextAction(NULL); 
 		ai->spellCooldowns.remove("seal of justice");
         engine->DoNextAction(NULL); 
-        ai->auras.push_back("seal of justice");
+		ai->spellCooldowns.remove("seal of light");
+		engine->DoNextAction(NULL); 
+		ai->auras.push_back("seal of light");
 
         engine->DoNextAction(NULL); 
         ai->auras.push_back("blessing of kings");
@@ -56,7 +59,7 @@ protected:
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(ai->buffer == ">devotion aura>seal of righteousness>seal of justice>blessing of kings>blessing of kings on party");
+        CPPUNIT_ASSERT(ai->buffer == ">devotion aura>seal of righteousness>seal of justice>seal of light>blessing of kings>blessing of kings on party");
     }
 
 

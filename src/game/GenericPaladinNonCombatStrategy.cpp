@@ -24,7 +24,7 @@ void GenericPaladinNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trig
 
     triggers.push_back(new TriggerNode(
         new SealTrigger(ai), 
-        NextAction::array(0, new NextAction("seal of justice", 24.0f), NULL)));
+        NextAction::array(0, new NextAction("seal of light", 24.0f), NULL)));
 }
 
 ActionNode* GenericPaladinNonCombatStrategy::createAction(const char* name)
@@ -36,6 +36,13 @@ ActionNode* GenericPaladinNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("seal of light", name)) 
+	{
+		return new ActionNode (new CastSealOfLightAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NextAction::array(0, new NextAction("seal of justice"), NULL), 
+			/*C*/ NULL);
+	}
     else if (!strcmp("seal of justice", name)) 
     {
         return new ActionNode (new CastSealOfJusticeAction(ai),  
