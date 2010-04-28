@@ -34,6 +34,10 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new LoseAggroTrigger(ai), 
         NextAction::array(0, new NextAction("hand of reckoning", 60.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new InterruptSpellTrigger(ai, "hammer of justice"), 
+		NextAction::array(0, new NextAction("hammer of justice", 40.0f), NULL)));
 }
 
 void TankPaladinStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -85,5 +89,12 @@ ActionNode* TankPaladinStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("hammer of justice", name)) 
+	{
+		return new ActionNode (new CastHammerOfJusticeAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else return GenericPaladinStrategy::createAction(name);
 }

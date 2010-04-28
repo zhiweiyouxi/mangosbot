@@ -21,6 +21,7 @@ class TankPaladinTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( stopEnemyMove );
     CPPUNIT_TEST( buff );
+	CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -154,6 +155,18 @@ protected:
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>hammer of justice>judgement of light"));
     }
 
+	void interruptSpells() 
+	{
+		ai->distanceToEnemy = 0.0f; 
+		ai->targetIsCastingNonMeleeSpell = true;
+		engine->DoNextAction(NULL);
+		ai->targetIsCastingNonMeleeSpell = false;
+
+		engine->DoNextAction(NULL);
+
+		std::cout << ai->buffer;
+		CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hammer of justice>melee"));
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TankPaladinTestCase );

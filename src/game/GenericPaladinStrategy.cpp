@@ -70,7 +70,7 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
     }
     else if (!strcmp("hammer of justice", name)) 
     {
-        return new ActionNode (new CastJHammerOfJusticeAction(ai),  
+        return new ActionNode (new CastHammerOfJusticeAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
