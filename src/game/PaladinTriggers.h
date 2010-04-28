@@ -6,7 +6,13 @@ namespace ai
     BUFF_TRIGGER(RighteousFuryTrigger, "righteous fury", "righteous fury")
 
     BUFF_TRIGGER(DevotionAuraTrigger, "devotion aura", "devotion aura")
-    BUFF_TRIGGER(SealOfJusticeTrigger, "seal of justice", "seal of justice")
+	
+	class SealTrigger : public BuffTrigger
+	{
+	public:
+		SealTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "seal of justice") {}
+		virtual BOOL IsActive();
+	};
 
     DEBUFF_TRIGGER(JudgementOfLightTrigger, "judgement of light", "judgement of light")
 

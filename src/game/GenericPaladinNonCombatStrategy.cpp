@@ -23,7 +23,7 @@ void GenericPaladinNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trig
         NextAction::array(0, new NextAction("devotion aura", 25.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new SealOfJusticeTrigger(ai), 
+        new SealTrigger(ai), 
         NextAction::array(0, new NextAction("seal of justice", 24.0f), NULL)));
 }
 
@@ -40,9 +40,16 @@ ActionNode* GenericPaladinNonCombatStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastSealOfJusticeAction(ai),  
             /*P*/ NULL,
-            /*A*/ NULL, 
+            /*A*/ NextAction::array(0, new NextAction("seal of righteousness"), NULL), 
             /*C*/ NULL);
     }
+	else if (!strcmp("seal of righteousness", name)) 
+	{
+		return new ActionNode (new CastSealOfRighteousnessAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("blessing of kings", name)) 
     {
         return new ActionNode (new CastBlessingOfKingsAction(ai),  
