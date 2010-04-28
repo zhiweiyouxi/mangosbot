@@ -81,8 +81,16 @@ protected:
         ai->health = 100;
         engine->DoNextAction(NULL); 
 
+		ai->health = 20;
+		engine->DoNextAction(NULL); 
+		ai->spellCooldowns.remove("lay on hands");
+		ai->health = 100;
+		ai->partyMinHealth = 20;
+		engine->DoNextAction(NULL); 
+		ai->partyMinHealth = 100;
+
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">flash of light>lifeblood>divine shield>holy light>gift of the naaru>divine protection"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">flash of light>lifeblood>divine shield>holy light>gift of the naaru>divine protection>lay on hands>lay on hands on party"));
     }
   
     void pickNewTarget()

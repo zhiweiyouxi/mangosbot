@@ -35,6 +35,18 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new PartyMemberLowHealthTrigger(ai, 40),
         NextAction::array(0, new NextAction("divine protection on party", 40.0f), new NextAction("holy light on party", 40.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new InterruptSpellTrigger(ai, "hammer of justice"), 
+		NextAction::array(0, new NextAction("hammer of justice", 40.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new LowHealthTrigger(ai, 25), 
+		NextAction::array(0, new NextAction("lay on hands", 90.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new PartyMemberLowHealthTrigger(ai, 25), 
+		NextAction::array(0, new NextAction("lay on hands on party", 90.0f), NULL)));
+
 }
 
 
@@ -103,5 +115,19 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("lay on hands", name)) 
+	{
+		return new ActionNode (new CastLayOnHandsAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("lay on hands on party", name)) 
+	{
+		return new ActionNode (new CastLayOnHandsOnPartyAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     return NULL;
 }
