@@ -12,7 +12,7 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("melee", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new SnareTargetTrigger(ai, "hamstring"), 
+        new SnareTargetTrigger(ai, "hammer of justice"), 
         NextAction::array(0, new NextAction("hammer of justice", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -84,7 +84,7 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastHammerOfJusticeAction(ai),  
             /*P*/ NULL,
-            /*A*/ NULL, 
+            /*A*/ NextAction::array(0, new NextAction("judgement of justice"), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("flash of light", name)) 
@@ -125,6 +125,13 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
 	else if (!strcmp("lay on hands on party", name)) 
 	{
 		return new ActionNode (new CastLayOnHandsOnPartyAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("judgement of justice", name)) 
+	{
+		return new ActionNode (new CastJudgementOfJusticeAction(ai),  
 			/*P*/ NULL,
 			/*A*/ NULL, 
 			/*C*/ NULL);

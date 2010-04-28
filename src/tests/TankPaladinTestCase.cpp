@@ -133,7 +133,7 @@ protected:
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>avenger's shield>consecration>hand of reckoning>exorcism>judgement of light"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>holy wrath>avenger's shield>consecration>hand of reckoning>exorcism>judgement of justice"));
     }
 
     void combatVsMelee()
@@ -158,10 +158,12 @@ protected:
 
         ai->targetIsMoving = true;
         engine->DoNextAction(NULL); // hammer of justice
+		engine->DoNextAction(NULL); // judgement of justice
+		ai->targetIsMoving = false;
         engine->DoNextAction(NULL); 
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>hammer of justice>judgement of light"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>hammer of justice>judgement of justice>judgement of light"));
     }
 
 	void interruptSpells() 
