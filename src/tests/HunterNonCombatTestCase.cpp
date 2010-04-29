@@ -1,79 +1,51 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
+#include "EngineTestBase.h"
 #include "../game/GenericHunterStrategy.h"
-
-#include "MockPlayerbotAIFacade.h"
 
 using namespace ai;
 
 
-class HunterNonCombatTestCase : public CPPUNIT_NS::TestFixture
+class HunterNonCombatTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( HunterNonCombatTestCase );
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST( summonPet );
+	CPPUNIT_TEST( buffIfPackUnavailable );
     CPPUNIT_TEST_SUITE_END();
-
-protected:
-    MockPlayerbotAIFacade *ai;
-    Engine *engine;
 
 public:
     void setUp()
     {
-        ai = new MockPlayerbotAIFacade();
-
-        engine = new Engine(ai, new HunterActionFactory(ai));
-        engine->addStrategy("nc");
-        engine->Init();
+		EngineTestBase::setUp();
+		setupEngine(new HunterActionFactory(ai), "nc", NULL);
 
         ai->attackerCount = 0;
-    }
-
-    void tearDown()
-    {
-        if (engine)
-            delete engine;
-        if (ai) 
-            delete ai;
     }
 
 protected:
     void buff()
     {
-        engine->DoNextAction(NULL);     
-        engine->DoNextAction(NULL);     
-        ai->attackerCount = 1;
-        engine->DoNextAction(NULL);     
-        ai->attackerCount = 0;
+		tick();
+
+		tickWithAttackerCount(1);
         
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the pack>aspect of the hawk"));
+        assertActions(">aspect of the pack>aspect of the hawk");
     }
+
     void summonPet()
     {
-        ai->hasPet = FALSE;
-        engine->DoNextAction(NULL);
+        tickWithNoPet();
         
-        ai->spellCooldowns.push_back("aspect of the hawk");
-        ai->hasPet = TRUE;
-        ai->petHealth = 0;
-        engine->DoNextAction(NULL);
-        
-        ai->petHealth = 1;
-        engine->DoNextAction(NULL);
+		tickWithPetLowHealth(0); // dead
+		tickWithPetLowHealth(30);
+	}        
 
-        ai->spellCooldowns.remove("mend pet");
-        ai->petAuras.push_back("mend pet");
-        engine->DoNextAction(NULL);
+    void buffIfPackUnavailable()
+    {
+        tickWithSpellUnavailable("aspect of the pack");
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>aspect of the pack"));
+        assertActions(">aspect of the cheetah");
     }
     
 };

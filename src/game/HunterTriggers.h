@@ -30,7 +30,7 @@ namespace ai
     public: 
         HunterAspectOfThePackTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the pack") {}
         virtual BOOL IsActive() {
-            return !ai->HasAura(spell) && ai->canCastSpell(spell); 
+            return !ai->HasAura(spell) && !ai->HasAura("aspect of the cheetah");
         };
     };
 

@@ -227,6 +227,20 @@ protected:
 		ai->balancePercent = 100;
 	}
 
+	void tickWithNoPet()
+	{
+		ai->hasPet = FALSE;
+		tick();
+		ai->hasPet = TRUE;
+	}
+
+	void tickWithPetLowHealth(int amount)
+	{
+		ai->petHealth = amount;
+		tick();
+		ai->petHealth = 100;
+	}
+
 protected:
     MockPlayerbotAIFacade *ai;
     Engine *engine;

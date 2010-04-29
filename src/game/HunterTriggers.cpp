@@ -24,4 +24,3 @@ BOOL HuntersPetLowHealthTrigger::IsActive()
 {
     return ai->HasPet() && ai->GetPetHealthPercent() < EAT_DRINK_PERCENT && !ai->IsMounted();
 }
-
