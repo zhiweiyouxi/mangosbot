@@ -163,6 +163,27 @@ protected:
 		healthRestored();
 	}
 
+	void tickWithPartyLowHealth(int amount)
+	{
+		ai->partyMinHealth = amount;
+		tick();
+		ai->partyMinHealth = 100;
+	}
+
+	void tickWithAuraToDispel(uint32 type)
+	{
+		ai->aurasToDispel = type;
+		tick();
+		ai->aurasToDispel = 0;
+	}
+
+	void tickWithPartyAuraToDispel(uint32 type)
+	{
+		ai->partyAurasToDispel = type;
+		tick();
+		ai->partyAurasToDispel = 0;
+	}
+
 	void lowHealth(int amount)
 	{
 		ai->health = amount;
@@ -171,6 +192,14 @@ protected:
 	void healthRestored()
 	{
 		ai->health = 100;
+	}
+
+	
+	void tickWithTargetIsCastingNonMeleeSpell() 
+	{
+        ai->targetIsCastingNonMeleeSpell = true;
+        tick();
+        ai->targetIsCastingNonMeleeSpell = false;
 	}
 
 protected:

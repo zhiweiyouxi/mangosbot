@@ -158,7 +158,7 @@ protected:
 		tick(); 
 		addAura("bear form");
 
-		tickWithLowHealth(39);        
+		tickWithLowHealth(39);
 		tickWithLowHealth(39);
         
         assertActions(">faerie fire>dire bear form>melee>lifeblood>-dire bear form>regrowth>bear form>melee>-bear form>rejuvenation");
@@ -166,91 +166,62 @@ protected:
 
     void intensiveHealing()
     {
-        ai->auras.push_back("dire bear form");
-        ai->auras.remove("rejuvenation");
+        addAura("dire bear form");
+        
+		tickWithLowHealth(39);
+        tickWithLowHealth(39);
+        addAura("lifeblood");
+        
+		tickWithLowHealth(39);
+		addAura("gift of the naaru");
+        
+		tickWithLowHealth(1);
 
-        ai->distanceToEnemy = 0.0f; 
-        ai->health = 39;
-        ai->auras.remove("rejuvenation");
-        tick(); // life blood
-        tick(); // gift of the naaru
-        ai->auras.push_back("lifeblood");
-
-        ai->spellCooldowns.remove("rejuvenation");
-        ai->auras.remove("rejuvenation");
-        ai->health = 1;
-        tick(); // survival instincts
-        ai->health = 39;
-        tick(); // caster form
-        tick(); // regrowth
-
-        assertActions(">lifeblood>gift of the naaru>survival instincts>-dire bear form>regrowth");
+        assertActions(">lifeblood>gift of the naaru>-dire bear form>survival instincts");
     }
 
     void healOthers()
     {
-        tick(); // faerie fire
-        tick(); // dire bear form
-        ai->auras.push_back("dire bear form");
+        tick();
+        tick();
+        addAura("dire bear form");
 
-        ai->partyMinHealth = 39;
-        tick(); // caster form
-        tick(); // rejuvenation on party
-        tick(); // regrowth on party
+        tickWithPartyLowHealth(39);
+        tickWithPartyLowHealth(39);
+        tickWithPartyLowHealth(39);
 
-        ai->partyMinHealth = 100;
-
-        ai->resetSpells();
-        ai->auras.clear();
-        tick(); // continue as usual with bear form
-
-        assertActions(">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party>dire bear form");
+        assertActions(">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party");
     }
     void curePoison() 
     {
-        tick(); // faerie fire
-        tick(); // dire bear form
-        ai->auras.push_back("dire bear form");
+        tick();
+        tick();
+        addAura("dire bear form");
 
-        ai->aurasToDispel = DISPEL_POISON;
-        tick(); // caster form
-        tick(); // abolish poison
-        ai->aurasToDispel = 0;
+		tickWithAuraToDispel(DISPEL_POISON);
+		tickWithAuraToDispel(DISPEL_POISON);
 
-        ai->partyAurasToDispel = DISPEL_POISON;
-        ai->spellCooldowns.remove("abolish poison");
-        tick(); // abolish poison on party
-        ai->partyAurasToDispel = 0;
+		spellAvailable("abolish poison");
+		tickWithPartyAuraToDispel(DISPEL_POISON);
+		
+		tickWithAuraToDispel(DISPEL_POISON);
 
-        ai->aurasToDispel = DISPEL_POISON;
-        tick(); // cure poison
-        ai->aurasToDispel = 0;
+		spellAvailable("cure poison");
+		tickWithPartyAuraToDispel(DISPEL_POISON);
 
-        ai->partyAurasToDispel = DISPEL_POISON;
-        ai->spellCooldowns.remove("cure poison");
-        tick(); // cure poison on party
-        ai->partyAurasToDispel = 0;
-
-        ai->resetSpells();
-        ai->auras.clear();
-        tick(); // continue as usual with bear form
-
-        assertActions(">faerie fire>dire bear form>-dire bear form>abolish poison>abolish poison on party>cure poison>cure poison on party>dire bear form");
+        assertActions(">faerie fire>dire bear form>-dire bear form>abolish poison>abolish poison on party>cure poison>cure poison on party");
     }
     void interruptSpells() 
     {
-        tick(); // faerie fire
-        tick(); // dire bear form
-        ai->auras.push_back("dire bear form");
+        tick();
+        tick();
+        addAura("dire bear form");
         
-        ai->distanceToEnemy = 0.0f; 
-        ai->targetIsCastingNonMeleeSpell = true;
-        tick(); // bash
-        ai->targetIsCastingNonMeleeSpell = false;
+		tickInMeleeRange();
 
-        tick(); // 
+		tickWithTargetIsCastingNonMeleeSpell();
 
-        assertActions(">faerie fire>dire bear form>bash>melee");
+        assertActions(">faerie fire>dire bear form>melee>bash");
     }
 };
 
