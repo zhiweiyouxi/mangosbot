@@ -1,18 +1,10 @@
 #include "pch.h"
-
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
-#include "../game/GenericDruidStrategy.h"
-
-#include "MockPlayerbotAIFacade.h"
+#include "EngineTestBase.h"
+#include "../game/DruidActionFactory.h"
 
 using namespace ai;
 
-
-class BearTankDruidTestCase : public CPPUNIT_NS::TestFixture
+class BearTankDruidTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( BearTankDruidTestCase );
     CPPUNIT_TEST( tooFarForSpells );
@@ -29,26 +21,12 @@ class BearTankDruidTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-    MockPlayerbotAIFacade *ai;
-    Engine *engine;
 
 public:
-    void setUp()
+    virtual void setUp()
     {
-        ai = new MockPlayerbotAIFacade();
-
-        engine = new Engine(ai, new DruidActionFactory(ai));
-        engine->addStrategy("tank");
-        engine->Init();
-    }
-
-    void tearDown()
-    {
-        if (engine)
-            delete engine;
-        if (ai) 
-            delete ai;
+		EngineTestBase::setUp();
+		setupEngine(new DruidActionFactory(ai), "tank", NULL);
     }
 
 protected:
