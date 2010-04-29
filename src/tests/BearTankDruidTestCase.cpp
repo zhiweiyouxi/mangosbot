@@ -32,168 +32,136 @@ public:
 protected:
     void pickNewTarget()
     {
-        engine->removeStrategy("assist");
-        engine->Init();
+        tick();
+        tick();
 
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
+		similateNoTarget();
 
-        ai->haveTarget = FALSE;
-        ai->myAttackerCount = 0;
-        engine->DoNextAction(NULL); // attack least threat
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
-        engine->DoNextAction(NULL); // reach melee
+		tick();
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>attack bigger threat>feral charge - bear"));
+		assertActions(">faerie fire>dire bear form>attack bigger threat>feral charge - bear");
 
     }
 
     void bearFormIfDireNotAvailable()
     {
-        engine->DoNextAction(NULL); // faerie fire
-        ai->spellCooldowns.push_back("dire bear form");
-        engine->DoNextAction(NULL); // bear form
-        ai->auras.push_back("bear form");
+        tick(); 
+        
+		tickWithSpellUnavailable("dire bear form");
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>bear form"));
+        assertActions(">faerie fire>bear form");
     }
 
     void tooFarForSpells()
     {
-        ai->distanceToEnemy = 49.0f;
-        engine->DoNextAction(NULL); // reach spell
-        ai->distanceToEnemy = 15.0f;
+		tickOutOfSpellRange();
 
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
-        ai->auras.push_back("dire bear form");
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 4.0f;
-        engine->DoNextAction(NULL); // melee
+        tick(); 
+        tick(); 
+		addAura("dire bear form");
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach spell>faerie fire>dire bear form>feral charge - bear>melee"));
+        tick(); 
+        
+		tickInMeleeRange();
+
+        assertActions(">reach spell>faerie fire>dire bear form>feral charge - bear>melee");
     }
 
     void druidMustDemoralizeAttackers()
     {
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
-        ai->auras.push_back("dire bear form");
-        
-        ai->attackerCount = 3;
-        ai->auras.remove("dire bear form");
-        ai->spellCooldowns.remove("dire bear form");
-        engine->DoNextAction(NULL); // dire bear form
-        ai->auras.push_back("dire bear form");
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // demoralizing roar
-        engine->DoNextAction(NULL); // melee
+        tick(); 
+        tick(); 
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>dire bear form>reach melee>demoralizing roar>melee"));
+		spellAvailable("dire bear form"); // aura not yet applied
+
+		tickWithAttackerCount(3);
+		addAura("dire bear form");
+		tickWithAttackerCount(3);
+
+		tickInMeleeRange();
+        
+		tick(); 
+
+        assertActions(">faerie fire>dire bear form>dire bear form>reach melee>demoralizing roar>melee");
     }
 
     void druidMustHoldAggro()
     {
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
-        ai->auras.push_back("dire bear form");
-        ai->aggro = FALSE;
-        engine->DoNextAction(NULL); // growl
-        ai->aggro = TRUE;
-        engine->DoNextAction(NULL); // reach melee
-        engine->DoNextAction(NULL); // melee
+        tick();
+        tick();
+        addAura("dire bear form");
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>growl>feral charge - bear>melee"));
+		tickWithNoAggro();
+
+        tick();
+        tick();
+
+        assertActions(">faerie fire>dire bear form>growl>feral charge - bear>melee");
     }
 
     void druidMustDoMauls()
     {
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
-        ai->auras.push_back("dire bear form");
-        ai->distanceToEnemy = 15.0f; // enemy too far
-        engine->DoNextAction(NULL); // reach melee
-        engine->DoNextAction(NULL); // melee
+        tick();
+        tick();
+        addAura("dire bear form");
+
+		tickInMeleeRange();
+
+		tickWithRage(40);
+		tickWithRage(40);
+        
+		tickWithSpellAvailable("maul");
     
-        ai->distanceToEnemy = 0.0f; 
-        ai->rage = 40;
-        engine->DoNextAction(NULL); // mangle (bear)
-        engine->DoNextAction(NULL); // maul
-        ai->spellCooldowns.remove("maul");
-        engine->DoNextAction(NULL); // maul
-    
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>mangle (bear)>maul>maul"));
+        assertActions(">faerie fire>dire bear form>melee>mangle (bear)>maul>melee");
     }
 
     void combatVsMelee()
     {
-        engine->DoNextAction(NULL); // faerie fire
+        tick();
+        tick();
+        addAura("dire bear form");
+
+		tickOutOfMeleeRange();
+		tick();
+		
+		tickOutOfMeleeRange();
+        tick();
+
+		tickWithRage(40);
+
+		tickWithRage(50);
+
+        tickWithRage(40);
         
-        engine->DoNextAction(NULL); // dire bear form
-        ai->auras.push_back("dire bear form");
-
-        ai->distanceToEnemy = 15.0f; // enemy too far
-        engine->DoNextAction(NULL); // feral charge - bear
-        engine->DoNextAction(NULL); // reach melee
-        engine->DoNextAction(NULL); // melee
-
-        ai->distanceToEnemy = 0.0f; 
-        ai->rage = 40;
-        engine->DoNextAction(NULL); // mangle (bear)
-
-        ai->rage = 50;
-        engine->DoNextAction(NULL); // swipe
-
-        ai->rage = 0;
-        engine->DoNextAction(NULL); // melee
-        
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>feral charge - bear>melee>reach melee>mangle (bear)>swipe>maul"));
+        assertActions(">faerie fire>dire bear form>feral charge - bear>melee>reach melee>melee>mangle (bear)>swipe>maul");
     }
 
     void healHimself()
     {
-        ai->spellCooldowns.push_back("gift of the naaru");
+        tick();
+        tick();
+        addAura("dire bear form");
 
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
-        ai->auras.push_back("dire bear form");
+		tickInMeleeRange();
 
-        ai->distanceToEnemy = 0.0f; 
-        ai->health = 39;
-        engine->DoNextAction(NULL); // life blood
-        ai->auras.push_back("lifeblood");
+		lowHealth(39);
+		tickWithSpellUnavailable("gift of the naaru");
+        tick();
+		addAura("lifeblood");
 
-        engine->DoNextAction(NULL); // caster form
-        engine->DoNextAction(NULL); // regrowth
+        tick();
+        tick();
         
-        ai->health = 100;
-        ai->auras.remove("lifeblood");
-        engine->DoNextAction(NULL); // bear form
-        ai->auras.push_back("bear form");
-        engine->DoNextAction(NULL); // melee
+        healthRestored();
+        removeAura("lifeblood");
         
-        ai->health = 39;
-        engine->DoNextAction(NULL); // rejuvenation
+		tick(); 
+		addAura("bear form");
 
-        engine->DoNextAction(NULL); // melee
-
-        ai->resetSpells(); // continue as began
-        ai->health = 70;
-        ai->auras.remove("dire bear form");
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
+		tickWithLowHealth(39);        
+		tickWithLowHealth(39);
         
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>lifeblood>-dire bear form>regrowth>bear form>melee>-bear form>rejuvenation>faerie fire>dire bear form"));
+        assertActions(">faerie fire>dire bear form>melee>lifeblood>-dire bear form>regrowth>bear form>melee>-bear form>rejuvenation");
     }
 
     void intensiveHealing()
@@ -204,89 +172,85 @@ protected:
         ai->distanceToEnemy = 0.0f; 
         ai->health = 39;
         ai->auras.remove("rejuvenation");
-        engine->DoNextAction(NULL); // life blood
-        engine->DoNextAction(NULL); // gift of the naaru
+        tick(); // life blood
+        tick(); // gift of the naaru
         ai->auras.push_back("lifeblood");
 
         ai->spellCooldowns.remove("rejuvenation");
         ai->auras.remove("rejuvenation");
         ai->health = 1;
-        engine->DoNextAction(NULL); // survival instincts
+        tick(); // survival instincts
         ai->health = 39;
-        engine->DoNextAction(NULL); // caster form
-        engine->DoNextAction(NULL); // regrowth
+        tick(); // caster form
+        tick(); // regrowth
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>survival instincts>-dire bear form>regrowth"));
+        assertActions(">lifeblood>gift of the naaru>survival instincts>-dire bear form>regrowth");
     }
 
     void healOthers()
     {
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
+        tick(); // faerie fire
+        tick(); // dire bear form
         ai->auras.push_back("dire bear form");
 
         ai->partyMinHealth = 39;
-        engine->DoNextAction(NULL); // caster form
-        engine->DoNextAction(NULL); // rejuvenation on party
-        engine->DoNextAction(NULL); // regrowth on party
+        tick(); // caster form
+        tick(); // rejuvenation on party
+        tick(); // regrowth on party
 
         ai->partyMinHealth = 100;
 
         ai->resetSpells();
         ai->auras.clear();
-        engine->DoNextAction(NULL); // continue as usual with bear form
+        tick(); // continue as usual with bear form
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party>dire bear form"));
+        assertActions(">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party>dire bear form");
     }
     void curePoison() 
     {
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
+        tick(); // faerie fire
+        tick(); // dire bear form
         ai->auras.push_back("dire bear form");
 
         ai->aurasToDispel = DISPEL_POISON;
-        engine->DoNextAction(NULL); // caster form
-        engine->DoNextAction(NULL); // abolish poison
+        tick(); // caster form
+        tick(); // abolish poison
         ai->aurasToDispel = 0;
 
         ai->partyAurasToDispel = DISPEL_POISON;
         ai->spellCooldowns.remove("abolish poison");
-        engine->DoNextAction(NULL); // abolish poison on party
+        tick(); // abolish poison on party
         ai->partyAurasToDispel = 0;
 
         ai->aurasToDispel = DISPEL_POISON;
-        engine->DoNextAction(NULL); // cure poison
+        tick(); // cure poison
         ai->aurasToDispel = 0;
 
         ai->partyAurasToDispel = DISPEL_POISON;
         ai->spellCooldowns.remove("cure poison");
-        engine->DoNextAction(NULL); // cure poison on party
+        tick(); // cure poison on party
         ai->partyAurasToDispel = 0;
 
         ai->resetSpells();
         ai->auras.clear();
-        engine->DoNextAction(NULL); // continue as usual with bear form
+        tick(); // continue as usual with bear form
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>-dire bear form>abolish poison>abolish poison on party>cure poison>cure poison on party>dire bear form"));
+        assertActions(">faerie fire>dire bear form>-dire bear form>abolish poison>abolish poison on party>cure poison>cure poison on party>dire bear form");
     }
     void interruptSpells() 
     {
-        engine->DoNextAction(NULL); // faerie fire
-        engine->DoNextAction(NULL); // dire bear form
+        tick(); // faerie fire
+        tick(); // dire bear form
         ai->auras.push_back("dire bear form");
         
         ai->distanceToEnemy = 0.0f; 
         ai->targetIsCastingNonMeleeSpell = true;
-        engine->DoNextAction(NULL); // bash
+        tick(); // bash
         ai->targetIsCastingNonMeleeSpell = false;
 
-        engine->DoNextAction(NULL); // 
+        tick(); // 
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">faerie fire>dire bear form>bash>melee"));
+        assertActions(">faerie fire>dire bear form>bash>melee");
     }
 };
 
