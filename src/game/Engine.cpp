@@ -97,10 +97,13 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
     time_t currentTime = time(0);
     ProcessTriggers();
 
-    int count = 0;
+    int iterations = 0;
     do {
         basket = queue.Peek();
         if (basket) {
+			if (++iterations > 10)
+				break;
+
             float relevance = basket->getRelevance(); // just for reference
             BOOL skipPrerequisites = basket->isSkipPrerequisites();
             ActionNode* actionNode = queue.Pop();
@@ -127,19 +130,16 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
                     else {
                         MultiplyAndPush(actionNode->getAlternatives(), relevance);
                         sLog.outBasic("NOT EXECUTED:%s", actionNode->getName());
-                        //if (++count > 5) break;
                     }
                 }
                 else {
                     MultiplyAndPush(actionNode->getAlternatives(), relevance);
                     sLog.outBasic("IMPOSSIBLE:%s", actionNode->getName());
-                    //if (++count > 5) break;
                 }
             }
             else {
                 lastRelevance = relevance;
                 sLog.outBasic("USELESS:%s", actionNode->getName());
-                //if (++count > 5) break;
             }
             delete actionNode;
         }
@@ -147,7 +147,6 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
     while (basket);
 
     if (!basket) {
-        //sLog.outBasic("--- queue is empty ---");
         lastRelevance = 0.0f;
         PushDefaultActions();
         if (queue.Peek() && depth < 2)

@@ -14,6 +14,7 @@ public:
 	void Push(ActionBasket **actions);
 	ActionNode* Pop();
     ActionBasket* Peek();
+	int Size();
 private:
 	std::list<ActionBasket*> actions;
 };

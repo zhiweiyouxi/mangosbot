@@ -73,3 +73,8 @@ ActionBasket* Queue::Peek()
     }
     return selection;
 }
+
+int Queue::Size() 
+{
+	return actions.size(); 
+}

@@ -88,9 +88,14 @@ protected:
         ai->haveTarget = TRUE;
 	}
 
-	void tickWithSpellUnavailable(const char* spell)
+	void spellUnavailable(const char* spell)
 	{
 		ai->spellCooldowns.push_back(spell);
+	}
+
+	void tickWithSpellUnavailable(const char* spell)
+	{
+		spellUnavailable(spell);
 		tick();
 	}
 
@@ -156,6 +161,13 @@ protected:
 		ai->attackerCount = 1;
 	}
 
+	void tickWithMyAttackerCount(int count)
+	{
+		ai->myAttackerCount = count;
+		tickWithAttackerCount(count + 1);
+		ai->myAttackerCount = 1;
+	}
+
 	void tickWithLowHealth(int amount)
 	{
 		lowHealth(amount);
@@ -194,12 +206,25 @@ protected:
 		ai->health = 100;
 	}
 
+	void tickWithComboPoints(int amount)
+	{
+		ai->comboPoints = amount;
+		tick();
+		ai->comboPoints = 0;
+	}
 	
 	void tickWithTargetIsCastingNonMeleeSpell() 
 	{
         ai->targetIsCastingNonMeleeSpell = true;
         tick();
         ai->targetIsCastingNonMeleeSpell = false;
+	}
+
+	void tickWithBalancePercent(int percent)
+	{
+		ai->balancePercent = percent;
+		tick();
+		ai->balancePercent = 100;
 	}
 
 protected:
