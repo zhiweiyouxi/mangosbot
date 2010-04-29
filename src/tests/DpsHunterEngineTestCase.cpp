@@ -1,159 +1,92 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
+#include "EngineTestBase.h"
 #include "../game/DpsHunterStrategy.h"
-
-#include "MockPlayerbotAIFacade.h"
 
 using namespace ai;
 
-
-class DpsHunterEngineTestCase : public CPPUNIT_NS::TestFixture
+class DpsHunterEngineTestCase : public EngineTestBase
 {
   CPPUNIT_TEST_SUITE( DpsHunterEngineTestCase );
-  CPPUNIT_TEST( pickNewTarget );
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST( summonPet );
   CPPUNIT_TEST( lowMana );
   CPPUNIT_TEST( boost );
   CPPUNIT_TEST_SUITE_END();
 
-protected:
-    MockPlayerbotAIFacade *ai;
-    Engine *engine;
-
 public:
     void setUp()
     {
-        ai = new MockPlayerbotAIFacade();
+		EngineTestBase::setUp();
+		setupEngine(new HunterActionFactory(ai), "dps", NULL);
 
-        engine = new Engine(ai, new HunterActionFactory(ai));
-        engine->addStrategy("dps");
-        engine->Init();
-
-        ai->auras.push_back("aspect of the hawk");
-    }
-
-    void tearDown()
-    {
-        if (engine)
-            delete engine;
-        if (ai) 
-            delete ai;
+        addAura("aspect of the hawk");
     }
 
 protected:
  	void combatVsMelee()
 	{
-        ai->auras.remove("aspect of the hawk");
+        removeAura("aspect of the hawk");
         
-        engine->DoNextAction(NULL); // aspect of the hawk
-        ai->auras.push_back("aspect of the hawk");
+		tick();
+        addAura("aspect of the hawk");
 
-        engine->DoNextAction(NULL); // hunter's mark
-        engine->DoNextAction(NULL); // concussive shot
-        engine->DoNextAction(NULL); // serpent sting
-        ai->targetAuras.push_back("serpent sting");
-        engine->DoNextAction(NULL); // auto shot
+		tick();
+		tick();
+		addTargetAura("serpent sting");
+		
+		tick();
+		tick();
+
+		tickInMeleeRange();
+		tickInSpellRange();
         
-        ai->distanceToEnemy = 0.0f; // enemy too close
-        engine->DoNextAction(NULL); // flee
-                
-        ai->distanceToEnemy = 15.0f; 
-        ai->resetSpells();        
-        ai->spellCooldowns.push_back("aimed shot");
-        engine->DoNextAction(NULL); // arcane shot
+		// resetSpells
+		tickWithSpellUnavailable("aimed shot");
 
-        ai->spellCooldowns.remove("arcane shot");        
-        engine->DoNextAction(NULL); // arcane shot
-        ai->spellCooldowns.remove("auto shot");        
-        engine->DoNextAction(NULL); // auto shot
+		tickWithSpellAvailable("auto shot");
                 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the hawk>hunter's mark>serpent sting>aimed shot>auto shot>flee>concussive shot>arcane shot>auto shot"));
+        assertActions(">aspect of the hawk>hunter's mark>serpent sting>aimed shot>auto shot>flee>concussive shot>arcane shot>auto shot");
 
 	}
 
-    void pickNewTarget()
-    {
-        ai->spellCooldowns.push_back("auto shot");
-        ai->spellCooldowns.push_back("serpent sting");
-        ai->spellCooldowns.push_back("concussive shot"); // this will not be available as we do not have any target
-        ai->spellCooldowns.push_back("hunter's mark");
-        ai->myAttackerCount = 0;
-        ai->haveTarget = FALSE;
-        engine->DoNextAction(NULL); // attack least threat
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
-        ai->resetSpells();
-        engine->DoNextAction(NULL); // serpent sting
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>serpent sting"));
-
-    }
-
     void lowMana()
     {
-        ai->spellCooldowns.push_back("serpent sting");
-        ai->spellCooldowns.push_back("concussive shot"); // this will not be available as we do not have any target
-        ai->auras.remove("aspect of the hawk");
-        ai->mana = 30;
-        engine->DoNextAction(NULL); // aspect of the viper
-        engine->DoNextAction(NULL);
-        ai->mana = 60;
-        ai->resetSpells();
-        engine->DoNextAction(NULL); // aspect of the hawk
-        engine->DoNextAction(NULL); 
-        engine->DoNextAction(NULL); 
+        spellUnavailable("serpent sting");
+        spellUnavailable("concussive shot"); 
+        removeAura("aspect of the hawk");
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">aspect of the viper>viper sting>aspect of the hawk>hunter's mark>serpent sting"));
+		tickWithLowMana(30);
+		tickWithLowMana(30);
+        
+		tick();
+
+        assertActions(">aspect of the viper>viper sting>aspect of the hawk");
 
     }
 
     void summonPet()
     {
-        ai->hasPet = FALSE;
-        engine->DoNextAction(NULL);
+        tickWithNoPet();
+        
+		tickWithPetLowHealth(0); // dead
+		tickWithPetLowHealth(30);
 
-        ai->hasPet = TRUE;
-        ai->petHealth = 0;
-        engine->DoNextAction(NULL);
-        engine->DoNextAction(NULL);
-
-        ai->petHealth = 1;
-        engine->DoNextAction(NULL);
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">call pet>revive pet>mend pet>hunter's mark"));
-    }
+		assertActions(">call pet>revive pet>mend pet");
+	}    
 
 
     void boost()
     {
         engine->addStrategy("boost");
 
-        engine->DoNextAction(NULL);
-        ai->spellCooldowns.push_back("serpent sting");
+		tick();
+        spellUnavailable("serpent sting");
 
-        ai->balancePercent = 1;
-        engine->DoNextAction(NULL); // rapid fire
-        engine->DoNextAction(NULL); // readyness
+		tickWithBalancePercent(1);
+		tickWithBalancePercent(1);
 
-        ai->balancePercent = 100;
-
-        ai->resetSpells();
-        ai->auras.clear();
-        engine->DoNextAction(NULL); // aspect of the hawk
-        engine->DoNextAction(NULL); // continue as usual 
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">hunter's mark>rapid fire>readyness>aspect of the hawk>serpent sting"));
+        assertActions(">hunter's mark>rapid fire>readyness");
     }
 };
 

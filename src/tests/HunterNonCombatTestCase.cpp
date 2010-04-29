@@ -39,6 +39,8 @@ protected:
         
 		tickWithPetLowHealth(0); // dead
 		tickWithPetLowHealth(30);
+
+		assertActions(">call pet>revive pet>mend pet");
 	}        
 
     void buffIfPackUnavailable()

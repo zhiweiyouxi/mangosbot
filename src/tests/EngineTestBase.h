@@ -115,6 +115,16 @@ protected:
 		ai->auras.push_back(spell);
 	}
 
+	void addTargetAura(const char* spell)
+	{
+		ai->targetAuras.push_back(spell);
+	}
+
+	void removeTargetAura(const char* spell)
+	{
+		ai->targetAuras.remove(spell);
+	}
+
 	void removeAura(const char* spell)
 	{
 		ai->auras.remove(spell);
@@ -137,6 +147,12 @@ protected:
 	void tickInMeleeRange()
 	{
         ai->distanceToEnemy = 0.0f;
+		tick();
+	}
+
+	void tickInSpellRange()
+	{
+        ai->distanceToEnemy = 15.0f;
 		tick();
 	}
 
@@ -239,6 +255,13 @@ protected:
 		ai->petHealth = amount;
 		tick();
 		ai->petHealth = 100;
+	}
+
+	void tickWithLowMana(int amount)
+	{
+		ai->mana = amount;
+		tick();
+		ai->mana = 100;
 	}
 
 protected:
