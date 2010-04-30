@@ -675,6 +675,10 @@
 			Name="Generic"
 			>
 			<File
+				RelativePath="..\..\src\tests\EngineTestBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\EngineTestBase.h"
 				>
 			</File>

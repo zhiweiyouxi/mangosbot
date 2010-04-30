@@ -3,6 +3,7 @@
 
 namespace ai
 {
+	BUFF_TRIGGER(HolyShieldTrigger, "holy shield", "holy shield")
     BUFF_TRIGGER(RighteousFuryTrigger, "righteous fury", "righteous fury")
 
     BUFF_TRIGGER(DevotionAuraTrigger, "devotion aura", "devotion aura")
