@@ -185,4 +185,8 @@ namespace ai
 
 	BEGIN_SPELL_ACTION(CastExorcismAction, "exorcism")
 	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastHolyShieldAction, "holy shield")
+	END_SPELL_ACTION()
+	
 }
