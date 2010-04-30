@@ -11,8 +11,8 @@ void GenericPaladinNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trig
     GenericNonCombatStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
-        new BlessingOfKingsTrigger(ai), 
-        NextAction::array(0, new NextAction("blessing of kings", 21.0f), NULL)));
+        new BlessingTrigger(ai), 
+        NextAction::array(0, new NextAction("blessing of sanctuary", 21.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new BlessingOfKingsOnPartyTrigger(ai), 
@@ -57,6 +57,13 @@ ActionNode* GenericPaladinNonCombatStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("blessing of sanctuary", name)) 
+    {
+        return new ActionNode (new CastBlessingOfSanctuaryAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else if (!strcmp("blessing of kings", name)) 
     {
         return new ActionNode (new CastBlessingOfKingsAction(ai),  
