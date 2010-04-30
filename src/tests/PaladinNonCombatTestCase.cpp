@@ -38,15 +38,13 @@ protected:
 		addAura("seal of light");
 
         tick(); 
-        addAura("blessing of kings");
+        addAura("blessing of sanctuary");
         
 		tickWithSpellAvailable("blessing of kings");
-
-		
 		addPartyAura("blessing of kings");
         tick(); 
 
-        assertActions(">devotion aura>seal of righteousness>seal of justice>seal of light>blessing of kings>blessing of kings on party");
+        assertActions(">devotion aura>seal of righteousness>seal of justice>seal of light>blessing of sanctuary>blessing of kings on party");
     }
 
 
