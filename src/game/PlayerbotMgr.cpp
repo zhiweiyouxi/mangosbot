@@ -571,7 +571,7 @@ bool ChatHandler::HandlePlayerbotCommand(const char* args)
             return false;
 		}
 		std::string orderStr = orderChar;
-		if( orderStr == "protect" || orderStr == "assist" ) {
+		if( orderStr == "protect" || orderStr == "dps assist" ) {
 			char *targetChar = strtok( NULL, " " );
 			uint64 targetGUID = m_session->GetPlayer()->GetSelection();
 			if( !targetChar && !targetGUID ) {

@@ -21,7 +21,6 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( healing );
     CPPUNIT_TEST( interruptSpells );
-    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -96,28 +95,6 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>defensive stance>reach melee>melee>bloodrage>rend"));
-
-    }
-    void pickNewTarget()
-    {
-        engine->removeStrategy("assist");
-        engine->Init();
-
-        ai->auras.push_back("defensive stance");
-
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // melee
-
-        ai->myAttackerCount = 0;
-        ai->haveTarget = FALSE;
-        engine->DoNextAction(NULL); // attack least threat
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
-        engine->DoNextAction(NULL); // reach melee
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>attack bigger threat>devastate"));
 
     }
 

@@ -101,7 +101,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
     do {
         basket = queue.Peek();
         if (basket) {
-			if (++iterations > 10)
+			if (++iterations > maxIterations)
 				break;
 
             float relevance = basket->getRelevance(); // just for reference

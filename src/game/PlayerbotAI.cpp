@@ -1705,7 +1705,7 @@ Unit *PlayerbotAI::FindAttacker( ATTACKERINFOTYPE ait, Unit *victim )
 void PlayerbotAI::SetCombatOrderByStr( std::string str, Unit *target ) {
 	CombatOrderType co;
 	if( str == "tank" ) co = ORDERS_TANK;
-	else if( str == "assist" ) co = ORDERS_ASSIST;
+	else if( str == "dps assist" ) co = ORDERS_ASSIST;
 	else if( str == "heal" ) co = ORDERS_HEAL;
 	else if( str == "protect" ) co = ORDERS_PROTECT;
 	else co = ORDERS_RESET;
@@ -1824,7 +1824,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     if (currentTime < m_ignoreAIUpdatesUntilTime)
         return;
 
-    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+    m_ignoreAIUpdatesUntilTime = time(0) + 2;
 
 	// send heartbeat
 	MovementUpdate();
@@ -2343,7 +2343,7 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 	
     if (!m_bot->IsWithinDistInMap( &obj, 50, true ))
     {
-        m_ignoreAIUpdatesUntilTime = time(0) + 6;
+        m_ignoreAIUpdatesUntilTime = time(0) + 1;
         PlayerbotChatHandler ch(GetMaster());
         if (! ch.teleport(*m_bot))
         {
@@ -2357,7 +2357,7 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 
 void PlayerbotAI::HandleTeleportAck()
 {
-    m_ignoreAIUpdatesUntilTime = time(0) + 6;
+    m_ignoreAIUpdatesUntilTime = time(0) + 1;
     m_bot->GetMotionMaster()->Clear(true);
     if (m_bot->IsBeingTeleportedNear())
     {

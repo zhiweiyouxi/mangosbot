@@ -32,10 +32,6 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("taunt", 30.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 60, 40), 
         NextAction::array(0, new NextAction("shield wall", 50.0f), NULL)));
 }

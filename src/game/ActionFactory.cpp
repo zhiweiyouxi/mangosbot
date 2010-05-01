@@ -117,11 +117,11 @@ Strategy* ActionFactory::createStrategy(const char* name)
     if (!strcmp("stay", name))
         return new StayNonCombatStrategy(ai);
     
-    if (!strcmp("assist", name))
-        return new AssistNonCombatStrategy(ai);
+    if (!strcmp("dps assist", name))
+        return new DpsAssistStrategy(ai);
 
-    if (!strcmp("tank nc", name))
-        return new TankNonCombatStrategy(ai);
+    if (!strcmp("tank assist", name))
+        return new TankAssistStrategy(ai);
 
     if (!strcmp("loot", name))
         return new LootNonCombatStrategy(ai);

@@ -66,13 +66,13 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
 
     engine = new ai::Engine(facade, new ai::MageActionFactory(facade));
     engine->addStrategy("frost");
-    engine->addStrategy("assist");
+    engine->addStrategy("dps assist");
     engine->addStrategy("boost");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::MageActionFactory(facade));
     nonCombatEngine->addStrategy("nc");
-    nonCombatEngine->addStrategy("assist");
+    nonCombatEngine->addStrategy("dps assist");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");

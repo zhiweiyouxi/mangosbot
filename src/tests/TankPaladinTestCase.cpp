@@ -12,7 +12,6 @@ class TankPaladinTestCase : public EngineTestBase
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( paladinMustHoldAggro );
     CPPUNIT_TEST( healing );
-    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( stopEnemyMove );
     CPPUNIT_TEST( buff );
 	CPPUNIT_TEST( interruptSpells );
@@ -67,17 +66,6 @@ protected:
         assertActions(">flash of light>lifeblood>divine shield>holy light>gift of the naaru>divine protection>lay on hands>lay on hands on party");
     }
   
-	void pickNewTarget()
-	{
-		tick();
-		similateNoTarget();
-
-		tick();
-
-		assertActions(">melee>attack bigger threat>judgement of light");
-
-	}
-
     void paladinMustHoldAggro()
     {
 		tickWithAttackerCount(2);
@@ -89,7 +77,7 @@ protected:
 
         tick(); 
 
-        assertActions(">holy wrath>avenger's shield>consecration>hand of reckoning>exorcism>judgement of justice");
+        assertActions(">holy wrath>consecration>avenger's shield>hand of reckoning>judgement of justice>exorcism");
     }
 
     void combatVsMelee()

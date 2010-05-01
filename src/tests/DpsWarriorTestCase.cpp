@@ -19,7 +19,6 @@ class DpsWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
-    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( boost );
     CPPUNIT_TEST( execute );
     CPPUNIT_TEST( hamstring );
@@ -63,26 +62,6 @@ protected:
 
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>charge"));
-
-    }
-    void pickNewTarget()
-    {
-        engine->removeStrategy("assist");
-        engine->Init();
-
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // melee
-
-        ai->myAttackerCount = 0;
-        ai->haveTarget = FALSE;
-        engine->DoNextAction(NULL); // attack least threat
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
-        engine->DoNextAction(NULL); // reach melee
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>charge>attack least threat>melee"));
 
     }
 

@@ -14,7 +14,6 @@ class CatDpsDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
-    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( boost );
     CPPUNIT_TEST( cower );
     CPPUNIT_TEST_SUITE_END();
@@ -30,15 +29,6 @@ public:
     }
 
 protected:
-    void pickNewTarget()
-    {
-		similateNoTarget();
-
-		tick();
-
-		assertActions(">attack least threat>reach melee");
-    }
-
     void tooFarForSpells()
     {
 		removeAura("cat form");

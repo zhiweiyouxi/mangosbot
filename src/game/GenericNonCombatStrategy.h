@@ -42,20 +42,20 @@ namespace ai
 
     };
 
-    class AssistNonCombatStrategy : public GenericNonCombatStrategy
+    class DpsAssistStrategy : public GenericNonCombatStrategy
     {
     public:
-        AssistNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
-        virtual const char* getName() { return "assist"; }
+        DpsAssistStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        virtual const char* getName() { return "dps assist"; }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
     };
 
-    class TankNonCombatStrategy : public GenericNonCombatStrategy
+    class TankAssistStrategy : public GenericNonCombatStrategy
     {
     public:
-        TankNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        TankAssistStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "tank non combat"; }
 
     public:

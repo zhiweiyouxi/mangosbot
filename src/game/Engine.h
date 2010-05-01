@@ -49,6 +49,7 @@ namespace ai
         {
             actionFactory = factory;
             lastRelevance = 0.0f;
+            maxIterations = 10;
         }
 
 	    void Init();
@@ -91,6 +92,9 @@ namespace ai
         ActionFactory* actionFactory;
         std::list<Strategy*> strategies;
         float lastRelevance;
+
+    public:
+        int maxIterations;
 
     private:
         ActionExecutionListeners actionExecutionListeners;

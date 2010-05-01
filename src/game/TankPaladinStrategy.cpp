@@ -21,23 +21,19 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new RighteousFuryTrigger(ai), 
-        NextAction::array(0, new NextAction("righteous fury", 50.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
+        NextAction::array(0, new NextAction("righteous fury", 15.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 2), 
-        NextAction::array(0, new NextAction("holy wrath", 50.0f), new NextAction("avenger's shield", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("holy wrath", 25.0f), new NextAction("avenger's shield", 24.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new LoseAggroTrigger(ai), 
-        NextAction::array(0, new NextAction("hand of reckoning", 60.0f), new NextAction("exorcism", 60.0f), NULL)));
+        NextAction::array(0, new NextAction("hand of reckoning", 16.0f), new NextAction("exorcism", 11.0f), NULL)));
 
 	triggers.push_back(new TriggerNode(
 		new HolyShieldTrigger(ai), 
-		NextAction::array(0, new NextAction("holy shield", 80.0f), NULL)));
+		NextAction::array(0, new NextAction("holy shield", 18.0f), NULL)));
 }
 
 void TankPaladinStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

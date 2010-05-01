@@ -371,9 +371,9 @@ void PlayerbotAIFacade::Flee(float distance)
     float rz = bot->GetPositionZ();
     float maxDistance = 0;
 
-    for (float r = distance; r>=ATTACK_DISTANCE; r -= ATTACK_DISTANCE)
+    for (float r = distance; r>=10.0f; r -= 10.0f)
     {
-        for (float angle = 0; angle < 2*M_PI; angle += M_PI / 12)
+        for (float angle = 0; angle < 2*M_PI; angle += M_PI / 8)
         {
             float x = bot->GetPositionX() + cos(angle) * r;
             float y = bot->GetPositionY() + sin(angle) * r;

@@ -29,18 +29,18 @@ void LootNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 }
 
 
-void TankNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+void TankAssistStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack bigger threat", 9.0f), NULL)));
+        NextAction::array(0, new NextAction("attack bigger threat", 50.0f), NULL)));
 }
 
-void AssistNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+void DpsAssistStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
+        NextAction::array(0, new NextAction("attack least threat", 50.0f), NULL)));
 }
 
 NextAction** StayNonCombatStrategy::getDefaultActions()

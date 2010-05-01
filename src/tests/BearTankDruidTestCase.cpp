@@ -17,7 +17,6 @@ class BearTankDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( curePoison );
-    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,19 +29,6 @@ public:
     }
 
 protected:
-    void pickNewTarget()
-    {
-        tick();
-        tick();
-
-		similateNoTarget();
-
-		tick();
-
-		assertActions(">faerie fire>dire bear form>attack bigger threat>feral charge - bear");
-
-    }
-
     void bearFormIfDireNotAvailable()
     {
         tick(); 

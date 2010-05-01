@@ -16,7 +16,6 @@ using namespace ai;
 class FrostMageTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( FrostMageTestCase );
-  CPPUNIT_TEST( pickNewTarget );
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST( dispel );
   CPPUNIT_TEST( boost );
@@ -63,21 +62,6 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">frostbolt>frost nova>flee>frostbolt>shoot"));
 	}
-
-    void pickNewTarget()
-    {
-        ai->myAttackerCount = 0;
-        ai->haveTarget = FALSE;
-        engine->DoNextAction(NULL); // attack least threat
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
-        ai->resetSpells();
-        engine->DoNextAction(NULL); // frostbolt
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>frostbolt"));
-
-    }
 
     void dispel() 
     {

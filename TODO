@@ -1,3 +1,6 @@
+[ ] use party size when calculating follow angle
+[ ] global spell cooldown
+
 [v] skip unknown spells/skills when check triggers
 [v] shoot using wands
 [v] stay/follow - do not react

@@ -16,7 +16,6 @@ using namespace ai;
 class FrostWarlockTestCase : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE( FrostWarlockTestCase );
-      CPPUNIT_TEST( pickNewTarget );
       CPPUNIT_TEST( combatVsMelee );
       CPPUNIT_TEST( summonPet );
   CPPUNIT_TEST_SUITE_END();
@@ -66,21 +65,6 @@ protected:
         std::cout << ai->buffer;
         CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">immolate>corruption>curse of agony>drain life>drain mana>shadow bolt>shoot"));
 	}
-
-    void pickNewTarget()
-    {
-        ai->myAttackerCount = 0;
-        ai->haveTarget = FALSE;
-        engine->DoNextAction(NULL); // attack least threat
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
-        ai->resetSpells();
-        engine->DoNextAction(NULL); // frostbolt
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>immolate"));
-
-    }
 
     void summonPet()
     {

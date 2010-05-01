@@ -36,10 +36,6 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("demoralizing roar", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new NoAttackersTrigger(ai),
-        NextAction::array(0, new NextAction("attack bigger threat", 50.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new InterruptSpellTrigger(ai, "bash"),
         NextAction::array(0, new NextAction("bash", 50.0f), NULL)));
 }

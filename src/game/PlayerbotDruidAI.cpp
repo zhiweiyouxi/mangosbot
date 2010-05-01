@@ -68,12 +68,12 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 
     engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     engine->addStrategy("tank");
-    engine->addStrategy("assist");
+    engine->addStrategy("tank assist");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     nonCombatEngine->addStrategy("nc");
-    nonCombatEngine->addStrategy("tank nc");
+    nonCombatEngine->addStrategy("tank assist");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");

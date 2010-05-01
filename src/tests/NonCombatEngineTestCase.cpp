@@ -84,7 +84,7 @@ protected:
 
         Engine engine(ai, new ActionFactory(ai));
         engine.addStrategy("stay");
-        engine.addStrategy("assist");
+        engine.addStrategy("dps assist");
         engine.Init();
 
         engine.DoNextAction(NULL);
@@ -125,7 +125,7 @@ protected:
 
         Engine engine(ai, new ActionFactory(ai));
         engine.addStrategy("stay");
-        engine.addStrategy("tank nc");
+        engine.addStrategy("tank assist");
         engine.Init();
 
         engine.DoNextAction(NULL);

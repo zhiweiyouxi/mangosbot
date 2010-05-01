@@ -17,7 +17,6 @@ class DpsPriestTestCase : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DpsPriestTestCase );
     CPPUNIT_TEST( combat );
-    CPPUNIT_TEST( pickNewTarget );
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -49,22 +48,6 @@ public:
     }
 
 protected:
-    void pickNewTarget()
-    {
-        ai->myAttackerCount = 0;
-        ai->haveTarget = FALSE;
-        engine->DoNextAction(NULL); // attack least threat
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
-        ai->resetSpells();
-        engine->DoNextAction(NULL); // shadowform
-        engine->DoNextAction(NULL); // 
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">attack least threat>shadowform>mind flay"));
-
-    }
-
     void combat()
     {
         engine->DoNextAction(NULL); // shadowform

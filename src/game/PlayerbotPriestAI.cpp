@@ -71,12 +71,12 @@ PlayerbotPriestAI::PlayerbotPriestAI(Player* const master, Player* const bot, Pl
 
     engine = new ai::Engine(facade, new ai::PriestActionFactory(facade));
     engine->addStrategy("heal");
-    engine->addStrategy("assist");
+    engine->addStrategy("dps assist");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::PriestActionFactory(facade));
     nonCombatEngine->addStrategy("nc");
-    nonCombatEngine->addStrategy("assist");
+    nonCombatEngine->addStrategy("dps assist");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("food");
