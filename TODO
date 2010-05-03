@@ -1,5 +1,9 @@
 [ ] use party size when calculating follow angle
 [ ] global spell cooldown
+[ ] drain soul only if 25% health
+[ ] do not interrupt channels
+[ ] warlock: heal demon
+[ ] attack threat, not follow 
 
 [v] skip unknown spells/skills when check triggers
 [v] shoot using wands

@@ -2317,19 +2317,19 @@
 					Name="Strategies"
 					>
 					<File
+						RelativePath="..\..\src\game\DpsWarlockStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DpsWarlockStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericWarlockNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\game\GenericWarlockNonCombatStrategy.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\GenericWarlockStrategy.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\GenericWarlockStrategy.h"
 						>
 					</File>
 				</Filter>

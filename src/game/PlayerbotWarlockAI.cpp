@@ -1,7 +1,7 @@
 
 #include "PlayerbotWarlockAI.h"
 #include "GenericWarlockNonCombatStrategy.h"
-#include "GenericWarlockStrategy.h"
+#include "DpsWarlockStrategy.h"
 #include "WarlockActionFactory.h"
 
 class PlayerbotAI;

@@ -4,10 +4,10 @@
 
 namespace ai
 {
-    class GenericWarlockStrategy : public Strategy
+    class DpsWarlockStrategy : public Strategy
     {
     public:
-        GenericWarlockStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        DpsWarlockStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
         virtual const char* getName() { return "warlock"; }
     
     public:

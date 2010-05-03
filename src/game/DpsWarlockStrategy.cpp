@@ -1,28 +1,20 @@
 #include "pchdef.h"
 #include "WarlockTriggers.h"
 #include "WarlockMultipliers.h"
-#include "GenericWarlockStrategy.h"
+#include "DpsWarlockStrategy.h"
 #include "WarlockActions.h"
 
 using namespace ai;
 
-NextAction** GenericWarlockStrategy::getDefaultActions()
+NextAction** DpsWarlockStrategy::getDefaultActions()
 {
-    return NextAction::array(0, new NextAction("shadow bolt", 1.0f), new NextAction("shoot", 1.0f), NULL);
+    return NextAction::array(0, new NextAction("shoot", 10.0f), NULL);
 }
 
-void GenericWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+void DpsWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     Strategy::InitTriggers(triggers);
     
-    triggers.push_back(new TriggerNode(
-        new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack least threat", 20.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        new ImmolateTrigger(ai),
-        NextAction::array(0, new NextAction("immolate", 13.0f), NULL)));
-
     triggers.push_back(new TriggerNode(
         new CorruptionTrigger(ai),
         NextAction::array(0, new NextAction("corruption", 12.0f), NULL)));
@@ -33,19 +25,16 @@ void GenericWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new NoPetTrigger(ai),
-        NextAction::array(0, new NextAction("summon voidwalker", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("summon imp", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 50),
         NextAction::array(0, new NextAction("drain life", 40.0f), NULL)));
 
-    triggers.push_back(new TriggerNode(
-        new InterruptSpellTrigger(ai, "drain mana"), // interrupt spell active means target has mana
-        NextAction::array(0, new NextAction("drain mana", 35.0f), NULL)));
 }
 
 
-ActionNode* GenericWarlockStrategy::createAction(const char* name)
+ActionNode* DpsWarlockStrategy::createAction(const char* name)
 {
     if (!strcmp("immolate", name)) 
     {
@@ -66,6 +55,13 @@ ActionNode* GenericWarlockStrategy::createAction(const char* name)
         return new ActionNode (new CastSummonVoidwalkerAction(ai),  
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("drain soul"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("summon imp", name)) 
+    {
+        return new ActionNode (new CastSummonImpAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("curse of agony", name)) 

@@ -739,11 +739,11 @@
 			Name="Warlock"
 			>
 			<File
-				RelativePath="..\..\src\tests\WarlockNonCombatTestCase.cpp"
+				RelativePath="..\..\src\tests\DpsWarlockTestCase.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tests\WarlockTestCase.cpp"
+				RelativePath="..\..\src\tests\WarlockNonCombatTestCase.cpp"
 				>
 			</File>
 		</Filter>
