@@ -479,15 +479,16 @@ void PlayerbotAIFacade::Emote(uint32 emote)
 float PlayerbotAIFacade::GetFollowAngle() 
 {
     Player* bot = ai->GetPlayerBot();
-    if (ai->GetPlayerBot()->GetGroup())
+	Group* group = bot->GetGroup();
+    if (group)
     {
-        GroupReference *gref = bot->GetGroup()->GetFirstMember();
+        GroupReference *gref = group->GetFirstMember();
         int index = 0;
         while( gref )
         {
             if( gref->getSource() == bot)
             {
-                return M_PI / 2.5f * index;
+                return M_PI / group->GetMembersCount() * index;
             }
             gref = gref->next();
             index++;
