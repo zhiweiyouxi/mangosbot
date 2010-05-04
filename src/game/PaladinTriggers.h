@@ -12,7 +12,7 @@ namespace ai
 	{
 	public:
 		SealTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "seal of justice") {}
-		virtual BOOL IsActive();
+		virtual bool IsActive();
 	};
 
     DEBUFF_TRIGGER(JudgementOfLightTrigger, "judgement of light", "judgement of light")

@@ -10,7 +10,7 @@ namespace ai
     public:
         EverythingUnavailablePlayerbotAIFacade() : MockPlayerbotAIFacade() {}
 
-        virtual BOOL canCastSpell(const char* spell) { return FALSE; }
+        virtual bool canCastSpell(const char* spell) { return FALSE; }
     };
 
 }

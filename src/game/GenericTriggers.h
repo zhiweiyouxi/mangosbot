@@ -47,7 +47,7 @@ namespace ai
             this->amount = amount;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
 
     protected:
         int amount;
@@ -59,7 +59,7 @@ namespace ai
             this->spell = spell;
         }
 
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return ai->IsTargetCastingNonMeleeSpell() && ai->canCastSpell(spell);
         }
 
@@ -75,7 +75,7 @@ namespace ai
             this->amount = amount;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
 
     protected:
         int amount;
@@ -90,7 +90,7 @@ namespace ai
             this->distance = distance;
         }
     public: 
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return ai->GetAttackerCount(distance) >= amount;
         }
         virtual const char* getName() { return "attacker count"; }
@@ -105,7 +105,7 @@ namespace ai
     public:
         MyAttackerCountTrigger(PlayerbotAIFacade* const ai, int amount) : AttackerCountTrigger(ai, amount) {}
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
         virtual const char* getName() { return "my attacker count"; }
     };    
 
@@ -117,7 +117,7 @@ namespace ai
             this->spell = spell;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
         virtual const char* getName() { return spell; }
 
     protected:
@@ -129,7 +129,7 @@ namespace ai
     public:
         BuffOnPartyTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
     public: 
-       virtual BOOL IsActive();
+       virtual bool IsActive();
     };
 
     class BoostTrigger : public BuffTrigger
@@ -140,7 +140,7 @@ namespace ai
             this->balance = balance;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
 
     protected:
         float balance;
@@ -154,7 +154,7 @@ namespace ai
     public:
         DebuffTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
     };
 
     class SpellAvailableTrigger : public BuffTrigger
@@ -162,7 +162,7 @@ namespace ai
     public:
         SpellAvailableTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
     };
 
     BEGIN_TRIGGER(LootAvailableTrigger, Trigger)
@@ -176,7 +176,7 @@ namespace ai
             this->probability = probability;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
         virtual const char* getName() { return "random"; }
 
     protected:
@@ -197,7 +197,7 @@ namespace ai
             delete rs;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
         virtual const char* getName();
 
     protected:
@@ -213,7 +213,7 @@ namespace ai
             this->aura = aura;
         }
     public: 
-        virtual BOOL IsActive();
+        virtual bool IsActive();
         virtual const char* getName() { return "target is moving"; }
 
     protected:

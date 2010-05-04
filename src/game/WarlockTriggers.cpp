@@ -4,7 +4,7 @@
 
 using namespace ai;
 
-BOOL DemonArmorTrigger::IsActive() 
+bool DemonArmorTrigger::IsActive() 
 {
 	return ai->GetManaPercent() > 30 && 
 		!ai->HasAura("demon skin") &&

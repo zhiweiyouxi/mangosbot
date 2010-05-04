@@ -77,15 +77,15 @@ namespace ai
     class CastShadowformAction : public CastSpellAction {
     public:
         CastShadowformAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "shadowform") {}
-        virtual BOOL isUseful() { return !ai->HasAura("shadowform"); }
+        virtual bool isUseful() { return !ai->HasAura("shadowform"); }
     };
 
     class CastRemoveShadowformAction : public Action {
     public:
         CastRemoveShadowformAction(PlayerbotAIFacade* const ai) : Action(ai) {}
-        virtual BOOL isUseful() { return ai->HasAura("shadowform"); }
-        virtual BOOL isPossible() { return TRUE; }
-        virtual BOOL ExecuteResult() {
+        virtual bool isUseful() { return ai->HasAura("shadowform"); }
+        virtual bool isPossible() { return TRUE; }
+        virtual bool ExecuteResult() {
             if (ai->HasAura("shadowform")) 
                 ai->RemoveAura("shadowform");
             return TRUE;
@@ -113,19 +113,19 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastHolyNovaAction, "holy nova")
-    virtual BOOL isUseful() {
+    virtual bool isUseful() {
         return !ai->HasAura("shadowform") && ai->GetPartyMinHealthPercent() <= 80;
     }
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastHolyFireAction, "holy fire")
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return !ai->HasAura("shadowform");
         }
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastSmiteAction, "smite")
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return !ai->HasAura("shadowform");
         }
     END_SPELL_ACTION()
@@ -179,7 +179,7 @@ namespace ai
     class CastDispelMagicOnTargetAction : public CastSpellAction {
     public:
         CastDispelMagicOnTargetAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "dispel magic") {}
-        virtual BOOL ExecuteResult() {
+        virtual bool ExecuteResult() {
             return ai->CastSpellOnCurrentTarget(spell);
         }
     };

@@ -59,7 +59,7 @@ namespace ai
         std::string ListStrategies();
 
     public:
-	    virtual BOOL DoNextAction(Unit*, int depth = 0);
+	    virtual bool DoNextAction(Unit*, int depth = 0);
         void ExecuteAction(const char* name);
 
     public:
@@ -76,7 +76,7 @@ namespace ai
 	    virtual ~Engine(void);
 
     private:
-        BOOL MultiplyAndPush(NextAction** actions, float forceRelevance = 0.0f, BOOL skipPrerequisites = FALSE);
+        bool MultiplyAndPush(NextAction** actions, float forceRelevance = 0.0f, bool skipPrerequisites = FALSE);
         void Reset();
         void ProcessTriggers();
         void PushDefaultActions();

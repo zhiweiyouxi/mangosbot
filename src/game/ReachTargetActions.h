@@ -13,7 +13,7 @@ namespace ai
         virtual void Execute() {
             ai->MoveToTarget(distance); 
         }
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return ai->GetDistanceToEnemy() > distance;
         }
 
@@ -26,7 +26,7 @@ namespace ai
         CastReachTargetSpellAction(PlayerbotAIFacade* const ai, const char* spell, float distance) : CastSpellAction(ai, spell) {
             this->distance = distance;
         }
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return ai->GetDistanceToEnemy() > distance;
         }
 

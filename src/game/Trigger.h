@@ -11,7 +11,7 @@ class clazz : public super \
     public: \
         clazz(PlayerbotAIFacade* const ai) : super(ai) {} \
     public: \
-        virtual BOOL IsActive();
+        virtual bool IsActive();
 
 #define END_TRIGGER() \
     };
@@ -27,7 +27,7 @@ namespace ai
         virtual ~Trigger() {}
 
 	public:
-		virtual BOOL IsActive() = NULL;
+		virtual bool IsActive() = NULL;
         virtual NextAction** getHandlers() { return NULL; }
         virtual const char* getName() { return name ? name : "trigger"; }
 
@@ -51,7 +51,7 @@ namespace ai
         }
 
     public:
-        BOOL IsActive() { return trigger->IsActive(); }
+        bool IsActive() { return trigger->IsActive(); }
         Trigger* getTrigger() { return trigger; }
         const char* getName() { return trigger->getName(); }
 

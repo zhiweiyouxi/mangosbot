@@ -10,7 +10,7 @@ namespace ai
     { 
     public: 
         HunterAspectOfTheHawkTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the hawk") {}
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return !ai->HasAura(spell) && ai->canCastSpell(spell) && 
                 !ai->HasAura("aspect of the viper") && ai->GetManaPercent() > 50;
         };
@@ -20,7 +20,7 @@ namespace ai
     { 
     public: 
         HunterAspectOfTheViperTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the viper") {}
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return !ai->HasAura(spell) && ai->canCastSpell(spell) && ai->GetManaPercent() < 50; 
         };
     };
@@ -29,7 +29,7 @@ namespace ai
     { 
     public: 
         HunterAspectOfThePackTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the pack") {}
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return !ai->HasAura(spell) && !ai->HasAura("aspect of the cheetah");
         };
     };

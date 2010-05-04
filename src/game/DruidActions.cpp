@@ -4,12 +4,12 @@
 
 using namespace ai;
 
-BOOL CastBearFormAction::isPossible()
+bool CastBearFormAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
 }
 
-BOOL CastBearFormAction::isUseful()
+bool CastBearFormAction::isUseful()
 {
     return CastSpellAction::isUseful() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
 }
@@ -19,32 +19,32 @@ NextAction** CastDireBearFormAction::getAlternatives()
     return NextAction::merge(NextAction::array(0, new NextAction("bear form"), NULL), CastSpellAction::getAlternatives());
 }
 
-BOOL CastDireBearFormAction::isPossible()
+bool CastDireBearFormAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->HasAura("dire bear form");
 }
 
-BOOL CastDireBearFormAction::isUseful()
+bool CastDireBearFormAction::isUseful()
 {
     return CastSpellAction::isUseful() && !ai->HasAura("dire bear form");
 }
 
-BOOL CastRejuvenationAction::isPossible()
+bool CastRejuvenationAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->HasAura("lifeblood");
 }
 
-BOOL CastRejuvenationAction::isUseful()
+bool CastRejuvenationAction::isUseful()
 {
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
-BOOL CastRegrowthAction::isUseful()
+bool CastRegrowthAction::isUseful()
 {
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
-BOOL CastCasterFormAction::ExecuteResult()
+bool CastCasterFormAction::ExecuteResult()
 {
     if (ai->HasAura("dire bear form")) 
         ai->RemoveAura("dire bear form");
@@ -61,18 +61,18 @@ BOOL CastCasterFormAction::ExecuteResult()
 }
 
 
-BOOL CastCasterFormAction::isUseful()
+bool CastCasterFormAction::isUseful()
 {
     return (ai->HasAura("dire bear form") || ai->HasAura("bear form") ||
         ai->HasAura("cat form") || ai->HasAura("travel form") || ai->HasAura("moonkin form")); 
 }
 
-BOOL CastCatFormAction::isPossible()
+bool CastCatFormAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->HasAura("cat form");
 }
 
-BOOL CastCatFormAction::isUseful()
+bool CastCatFormAction::isUseful()
 {
     return CastSpellAction::isUseful() && !ai->HasAura("cat form");
 }
@@ -171,12 +171,12 @@ NextAction** CastAbolishPoisonOnPartyAction::getAlternatives()
     return NextAction::merge( NextAction::array(0, new NextAction("cure poison on party"), NULL), CastSpellAction::getPrerequisites());
 }
 
-BOOL CastMoonkinFormAction::isPossible()
+bool CastMoonkinFormAction::isPossible()
 {
 	return CastSpellAction::isPossible() && !ai->HasAura("moonkin form");
 }
 
-BOOL CastMoonkinFormAction::isUseful()
+bool CastMoonkinFormAction::isUseful()
 {
 	return CastSpellAction::isUseful() && !ai->HasAura("moonkin form");
 }

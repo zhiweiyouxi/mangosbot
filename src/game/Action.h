@@ -46,10 +46,10 @@ namespace ai
         virtual ~Action(void) {}
 
     public:
-        virtual BOOL ExecuteResult() { Execute(); return TRUE; }
+        virtual bool ExecuteResult() { Execute(); return TRUE; }
         virtual void Execute() { }
-        virtual BOOL isPossible() { return TRUE; }
-        virtual BOOL isUseful() { return TRUE; }
+        virtual bool isPossible() { return TRUE; }
+        virtual bool isUseful() { return TRUE; }
         virtual NextAction** getPrerequisites() { return NULL; }
         virtual NextAction** getAlternatives() { return NULL; }
         virtual NextAction** getContinuers() { return NULL; }
@@ -81,9 +81,9 @@ namespace ai
     public:
         Action* getAction() { return action; }
         const char* getName() { return action->getName(); }
-        virtual BOOL Execute() { return action->ExecuteResult(); }
-        virtual BOOL isPossible() { return action->isPossible(); }
-        virtual BOOL isUseful() { return action->isUseful(); }
+        virtual bool Execute() { return action->ExecuteResult(); }
+        virtual bool isPossible() { return action->isPossible(); }
+        virtual bool isUseful() { return action->isUseful(); }
 
     public:
         NextAction** getContinuers() { return NextAction::merge(NextAction::clone(continuers), action->getContinuers()); }
@@ -102,7 +102,7 @@ namespace ai
 	class ActionBasket
 	{
 	public:
-		ActionBasket(ActionNode* action, float relevance, BOOL skipPrerequisites = FALSE)
+		ActionBasket(ActionNode* action, float relevance, bool skipPrerequisites = FALSE)
         {
             this->action = action;
             this->relevance = relevance;
@@ -112,13 +112,13 @@ namespace ai
 	public:
 		float getRelevance() {return relevance;}
 		ActionNode* getAction() {return action;}
-        BOOL isSkipPrerequisites() { return skipPrerequisites; }
+        bool isSkipPrerequisites() { return skipPrerequisites; }
         void AmendRelevance(float k) {relevance *= k; }
         void setRelevance(float relevance) { this->relevance = relevance; }
 	private:
 		ActionNode* action;
 		float relevance;
-        BOOL skipPrerequisites;
+        bool skipPrerequisites;
 	};
 
     //---------------------------------------------------------------------------------------------------------------------

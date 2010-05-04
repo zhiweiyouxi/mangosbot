@@ -4,7 +4,7 @@
 
 using namespace ai;
 
-BOOL BearTankDruidLoseAggroTrigger::IsActive() 
+bool BearTankDruidLoseAggroTrigger::IsActive() 
 {
     return LoseAggroTrigger::IsActive() && (ai->HasAura("bear form") || ai->HasAura("dire bear form"));
 }

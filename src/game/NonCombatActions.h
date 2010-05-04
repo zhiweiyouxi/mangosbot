@@ -11,7 +11,7 @@ namespace ai
         virtual void Execute() {
             ai->UseDrink();
         }
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return ai->GetManaPercent() < EAT_DRINK_PERCENT && !ai->HasAura("drink") && ai->HasDrink();
         }
     };
@@ -22,7 +22,7 @@ namespace ai
         virtual void Execute() {
             ai->UseFood();
         }
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return ai->GetHealthPercent() < EAT_DRINK_PERCENT && !ai->HasAura("eat") && ai->HasFood();
         }
     };

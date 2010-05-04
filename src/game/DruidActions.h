@@ -8,14 +8,14 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastBearFormAction, "bear form")
-        virtual BOOL isPossible();
-        virtual BOOL isUseful();
+        virtual bool isPossible();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDireBearFormAction, "dire bear form")
-        virtual BOOL isPossible();
+        virtual bool isPossible();
         virtual NextAction** getAlternatives();
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastMaulAction, "maul")
@@ -28,19 +28,19 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")
-        virtual BOOL isUseful();
-        virtual BOOL isPossible() { return TRUE; }
-        virtual BOOL ExecuteResult();
+        virtual bool isUseful();
+        virtual bool isPossible() { return TRUE; }
+        virtual bool ExecuteResult();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
-        virtual BOOL isPossible();
-        virtual BOOL isUseful();
+        virtual bool isPossible();
+        virtual bool isUseful();
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
@@ -108,8 +108,8 @@ namespace ai
 
     //--------------------------------------------------------------------------------------
     BEGIN_SPELL_ACTION(CastCatFormAction, "cat form")
-        virtual BOOL isPossible();
-        virtual BOOL isUseful();
+        virtual bool isPossible();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastCowerAction, "cower")
@@ -179,8 +179,8 @@ namespace ai
 	//-----------------------------------------------------------------------
 
 	BEGIN_SPELL_ACTION(CastMoonkinFormAction, "moonkin form")
-		virtual BOOL isPossible();
-		virtual BOOL isUseful();
+		virtual bool isPossible();
+		virtual bool isUseful();
 	END_SPELL_ACTION()
 
 }

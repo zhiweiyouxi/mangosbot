@@ -4,7 +4,7 @@
 
 using namespace ai;
 
-BOOL SealTrigger::IsActive() 
+bool SealTrigger::IsActive() 
 {
 	return ai->GetManaPercent() > 30 && 
 		!ai->HasAura("seal of justice") &&

@@ -11,11 +11,11 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastArcaneShotAction, "arcane shot")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastAimedShotAction, "aimed shot")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastConcussiveShotAction, "concussive shot")
@@ -28,37 +28,37 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastSerpentStingAction, "serpent sting")
-    virtual BOOL isUseful();
+    virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastViperStingAction, "viper sting")
-    virtual BOOL isUseful();
+    virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastScorpidStingAction, "scorpid sting")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastAspectOfTheHawkAction, "aspect of the hawk")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastAspectOfTheCheetahAction, "aspect of the cheetah")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastAspectOfThePackAction, "aspect of the pack")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastAspectOfTheViperAction, "aspect of the viper")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastCallPetAction, "call pet")
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastMendPetAction, "mend pet")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRevivePetAction, "revive pet")

@@ -54,7 +54,7 @@ namespace ai
         virtual void Execute() {
             ai->UseHealingPotion(); 
         }
-        virtual BOOL isPossible() {
+        virtual bool isPossible() {
             return ai->HasHealingPotion();
         }
     };
@@ -65,7 +65,7 @@ namespace ai
         virtual void Execute() {
             ai->UseManaPotion(); 
         }
-        virtual BOOL isPossible() {
+        virtual bool isPossible() {
             return ai->HasManaPotion();
         }
     };
@@ -76,7 +76,7 @@ namespace ai
         virtual void Execute() {
             ai->UsePanicPotion(); 
         }
-        virtual BOOL isPossible() {
+        virtual bool isPossible() {
             return ai->HasPanicPotion();
         }
     };

@@ -6,7 +6,7 @@ namespace ai
     class EnemyTooCloseTrigger : public Trigger {
     public:
         EnemyTooCloseTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "enemy too close") {}
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             float distance = ai->GetDistanceToEnemy(ATTACK_DISTANCE + 1);
             return distance <= ATTACK_DISTANCE;
         }
@@ -17,7 +17,7 @@ namespace ai
         EnemyOutOfRangeTrigger(PlayerbotAIFacade* const ai, const char* name, float distance) : Trigger(ai, name) {
             this->distance = distance;
         }
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return ai->GetDistanceToEnemy() > distance;
         }
 

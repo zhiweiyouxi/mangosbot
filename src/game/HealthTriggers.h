@@ -11,7 +11,7 @@ namespace ai
         }
     public: 
         virtual float GetValue() = NULL;
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             float value = GetValue();
             return value < maxValue && value > minValue;
         }

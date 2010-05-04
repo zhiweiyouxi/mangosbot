@@ -52,8 +52,8 @@ namespace ai
             this->spell = spell;
         }
 
-        BOOL ExecuteResult() { return ai->CastSpell(spell); }
-        virtual BOOL isPossible() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
+        bool ExecuteResult() { return ai->CastSpell(spell); }
+        virtual bool isPossible() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
 
     protected:
         const char* spell;
@@ -85,16 +85,16 @@ namespace ai
     {
     public:
         CastDebuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual BOOL isPossible();
+        virtual bool isPossible();
     };
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_SPELL_ACTION(CastLifeBloodAction, "lifeblood")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastGiftOfTheNaaruAction, "gift of the naaru")
-        virtual BOOL isUseful();
+        virtual bool isUseful();
     END_SPELL_ACTION()
         
     //---------------------------------------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ namespace ai
     {
     public:
         CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return CastSpellAction::isUseful() && ai->GetHealthPercent() < 70;
         }
     };
@@ -112,8 +112,8 @@ namespace ai
     public:
         HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
-        virtual BOOL isUseful();
-        virtual BOOL ExecuteResult();
+        virtual bool isUseful();
+        virtual bool ExecuteResult();
     };
 
     //---------------------------------------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ namespace ai
             this->dispelType = dispelType;
         }
 
-        virtual BOOL ExecuteResult();
+        virtual bool ExecuteResult();
 
     protected:
         uint32 dispelType;
@@ -139,8 +139,8 @@ namespace ai
     public:
         BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
     public: 
-        virtual BOOL ExecuteResult();
-        virtual BOOL isUseful();
+        virtual bool ExecuteResult();
+        virtual bool isUseful();
     };
 
     //---------------------------------------------------------------------------------------------------------------------

@@ -6,76 +6,76 @@
 
 using namespace ai;
 
-BOOL RageAvailable::IsActive()
+bool RageAvailable::IsActive()
 {
     return ai->GetRage() >= amount;
 }
 
-BOOL ComboPointsAvailable::IsActive()
+bool ComboPointsAvailable::IsActive()
 {
     return ai->GetComboPoints() >= amount;
 }
 
-BOOL LowManaTrigger::IsActive()
+bool LowManaTrigger::IsActive()
 {
     return ai->GetManaPercent() != 0 && ai->GetManaPercent() < EAT_DRINK_PERCENT;
 }
 
-BOOL LoseAggroTrigger::IsActive()
+bool LoseAggroTrigger::IsActive()
 {
     return !ai->HasAggro();
 }
 
-BOOL PanicTrigger::IsActive()
+bool PanicTrigger::IsActive()
 {
     return ai->GetHealthPercent() < 25 && ai->GetManaPercent() != 0 && ai->GetManaPercent() < 25;
 }
 
-BOOL BuffTrigger::IsActive()
+bool BuffTrigger::IsActive()
 {
     return !ai->HasAura(spell) && ai->canCastSpell(spell) &&
         (ai->GetManaPercent() > 30 || !ai->GetManaPercent());
 }
 
-BOOL BuffOnPartyTrigger::IsActive()
+bool BuffOnPartyTrigger::IsActive()
 {
     return !ai->IsAllPartyHasAura(spell) && ai->canCastSpell(spell) && 
         (ai->GetManaPercent() > 50 || !ai->GetManaPercent());
 }
 
-BOOL NoAttackersTrigger::IsActive()
+bool NoAttackersTrigger::IsActive()
 {
     return !ai->HaveTarget() && ai->GetAttackerCount() > 0;
 }
 
-BOOL MyAttackerCountTrigger::IsActive()
+bool MyAttackerCountTrigger::IsActive()
 {
     return ai->GetMyAttackerCount() >= amount;
 }
 
-BOOL DebuffTrigger::IsActive()
+bool DebuffTrigger::IsActive()
 {
     return !ai->TargetHasAura(spell) && ai->canCastSpell(spell) && ai->GetTargetHealthPercent() > 40 &&
         (ai->GetManaPercent() > 50 || !ai->GetManaPercent());
 }
 
-BOOL SpellAvailableTrigger::IsActive()
+bool SpellAvailableTrigger::IsActive()
 {
     return ai->canCastSpell(spell);
 }
 
-BOOL LootAvailableTrigger::IsActive()
+bool LootAvailableTrigger::IsActive()
 {   
     return ai->CanLoot();
 }
 
-BOOL RandomTrigger::IsActive()
+bool RandomTrigger::IsActive()
 {
     int vl  = rand() % probability;
     return vl == 0;
 }
 
-BOOL AndTrigger::IsActive()
+bool AndTrigger::IsActive()
 {
     return ls->IsActive() && rs->IsActive();
 }
@@ -88,18 +88,18 @@ const char* AndTrigger::getName()
     return name.c_str();
 }
 
-BOOL BoostTrigger::IsActive()
+bool BoostTrigger::IsActive()
 {
     return ai->HasSpell(spell) && !ai->HasAura(spell) && ai->GetBalancePercent() <= balance;
 }
 
 
-BOOL SnareTargetTrigger::IsActive()
+bool SnareTargetTrigger::IsActive()
 {
     return ai->IsTargetMoving() && !ai->TargetHasAura(aura) && ai->HasSpell(aura);
 }
 
-BOOL NoPetTrigger::IsActive()
+bool NoPetTrigger::IsActive()
 {
     return !ai->HasPet() && !ai->IsMounted();
 }

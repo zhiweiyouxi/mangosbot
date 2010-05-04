@@ -141,13 +141,13 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastDefensiveStanceAction, "defensive stance")
-        virtual BOOL isUseful() {
+        virtual bool isUseful() {
             return CastSpellAction::isUseful() && !ai->HasAura("defensive stance");
         }
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastBattleStanceAction, "battle stance")
-    virtual BOOL isUseful() {
+    virtual bool isUseful() {
         return CastSpellAction::isUseful() && !ai->HasAura("battle stance");
     }
     END_SPELL_ACTION()

@@ -90,8 +90,8 @@ void Engine::Init()
 }
 
 
-BOOL Engine::DoNextAction(Unit* unit, int depth) {
-    BOOL actionExecuted = FALSE;
+bool Engine::DoNextAction(Unit* unit, int depth) {
+    bool actionExecuted = FALSE;
     ActionBasket* basket = NULL;
 
     time_t currentTime = time(0);
@@ -105,7 +105,7 @@ BOOL Engine::DoNextAction(Unit* unit, int depth) {
 				break;
 
             float relevance = basket->getRelevance(); // just for reference
-            BOOL skipPrerequisites = basket->isSkipPrerequisites();
+            bool skipPrerequisites = basket->isSkipPrerequisites();
             ActionNode* actionNode = queue.Pop();
 
             if (actionNode->isUseful()) {
@@ -178,9 +178,9 @@ ActionNode* Engine::createAction(const char* name)
     return node;
 }
 
-BOOL Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, BOOL skipPrerequisites)
+bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool skipPrerequisites)
 {
-    BOOL pushed = FALSE;
+    bool pushed = FALSE;
     if (actions)
     {
         for (int j=0; j<10; j++) // TODO: remove 10

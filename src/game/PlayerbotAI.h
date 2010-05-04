@@ -168,16 +168,16 @@ class MANGOS_DLL_SPEC PlayerbotAI
         uint8 GetRunicPower() const;
 
         Item* FindFood() { return FindUsableItem(isFood); }
-        static BOOL isFood(const ItemPrototype* pItemProto);
+        static bool isFood(const ItemPrototype* pItemProto);
         Item* FindDrink() const { return FindUsableItem(isDrink); }
-        static BOOL isDrink(const ItemPrototype* pItemProto);
+        static bool isDrink(const ItemPrototype* pItemProto);
         Item* FindBandage() { return FindUsableItem(isBandage); }
-        static BOOL isBandage(const ItemPrototype* pItemProto);
+        static bool isBandage(const ItemPrototype* pItemProto);
         Item* FindPoison() { return FindUsableItem(isPoison); }
-        static BOOL isPoison(const ItemPrototype* pItemProto);
+        static bool isPoison(const ItemPrototype* pItemProto);
 
 
-        Item* FindUsableItem(BOOL predicate(const ItemPrototype*)) const;
+        Item* FindUsableItem(bool predicate(const ItemPrototype*)) const;
         Item* FindMount(uint32 matchingRidingSkill) const;
 
 

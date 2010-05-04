@@ -14,7 +14,7 @@ public:
     PrerequisiteAction(PlayerbotAIFacade* const ai) : Action(ai) {}
     virtual ~PrerequisiteAction() { destroyed = TRUE; }
 
-    BOOL ExecuteResult() { executed++; return TRUE; }
+    bool ExecuteResult() { executed++; return TRUE; }
     const char* getName() {return "PrerequisiteAction"; }
 
     static int executed;
@@ -30,7 +30,7 @@ public:
     AlternativeAction(PlayerbotAIFacade* const ai) : Action(ai) {}
     virtual ~AlternativeAction() {destroyed = TRUE;}
 
-    BOOL ExecuteResult() { executed++; return TRUE; }
+    bool ExecuteResult() { executed++; return TRUE; }
     const char* getName() {return "AlternativeAction"; }
 
     static int executed;
@@ -50,13 +50,13 @@ public:
 		destroyed++;
 	}
 
-    BOOL ExecuteResult() { executed++; return TRUE; }
+    bool ExecuteResult() { executed++; return TRUE; }
     const char* getName() {return "RepeatingAction"; }
-    BOOL isPossible() { return available; }
+    bool isPossible() { return available; }
 
 	static int destroyed;
     static int executed;
-    static BOOL available;
+    static int available;
 };
 
 int RepeatingAction::available = TRUE;
@@ -69,7 +69,7 @@ public:
 	TriggeredAction(PlayerbotAIFacade* const ai) : Action(ai) { fired = false; }
 	virtual ~TriggeredAction() {}
 
-	BOOL ExecuteResult() { fired = TRUE; return TRUE; }
+	bool ExecuteResult() { fired = TRUE; return TRUE; }
     const char* getName() {return "TriggeredAction"; }
 
 	static int fired;
@@ -81,7 +81,7 @@ class TestTrigger : public Trigger
 {
 public:
 	TestTrigger(PlayerbotAIFacade* const ai) : Trigger(ai) {count = 0;}
-	virtual BOOL IsActive() 
+	virtual bool IsActive() 
 	{
 		return ++count==3;
 	}

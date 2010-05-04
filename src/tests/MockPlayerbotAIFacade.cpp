@@ -4,7 +4,7 @@
 using namespace std;
 using namespace ai;
 
-BOOL MockPlayerbotAIFacade::canCastSpell(const char* spell)
+bool MockPlayerbotAIFacade::canCastSpell(const char* spell)
 {
     for (list<string>::iterator i = spellCooldowns.begin(); i != spellCooldowns.end(); i++)
     {
@@ -15,7 +15,7 @@ BOOL MockPlayerbotAIFacade::canCastSpell(const char* spell)
     return TRUE;
 }
 
-BOOL MockPlayerbotAIFacade::CastSpell(const char* spell, Unit* target) 
+bool MockPlayerbotAIFacade::CastSpell(const char* spell, Unit* target) 
 {
     if (distanceToEnemy > SPELL_DISTANCE)
         return FALSE;
@@ -28,7 +28,7 @@ BOOL MockPlayerbotAIFacade::CastSpell(const char* spell, Unit* target)
     return TRUE; 
 }
 
-BOOL MockPlayerbotAIFacade::CastSpellOnCurrentTarget(const char* spell) 
+bool MockPlayerbotAIFacade::CastSpellOnCurrentTarget(const char* spell) 
 {
     if (distanceToEnemy > SPELL_DISTANCE)
         return FALSE;
@@ -41,7 +41,7 @@ BOOL MockPlayerbotAIFacade::CastSpellOnCurrentTarget(const char* spell)
     return TRUE; 
 }
 
-BOOL MockPlayerbotAIFacade::HasAura(const char* spell)
+bool MockPlayerbotAIFacade::HasAura(const char* spell)
 {
     for (list<string>::iterator i = auras.begin(); i != auras.end(); i++)
     {
@@ -52,7 +52,7 @@ BOOL MockPlayerbotAIFacade::HasAura(const char* spell)
     return FALSE;
 }
 
-BOOL MockPlayerbotAIFacade::TargetHasAura(const char* spell)
+bool MockPlayerbotAIFacade::TargetHasAura(const char* spell)
 {
     for (list<string>::iterator i = targetAuras.begin(); i != targetAuras.end(); i++)
     {
@@ -63,7 +63,7 @@ BOOL MockPlayerbotAIFacade::TargetHasAura(const char* spell)
     return FALSE;
 }
 
-BOOL MockPlayerbotAIFacade::PetHasAura(const char* spell)
+bool MockPlayerbotAIFacade::PetHasAura(const char* spell)
 {
     for (list<string>::iterator i = petAuras.begin(); i != petAuras.end(); i++)
     {
@@ -74,7 +74,7 @@ BOOL MockPlayerbotAIFacade::PetHasAura(const char* spell)
     return FALSE;
 }
 
-BOOL MockPlayerbotAIFacade::IsAllPartyHasAura(const char* spell)
+bool MockPlayerbotAIFacade::IsAllPartyHasAura(const char* spell)
 {
     for (list<string>::iterator i = partyAuras.begin(); i != partyAuras.end(); i++)
     {

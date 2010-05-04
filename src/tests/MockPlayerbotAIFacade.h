@@ -28,21 +28,21 @@ namespace ai
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }
         virtual void Stay() { buffer.append(">stay"); }
-        virtual BOOL CastSpell(const char* spell, Unit* target = NULL);
-        virtual BOOL CastSpellOnCurrentTarget(const char* spell);
-        virtual BOOL canCastSpell(const char* spell);
+        virtual bool CastSpell(const char* spell, Unit* target = NULL);
+        virtual bool CastSpellOnCurrentTarget(const char* spell);
+        virtual bool canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
         virtual uint8 GetRage() { return rage; } 
-        virtual BOOL HasAura(const char* spell);
-        virtual BOOL TargetHasAura(const char* spell);
-        virtual BOOL PetHasAura(const char* spell);
-        virtual BOOL IsAllPartyHasAura(const char* spell);
+        virtual bool HasAura(const char* spell);
+        virtual bool TargetHasAura(const char* spell);
+        virtual bool PetHasAura(const char* spell);
+        virtual bool IsAllPartyHasAura(const char* spell);
         virtual Player* GetPartyMemberWithoutAura(const char* spell) { return (Player*)0xEEEEEE; }
         virtual uint8 GetHealthPercent() { return health; }
         virtual uint8 GetComboPoints() { return comboPoints; }
         virtual uint8 GetTargetHealthPercent() { return targetHealth; }
         virtual uint8 GetManaPercent() {return mana; }
-        virtual BOOL HasAggro() { return aggro; }
+        virtual bool HasAggro() { return aggro; }
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE) { return attackerCount; }
         virtual int GetMyAttackerCount() {return myAttackerCount; }
         virtual void RemoveAura(const char* name) {auras.remove(name); buffer.append(">-").append(name); }
@@ -54,20 +54,20 @@ namespace ai
         virtual void UsePanicPotion() { buffer.append(">pp"); }
         virtual void UseFood() { buffer.append(">eat"); }
         virtual void UseDrink() { buffer.append(">drink"); }
-        virtual BOOL HasFood() { return TRUE; }
-        virtual BOOL HasDrink() { return TRUE; }
+        virtual bool HasFood() { return TRUE; }
+        virtual bool HasDrink() { return TRUE; }
 
 
         virtual uint8 GetPetHealthPercent() { return petHealth; }
-        virtual BOOL HasPet() { return hasPet; }
-        virtual BOOL IsPetDead() { return petHealth <= 0; }
+        virtual bool HasPet() { return hasPet; }
+        virtual bool IsPetDead() { return petHealth <= 0; }
 
-        virtual BOOL IsMounted() { return FALSE; }
-        virtual BOOL HaveTarget() { return haveTarget; }
+        virtual bool IsMounted() { return FALSE; }
+        virtual bool HaveTarget() { return haveTarget; }
 
-        virtual BOOL HasHealingPotion() { return FALSE; }
-        virtual BOOL HasManaPotion() { return FALSE; }
-        virtual BOOL HasPanicPotion() { return FALSE; }
+        virtual bool HasHealingPotion() { return FALSE; }
+        virtual bool HasManaPotion() { return FALSE; }
+        virtual bool HasPanicPotion() { return FALSE; }
 
         virtual void AttackLeastThreat() {buffer.append(">attack least threat"); }
         virtual void AttackBiggerThreat() {buffer.append(">attack bigger threat"); }
@@ -78,10 +78,10 @@ namespace ai
 
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
         virtual float GetFollowAngle() { return 0; }
-        virtual BOOL HasSpell(const char* spell) { return TRUE; }
+        virtual bool HasSpell(const char* spell) { return TRUE; }
 
         virtual Player* GetPartyMemberToDispell(uint32 dispelType) { return partyAurasToDispel == dispelType ? (Player*)0xEEEEEE : NULL; }
-        virtual BOOL HasAuraToDispel(uint32 dispelType) { return aurasToDispel == dispelType; }
+        virtual bool HasAuraToDispel(uint32 dispelType) { return aurasToDispel == dispelType; }
         virtual float GetBalancePercent() { return balancePercent; }
         virtual bool IsTargetMoving() { return targetIsMoving; }
         virtual bool IsTargetCastingNonMeleeSpell() { return targetIsCastingNonMeleeSpell; }
@@ -100,8 +100,8 @@ namespace ai
         uint8 rage, health, mana;
         uint8 targetHealth, petHealth;
         uint8 comboPoints;
-        BOOL aggro;
-        BOOL hasPet;
+        bool aggro;
+        bool hasPet;
         int attackerCount;
         int myAttackerCount;
         int partyMinHealth;

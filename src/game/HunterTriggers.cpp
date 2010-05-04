@@ -4,7 +4,7 @@
 
 using namespace ai;
 
-BOOL HunterNoStingsActiveTrigger::IsActive()
+bool HunterNoStingsActiveTrigger::IsActive()
 {
     return ai->GetTargetHealthPercent() > 40 &&
         !ai->TargetHasAura("serpent sting") && 
@@ -14,13 +14,13 @@ BOOL HunterNoStingsActiveTrigger::IsActive()
 
 
 
-BOOL HuntersPetDeadTrigger::IsActive()
+bool HuntersPetDeadTrigger::IsActive()
 {
     return ai->HasPet() && ai->IsPetDead() && !ai->IsMounted();
 }
 
 
-BOOL HuntersPetLowHealthTrigger::IsActive()
+bool HuntersPetLowHealthTrigger::IsActive()
 {
     return ai->HasPet() && ai->GetPetHealthPercent() < EAT_DRINK_PERCENT && !ai->IsMounted();
 }

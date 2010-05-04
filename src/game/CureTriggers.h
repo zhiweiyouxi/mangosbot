@@ -9,7 +9,7 @@ namespace ai
             this->dispelType = dispelType;
             this->spell = spell;
         }
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return ai->HasAuraToDispel(dispelType) && ai->HasSpell(spell);
         }
 
@@ -24,7 +24,7 @@ namespace ai
             this->dispelType = dispelType;
             this->spell = spell;
         }
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return ai->TargetHasAuraToDispel(dispelType) && ai->HasSpell(spell);
         }
 
@@ -38,7 +38,7 @@ namespace ai
         PartyMemberNeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : 
             NeedCureTrigger(ai, spell, dispelType, "party member need cure") {}
 
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return ai->GetPartyMemberToDispell(dispelType) && ai->HasSpell(spell);
         }
     };

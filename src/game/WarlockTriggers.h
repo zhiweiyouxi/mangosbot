@@ -7,7 +7,7 @@ namespace ai
 	{
 	public:
 		DemonArmorTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "demon armor") {}
-		virtual BOOL IsActive();
+		virtual bool IsActive();
 	};
 
     DEBUFF_TRIGGER(CurseOfAgonyTrigger, "curse of agony", "curse of agony");

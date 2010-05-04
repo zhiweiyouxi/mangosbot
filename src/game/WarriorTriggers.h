@@ -14,7 +14,7 @@ namespace ai
     class BloodrageDebuffTrigger : public DebuffTrigger {
     public:
         BloodrageDebuffTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "bloodrage") {}
-        virtual BOOL IsActive() {
+        virtual bool IsActive() {
             return DebuffTrigger::IsActive() && ai->GetHealthPercent() >= 75 && ai->GetRage() < 20;
         }
     };

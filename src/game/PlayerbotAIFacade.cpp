@@ -19,12 +19,12 @@ float PlayerbotAIFacade::GetDistanceToEnemy(float ifNoTarget)
     return ifNoTarget;
 }
 
-BOOL PlayerbotAIFacade::canCastSpell( const char* name )
+bool PlayerbotAIFacade::canCastSpell( const char* name )
 {
     uint32 spellid = ai->getSpellId(name);
     Player* bot = ai->GetPlayerBot();
 
-    BOOL res = bot->HasSpell(spellid) && !bot->HasSpellCooldown(spellid);
+    bool res = bot->HasSpell(spellid) && !bot->HasSpellCooldown(spellid);
     if (!res)
         return FALSE;
 
@@ -41,22 +41,22 @@ uint8 PlayerbotAIFacade::GetRage()
     return ai->GetRagePercent();
 }
 
-BOOL PlayerbotAIFacade::HasAura(const char* spell)
+bool PlayerbotAIFacade::HasAura(const char* spell)
 {
     return ai->HasAura(spell);
 }
 
-BOOL PlayerbotAIFacade::PetHasAura(const char* spell)
+bool PlayerbotAIFacade::PetHasAura(const char* spell)
 {
     return ai->HasAura(spell, *ai->GetPlayerBot()->GetPet());
 }
 
-BOOL PlayerbotAIFacade::TargetHasAura(const char* spell)
+bool PlayerbotAIFacade::TargetHasAura(const char* spell)
 {
     return ai->HasAura(spell, *ai->GetCurrentTarget());
 }
 
-Player* PlayerbotAIFacade::findPlayer(BOOL predicate(Player*, FindPlayerParam&), void* param)
+Player* PlayerbotAIFacade::findPlayer(bool predicate(Player*, FindPlayerParam&), void* param)
 {
     Group* group = ai->GetMaster()->GetGroup();
     if (group)
@@ -79,7 +79,7 @@ Player* PlayerbotAIFacade::findPlayer(BOOL predicate(Player*, FindPlayerParam&),
     return NULL;
 }
 
-BOOL PlayerbotAIFacade::isPlayerWithoutAura(Player* player, FindPlayerParam &param )
+bool PlayerbotAIFacade::isPlayerWithoutAura(Player* player, FindPlayerParam &param )
 {
     return !param.ai->HasAura((const char*)param.param, *player);
 }
@@ -90,7 +90,7 @@ void PlayerbotAIFacade::RemoveAura(const char* name)
     ai->GetPlayerBot()->RemoveAurasDueToSpell(spellid);
 }
 
-BOOL PlayerbotAIFacade::HasAggro()
+bool PlayerbotAIFacade::HasAggro()
 {
     Unit* currentTarget = ai->GetCurrentTarget();
     if (currentTarget)
@@ -111,7 +111,7 @@ BOOL PlayerbotAIFacade::HasAggro()
     return FALSE;
 }
 
-BOOL PlayerbotAIFacade::FindAndUse(BOOL predicate(const ItemPrototype*), uint8 ignore_time)
+bool PlayerbotAIFacade::FindAndUse(bool predicate(const ItemPrototype*), uint8 ignore_time)
 {
     Item* item = ai->FindUsableItem(predicate);
     if (item)
@@ -137,30 +137,30 @@ void PlayerbotAIFacade::UseDrink()
 }
 
 
-BOOL PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto)
 {
     return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
 }
 
-BOOL PlayerbotAIFacade::isHealingPotion(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isHealingPotion(const ItemPrototype* pItemProto)
 {
     return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
         pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 441;
 }
 
-BOOL PlayerbotAIFacade::isManaPotion(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isManaPotion(const ItemPrototype* pItemProto)
 {
     return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
         pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 438;
 }
 
-BOOL PlayerbotAIFacade::isFood(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isFood(const ItemPrototype* pItemProto)
 {
     return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
         pItemProto->Spells[0].SpellCategory == 11);
 }
 
-BOOL PlayerbotAIFacade::isDrink(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isDrink(const ItemPrototype* pItemProto)
 {
     return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
         pItemProto->Spells[0].SpellCategory == 59);
@@ -246,7 +246,7 @@ void PlayerbotAIFacade::findAllAttackers(HostileReference *ref, std::list<Threat
             !attacker->IsFriendlyTo(bot) && 
             bot->IsWithinLOSInMap(attacker))
         {
-            BOOL found = FALSE;
+            bool found = FALSE;
             for (std::list<ThreatManager*>::iterator i = out.begin(); i != out.end(); i++)
             {
                 ThreatManager *cur = *i;
@@ -466,7 +466,7 @@ void PlayerbotAIFacade::AttackBiggerThreat()
         ai->Attack(target);
 }
 
-BOOL PlayerbotAIFacade::IsMounted()
+bool PlayerbotAIFacade::IsMounted()
 {
     return ai->GetPlayerBot()->IsMounted();
 }
@@ -546,7 +546,7 @@ bool PlayerbotAIFacade::TargetHasAuraToDispel(uint32 dispelType) {
     return false;
 }
 
-BOOL PlayerbotAIFacade::HasAuraToDispel(Unit* player, uint32 dispelType) 
+bool PlayerbotAIFacade::HasAuraToDispel(Unit* player, uint32 dispelType) 
 {
     Unit::AuraMap &uAuras = player->GetAuras();
     for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)

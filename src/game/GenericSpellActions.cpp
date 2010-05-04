@@ -7,32 +7,32 @@ using namespace ai;
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL CastLifeBloodAction::isUseful()
+bool CastLifeBloodAction::isUseful()
 {
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
-BOOL CastGiftOfTheNaaruAction::isUseful()
+bool CastGiftOfTheNaaruAction::isUseful()
 {
     return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL HealPartyMemberAction::ExecuteResult()
+bool HealPartyMemberAction::ExecuteResult()
 {
     ai->CastSpell(spell, ai->GetPartyMinHealthPlayer());
     return TRUE;
 }
 
-BOOL HealPartyMemberAction::isUseful()
+bool HealPartyMemberAction::isUseful()
 {
     return ai->GetPartyMinHealthPercent() < 75;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL CurePartyMemberAction::ExecuteResult()
+bool CurePartyMemberAction::ExecuteResult()
 {
     ai->CastSpell(spell, ai->GetPartyMemberToDispell(dispelType));
     return TRUE;
@@ -40,20 +40,20 @@ BOOL CurePartyMemberAction::ExecuteResult()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL BuffOnPartyAction::ExecuteResult()
+bool BuffOnPartyAction::ExecuteResult()
 {
     ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
     return TRUE;
 }
 
-BOOL BuffOnPartyAction::isUseful()
+bool BuffOnPartyAction::isUseful()
 {
     return !ai->IsAllPartyHasAura(spell);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-BOOL CastDebuffSpellAction::isPossible()
+bool CastDebuffSpellAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->TargetHasAura(spell);
 }
