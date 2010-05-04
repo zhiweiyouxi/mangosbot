@@ -3,6 +3,7 @@
 #include "DruidActionFactory.h"
 #include "BearTankDruidStrategy.h"
 #include "CatDpsDruidStrategy.h"
+#include "CasterDruidStrategy.h"
 #include "GenericDruidNonCombatStrategy.h"
 
 using namespace ai;
@@ -15,6 +16,9 @@ Strategy* DruidActionFactory::createStrategy(const char* name)
 
     if (!strcmp("cat", name))
         return new CatDpsDruidStrategy(ai);
+
+	if (!strcmp("caster", name))
+		return new CasterDruidStrategy(ai);
 
     if (!strcmp("nc", name))
         return new GenericDruidNonCombatStrategy(ai);

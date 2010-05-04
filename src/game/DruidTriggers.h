@@ -16,4 +16,10 @@ namespace ai
     //--------------------------------------------------------------------------------------
 
     DEBUFF_TRIGGER(RakeTrigger, "rake", "rake")
+
+	//--------------------------------------------------------------------------------------
+	DEBUFF_TRIGGER(InsectSwarmTrigger, "insect swarm", "insect swarm")
+	DEBUFF_TRIGGER(MoonfireTrigger, "moonfire", "moonfire")
+	DEBUFF_TRIGGER(FaerieFireTrigger, "faerie fire", "faerie fire")
+	
 }

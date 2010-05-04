@@ -52,6 +52,8 @@ BOOL CastCasterFormAction::ExecuteResult()
         ai->RemoveAura("bear form");
     if (ai->HasAura("cat form")) 
         ai->RemoveAura("cat form");
+	if (ai->HasAura("moonkin form")) 
+		ai->RemoveAura("moonkin form");
     if (ai->HasAura("travel form")) 
         ai->RemoveAura("travel form");
 
@@ -62,7 +64,7 @@ BOOL CastCasterFormAction::ExecuteResult()
 BOOL CastCasterFormAction::isUseful()
 {
     return (ai->HasAura("dire bear form") || ai->HasAura("bear form") ||
-        ai->HasAura("cat form") || ai->HasAura("travel form")); 
+        ai->HasAura("cat form") || ai->HasAura("travel form") || ai->HasAura("moonkin form")); 
 }
 
 BOOL CastCatFormAction::isPossible()
@@ -167,4 +169,14 @@ NextAction** CastAbolishPoisonAction::getAlternatives()
 NextAction** CastAbolishPoisonOnPartyAction::getAlternatives()
 {
     return NextAction::merge( NextAction::array(0, new NextAction("cure poison on party"), NULL), CastSpellAction::getPrerequisites());
+}
+
+BOOL CastMoonkinFormAction::isPossible()
+{
+	return CastSpellAction::isPossible() && !ai->HasAura("moonkin form");
+}
+
+BOOL CastMoonkinFormAction::isUseful()
+{
+	return CastSpellAction::isUseful() && !ai->HasAura("moonkin form");
 }

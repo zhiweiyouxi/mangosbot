@@ -90,6 +90,22 @@ namespace ai
     BEGIN_SPELL_ACTION(CastThornsAction, "thorns")
     END_SPELL_ACTION()
 
+	BEGIN_SPELL_ACTION(CastWrathAction, "wrath")
+	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastMoonfireAction, "moonfire")
+	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastInsectSwarmAction, "insect swarm")
+	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastStarfireAction, "starfire")
+	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastEntanglingRootsAction, "entangling roots")
+	END_SPELL_ACTION()
+	
+
     //--------------------------------------------------------------------------------------
     BEGIN_SPELL_ACTION(CastCatFormAction, "cat form")
         virtual BOOL isPossible();
@@ -159,5 +175,12 @@ namespace ai
         virtual NextAction** getPrerequisites();
         virtual NextAction** getAlternatives();
     };
+
+	//-----------------------------------------------------------------------
+
+	BEGIN_SPELL_ACTION(CastMoonkinFormAction, "moonkin form")
+		virtual BOOL isPossible();
+		virtual BOOL isUseful();
+	END_SPELL_ACTION()
 
 }
