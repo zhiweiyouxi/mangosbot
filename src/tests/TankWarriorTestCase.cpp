@@ -1,10 +1,7 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
+#include "EngineTestBase.h"
+#include "../game/WarriorActionFactory.h"
 #include "../game/GenericWarriorStrategy.h"
 
 #include "MockPlayerbotAIFacade.h"
@@ -12,7 +9,7 @@
 using namespace ai;
 
 
-class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
+class TankWarriorTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( TankWarriorTestCase );
     CPPUNIT_TEST( buff );
@@ -23,131 +20,97 @@ class TankWarriorTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-    MockPlayerbotAIFacade *ai;
-    Engine *engine;
-
 public:
     void setUp()
     {
-        ai = new MockPlayerbotAIFacade();
-
-        engine = new Engine(ai, new WarriorActionFactory(ai));
-        engine->addStrategy("tank");
-        engine->Init();
+        EngineTestBase::setUp();
+        setupEngine(new WarriorActionFactory(ai), "tank", NULL);
 
         // this buff is combat-only, so skip for most test cases
-        ai->auras.push_back("battle shout");
+        addAura("battle shout");
         ai->rage = 20;
-    }
-
-    void tearDown()
-    {
-        if (engine)
-            delete engine;
-        if (ai) 
-            delete ai;
+		ai->distanceToEnemy = 0.0f; 
     }
 
 protected:
     void interruptSpells() 
     {
-        ai->distanceToEnemy = 0.0f; 
-        ai->targetIsCastingNonMeleeSpell = true;
-        engine->DoNextAction(NULL); // shield bash
-        ai->targetIsCastingNonMeleeSpell = false;
+		tickWithTargetIsCastingNonMeleeSpell();
         
-        engine->DoNextAction(NULL); // rend
+        tick(); // rend
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shield bash>defensive stance"));
+        assertActions(">shield bash>defensive stance");
     }
+
     void healing()
     {
-        ai->distanceToEnemy = 0.0f; 
-        ai->health = 1;
-        engine->DoNextAction(NULL); // gift of the naaru
-        engine->DoNextAction(NULL); // regrowth
+		tickWithLowHealth(1);
+		tickWithLowHealth(1);
 
-        ai->health = 50;
-        engine->DoNextAction(NULL); // defensive stance
-        engine->DoNextAction(NULL); // shield wall
-        engine->DoNextAction(NULL); // shield block
+        tickWithLowHealth(50); // defensive stance
+        tickWithLowHealth(50); // shield wall
+        tickWithLowHealth(50); // shield block
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">lifeblood>gift of the naaru>defensive stance>shield wall>shield block"));
+        assertActions(">lifeblood>gift of the naaru>defensive stance>shield wall>shield block");
     }
+
     void buff()
     {
         ai->rage = 0;
-        ai->auras.remove("battle shout");
+        removeAura("battle shout");
 
-        engine->Init();
-        engine->DoNextAction(NULL); // battle stance
-        engine->DoNextAction(NULL); // battle shout
+        tickInSpellRange(); // battle stance
+        tickInSpellRange(); // battle shout
 
-        engine->DoNextAction(NULL); // defensive stance
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // bloodrage
-        engine->DoNextAction(NULL); // melee
-        engine->DoNextAction(NULL); // battle shout
+        tickInSpellRange(); // defensive stance
+        tickInSpellRange(); // reach melee
+        
+		
+        tickInMeleeRange(); // bloodrage
+        tick(); // melee
+        tick(); // battle shout
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">battle stance>battle shout>defensive stance>reach melee>melee>bloodrage>rend"));
+        assertActions(">battle stance>battle shout>defensive stance>reach melee>melee>bloodrage>rend");
 
     }
 
     void warriorMustDemoralizeAttackers()
     {
-        ai->auras.push_back("defensive stance");
+        addAura("defensive stance");
 
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // melee
+        tick(); // melee
 
-        ai->attackerCount = 2;
         ai->rage = 41;
-        engine->DoNextAction(NULL); // demoralizing shout
-        engine->DoNextAction(NULL); // thunder clap
-        engine->DoNextAction(NULL); // cleave
-        engine->DoNextAction(NULL); // heroic strike
+
+		tickWithAttackerCount(2);
+		tickWithAttackerCount(2);
+		tickWithAttackerCount(2);
+		tickWithAttackerCount(2);
 
         ai->rage = 20;
+		tickWithAttackerCount(3);
+		
+		tick();
 
-        ai->attackerCount = 3;
-        engine->DoNextAction(NULL); // challenging shout
-        engine->DoNextAction(NULL); // rend
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>demoralizing shout>thunder clap>cleave>heroic strike>challenging shout>devastate"));
+        assertActions(">melee>demoralizing shout>thunder clap>cleave>heroic strike>challenging shout>devastate");
     }
 
     void warriorMustHoldAggro()
     {
-        ai->spellCooldowns.remove("defensive stance");
-        engine->DoNextAction(NULL); // defensive stance
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // melee
+        tickWithSpellAvailable("defensive stance");
+        tick(); // melee
 
-        ai->aggro = FALSE;
-        engine->DoNextAction(NULL); // taunt
-        ai->aggro = TRUE;
+		tickWithNoAggro();
         
-        engine->DoNextAction(NULL); // rend
+        tick(); // rend
 
-        ai->aggro = FALSE;
-        engine->DoNextAction(NULL); // battle stance
-        engine->DoNextAction(NULL); // mocking blow
-        ai->aggro = TRUE;
+		tickWithNoAggro();
+		tickWithNoAggro();
         
-        ai->spellCooldowns.remove("defensive stance");
-        engine->DoNextAction(NULL);
-        engine->DoNextAction(NULL);
+        tickWithSpellAvailable("defensive stance");
+        tick();
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>taunt>devastate>battle stance>mocking blow>defensive stance>revenge"));
+        assertActions(">defensive stance>melee>taunt>devastate>battle stance>mocking blow>defensive stance>revenge");
     }
 
     void combatVsMelee()
@@ -155,57 +118,54 @@ protected:
         ai->distanceToEnemy = 15.0f; // enemy too far
         ai->rage = 11;
         
-        engine->DoNextAction(NULL); // defensive stance
-        engine->DoNextAction(NULL); // reach melee
+        tick(); // defensive stance
+        tick(); // reach melee
         ai->distanceToEnemy = 0.0f; 
-        engine->DoNextAction(NULL); // melee
+        tick(); // melee
 
-        engine->DoNextAction(NULL); // bloodrage
-        engine->DoNextAction(NULL); // rend
+        tick(); // bloodrage
+        tick(); // rend
         ai->spellCooldowns.remove("rend");
         ai->targetAuras.push_back("rend");
 
         ai->rage = 21;
-        engine->DoNextAction(NULL); // devastate
-        engine->DoNextAction(NULL); // revenge
-        engine->DoNextAction(NULL); // sunder armor
+        tick(); // devastate
+        tick(); // revenge
+        tick(); // sunder armor
 
-        engine->DoNextAction(NULL); // disarm
+        tick(); // disarm
         ai->spellCooldowns.remove("disarm");
         ai->targetAuras.push_back("disarm");
 
         ai->rage = 41;
-        engine->DoNextAction(NULL); // heroic strike
+        tick(); // heroic strike
 
-        engine->DoNextAction(NULL); 
+        tick(); 
         ai->spellCooldowns.remove("disarm");
         ai->targetAuras.push_back("disarm");
         ai->spellCooldowns.remove("devastate");
 
-        engine->DoNextAction(NULL); 
+        tick(); 
         ai->spellCooldowns.remove("sunder armor");
         ai->targetAuras.push_back("sunder armor");
 
         ai->spellCooldowns.remove("heroic strike");
-        engine->DoNextAction(NULL); // heroic strike
+        tick(); // heroic strike
         ai->rage = 20;
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>disarm>heroic strike>melee>devastate>heroic strike"));
+        assertActions(">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>disarm>heroic strike>melee>devastate>heroic strike");
     }
 
     void revengeIfDodge()
     {
-        engine->DoNextAction(NULL); // reach melee
-        ai->distanceToEnemy = 0;
-        engine->DoNextAction(NULL); // melee
+        tick(); // melee
         ai->spellCooldowns.remove("revenge");
-        engine->DoNextAction(NULL); // defensive stance
-        engine->DoNextAction(NULL); // revenge
+        tick(); // defensive stance
+        tick(); // revenge
 
 
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">reach melee>melee>defensive stance>revenge"));
+        assertActions(">melee>defensive stance>revenge");
     }
     
 };
