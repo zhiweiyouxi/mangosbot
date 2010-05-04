@@ -67,13 +67,13 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 	WAR_STOMP               = ai->getSpellId("war stomp"); // tauren
 
     engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
-    engine->addStrategy("bear");
-    engine->addStrategy("tank assist");
+    engine->addStrategy("caster");
+    engine->addStrategy("dps assist");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     nonCombatEngine->addStrategy("nc");
-    nonCombatEngine->addStrategy("tank assist");
+    nonCombatEngine->addStrategy("dps assist");
     nonCombatEngine->addStrategy("stay");
     nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");
