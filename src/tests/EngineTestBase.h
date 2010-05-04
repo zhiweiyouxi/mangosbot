@@ -25,7 +25,7 @@ protected:
 	void tick();
 	void assertActions(const char* expected);
 
-	void similateNoTarget();
+	void tickWithNoTarget();
 	void spellUnavailable(const char* spell);
 	void tickWithSpellUnavailable(const char* spell);
 	void tickWithSpellAvailable(const char* spell);
@@ -58,6 +58,7 @@ protected:
 	void tickWithLowMana(int amount);
 	void tickWithTargetLowHealth(int amount);
 	void tickWithTargetIsMoving();
+	void tickWithLootAvailable();
 
 protected:
     MockPlayerbotAIFacade *ai;

@@ -64,7 +64,7 @@ void EngineTestBase::assertActions(const char* expected)
     CPPUNIT_ASSERT(pass);
 }
 
-void EngineTestBase::similateNoTarget()
+void EngineTestBase::tickWithNoTarget()
 {
     ai->haveTarget = FALSE;
     ai->myAttackerCount = 0;
@@ -272,4 +272,11 @@ void EngineTestBase::addPartyAura(const char* spell)
 void EngineTestBase::removePartyAura(const char* spell)
 {
     ai->partyAuras.remove(spell);
+}
+
+void EngineTestBase::tickWithLootAvailable()
+{
+	ai->lootAvailable = true;
+	tick();
+	ai->lootAvailable = false;
 }
