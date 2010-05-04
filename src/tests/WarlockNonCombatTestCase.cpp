@@ -1,61 +1,34 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
+#include "EngineTestBase.h"
 #include "../game/WarlockActionFactory.h"
 #include "../game/GenericWarlockNonCombatStrategy.h"
-
-#include "MockPlayerbotAIFacade.h"
 
 using namespace ai;
 
 
-class WarlockNonCombatTestCase : public CPPUNIT_NS::TestFixture
+class WarlockNonCombatTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( WarlockNonCombatTestCase );
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-    MockPlayerbotAIFacade *ai;
-    Engine *engine;
-
 public:
     void setUp()
     {
-        ai = new MockPlayerbotAIFacade();
-
-        engine = new Engine(ai, new WarlockActionFactory(ai));
-        engine->addStrategy("nc");
-        engine->Init();
-    }
-
-    void tearDown()
-    {
-        if (engine)
-            delete engine;
-        if (ai) 
-            delete ai;
+        EngineTestBase::setUp();
+        setupEngine(new WarlockActionFactory(ai), "nc", NULL);
     }
 
 protected:
     void buff()
     {
-		ai->spellCooldowns.push_back("demon armor");
-		engine->DoNextAction(NULL);
-		ai->spellCooldowns.remove("demon armor");
+		tickWithSpellUnavailable("demon armor");
 
-        engine->DoNextAction(NULL);
-        ai->auras.push_back("demon armor");
-        ai->spellCooldowns.remove("demon armor");
+		tickWithSpellAvailable("demon armor");
+		tick();
 
-        engine->DoNextAction(NULL);
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">demon skin>demon armor"));
+        assertActions(">demon skin>demon armor");
     }
     
 };
