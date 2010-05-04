@@ -25,7 +25,7 @@ public:
     virtual void setUp()
     {
 		EngineTestBase::setUp();
-		setupEngine(new DruidActionFactory(ai), "tank", NULL);
+		setupEngine(new DruidActionFactory(ai), "bear", NULL);
     }
 
 protected:

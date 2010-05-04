@@ -22,7 +22,7 @@ public:
     virtual void setUp()
     {
 		EngineTestBase::setUp();
-		setupEngine(new DruidActionFactory(ai), "dps", NULL);
+		setupEngine(new DruidActionFactory(ai), "cat", NULL);
 
 		addAura("cat form");
 		spellUnavailable("faerie fire");

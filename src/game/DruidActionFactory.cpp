@@ -10,10 +10,10 @@ using namespace ai;
 
 Strategy* DruidActionFactory::createStrategy(const char* name)
 {
-    if (!strcmp("tank", name))
+    if (!strcmp("bear", name))
         return new BearTankDruidStrategy(ai);
 
-    if (!strcmp("dps", name))
+    if (!strcmp("cat", name))
         return new CatDpsDruidStrategy(ai);
 
     if (!strcmp("nc", name))

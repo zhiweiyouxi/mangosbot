@@ -67,7 +67,7 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
 	WAR_STOMP               = ai->getSpellId("war stomp"); // tauren
 
     engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
-    engine->addStrategy("tank");
+    engine->addStrategy("bear");
     engine->addStrategy("tank assist");
     engine->Init();
 
