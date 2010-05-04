@@ -55,11 +55,6 @@ protected:
         engine->DoNextAction(NULL); // shadow word: pain
         engine->DoNextAction(NULL); // devouring plague
         engine->DoNextAction(NULL); // mind blast
-        ai->myAttackerCount = 0;
-        ai->haveTarget = FALSE;
-        engine->DoNextAction(NULL); 
-        ai->myAttackerCount = 1;
-        ai->haveTarget = TRUE;
         engine->DoNextAction(NULL); // shoot
 
         // heal if need
@@ -69,7 +64,7 @@ protected:
         engine->DoNextAction(NULL); // greater heal
         
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadowform>devouring plague>shadow word: pain>mind blast>attack least threat>mind flay>power word: shield>-shadowform>greater heal"));
+        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadowform>devouring plague>shadow word: pain>mind blast>shoot>power word: shield>-shadowform>greater heal"));
     }
 };
 

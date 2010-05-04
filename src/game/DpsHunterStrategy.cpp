@@ -42,10 +42,6 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new HuntersPetLowHealthTrigger(ai), 
         NextAction::array(0, new NextAction("mend pet", 60.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack least threat", 9.0f), NULL)));
 }
 
 void DpsHunterStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

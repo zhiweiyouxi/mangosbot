@@ -28,10 +28,6 @@ void GenericPriestStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("power word: shield on party", 50.0f), new NextAction("greater heal on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack least threat", 20.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new NeedCureTrigger(ai, "dispel magic", DISPEL_MAGIC),
         NextAction::array(0, new NextAction("dispel magic", 41.0f), NULL)));
 
@@ -201,13 +197,6 @@ ActionNode* GenericPriestStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastFlashHealOnPartyAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("attack least threat", name)) 
-    {
-        return new ActionNode (new AttackLeastThreatAction(ai),  
-            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }

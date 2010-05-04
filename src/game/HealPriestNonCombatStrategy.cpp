@@ -191,13 +191,6 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("attack least threat", name)) 
-    {
-        return new ActionNode (new AttackLeastThreatAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
     else if (!strcmp("dispel magic", name)) 
     {
         return new ActionNode (new CastDispelMagicAction(ai),  
