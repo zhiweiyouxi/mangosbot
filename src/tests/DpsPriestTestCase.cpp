@@ -1,10 +1,6 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
+#include "EngineTestBase.h"
 #include "../game/DpsPriestStrategy.h"
 #include "../game/PriestActionFactory.h"
 
@@ -13,58 +9,43 @@
 using namespace ai;
 
 
-class DpsPriestTestCase : public CPPUNIT_NS::TestFixture
+class DpsPriestTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( DpsPriestTestCase );
     CPPUNIT_TEST( combat );
     CPPUNIT_TEST_SUITE_END();
 
-protected:
-    MockPlayerbotAIFacade *ai;
-    Engine *engine;
 
 public:
     void setUp()
     {
-        ai = new MockPlayerbotAIFacade();
+		EngineTestBase::setUp();
+		setupEngine(new PriestActionFactory(ai), "dps", NULL);
 
-        engine = new Engine(ai, new PriestActionFactory(ai));
-        engine->addStrategy("dps");
-        engine->Init();
-
-        ai->auras.push_back("power word: fortitude");
-        ai->auras.push_back("divine spirit");
-        ai->auras.push_back("inner fire");
-        ai->partyAuras.push_back("power word: fortitude");
-        ai->partyAuras.push_back("divine spirit");
-    }
-
-    void tearDown()
-    {
-        if (engine)
-            delete engine;
-        if (ai) 
-            delete ai;
+        addAura("power word: fortitude");
+        addAura("divine spirit");
+        addAura("inner fire");
+        addPartyAura("power word: fortitude");
+        addPartyAura("divine spirit");
     }
 
 protected:
     void combat()
     {
-        engine->DoNextAction(NULL); // shadowform
-        ai->auras.push_back("shadowform");
-        engine->DoNextAction(NULL); // shadow word: pain
-        engine->DoNextAction(NULL); // devouring plague
-        engine->DoNextAction(NULL); // mind blast
-        engine->DoNextAction(NULL); // shoot
+        tick(); // shadowform
+        addAura("shadowform");
+
+        tick(); // shadow word: pain
+        tick(); // devouring plague
+        tick(); // mind blast
+        tick(); // shoot
 
         // heal if need
-        ai->health = 1;
-        engine->DoNextAction(NULL); // shirld
-        engine->DoNextAction(NULL); // -shadowform
-        engine->DoNextAction(NULL); // greater heal
+        tickWithLowHealth(1); // shirld
+        tickWithLowHealth(1); // -shadowform
+        tickWithLowHealth(1); // greater heal
         
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">shadowform>devouring plague>shadow word: pain>mind blast>shoot>power word: shield>-shadowform>greater heal"));
+        assertActions(">shadowform>devouring plague>shadow word: pain>mind blast>shoot>power word: shield>-shadowform>greater heal");
     }
 };
 
