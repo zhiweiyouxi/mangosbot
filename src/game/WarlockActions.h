@@ -42,4 +42,7 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastSummonImpAction, "summon imp")
     END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastCreateHealthstoneAction, "create healthstone")
+	END_SPELL_ACTION()
 }

@@ -49,6 +49,7 @@ protected:
 	void tickWithAuraToDispel(uint32 type);
 	void tickWithPartyAuraToDispel(uint32 type);
 	void lowHealth(int amount);
+	void lowMana(int amount);
 	void healthRestored();
 	void tickWithComboPoints(int amount);
 	void tickWithTargetIsCastingNonMeleeSpell();
@@ -61,6 +62,7 @@ protected:
 	void tickWithLootAvailable();
 	void tickWithNoFood();
 	void tickWithNoDrink();
+	void itemAvailable(const char* item, int amount);
 
 protected:
     MockPlayerbotAIFacade *ai;

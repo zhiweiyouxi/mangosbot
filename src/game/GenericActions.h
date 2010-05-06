@@ -81,6 +81,17 @@ namespace ai
         }
     };
 
+	class UseHealthstone : public Action {
+	public:
+		UseHealthstone(PlayerbotAIFacade* const ai) : Action(ai, "healthstone") {}
+		virtual void Execute() {
+			ai->FindAndUse("healthstone"); 
+		}
+		virtual bool isPossible() {
+			return ai->GetItemCount("healthstone") > 0;
+		}
+	};
+
     class LootAction : public Action {
     public:
         LootAction(PlayerbotAIFacade* const ai) : Action(ai, "loot") {}

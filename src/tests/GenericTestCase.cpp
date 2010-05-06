@@ -1,46 +1,43 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
+#include "EngineTestBase.h"
 #include "../game/DruidActionFactory.h"
-
-#include "MockPlayerbotAIFacade.h"
 
 using namespace ai;
 
-class GenericTestCase : public CPPUNIT_NS::TestFixture
+class GenericTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( GenericTestCase );
-    CPPUNIT_TEST( timeToPanic );
+    CPPUNIT_TEST( healthstone );
+	CPPUNIT_TEST( flee );
     CPPUNIT_TEST_SUITE_END();
-
-protected:
-    MockPlayerbotAIFacade *ai;
 
 public:
     void setUp()
     {
+		EngineTestBase::setUp();
+		setupEngine(new DruidActionFactory(ai), "tank", NULL);
     }
 
 protected:
-    void timeToPanic()
+    void healthstone()
     {
-        ai = new MockPlayerbotAIFacade();
+		itemAvailable("healthstone", 1);
+        
+		lowHealth(1);
+		lowMana(1);
+        tick(); 
 
-        Engine engine(ai, new DruidActionFactory(ai));
-        engine.addStrategy("tank");
-        engine.Init();
-
-        ai->health = 1;
-        ai->mana = 1;
-        engine.DoNextAction(NULL); // nothing is available - only flee
-
-        std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">flee"));
+        assertActions(">healthstone");
     }
+	void flee()
+	{
+		lowHealth(1);
+		lowMana(1);
+		tick(); 
+
+		assertActions(">flee");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( GenericTestCase );

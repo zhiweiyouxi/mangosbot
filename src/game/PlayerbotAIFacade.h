@@ -86,6 +86,11 @@ namespace ai
         virtual bool IsTargetCastingNonMeleeSpell();
         virtual bool TargetHasAuraToDispel(uint32 dispelType);
 
+		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
+		{
+			return PlayerbotAIFacade::FindAndUse(isTheSameName, (const void*)item, ignore_time);
+		}
+
     protected:
         static bool isHealingPotion(const ItemPrototype* pItemProto, const void* param);
         static bool isManaPotion(const ItemPrototype* pItemProto, const void* param);
@@ -93,7 +98,7 @@ namespace ai
         static bool isFood(const ItemPrototype* pItemProto, const void* param);
         static bool isDrink(const ItemPrototype* pItemProto, const void* param);
 		static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
-        bool FindAndUse(bool predicate(const ItemPrototype*, const void*), uint8 ignore_time = 0);
+        virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
         Player* findPlayer(bool predicate(Player*, FindPlayerParam&), void *param);
         static bool isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);

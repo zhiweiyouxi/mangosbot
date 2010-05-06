@@ -89,6 +89,8 @@ namespace ai
         virtual bool IsTargetCastingNonMeleeSpell() { return targetIsCastingNonMeleeSpell; }
         virtual bool TargetHasAuraToDispel(uint32 dispelType) { return targetAurasToDispel == dispelType; }
 
+		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0) { buffer.append(">").append(item); return true; }
+
     public:
         void resetSpells() {spellCooldowns.clear(); }
 

@@ -50,6 +50,13 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("healing potion"), NULL), 
             /*C*/ NULL);
     }
+	else if (!strcmp("healthstone", name)) 
+	{
+		return new ActionNode (new UseHealthstone(ai),  
+			/*P*/ NULL,
+			/*A*/ NextAction::array(0, new NextAction("panic potion"), NULL), 
+			/*C*/ NULL);
+	}
     else if (!strcmp("panic potion", name)) 
     {
         return new ActionNode (new UsePanicPotion(ai),  

@@ -111,9 +111,9 @@ bool PlayerbotAIFacade::HasAggro()
     return FALSE;
 }
 
-bool PlayerbotAIFacade::FindAndUse(bool predicate(const ItemPrototype*, const void*), uint8 ignore_time)
+bool PlayerbotAIFacade::FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param, uint8 ignore_time)
 {
-    Item* item = ai->FindUsableItem(predicate);
+    Item* item = ai->FindUsableItem(predicate, param);
     if (item)
     {
         ai->UseItem(*item);
@@ -126,13 +126,13 @@ bool PlayerbotAIFacade::FindAndUse(bool predicate(const ItemPrototype*, const vo
 
 void PlayerbotAIFacade::UseFood() 
 {
-    if (!FindAndUse(isFood, 30))
+    if (!FindAndUse(isFood, NULL, 30))
         ai->TellMaster("I need some food");
 }
 
 void PlayerbotAIFacade::UseDrink() 
 {
-    if (!FindAndUse(isDrink, 30))
+    if (!FindAndUse(isDrink, NULL, 30))
         ai->TellMaster("I need some water");
 }
 

@@ -188,6 +188,11 @@ void EngineTestBase::lowHealth(int amount)
 	ai->health = amount;
 }
 
+void EngineTestBase::lowMana(int amount)
+{
+	ai->mana = amount;
+}
+
 void EngineTestBase::healthRestored()
 {
 	ai->health = 100;
@@ -293,4 +298,9 @@ void EngineTestBase::tickWithNoFood()
 	ai->hasFood = false;
 	tick();
 	ai->hasFood = true;
+}
+
+void EngineTestBase::itemAvailable(const char* item, int amount)
+{
+	ai->itemCounts[std::string(item)] = amount;
 }

@@ -28,7 +28,13 @@ protected:
 		tickWithSpellAvailable("demon armor");
 		tick();
 
-        assertActions(">demon skin>demon armor");
+		itemAvailable("soulstone", 2);
+		tick();
+		
+		itemAvailable("healthstone", 1);
+		tick();
+
+        assertActions(">demon skin>demon armor>create healthstone");
     }
     
 };

@@ -14,6 +14,9 @@ void GenericWarlockNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trig
         new DemonArmorTrigger(ai), 
         NextAction::array(0, new NextAction("demon armor", 21.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new ItemCountTrigger(ai, "healthstone", 1), 
+		NextAction::array(0, new NextAction("create healthstone", 15.0f), NULL)));
 }
 
 
@@ -33,6 +36,13 @@ ActionNode* GenericWarlockNonCombatStrategy::createAction(const char* name)
 	else if (!strcmp("demon skin", name)) 
 	{
 		return new ActionNode (new CastDemonSkinAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("create healthstone", name)) 
+	{
+		return new ActionNode (new CastCreateHealthstoneAction(ai),  
 			/*P*/ NULL,
 			/*A*/ NULL, 
 			/*C*/ NULL);
