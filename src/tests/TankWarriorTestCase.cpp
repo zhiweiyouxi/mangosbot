@@ -125,8 +125,8 @@ protected:
 
         tick(); // bloodrage
         tick(); // rend
-        ai->spellCooldowns.remove("rend");
-        ai->targetAuras.push_back("rend");
+        spellAvailable("rend");
+        addTargetAura("rend");
 
         ai->rage = 21;
         tick(); // devastate
@@ -134,33 +134,32 @@ protected:
         tick(); // sunder armor
 
         tick(); // disarm
-        ai->spellCooldowns.remove("disarm");
-        ai->targetAuras.push_back("disarm");
+        spellAvailable("disarm");
+        addTargetAura("disarm");
 
         ai->rage = 41;
         tick(); // heroic strike
 
         tick(); 
-        ai->spellCooldowns.remove("disarm");
-        ai->targetAuras.push_back("disarm");
-        ai->spellCooldowns.remove("devastate");
+        spellAvailable("disarm");
+        addTargetAura("disarm");
+        spellAvailable("devastate");
 
         tick(); 
-        ai->spellCooldowns.remove("sunder armor");
-        ai->targetAuras.push_back("sunder armor");
+        spellAvailable("sunder armor");
+        addTargetAura("sunder armor");
 
-        ai->spellCooldowns.remove("heroic strike");
+        spellAvailable("heroic strike");
         tick(); // heroic strike
         ai->rage = 20;
 
-        std::cout << ai->buffer;
         assertActions(">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>disarm>heroic strike>melee>devastate>heroic strike");
     }
 
     void revengeIfDodge()
     {
         tick(); // melee
-        ai->spellCooldowns.remove("revenge");
+        spellAvailable("revenge");
         tick(); // defensive stance
         tick(); // revenge
 
