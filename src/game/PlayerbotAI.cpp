@@ -1199,11 +1199,9 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
     if (guid)
     {
         m_lootCreature.push_front( guid );
-        if (m_lootCreature.size() > 50)
-        {
-            for (int i=0; i<50; i++) 
-                m_lootCreature.pop_back();
-        }
+		int lootSize = m_lootCreature.size();
+        for (; lootSize>50; lootSize--) 
+            m_lootCreature.pop_back();
     }
 	// set movement generators for combat movement
 	//MovementClear();
