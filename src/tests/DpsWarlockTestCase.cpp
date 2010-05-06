@@ -32,7 +32,13 @@ protected:
 
         tick(); 
 
-        assertActions(">corruption>curse of agony>drain life>shoot");
+		tickWithTargetLowHealth(19);
+		
+		ai->itemCounts["soulstone"] = 2;
+		spellAvailable("drain soul");
+		tickWithTargetLowHealth(19);
+
+        assertActions(">corruption>curse of agony>drain life>shoot>drain soul");
 	}
 
     void summonPet()

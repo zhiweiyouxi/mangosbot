@@ -959,20 +959,22 @@ Item* PlayerbotAI::FindMount(uint32 matchingRidingSkill) const
 }
 
 
-bool PlayerbotAI::isDrink(const ItemPrototype* pItemProto)
+bool PlayerbotAI::isDrink(const ItemPrototype* pItemProto, const void* param)
 {
     return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
         pItemProto->Spells[0].SpellCategory == 59);
 }
 
-bool PlayerbotAI::isFood(const ItemPrototype* pItemProto)
+bool PlayerbotAI::isFood(const ItemPrototype* pItemProto, const void* param)
 {
     return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
         pItemProto->Spells[0].SpellCategory == 11);
 }
 
-Item* PlayerbotAI::FindUsableItem(bool predicate(const ItemPrototype*)) const
+Item* PlayerbotAI::FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param, int *count/*=NULL*/) const
 {
+	Item* found = NULL;
+
     // list out items in main backpack
     for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
     {
@@ -984,8 +986,15 @@ Item* PlayerbotAI::FindUsableItem(bool predicate(const ItemPrototype*)) const
             if (!pItemProto || !m_bot->CanUseItem(pItemProto))
                 continue;
 
-            if (predicate(pItemProto))
-                return pItem;
+			if (predicate(pItemProto, param)) {
+                if (!found) 
+					found = pItem;
+
+				if (count) 
+					(*count)++;
+				else 
+					return found;
+			}
         }
     }
     // list out items in other removable backpacks
@@ -1004,21 +1013,28 @@ Item* PlayerbotAI::FindUsableItem(bool predicate(const ItemPrototype*)) const
                     if (!pItemProto || !m_bot->CanUseItem(pItemProto))
                         continue;
 
-                    if (predicate(pItemProto))
-                        return pItem;
+					if (predicate(pItemProto, param)) {
+						if (!found) 
+							found = pItem;
+
+						if (count) 
+							(*count)++;
+						else 
+							return found;
+					}
                 }
             }
         }
     }
-    return NULL;
+    return found;
 }
 
-bool PlayerbotAI::isBandage(const ItemPrototype* pItemProto)
+bool PlayerbotAI::isBandage(const ItemPrototype* pItemProto, const void* param)
 {
     return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_BANDAGE;
 }
 
-bool PlayerbotAI::isPoison(const ItemPrototype* pItemProto)
+bool PlayerbotAI::isPoison(const ItemPrototype* pItemProto, const void* param)
 {
     return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == 6;
 }

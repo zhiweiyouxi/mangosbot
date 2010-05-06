@@ -76,6 +76,7 @@ namespace ai
         virtual bool HasHealingPotion() { return ai->FindUsableItem(isHealingPotion) != NULL; }
         virtual bool HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
         virtual bool HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
+		virtual int GetItemCount(const char* name) { return ai->FindUsableItem(isTheSameName, (const void*)name) != NULL; }
 
         virtual void Emote(uint32 emote);
         virtual Player* GetPartyMemberToDispell(uint32 dispelType);
@@ -86,12 +87,13 @@ namespace ai
         virtual bool TargetHasAuraToDispel(uint32 dispelType);
 
     protected:
-        static bool isHealingPotion(const ItemPrototype* pItemProto);
-        static bool isManaPotion(const ItemPrototype* pItemProto);
-        static bool isPanicPotion(const ItemPrototype* pItemProto);
-        static bool isFood(const ItemPrototype* pItemProto);
-        static bool isDrink(const ItemPrototype* pItemProto);
-        bool FindAndUse(bool predicate(const ItemPrototype*), uint8 ignore_time = 0);
+        static bool isHealingPotion(const ItemPrototype* pItemProto, const void* param);
+        static bool isManaPotion(const ItemPrototype* pItemProto, const void* param);
+        static bool isPanicPotion(const ItemPrototype* pItemProto, const void* param);
+        static bool isFood(const ItemPrototype* pItemProto, const void* param);
+        static bool isDrink(const ItemPrototype* pItemProto, const void* param);
+		static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
+        bool FindAndUse(bool predicate(const ItemPrototype*, const void*), uint8 ignore_time = 0);
         Player* findPlayer(bool predicate(Player*, FindPlayerParam&), void *param);
         static bool isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);

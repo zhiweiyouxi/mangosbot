@@ -111,7 +111,7 @@ bool PlayerbotAIFacade::HasAggro()
     return FALSE;
 }
 
-bool PlayerbotAIFacade::FindAndUse(bool predicate(const ItemPrototype*), uint8 ignore_time)
+bool PlayerbotAIFacade::FindAndUse(bool predicate(const ItemPrototype*, const void*), uint8 ignore_time)
 {
     Item* item = ai->FindUsableItem(predicate);
     if (item)
@@ -137,35 +137,40 @@ void PlayerbotAIFacade::UseDrink()
 }
 
 
-bool PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isPanicPotion(const ItemPrototype* pItemProto, const void* param)
 {
     return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
 }
 
-bool PlayerbotAIFacade::isHealingPotion(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isHealingPotion(const ItemPrototype* pItemProto, const void* param)
 {
     return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
         pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 441;
 }
 
-bool PlayerbotAIFacade::isManaPotion(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isManaPotion(const ItemPrototype* pItemProto, const void* param)
 {
     return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
         pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 438;
 }
 
-bool PlayerbotAIFacade::isFood(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isFood(const ItemPrototype* pItemProto, const void* param)
 {
     return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
         pItemProto->Spells[0].SpellCategory == 11);
 }
 
-bool PlayerbotAIFacade::isDrink(const ItemPrototype* pItemProto)
+bool PlayerbotAIFacade::isDrink(const ItemPrototype* pItemProto, const void* param)
 {
     return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
         pItemProto->Spells[0].SpellCategory == 59);
 }
 
+bool PlayerbotAIFacade::isTheSameName(const ItemPrototype* pItemProto, const void* param)
+{
+	const char* name = (const char*)param;
+	return pItemProto && pItemProto->Name1 && !strcmpi(pItemProto->Name1, name);
+}
 
 Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
 {

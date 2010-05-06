@@ -17,6 +17,9 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastDrainSoulAction, "drain soul")
+		virtual bool isUseful() {
+			return ai->GetItemCount("soulstone") < 2;
+		}
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastDrainManaAction, "drain mana")

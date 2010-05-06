@@ -57,6 +57,7 @@ namespace ai
         virtual void UseDrink() { buffer.append(">drink"); }
         virtual bool HasFood() { return hasFood; }
         virtual bool HasDrink() { return hasDrink; }
+		virtual int GetItemCount(const char* name)  { return itemCounts[std::string(name)]; }
 
 
         virtual uint8 GetPetHealthPercent() { return petHealth; }
@@ -113,6 +114,7 @@ namespace ai
         bool targetIsCastingNonMeleeSpell;
         bool haveTarget;
 		bool hasDrink, hasFood;
+		std::map<string, int> itemCounts;
     };
 
 }

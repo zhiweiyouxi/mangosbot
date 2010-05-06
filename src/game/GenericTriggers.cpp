@@ -103,3 +103,8 @@ bool NoPetTrigger::IsActive()
 {
     return !ai->HasPet() && !ai->IsMounted();
 }
+
+bool ItemCountTrigger::IsActive()
+{
+	return ai->GetItemCount(item) < count;
+}

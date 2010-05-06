@@ -31,6 +31,10 @@ void DpsWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new LowHealthTrigger(ai, 50),
         NextAction::array(0, new NextAction("drain life", 40.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new TargetLowHealthTrigger(ai, 20),
+		NextAction::array(0, new NextAction("drain soul", 30.0f), NULL)));
+
 }
 
 

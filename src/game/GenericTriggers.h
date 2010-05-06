@@ -230,4 +230,21 @@ namespace ai
 
     BEGIN_TRIGGER(NoPetTrigger, Trigger)
     END_TRIGGER()
+
+	class ItemCountTrigger : public Trigger
+	{
+	public:
+		ItemCountTrigger(PlayerbotAIFacade* const ai, const char* item, int count) : Trigger(ai) 
+		{
+			this->item = item;
+			this->count = count;
+		}
+	public: 
+		virtual bool IsActive();
+		virtual const char* getName() { return "item count"; }
+
+	protected:
+		const char* item;
+		int count;
+	};
 }
