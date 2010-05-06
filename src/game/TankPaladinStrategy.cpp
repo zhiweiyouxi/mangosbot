@@ -29,7 +29,7 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new LoseAggroTrigger(ai), 
-        NextAction::array(0, new NextAction("hand of reckoning", 16.0f), new NextAction("exorcism", 11.0f), NULL)));
+        NextAction::array(0, new NextAction("hand of reckoning", 16.0f), NULL)));
 
 	triggers.push_back(new TriggerNode(
 		new HolyShieldTrigger(ai), 

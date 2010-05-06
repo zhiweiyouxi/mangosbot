@@ -75,9 +75,7 @@ protected:
 		tickWithNoAggro();
 		tickWithNoAggro();
 
-        tick(); 
-
-        assertActions(">holy wrath>consecration>avenger's shield>hand of reckoning>judgement of justice>exorcism");
+        assertActions(">holy wrath>consecration>avenger's shield>hand of reckoning>judgement of justice");
     }
 
     void combatVsMelee()
