@@ -16,11 +16,6 @@ bool ComboPointsAvailable::IsActive()
     return ai->GetComboPoints() >= amount;
 }
 
-bool LowManaTrigger::IsActive()
-{
-    return ai->GetManaPercent() != 0 && ai->GetManaPercent() < EAT_DRINK_PERCENT;
-}
-
 bool LoseAggroTrigger::IsActive()
 {
     return !ai->HasAggro();
@@ -97,11 +92,6 @@ bool BoostTrigger::IsActive()
 bool SnareTargetTrigger::IsActive()
 {
     return ai->IsTargetMoving() && !ai->TargetHasAura(aura) && ai->HasSpell(aura);
-}
-
-bool NoPetTrigger::IsActive()
-{
-    return !ai->HasPet() && !ai->IsMounted();
 }
 
 bool ItemCountTrigger::IsActive()

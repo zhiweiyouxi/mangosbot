@@ -9,7 +9,9 @@ namespace ai
     class HunterAspectOfTheHawkTrigger : public BuffTrigger
     { 
     public: 
-        HunterAspectOfTheHawkTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the hawk") {}
+        HunterAspectOfTheHawkTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the hawk") {
+			checkInterval = 1;
+		}
         virtual bool IsActive() {
             return !ai->HasAura(spell) && ai->canCastSpell(spell) && 
                 !ai->HasAura("aspect of the viper") && ai->GetManaPercent() > 50;

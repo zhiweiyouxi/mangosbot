@@ -38,6 +38,7 @@ void EngineTestBase::setupEngine(ActionFactory* actionFactory, ...)
 
 	va_generic(&EngineTestBase::setupEngineCallback, vl);
     
+	engine->testMode = true;
 	engine->Init();
 }
 

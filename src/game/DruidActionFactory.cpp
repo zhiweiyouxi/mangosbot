@@ -11,13 +11,13 @@ using namespace ai;
 
 Strategy* DruidActionFactory::createStrategy(const char* name)
 {
-    if (!strcmp("bear", name))
+    if (!strcmp("bear", name) || !strcmp("tank", name))
         return new BearTankDruidStrategy(ai);
 
     if (!strcmp("cat", name))
         return new CatDpsDruidStrategy(ai);
 
-	if (!strcmp("caster", name))
+	if (!strcmp("caster", name) || !strcmp("dps", name))
 		return new CasterDruidStrategy(ai);
 
     if (!strcmp("nc", name))
@@ -26,9 +26,5 @@ Strategy* DruidActionFactory::createStrategy(const char* name)
     if (!strcmp("boost", name))
         return new DruidBoostStrategy(ai);
 
-    Strategy* strategy = ActionFactory::createStrategy(name);
-    if (strategy)
-        return strategy;
-
-    return new GenericDruidStrategy(ai);
+    return ActionFactory::createStrategy(name);
 }

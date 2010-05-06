@@ -112,7 +112,7 @@ namespace ai
     class BuffTrigger : public Trigger
     {
     public:
-        BuffTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai) 
+        BuffTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai, spell, 5) 
         {
             this->spell = spell;
         }
@@ -219,23 +219,33 @@ namespace ai
     protected:
         const char* aura;
     };
-    BEGIN_TRIGGER(LowManaTrigger, Trigger)
-        virtual const char* getName() { return "low mana"; }
-    END_TRIGGER()
 
-        BEGIN_TRIGGER(PanicTrigger, Trigger)
+	class LowManaTrigger : public Trigger {
+	public:
+		LowManaTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "low mana", 5) {}
+
+		virtual bool LowManaTrigger::IsActive() {
+			return ai->GetManaPercent() != 0 && ai->GetManaPercent() < EAT_DRINK_PERCENT;
+		}
+	};
+
+    BEGIN_TRIGGER(PanicTrigger, Trigger)
         virtual const char* getName() { return "panic"; }
     END_TRIGGER()
 
 
-    BEGIN_TRIGGER(NoPetTrigger, Trigger)
-    END_TRIGGER()
-
-	class ItemCountTrigger : public Trigger
-	{
+	class NoPetTrigger : public Trigger {
 	public:
-		ItemCountTrigger(PlayerbotAIFacade* const ai, const char* item, int count) : Trigger(ai) 
-		{
+		NoPetTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "no pet", 5) {}
+
+		virtual bool NoPetTrigger::IsActive() {
+			return !ai->HasPet() && !ai->IsMounted();
+		}
+	};
+
+	class ItemCountTrigger : public Trigger {
+	public:
+		ItemCountTrigger(PlayerbotAIFacade* const ai, const char* item, int count) : Trigger(ai, item, 5) {
 			this->item = item;
 			this->count = count;
 		}

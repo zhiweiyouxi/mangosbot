@@ -21,8 +21,10 @@ namespace ai
     class Trigger : public PlayerbotAIFacadeAware
 	{
 	public:
-        Trigger(PlayerbotAIFacade* const ai, const char* name = NULL) : PlayerbotAIFacadeAware(ai) {
+        Trigger(PlayerbotAIFacade* const ai, const char* name = NULL, int checkInterval = 1) : PlayerbotAIFacadeAware(ai) {
             this->name = name;
+			this->checkInterval = checkInterval;
+			ticksElapsed = 0;
         }
         virtual ~Trigger() {}
 
@@ -30,9 +32,19 @@ namespace ai
 		virtual bool IsActive() = NULL;
         virtual NextAction** getHandlers() { return NULL; }
         virtual const char* getName() { return name ? name : "trigger"; }
+		
+		bool needCheck() {
+			if (++ticksElapsed >= checkInterval) {
+				ticksElapsed = 0;
+				return true;
+			}
+			return false;
+		}
 
     protected:
         const char* name;
+		int checkInterval;
+		int ticksElapsed;
 	};
 
 
@@ -52,6 +64,7 @@ namespace ai
 
     public:
         bool IsActive() { return trigger->IsActive(); }
+		bool needCheck() { return trigger->needCheck(); }
         Trigger* getTrigger() { return trigger; }
         const char* getName() { return trigger->getName(); }
 

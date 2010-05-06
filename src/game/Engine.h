@@ -50,6 +50,7 @@ namespace ai
             actionFactory = factory;
             lastRelevance = 0.0f;
             maxIterations = 10;
+			testMode = false;
         }
 
 	    void Init();
@@ -95,6 +96,7 @@ namespace ai
 
     public:
         int maxIterations;
+		bool testMode;
 
     private:
         ActionExecutionListeners actionExecutionListeners;

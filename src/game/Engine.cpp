@@ -263,9 +263,8 @@ void Engine::ProcessTriggers()
     for (std::list<TriggerNode*>::iterator i = triggers.begin(); i != triggers.end(); i++)
     {
         TriggerNode* trigger = *i;
-        if (trigger->IsActive())
+        if ((testMode || trigger->needCheck()) && trigger->IsActive())
         {
-            //sLog.outBasic("T:%s", trigger->getName());
             MultiplyAndPush(trigger->getHandlers());
         }
     }

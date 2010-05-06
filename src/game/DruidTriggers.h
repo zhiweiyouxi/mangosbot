@@ -1,25 +1,44 @@
 #pragma once
 #include "GenericTriggers.h"
 
-namespace ai
-{
-    BEGIN_TRIGGER(BearTankDruidLoseAggroTrigger, LoseAggroTrigger)
-      virtual const char* getName() { return "lose aggro"; }
-    END_TRIGGER()
+namespace ai {
+    class MarkOfTheWildOnPartyTrigger : public BuffOnPartyTrigger { 
+    public: 
+        MarkOfTheWildOnPartyTrigger(PlayerbotAIFacade* const ai) : BuffOnPartyTrigger(ai, "mark of the wild") {}  
+    };
 
-    BUFF_ON_PARTY_TRIGGER(MarkOfTheWildOnPartyTrigger, "mark of the wild", "mark of the wild on party")
+    class MarkOfTheWildTrigger : public BuffTrigger { 
+    public: 
+        MarkOfTheWildTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "mark of the wild") {} 
+    };
 
-    BUFF_TRIGGER(MarkOfTheWildTrigger, "mark of the wild", "mark of the wild")
-    BUFF_TRIGGER(ThornsTrigger, "thorns", "thorns")
+    class ThornsTrigger : public BuffTrigger { 
+    public: 
+        ThornsTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "thorns") {} 
+    };
 
+    class RakeTrigger : public DebuffTrigger 
+    { 
+    public: 
+        RakeTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "rake") {} 
+    };
 
-    //--------------------------------------------------------------------------------------
+    class InsectSwarmTrigger : public DebuffTrigger 
+    { 
+    public: 
+        InsectSwarmTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "insect swarm") {} 
+    };
 
-    DEBUFF_TRIGGER(RakeTrigger, "rake", "rake")
+    class MoonfireTrigger : public DebuffTrigger 
+    { 
+    public: 
+        MoonfireTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "moonfire") {} 
+    };
 
-	//--------------------------------------------------------------------------------------
-	DEBUFF_TRIGGER(InsectSwarmTrigger, "insect swarm", "insect swarm")
-	DEBUFF_TRIGGER(MoonfireTrigger, "moonfire", "moonfire")
-	DEBUFF_TRIGGER(FaerieFireTrigger, "faerie fire", "faerie fire")
+    class FaerieFireTrigger : public DebuffTrigger 
+    { 
+    public: 
+        FaerieFireTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "faerie fire") {} 
+    };
 	
 }

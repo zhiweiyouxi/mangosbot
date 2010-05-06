@@ -1,9 +1,10 @@
 [ ] global spell cooldown
 
-[ ] drain soul only if 25% health
+[ ] do boost action
+[v] drain soul only if <20% health
 [ ] do not interrupt channels
 [ ] warlock: heal demon
-[ ] attack threat, not follow 
+[v] attack threat, not follow 
 [ ] travel strategy (ignore if mounted/umount if attacked)
 [ ] attack priest's target
 [v] conjure and use items
