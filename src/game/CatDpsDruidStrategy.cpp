@@ -14,7 +14,7 @@ NextAction** CatDpsDruidStrategy::getDefaultActions()
 
 void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    GenericDruidStrategy::InitTriggers(triggers);
+    FeralDruidStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
         new EnemyOutOfMeleeTrigger(ai), 
@@ -118,5 +118,5 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else return GenericDruidStrategy::createAction(name);
+    else return FeralDruidStrategy::createAction(name);
 }

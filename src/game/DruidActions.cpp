@@ -59,26 +59,6 @@ NextAction** CastRejuvenationOnPartyAction::getPrerequisites()
     return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
 }
 
-NextAction** CastCurePoisonAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
-
-NextAction** CastCurePoisonOnPartyAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
-
-
-NextAction** CastAbolishPoisonAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
-
-NextAction** CastAbolishPoisonOnPartyAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
 
 
 NextAction** CastAbolishPoisonAction::getAlternatives()

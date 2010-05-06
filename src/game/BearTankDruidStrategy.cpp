@@ -13,7 +13,7 @@ NextAction** BearTankDruidStrategy::getDefaultActions()
 
 void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    GenericDruidStrategy::InitTriggers(triggers);
+    FeralDruidStrategy::InitTriggers(triggers);
     
     triggers.push_back(new TriggerNode(
         new EnemyOutOfMeleeTrigger(ai), 
@@ -125,5 +125,5 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
-    else return GenericDruidStrategy::createAction(name);
+    else return FeralDruidStrategy::createAction(name);
 }

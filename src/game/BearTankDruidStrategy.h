@@ -1,13 +1,13 @@
 #pragma once
 
-#include "GenericDruidStrategy.h"
+#include "FeralDruidStrategy.h"
 
 namespace ai
 {
-    class BearTankDruidStrategy : public GenericDruidStrategy
+    class BearTankDruidStrategy : public FeralDruidStrategy
     {
     public:
-        BearTankDruidStrategy(PlayerbotAIFacade* const ai) : GenericDruidStrategy(ai) {}
+        BearTankDruidStrategy(PlayerbotAIFacade* const ai) : FeralDruidStrategy(ai) {}
     
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

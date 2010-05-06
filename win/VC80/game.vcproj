@@ -2073,6 +2073,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\FeralDruidStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\FeralDruidStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\GenericDruidNonCombatStrategy.cpp"
 						>
 					</File>

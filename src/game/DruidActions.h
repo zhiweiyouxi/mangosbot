@@ -79,7 +79,6 @@ namespace ai
 
 
     BEGIN_SPELL_ACTION(CastCurePoisonAction, "cure poison")
-        virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
     class CastCurePoisonOnPartyAction : public CurePartyMemberAction
@@ -88,11 +87,9 @@ namespace ai
         CastCurePoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "cure poison", DISPEL_POISON) {}
 
         virtual const char* getName() { return "cure poison on party"; }
-        virtual NextAction** getPrerequisites();
     };
 
     BEGIN_SPELL_ACTION(CastAbolishPoisonAction, "abolish poison")
-        virtual NextAction** getPrerequisites();
         virtual NextAction** getAlternatives();
     END_SPELL_ACTION()
 
@@ -102,7 +99,6 @@ namespace ai
         CastAbolishPoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "abolish poison", DISPEL_POISON) {}
 
         virtual const char* getName() { return "abolish poison on party"; }
-        virtual NextAction** getPrerequisites();
         virtual NextAction** getAlternatives();
     };
 

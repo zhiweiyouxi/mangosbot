@@ -12,6 +12,7 @@ class CasterDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( combat);
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( healOthers );
+	CPPUNIT_TEST( curePoison );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -83,7 +84,21 @@ protected:
 
         assertActions(">-moonkin form>rejuvenation on party>regrowth on party");
     }
-  
+
+	void curePoison() 
+	{
+		tickWithAuraToDispel(DISPEL_POISON);
+
+		spellAvailable("abolish poison");
+		tickWithPartyAuraToDispel(DISPEL_POISON);
+
+		tickWithAuraToDispel(DISPEL_POISON);
+
+		spellAvailable("cure poison");
+		tickWithPartyAuraToDispel(DISPEL_POISON);
+
+		assertActions(">abolish poison>abolish poison on party>cure poison>cure poison on party");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CasterDruidTestCase );
