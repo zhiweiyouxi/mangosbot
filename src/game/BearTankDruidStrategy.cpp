@@ -14,7 +14,11 @@ NextAction** BearTankDruidStrategy::getDefaultActions()
 void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     FeralDruidStrategy::InitTriggers(triggers);
-    
+
+	triggers.push_back(new TriggerNode(
+		new ThornsTrigger(ai),
+		NextAction::array(0, new NextAction("thorns", 25.0f), NULL)));
+
     triggers.push_back(new TriggerNode(
         new EnemyOutOfMeleeTrigger(ai), 
         NextAction::array(0, new NextAction("melee", 10.0f), NULL)));
@@ -55,6 +59,13 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("thorns", name)) 
+	{
+		return new ActionNode (new CastThornsAction(ai),  
+			/*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("feral charge - bear", name)) 
     {
         return new ActionNode (new CastFeralChargeBearAction(ai),  

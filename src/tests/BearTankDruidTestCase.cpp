@@ -18,6 +18,7 @@ class BearTankDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( curePoison );
     CPPUNIT_TEST( interruptSpells );
+	CPPUNIT_TEST( buff );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -26,6 +27,8 @@ public:
     {
 		EngineTestBase::setUp();
 		setupEngine(new DruidActionFactory(ai), "bear", NULL);
+
+		addAura("thorns");
     }
 
 protected:
@@ -209,6 +212,15 @@ protected:
 
         assertActions(">faerie fire>dire bear form>melee>bash");
     }
+	void buff() 
+	{
+		removeAura("thorns");
+		tick();
+		
+		tick();
+
+		assertActions(">thorns>faerie fire");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( BearTankDruidTestCase );

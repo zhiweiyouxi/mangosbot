@@ -24,15 +24,12 @@ protected:
     {
 		tick();
 		addAura("mark of the wild");
-        
-        tick();
-        addAura("thorns");
-        
+                
 		tickWithSpellAvailable("mark of the wild");
         
 		tick();
 
-        assertActions(">thorns>mark of the wild>mark of the wild on party");
+        assertActions(">mark of the wild>mark of the wild on party");
     }
 };
 

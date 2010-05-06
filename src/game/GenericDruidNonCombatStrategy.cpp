@@ -9,11 +9,7 @@ using namespace ai;
 void GenericDruidNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericNonCombatStrategy::InitTriggers(triggers);
-    
-    triggers.push_back(new TriggerNode(
-        new ThornsTrigger(ai),
-        NextAction::array(0, new NextAction("thorns", 1.0f), NULL)));
-    
+        
     triggers.push_back(new TriggerNode(
         new MarkOfTheWildTrigger(ai),
         NextAction::array(0, new NextAction("mark of the wild", 1.0f), NULL)));
@@ -26,14 +22,7 @@ void GenericDruidNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trigge
 
 ActionNode* GenericDruidNonCombatStrategy::createAction(const char* name)
 {
-    if (!strcmp("thorns", name)) 
-    {
-        return new ActionNode (new CastThornsAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("mark of the wild", name)) 
+    if (!strcmp("mark of the wild", name)) 
     {
         return new ActionNode (new CastMarkOfTheWildAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
