@@ -82,7 +82,6 @@ public:
 
 PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
     m_mgr(mgr), m_bot(bot), m_ignoreAIUpdatesUntilTime(0),
-	m_globalCooldown(0),
     m_combatOrder(ORDERS_NONE), m_ScenarioType(SCENARIO_PVEEASY),
     m_TimeDoneEating(0), m_TimeDoneDrinking(0),
     m_CurrentlyCastingSpellId(0), m_spellIdCommand(0), 
@@ -761,7 +760,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 
             if (m_CurrentlyCastingSpellId == spellId)
             {
-				int ignoreTime;
+				int ignoreTime = UpdateIgnoreTime(spellId);
 				if (!ignoreTime) {
 					m_CurrentlyCastingSpellId = 0;
 					ignoreTime = 1;
@@ -2023,9 +2022,6 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
     if( m_bot->HasSpellCooldown( spellId ) )
         return false;
 
-	if (time(0) < m_globalCooldown)
-		return false;
-
     // see Creature.cpp 1738 for reference
     // don't allow bot to cast damage spells on friends
     const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(spellId);
@@ -2078,8 +2074,6 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
     m_CurrentlyCastingSpellId = spellId;
 	int32 castTime = (int32)ceil((float)pSpell->GetCastTime()/1000.0f);
     m_ignoreAIUpdatesUntilTime = time(0) + castTime;
-	if (castTime <= 1) 
-		m_globalCooldown = time(0) + 2;
 	
 	m_ignoreAIUpdatesUntilTime += UpdateIgnoreTime(spellId);
 
