@@ -626,3 +626,23 @@ bool PlayerbotAIFacade::IsTargetCastingNonMeleeSpell() {
     return target && target->IsNonMeleeSpellCasted(true);
 }
 
+bool PlayerbotAIFacade::HasAnyAuraOf(const char* first, ...) {
+	if (HasAura(first))
+		return true;
+
+	va_list vl;
+	va_start(vl, first);
+
+	const char* cur = NULL;
+	do {
+		cur = va_arg(vl, const char*);
+		if (cur && HasAura(cur)) {
+			va_end(vl);
+			return true;
+		}
+	}
+	while (cur);
+
+	va_end(vl);
+	return false;
+}

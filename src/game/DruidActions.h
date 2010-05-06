@@ -1,22 +1,15 @@
 #pragma once
 
 #include "GenericActions.h"
+#include "DruidShapeshiftActions.h"
 
 namespace ai
 {
-    BEGIN_RANGED_SPELL_ACTION(CastFaerieFireAction, "faerie fire")
-    END_SPELL_ACTION()
-
-    BEGIN_SPELL_ACTION(CastBearFormAction, "bear form")
-        virtual bool isPossible();
-        virtual bool isUseful();
-    END_SPELL_ACTION()
-
-    BEGIN_SPELL_ACTION(CastDireBearFormAction, "dire bear form")
-        virtual bool isPossible();
-        virtual NextAction** getAlternatives();
-        virtual bool isUseful();
-    END_SPELL_ACTION()
+	class CastFaerieFireAction : public CastRangedSpellAction 
+	{ 
+	public: 
+		CastFaerieFireAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "faerie fire") {} 
+	};
 
     BEGIN_MELEE_SPELL_ACTION(CastMaulAction, "maul")
     END_SPELL_ACTION()
@@ -25,12 +18,6 @@ namespace ai
     END_SPELL_ACTION()
 
     BEGIN_MELEE_SPELL_ACTION(CastSwipeAction, "swipe")
-    END_SPELL_ACTION()
-
-    BEGIN_SPELL_ACTION(CastCasterFormAction, "caster form")
-        virtual bool isUseful();
-        virtual bool isPossible() { return TRUE; }
-        virtual bool ExecuteResult();
     END_SPELL_ACTION()
 
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
@@ -178,9 +165,5 @@ namespace ai
 
 	//-----------------------------------------------------------------------
 
-	BEGIN_SPELL_ACTION(CastMoonkinFormAction, "moonkin form")
-		virtual bool isPossible();
-		virtual bool isUseful();
-	END_SPELL_ACTION()
 
 }

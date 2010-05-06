@@ -37,6 +37,7 @@ namespace ai
         virtual bool canCastSpell( const char* spell );
         virtual uint8 GetRage();
         virtual bool HasAura(const char* spell);
+		virtual bool HasAnyAuraOf(const char* first, ...);
         virtual bool PetHasAura(const char* spell);
         virtual bool TargetHasAura(const char* spell);
         virtual bool IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }

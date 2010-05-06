@@ -59,6 +59,21 @@ namespace ai
         const char* spell;
     };
 
+	//---------------------------------------------------------------------------------------------------------------------
+	class CastAuraSpellAction : public CastSpellAction
+	{
+	public:
+		CastAuraSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+
+		virtual bool isPossible() 
+		{
+			return CastSpellAction::isPossible() && !ai->HasAura(spell);
+		}
+		virtual bool isUseful() 
+		{
+			return CastSpellAction::isUseful() && !ai->HasAura(spell);
+		}
+	};
 
     //---------------------------------------------------------------------------------------------------------------------
     class CastMeleeSpellAction : public CastSpellAction

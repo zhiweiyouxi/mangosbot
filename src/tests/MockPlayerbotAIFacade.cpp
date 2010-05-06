@@ -84,3 +84,4 @@ bool MockPlayerbotAIFacade::IsAllPartyHasAura(const char* spell)
     }
     return FALSE;
 }
+

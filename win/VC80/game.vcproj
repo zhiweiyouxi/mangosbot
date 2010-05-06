@@ -2026,6 +2026,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\DruidShapeshiftActions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\DruidTriggers.cpp"
 					>
 				</File>

@@ -4,31 +4,6 @@
 
 using namespace ai;
 
-bool CastBearFormAction::isPossible()
-{
-    return CastSpellAction::isPossible() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
-}
-
-bool CastBearFormAction::isUseful()
-{
-    return CastSpellAction::isUseful() && !ai->HasAura("bear form") && !ai->HasAura("dire bear form");
-}
-
-NextAction** CastDireBearFormAction::getAlternatives()
-{
-    return NextAction::merge(NextAction::array(0, new NextAction("bear form"), NULL), CastSpellAction::getAlternatives());
-}
-
-bool CastDireBearFormAction::isPossible()
-{
-    return CastSpellAction::isPossible() && !ai->HasAura("dire bear form");
-}
-
-bool CastDireBearFormAction::isUseful()
-{
-    return CastSpellAction::isUseful() && !ai->HasAura("dire bear form");
-}
-
 bool CastRejuvenationAction::isPossible()
 {
     return CastSpellAction::isPossible() && !ai->HasAura("lifeblood");
@@ -48,24 +23,20 @@ bool CastCasterFormAction::ExecuteResult()
 {
     if (ai->HasAura("dire bear form")) 
         ai->RemoveAura("dire bear form");
-    if (ai->HasAura("bear form")) 
+    else if (ai->HasAura("bear form")) 
         ai->RemoveAura("bear form");
-    if (ai->HasAura("cat form")) 
+    else if (ai->HasAura("cat form")) 
         ai->RemoveAura("cat form");
-	if (ai->HasAura("moonkin form")) 
+	else if (ai->HasAura("moonkin form")) 
 		ai->RemoveAura("moonkin form");
-    if (ai->HasAura("travel form")) 
+    else if (ai->HasAura("travel form")) 
         ai->RemoveAura("travel form");
+	else if (ai->HasAura("aquatic form")) 
+		ai->RemoveAura("aquatic form");
 
     return TRUE;
 }
 
-
-bool CastCasterFormAction::isUseful()
-{
-    return (ai->HasAura("dire bear form") || ai->HasAura("bear form") ||
-        ai->HasAura("cat form") || ai->HasAura("travel form") || ai->HasAura("moonkin form")); 
-}
 
 bool CastCatFormAction::isPossible()
 {
@@ -169,14 +140,4 @@ NextAction** CastAbolishPoisonAction::getAlternatives()
 NextAction** CastAbolishPoisonOnPartyAction::getAlternatives()
 {
     return NextAction::merge( NextAction::array(0, new NextAction("cure poison on party"), NULL), CastSpellAction::getPrerequisites());
-}
-
-bool CastMoonkinFormAction::isPossible()
-{
-	return CastSpellAction::isPossible() && !ai->HasAura("moonkin form");
-}
-
-bool CastMoonkinFormAction::isUseful()
-{
-	return CastSpellAction::isUseful() && !ai->HasAura("moonkin form");
 }
