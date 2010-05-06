@@ -61,7 +61,7 @@ ActionNode* CasterDruidStrategy::createAction(const char* name)
 		return new ActionNode (new CastEntanglingRootsAction(ai),  
 			/*P*/ NextAction::array(0, new NextAction("moonkin form"), NULL),
 			/*A*/ NULL, 
-			/*C*/ NextAction::array(0, new NextAction("flee", 50.0f), NULL));
+			/*C*/ NextAction::array(0, new NextAction("flee", 49.0f), NULL));
 	}
 	else if (!strcmp("wrath", name)) 
 	{
