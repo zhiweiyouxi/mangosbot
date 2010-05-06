@@ -3,6 +3,7 @@
 #include "GenericActions.h"
 #include "DruidShapeshiftActions.h"
 #include "DruidBearActions.h"
+#include "DruidCatActions.h"
 
 namespace ai
 {
@@ -25,11 +26,7 @@ namespace ai
     END_SPELL_ACTION()
 
    
-    class CastFeralChargeCatAction : public CastReachTargetSpellAction {
-    public:
-        CastFeralChargeCatAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - cat", 1.5f) {}
-    };
-    
+  
     class CastRejuvenationOnPartyAction : public HealPartyMemberAction
     {
     public:
@@ -78,44 +75,8 @@ namespace ai
 	
 
     //--------------------------------------------------------------------------------------
-    BEGIN_SPELL_ACTION(CastCatFormAction, "cat form")
-        virtual bool isPossible();
-        virtual bool isUseful();
-    END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastCowerAction, "cower")
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
-        
-    BEGIN_DEBUFF_ACTION(CastRakeAction, "rake")
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
 
-    BEGIN_MELEE_SPELL_ACTION(CastClawAction, "claw") // main nuke
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
-
-    BEGIN_MELEE_SPELL_ACTION(CastMangleCatAction, "mangle (cat)") // main nuke
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
-
-  
-    BEGIN_MELEE_SPELL_ACTION(CastFerociousBiteAction, "ferocious bite")
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
-
-    BEGIN_MELEE_SPELL_ACTION(CastRipAction, "rip")
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
-
-    BEGIN_SPELL_ACTION(CastBerserkAction, "berserk")
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
-
-    BEGIN_SPELL_ACTION(CastTigersFuryAction, "tiger's fury")
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
-        
 
     BEGIN_SPELL_ACTION(CastCurePoisonAction, "cure poison")
         virtual NextAction** getPrerequisites();

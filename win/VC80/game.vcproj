@@ -2022,6 +2022,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\DruidCatActions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\DruidMultipliers.cpp"
 					>
 				</File>

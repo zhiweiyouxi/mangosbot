@@ -38,57 +38,6 @@ bool CastCasterFormAction::ExecuteResult()
 }
 
 
-bool CastCatFormAction::isPossible()
-{
-    return CastSpellAction::isPossible() && !ai->HasAura("cat form");
-}
-
-bool CastCatFormAction::isUseful()
-{
-    return CastSpellAction::isUseful() && !ai->HasAura("cat form");
-}
-
-
-NextAction** CastRakeAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), new NextAction("cat form"), NULL), CastDebuffSpellAction::getPrerequisites());
-}
-
-NextAction** CastCowerAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastSpellAction::getPrerequisites());
-}
-
-NextAction** CastBerserkAction::getPrerequisites()
-{
-    return NextAction::array(0, new NextAction("cat form"), NULL);
-}
-
-NextAction** CastTigersFuryAction::getPrerequisites()
-{
-    return NextAction::array(0, new NextAction("cat form"), NULL);
-}
-
-NextAction** CastClawAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
-}
-
-NextAction** CastMangleCatAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
-}
-
-NextAction** CastFerociousBiteAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
-}
-
-NextAction** CastRipAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
-}
-
 
 NextAction** CastRegrowthAction::getPrerequisites()
 {

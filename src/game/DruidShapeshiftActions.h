@@ -24,6 +24,11 @@ namespace ai {
 		}
 	};
 
+	class CastCatFormAction : public CastAuraSpellAction { 
+	public: 
+		CastCatFormAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "cat form") {} 
+	};
+
 	class CastMoonkinFormAction : public CastAuraSpellAction { 
 	public: 
 		CastMoonkinFormAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "moonkin form") {} 
