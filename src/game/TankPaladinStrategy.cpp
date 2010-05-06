@@ -24,7 +24,7 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("righteous fury", 15.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new AttackerCountTrigger(ai, 2), 
+        new AttackerCountTrigger(ai, 3), 
         NextAction::array(0, new NextAction("holy wrath", 25.0f), new NextAction("avenger's shield", 24.0f), NULL)));
 
     triggers.push_back(new TriggerNode(

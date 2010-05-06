@@ -68,9 +68,9 @@ protected:
   
     void paladinMustHoldAggro()
     {
-		tickWithAttackerCount(2);
-		tickWithAttackerCount(2);
-		tickWithAttackerCount(2);
+		tickWithAttackerCount(3);
+		tickWithAttackerCount(3);
+		tickWithAttackerCount(3);
 
 		tickWithNoAggro();
 		tickWithNoAggro();
