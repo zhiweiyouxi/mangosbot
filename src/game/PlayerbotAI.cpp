@@ -82,6 +82,7 @@ public:
 
 PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
     m_mgr(mgr), m_bot(bot), m_ignoreAIUpdatesUntilTime(0),
+	m_globalCooldown(0),
     m_combatOrder(ORDERS_NONE), m_ScenarioType(SCENARIO_PVEEASY),
     m_TimeDoneEating(0), m_TimeDoneDrinking(0),
     m_CurrentlyCastingSpellId(0), m_spellIdCommand(0), 
@@ -767,10 +768,10 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
                 if (pSpell->IsChannelActive() || pSpell->IsAutoRepeat())
                     m_ignoreAIUpdatesUntilTime = time(0) + (GetSpellDuration(pSpell->m_spellInfo) / 1000) + 1;
                 else if (pSpell->IsAutoRepeat())
-                    m_ignoreAIUpdatesUntilTime = time(0) + 6;
+                    m_ignoreAIUpdatesUntilTime = time(0) + 2;
                 else
                 {
-                    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+                    m_ignoreAIUpdatesUntilTime = time(0) + 2;
                     m_CurrentlyCastingSpellId = 0;
                 }
             }
@@ -1840,7 +1841,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     if (currentTime < m_ignoreAIUpdatesUntilTime)
         return;
 
-    m_ignoreAIUpdatesUntilTime = time(0) + 2;
+    m_ignoreAIUpdatesUntilTime = time(0) + 1;
 
 	// send heartbeat
 	MovementUpdate();
@@ -2017,6 +2018,9 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
     if( m_bot->HasSpellCooldown( spellId ) )
         return false;
 
+	if (time(0) < m_globalCooldown)
+		return false;
+
     // see Creature.cpp 1738 for reference
     // don't allow bot to cast damage spells on friends
     const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(spellId);
@@ -2067,7 +2071,10 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
         return false;
 
     m_CurrentlyCastingSpellId = spellId;
-    m_ignoreAIUpdatesUntilTime = time(0) + (int32)((float)pSpell->GetCastTime()/1000.0f) + 1;
+	int32 castTime = (int32)ceil((float)pSpell->GetCastTime()/1000.0f);
+    m_ignoreAIUpdatesUntilTime = time(0) + castTime;
+	if (castTime <= 1) 
+		m_globalCooldown = time(0) + 2;
 
     // if this caused the caster to move (blink) update the position
     // I think this is normally done on the client

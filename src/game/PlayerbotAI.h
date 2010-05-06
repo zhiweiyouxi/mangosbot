@@ -263,6 +263,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
         // ignores AI updates until time specified
         // no need to waste CPU cycles during casting etc
         time_t m_ignoreAIUpdatesUntilTime;
+		time_t m_globalCooldown;
 
 		CombatStyle m_combatStyle;
         CombatOrderType m_combatOrder;
