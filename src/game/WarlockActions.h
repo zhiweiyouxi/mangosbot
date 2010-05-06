@@ -45,4 +45,10 @@ namespace ai
 
 	BEGIN_SPELL_ACTION(CastCreateHealthstoneAction, "create healthstone")
 	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastCreateFirestoneAction, "create firestone")
+	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastCreateSpellstoneAction, "create spellstone")
+	END_SPELL_ACTION()
 }
