@@ -59,6 +59,8 @@ protected:
 	void tickWithTargetLowHealth(int amount);
 	void tickWithTargetIsMoving();
 	void tickWithLootAvailable();
+	void tickWithNoFood();
+	void tickWithNoDrink();
 
 protected:
     MockPlayerbotAIFacade *ai;

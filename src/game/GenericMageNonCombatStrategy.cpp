@@ -18,6 +18,14 @@ void GenericMageNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trigger
         new ArcaneIntellectOnPartyTrigger(ai), 
         NextAction::array(0, new NextAction("arcane intellect on party", 20.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new NoDrinkTrigger(ai), 
+		NextAction::array(0, new NextAction("conjure water", 16.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new NoFoodTrigger(ai), 
+		NextAction::array(0, new NextAction("conjure food", 15.0f), NULL)));
+
 }
 
 
@@ -41,6 +49,20 @@ ActionNode* GenericMageNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("conjure water", name)) 
+	{
+		return new ActionNode (new CastConjureWaterAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("conjure food", name)) 
+	{
+		return new ActionNode (new CastConjureFoodAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
 
     return NULL;
 }

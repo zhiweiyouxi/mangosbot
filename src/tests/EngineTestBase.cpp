@@ -280,3 +280,17 @@ void EngineTestBase::tickWithLootAvailable()
 	tick();
 	ai->lootAvailable = false;
 }
+
+void EngineTestBase::tickWithNoDrink()
+{
+	ai->hasDrink = false;
+	tick();
+	ai->hasDrink = true;
+}
+
+void EngineTestBase::tickWithNoFood()
+{
+	ai->hasFood = false;
+	tick();
+	ai->hasFood = true;
+}

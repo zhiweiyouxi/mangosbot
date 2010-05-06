@@ -19,6 +19,7 @@ namespace ai
             targetIsMoving = false;
             targetIsCastingNonMeleeSpell = false;
             haveTarget = true;
+			hasDrink = hasFood = true;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -54,8 +55,8 @@ namespace ai
         virtual void UsePanicPotion() { buffer.append(">pp"); }
         virtual void UseFood() { buffer.append(">eat"); }
         virtual void UseDrink() { buffer.append(">drink"); }
-        virtual bool HasFood() { return TRUE; }
-        virtual bool HasDrink() { return TRUE; }
+        virtual bool HasFood() { return hasFood; }
+        virtual bool HasDrink() { return hasDrink; }
 
 
         virtual uint8 GetPetHealthPercent() { return petHealth; }
@@ -111,6 +112,7 @@ namespace ai
         bool targetIsMoving;
         bool targetIsCastingNonMeleeSpell;
         bool haveTarget;
+		bool hasDrink, hasFood;
     };
 
 }

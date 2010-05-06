@@ -1,10 +1,15 @@
-[v] use party size when calculating follow angle
 [ ] global spell cooldown
+
 [ ] drain soul only if 25% health
 [ ] do not interrupt channels
 [ ] warlock: heal demon
 [ ] attack threat, not follow 
+[ ] travel strategy (ignore if mounted/umount if attacked)
+[ ] attack priest's target
+[ ] conjure and use items
+[ ] concentration aura before any healing
 
+[v] use party size when calculating follow angle
 [v] skip unknown spells/skills when check triggers
 [v] shoot using wands
 [v] stay/follow - do not react
@@ -32,14 +37,8 @@
 
 [v] mangle
 [v] devastate, slam
-[ ] travel strategy (ignore if mounted/umount if attacked)
-[ ] cat form if mounted
-[ ] move dispel to dps
-[ ] attack priest's target
-[ ] conjure and use items
+[v] cat form if mounted
 
 [v] hand of reckoning (paladin's taunt)
 [v] righteous fury
-
 [v] avenger's shield (aoe threat)
-[ ] concentration aura before any healing

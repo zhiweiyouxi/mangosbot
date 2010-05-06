@@ -28,7 +28,10 @@ protected:
 
 		tickWithSpellAvailable("arcane intellect");
 
-        assertActions(">arcane intellect>arcane intellect on party");
+		tickWithNoDrink();
+		tickWithNoFood();
+
+        assertActions(">arcane intellect>arcane intellect on party>conjure water>conjure food");
     }
     
 };

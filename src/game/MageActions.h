@@ -31,4 +31,10 @@ namespace ai
         CastRemoveCurseOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "remove curse", DISPEL_CURSE) {}
         virtual const char* getName() { return "remove curse on party"; }
     };
+
+	BEGIN_SPELL_ACTION(CastConjureFoodAction, "conjure food")
+	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastConjureWaterAction, "conjure water")
+	END_SPELL_ACTION()
 }
