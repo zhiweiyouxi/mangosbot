@@ -69,6 +69,7 @@ PlayerbotDruidAI::PlayerbotDruidAI(Player* const master, Player* const bot, Play
     engine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
     engine->addStrategy("caster");
     engine->addStrategy("dps assist");
+	engine->addStrategy("boost");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::DruidActionFactory(facade));
