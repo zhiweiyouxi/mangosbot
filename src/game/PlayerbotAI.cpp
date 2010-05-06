@@ -761,19 +761,12 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 
             if (m_CurrentlyCastingSpellId == spellId)
             {
-                Spell* const pSpell = m_bot->FindCurrentSpellBySpellId(spellId);
-                if (!pSpell)
-                    return;
-
-                if (pSpell->IsChannelActive() || pSpell->IsAutoRepeat())
-                    m_ignoreAIUpdatesUntilTime = time(0) + (GetSpellDuration(pSpell->m_spellInfo) / 1000) + 1;
-                else if (pSpell->IsAutoRepeat())
-                    m_ignoreAIUpdatesUntilTime = time(0) + 2;
-                else
-                {
-                    m_ignoreAIUpdatesUntilTime = time(0) + 2;
-                    m_CurrentlyCastingSpellId = 0;
-                }
+				int ignoreTime;
+				if (!ignoreTime) {
+					m_CurrentlyCastingSpellId = 0;
+					ignoreTime = 1;
+				}
+				m_ignoreAIUpdatesUntilTime = time(0) + ignoreTime;
             }
             return;
         }
@@ -809,6 +802,20 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
         }
         */
     }
+}
+
+int PlayerbotAI::UpdateIgnoreTime(uint32 spellId)
+{
+    Spell* const pSpell = m_bot->FindCurrentSpellBySpellId(spellId);
+    if (!pSpell)
+        return 0;
+
+    if (pSpell->IsChannelActive() || pSpell->IsAutoRepeat())
+        return (GetSpellDuration(pSpell->m_spellInfo) / 1000) + 1;
+    else if (pSpell->IsAutoRepeat())
+        return 6;
+    else
+        return 0;
 }
 
 uint8 PlayerbotAI::GetHealthPercent(const Unit& target) const
@@ -2073,6 +2080,8 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
     m_ignoreAIUpdatesUntilTime = time(0) + castTime;
 	if (castTime <= 1) 
 		m_globalCooldown = time(0) + 2;
+	
+	m_ignoreAIUpdatesUntilTime += UpdateIgnoreTime(spellId);
 
     // if this caused the caster to move (blink) update the position
     // I think this is normally done on the client

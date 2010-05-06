@@ -193,6 +193,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
         {
             return target ? CastSpell(spellId, *target) : CastSpell(spellId);
         }
+		int UpdateIgnoreTime(uint32 spellId);
 
         void UseItem(Item& item);
         void EquipItem(Item& item);
