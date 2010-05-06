@@ -2,6 +2,7 @@
 
 #include "GenericActions.h"
 #include "DruidShapeshiftActions.h"
+#include "DruidBearActions.h"
 
 namespace ai
 {
@@ -11,15 +12,7 @@ namespace ai
 		CastFaerieFireAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "faerie fire") {} 
 	};
 
-    BEGIN_MELEE_SPELL_ACTION(CastMaulAction, "maul")
-    END_SPELL_ACTION()
-
-    BEGIN_MELEE_SPELL_ACTION(CastBashAction, "bash")
-    END_SPELL_ACTION()
-
-    BEGIN_MELEE_SPELL_ACTION(CastSwipeAction, "swipe")
-    END_SPELL_ACTION()
-
+  
     BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
         virtual bool isPossible();
         virtual bool isUseful();
@@ -31,11 +24,7 @@ namespace ai
     virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
-    class CastFeralChargeBearAction : public CastReachTargetSpellAction {
-    public:
-        CastFeralChargeBearAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - bear", 1.5f) {}
-    };
-
+   
     class CastFeralChargeCatAction : public CastReachTargetSpellAction {
     public:
         CastFeralChargeCatAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - cat", 1.5f) {}
@@ -58,12 +47,7 @@ namespace ai
         virtual NextAction** getPrerequisites();
     };
 
-    BEGIN_RANGED_SPELL_ACTION(CastGrowlAction, "growl")
-    END_SPELL_ACTION()
-
-    BEGIN_MELEE_SPELL_ACTION(CastDemoralizingRoarAction, "demoralizing roar")
-    END_SPELL_ACTION()
-
+ 
     BEGIN_SPELL_ACTION(CastMarkOfTheWildAction, "mark of the wild")
     END_SPELL_ACTION()
 
@@ -115,9 +99,7 @@ namespace ai
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()
 
-    BEGIN_MELEE_SPELL_ACTION(CastMangleBearAction, "mangle (bear)") // main nuke
-    END_SPELL_ACTION()
-
+  
     BEGIN_MELEE_SPELL_ACTION(CastFerociousBiteAction, "ferocious bite")
         virtual NextAction** getPrerequisites();
     END_SPELL_ACTION()

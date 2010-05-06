@@ -2018,6 +2018,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\DruidBearActions.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\DruidMultipliers.cpp"
 					>
 				</File>
