@@ -1778,12 +1778,12 @@ void PlayerbotAI::MovementReset() {
             }
         }
 
-        if( m_bot->isAlive() )
+        /*if( m_bot->isAlive() )
         {
 			float angle = rand_float(0, M_PI);
 		    float dist = rand_float( m_mgr->m_confFollowDistance[0], m_mgr->m_confFollowDistance[1] );
 			m_bot->GetMotionMaster()->MoveFollow( m_followTarget, dist, angle );
-        }
+        }*/
 	}
 }
 

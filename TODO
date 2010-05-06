@@ -6,7 +6,7 @@
 [ ] attack threat, not follow 
 [ ] travel strategy (ignore if mounted/umount if attacked)
 [ ] attack priest's target
-[ ] conjure and use items
+[v] conjure and use items
 [ ] concentration aura before any healing
 
 [v] use party size when calculating follow angle
