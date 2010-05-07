@@ -89,13 +89,14 @@ protected:
 		tickWithAttackerCount(2);
 		tickWithAttackerCount(2);
 		tickWithAttackerCount(2);
+		tickWithAttackerCount(2);
 
         ai->rage = 21;
 		tickWithAttackerCount(3);
 		
 		tick();
 
-        assertActions(">melee>demoralizing shout>thunder clap>cleave>shield slam>challenging shout>devastate");
+        assertActions(">melee>shockwave>demoralizing shout>thunder clap>cleave>shield slam>challenging shout>devastate");
     }
 
     void warriorMustHoldAggro()
