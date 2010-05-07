@@ -38,6 +38,10 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 60, 40), 
         NextAction::array(0, new NextAction("shield wall", 50.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new LowHealthTrigger(ai, 10), 
+		NextAction::array(0, new NextAction("last stand", 91.0f), NULL)));
 }
 
 void TankWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -131,5 +135,12 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("last stand", name)) 
+	{
+		return new ActionNode (new CastLastStandAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else return GenericWarriorStrategy::createAction(name);
 }
