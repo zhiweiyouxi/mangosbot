@@ -71,11 +71,12 @@ protected:
 		tickWithAttackerCount(3);
 		tickWithAttackerCount(3);
 		tickWithAttackerCount(3);
+		tickWithAttackerCount(3);
 
 		tickWithNoAggro();
 		tickWithNoAggro();
 
-        assertActions(">holy wrath>consecration>avenger's shield>hand of reckoning>judgement of justice");
+        assertActions(">hammer of the righteous>holy wrath>consecration>avenger's shield>hand of reckoning>judgement of justice");
     }
 
     void combatVsMelee()
