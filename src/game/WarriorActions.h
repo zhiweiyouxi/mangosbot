@@ -72,7 +72,7 @@ namespace ai
         }
     };
 
-    // battle
+    // defensive
     class CastShieldBlockAction : public CastDefensiveMeleeSpellAction {
     public:
         CastShieldBlockAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "shield block") {}
@@ -170,9 +170,18 @@ namespace ai
 	BEGIN_SPELL_ACTION(CastLastStandAction, "last stand")
 	END_SPELL_ACTION()   
 
-	BEGIN_SPELL_ACTION(CastShockwaveAction, "shockwave")
-	END_SPELL_ACTION()   
-	
+	// defensive
+	class CastShockwaveAction : public CastDefensiveMeleeSpellAction {
+	public:
+		CastShockwaveAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "shockwave") {}
+	};
+
+	// defensive
+	class CastConcussionBlowAction : public CastDefensiveMeleeSpellAction {
+	public:
+		CastConcussionBlowAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "concussion blow") {}
+	};
+
 	BEGIN_MELEE_SPELL_ACTION(CastVictoryRushAction, "victory rush")
 	END_SPELL_ACTION()   
 }

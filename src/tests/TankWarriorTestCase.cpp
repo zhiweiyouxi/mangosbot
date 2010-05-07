@@ -17,6 +17,7 @@ class TankWarriorTestCase : public EngineTestBase
     CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( warriorMustDemoralizeAttackers );
     CPPUNIT_TEST( healing );
+	CPPUNIT_TEST( snare );
     CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST_SUITE_END();
 
@@ -168,9 +169,17 @@ protected:
         tick(); // defensive stance
         tick(); // revenge
 
-
         assertActions(">melee>defensive stance>revenge");
     }
+
+	void snare()
+	{
+		tick();
+		tick();
+		tickWithTargetIsMoving();
+		
+		assertActions(">defensive stance>melee>concussion blow");
+	}
     
 };
 

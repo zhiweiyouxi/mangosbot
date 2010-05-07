@@ -46,6 +46,10 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new AttackerCountTrigger(ai, 2), 
 		NextAction::array(0, new NextAction("shockwave", 24.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new SnareTargetTrigger(ai, "concussion blow"), 
+		NextAction::array(0, new NextAction("concussion blow", 50.0f), NULL)));
 }
 
 void TankWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -149,6 +153,13 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
 	else if (!strcmp("shockwave", name)) 
 	{
 		return new ActionNode (new CastShockwaveAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("concussion blow", name)) 
+	{
+		return new ActionNode (new CastConcussionBlowAction(ai),  
 			/*P*/ NULL,
 			/*A*/ NULL, 
 			/*C*/ NULL);
