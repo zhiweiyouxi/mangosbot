@@ -45,13 +45,14 @@ protected:
 
 		tickInMeleeRange();
 		tickInMeleeRange();
+		tickInMeleeRange();
 
 		spellAvailable("starfire");
 		tickInSpellRange();
 
 		tickWithAttackerCount(3);
         
-        assertActions(">moonkin form>faerie fire>insect swarm>moonfire>starfire>wrath>entangling roots>flee>starfire>nature's grasp");
+        assertActions(">moonkin form>faerie fire>insect swarm>moonfire>starfire>wrath>hibernate>entangling roots>flee>starfire>nature's grasp");
     }
 
     void healHimself()

@@ -30,7 +30,7 @@ void CasterDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
 	triggers.push_back(new TriggerNode(
 		new EnemyTooCloseTrigger(ai),
-		NextAction::array(0, new NextAction("entangling roots", 50.0f), NULL)));
+		NextAction::array(0, new NextAction("hibernate", 50.0f), NULL)));
 
 	triggers.push_back(new TriggerNode(
 		new AttackerCountTrigger(ai, 3),
@@ -59,6 +59,13 @@ ActionNode* CasterDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("hibernate", name)) 
+	{
+		return new ActionNode (new CastHibernateAction(ai),  
+			/*P*/ NextAction::array(0, new NextAction("moonkin form"), NULL),
+			/*A*/ NextAction::array(0, new NextAction("entangling roots"), NULL), 
+			/*C*/ NextAction::array(0, new NextAction("flee", 49.0f), NULL));
+	}
 	else if (!strcmp("entangling roots", name)) 
 	{
 		return new ActionNode (new CastEntanglingRootsAction(ai),  
