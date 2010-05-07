@@ -34,6 +34,14 @@ void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new SnareTargetTrigger(ai, "hamstring"), 
         NextAction::array(0, new NextAction("hamstring", 50.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new SnareTargetTrigger(ai, "hamstring"), 
+		NextAction::array(0, new NextAction("hamstring", 50.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new HasAuraTrigger(ai, "victory rush"), 
+		NextAction::array(0, new NextAction("victory rush", 60.0f), NULL)));
 }
 
 void DpsWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -99,6 +107,13 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("victory rush", name)) 
+	{
+		return new ActionNode (new CastVictoryRushAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("execute", name)) 
     {
         return new ActionNode (new CastExecuteAction(ai),  

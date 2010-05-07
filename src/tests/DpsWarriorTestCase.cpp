@@ -17,6 +17,7 @@ class DpsWarriorTestCase : public EngineTestBase
     CPPUNIT_TEST( boost );
     CPPUNIT_TEST( execute );
     CPPUNIT_TEST( hamstring );
+	CPPUNIT_TEST( victoryRush );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -126,6 +127,18 @@ protected:
 
         assertActions(">battle stance>hamstring>charge>melee");
     }
+
+
+	void victoryRush()
+	{
+		tickInMeleeRange(); 
+		addAura("victory rush");
+		
+		tick();
+
+		assertActions(">battle stance>victory rush");
+	}
+	
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( DpsWarriorTestCase );

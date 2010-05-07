@@ -257,4 +257,18 @@ namespace ai
 		const char* item;
 		int count;
 	};
+
+	class HasAuraTrigger : public Trigger {
+	public:
+		HasAuraTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai, spell) {
+			this->spell = spell;
+		}
+
+		virtual bool IsActive() {
+			return ai->HasAura(spell);
+		}
+
+	protected:
+		const char* spell;
+	};
 }
