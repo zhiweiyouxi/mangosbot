@@ -101,6 +101,12 @@ namespace ai
         CastSlamAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "slam") {}
     };
 
+	// all
+	class CastShieldSlamAction : public CastMeleeSpellAction {
+	public:
+		CastShieldSlamAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "shield slam") {}
+	};
+
     // after dodge
     BEGIN_MELEE_SPELL_ACTION(CastRevengeAction, "revenge")
         virtual NextAction** getPrerequisites();

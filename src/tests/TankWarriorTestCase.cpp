@@ -87,12 +87,12 @@ protected:
 		tickWithAttackerCount(2);
 		tickWithAttackerCount(2);
 
-        ai->rage = 20;
+        ai->rage = 21;
 		tickWithAttackerCount(3);
 		
 		tick();
 
-        assertActions(">melee>demoralizing shout>thunder clap>cleave>heroic strike>challenging shout>devastate");
+        assertActions(">melee>demoralizing shout>thunder clap>cleave>shield slam>challenging shout>devastate");
     }
 
     void warriorMustHoldAggro()
@@ -133,6 +133,9 @@ protected:
         tick(); // revenge
         tick(); // sunder armor
 
+		ai->rage = 31;
+		tick();
+
         tick(); // disarm
         spellAvailable("disarm");
         addTargetAura("disarm");
@@ -149,11 +152,13 @@ protected:
         spellAvailable("sunder armor");
         addTargetAura("sunder armor");
 
+		tick(); 
+
         spellAvailable("heroic strike");
-        tick(); // heroic strike
+        tick(); 
         ai->rage = 20;
 
-        assertActions(">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>disarm>heroic strike>melee>devastate>heroic strike");
+        assertActions(">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>shield slam>disarm>heroic strike>melee>devastate>slam>heroic strike");
     }
 
     void revengeIfDodge()

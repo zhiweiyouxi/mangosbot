@@ -17,7 +17,11 @@ void TankWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new RageAvailable(ai, 40), 
-        NextAction::array(0, new NextAction("heroic strike", 20.0f), NULL)));
+        NextAction::array(0, new NextAction("heroic strike", 1.3f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new RageAvailable(ai, 30), 
+		NextAction::array(0, new NextAction("shield slam", 21.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new RageAvailable(ai, 20), 
@@ -92,6 +96,13 @@ ActionNode* TankWarriorStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("shield slam", name)) 
+	{
+		return new ActionNode (new CastShieldSlamAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("disarm", name)) 
     {
         return new ActionNode (new CastDisarmAction(ai),  
