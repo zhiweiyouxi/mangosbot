@@ -85,7 +85,7 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, NULL), 
             /*C*/ NULL);
     }
-    else if (!strcmp("death wish", name)) 
+    else if (!strcmp("death wish", name) || !strcmp("boost", name)) 
     {
         return new ActionNode (new CastDeathWishAction(ai),  
             /*P*/ NULL,

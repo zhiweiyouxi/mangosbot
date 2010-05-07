@@ -45,7 +45,7 @@ ActionNode* GenericHunterStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("rapid fire", name)) 
+    else if (!strcmp("rapid fire", name) || !strcmp("boost", name)) 
     {
         return new ActionNode (new CastRapidFireAction(ai),  
             /*P*/ NULL,

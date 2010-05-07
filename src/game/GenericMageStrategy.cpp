@@ -73,7 +73,7 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("icy veins", name)) 
+    else if (!strcmp("icy veins", name) || !strcmp("boost", name)) 
     {
         return new ActionNode (new CastIcyVeinsAction(ai),  
             /*P*/ NULL,
