@@ -46,6 +46,10 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new InterruptSpellTrigger(ai, "shield bash"), 
         NextAction::array(0, new NextAction("shield bash", 40.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new LowHealthTrigger(ai, 5), 
+		NextAction::array(0, new NextAction("intimidating shout", 90.0f), NULL)));
 }
 
 
@@ -114,6 +118,13 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("intimidating shout", name)) 
+	{
+		return new ActionNode (new CastIntimidatingShoutAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("demoralizing shout", name)) 
     {
         return new ActionNode (new CastDemoralizingShoutAction(ai),  
