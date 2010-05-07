@@ -103,14 +103,10 @@ protected:
 		tickWithNoAggro();
         
         tick(); // rend
-
-		tickWithNoAggro();
-		tickWithNoAggro();
         
-        tickWithSpellAvailable("defensive stance");
         tick();
 
-        assertActions(">defensive stance>melee>taunt>devastate>battle stance>mocking blow>defensive stance>revenge");
+        assertActions(">defensive stance>melee>taunt>devastate>revenge");
     }
 
     void combatVsMelee()
