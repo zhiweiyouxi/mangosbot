@@ -72,6 +72,10 @@ namespace ai
 
 	BEGIN_SPELL_ACTION(CastEntanglingRootsAction, "entangling roots")
 	END_SPELL_ACTION()
+
+	BEGIN_SPELL_ACTION(CastNaturesGraspAction, "nature's grasp")
+	END_SPELL_ACTION()
+	
 	
 
     //--------------------------------------------------------------------------------------

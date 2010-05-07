@@ -32,6 +32,9 @@ void CasterDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 		new EnemyTooCloseTrigger(ai),
 		NextAction::array(0, new NextAction("entangling roots", 50.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new AttackerCountTrigger(ai, 3),
+		NextAction::array(0, new NextAction("nature's grasp", 20.0f), NULL)));
 }
 
 void CasterDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -87,6 +90,13 @@ ActionNode* CasterDruidStrategy::createAction(const char* name)
 	else if (!strcmp("starfire", name)) 
 	{
 		return new ActionNode (new CastStarfireAction(ai),  
+			/*P*/ NextAction::array(0, new NextAction("moonkin form"), NULL),
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("nature's grasp", name)) 
+	{
+		return new ActionNode (new CastNaturesGraspAction(ai),  
 			/*P*/ NextAction::array(0, new NextAction("moonkin form"), NULL),
 			/*A*/ NULL, 
 			/*C*/ NULL);
