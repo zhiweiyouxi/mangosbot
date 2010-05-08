@@ -32,6 +32,7 @@ protected:
         addAura("aspect of the hawk");
 
 		tick();
+        tick();
 		tick();
 		addTargetAura("serpent sting");
 		
@@ -44,9 +45,10 @@ protected:
 		// resetSpells
 		tickWithSpellUnavailable("aimed shot");
 
+        tick();
 		tickWithSpellAvailable("auto shot");
                 
-        assertActions(">aspect of the hawk>hunter's mark>serpent sting>aimed shot>auto shot>flee>concussive shot>arcane shot>auto shot");
+        assertActions(">aspect of the hawk>hunter's mark>black arrow>serpent sting>explosive shot>auto shot>flee>concussive shot>wyvern sting>arcane shot>auto shot");
 
 	}
 

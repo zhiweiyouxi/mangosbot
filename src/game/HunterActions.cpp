@@ -19,6 +19,11 @@ bool CastArcaneShotAction::isUseful()
     return ai->GetTargetHealthPercent() >= 5 && ai->GetManaPercent() >= 30;
 }
 
+bool CastExplosiveShotAction::isUseful()
+{
+    return ai->GetTargetHealthPercent() >= 25 && ai->GetManaPercent() >= 30;
+}
+
 bool CastAimedShotAction::isUseful()
 {
     return ai->GetTargetHealthPercent() >= 5 && ai->GetManaPercent() >= 30;

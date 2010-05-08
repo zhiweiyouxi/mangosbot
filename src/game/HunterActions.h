@@ -14,6 +14,11 @@ namespace ai
         virtual bool isUseful();
     END_SPELL_ACTION()
 
+    BEGIN_RANGED_SPELL_ACTION(CastExplosiveShotAction, "explosive shot")
+        virtual bool isUseful();
+    END_SPELL_ACTION()
+        
+
     BEGIN_RANGED_SPELL_ACTION(CastAimedShotAction, "aimed shot")
         virtual bool isUseful();
     END_SPELL_ACTION()
@@ -29,6 +34,9 @@ namespace ai
 
     BEGIN_RANGED_SPELL_ACTION(CastSerpentStingAction, "serpent sting")
     virtual bool isUseful();
+    END_SPELL_ACTION()
+
+    BEGIN_RANGED_SPELL_ACTION(CastWyvernStingAction, "wyvern sting")
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastViperStingAction, "viper sting")
@@ -69,4 +77,8 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastReadynessAction, "readyness")
     END_SPELL_ACTION()
+
+    BEGIN_RANGED_SPELL_ACTION(CastBlackArrow, "black arrow")
+    END_SPELL_ACTION()
+   
 }
