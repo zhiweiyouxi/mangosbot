@@ -12,6 +12,7 @@ float PassiveMultiplier::GetValue(Action* action)
         !strcmp("attack bigger threat", name) ||
         !strcmp("reach melee", name) ||
         !strcmp("melee", name) ||
+        !strcmp("aspect of the pack", name) ||
         !strcmp("reach spell", name))
         return 0;
 
