@@ -159,7 +159,10 @@ protected:
         tick(); 
         ai->rage = 20;
 
-        assertActions(">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>shield slam>disarm>heroic strike>melee>devastate>slam>heroic strike");
+        addAura("sword and board");
+        tickWithSpellAvailable("shield slam");
+
+        assertActions(">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>shield slam>disarm>heroic strike>melee>devastate>slam>heroic strike>shield slam");
     }
 
     void revengeIfDodge()
