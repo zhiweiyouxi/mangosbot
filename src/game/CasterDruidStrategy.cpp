@@ -29,10 +29,6 @@ void CasterDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 		NextAction::array(0, new NextAction("faerie fire", 16.0f), NULL)));
 
 	triggers.push_back(new TriggerNode(
-		new EnemyTooCloseTrigger(ai),
-		NextAction::array(0, new NextAction("hibernate", 50.0f), NULL)));
-
-	triggers.push_back(new TriggerNode(
 		new AttackerCountTrigger(ai, 3),
 		NextAction::array(0, new NextAction("nature's grasp", 20.0f), NULL)));
 }
