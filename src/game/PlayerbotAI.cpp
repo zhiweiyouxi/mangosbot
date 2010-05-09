@@ -28,6 +28,8 @@
 
 using namespace std;
 
+#define GLOBAL_COOLDOWN 2
+
 // returns a float in range of..
 float rand_float(float low, float high)
 {
@@ -472,7 +474,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
             p >> spellId;
             if (m_CurrentlyCastingSpellId == spellId)
             {
-                m_ignoreAIUpdatesUntilTime = time(0) + 1;
+                m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
                 m_CurrentlyCastingSpellId = 0;
             }
             return;
@@ -763,7 +765,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 				int ignoreTime = UpdateIgnoreTime(spellId);
 				if (!ignoreTime) {
 					m_CurrentlyCastingSpellId = 0;
-					ignoreTime = 1;
+					ignoreTime = GLOBAL_COOLDOWN;
 				}
 				m_ignoreAIUpdatesUntilTime = time(0) + ignoreTime;
             }
@@ -1845,7 +1847,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     if (currentTime < m_ignoreAIUpdatesUntilTime)
         return;
 
-    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+    m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
 
 	// send heartbeat
 	MovementUpdate();
@@ -2367,7 +2369,7 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 	
     if (!m_bot->IsWithinDistInMap( &obj, 50, true ))
     {
-        m_ignoreAIUpdatesUntilTime = time(0) + 1;
+        m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
         PlayerbotChatHandler ch(GetMaster());
         if (! ch.teleport(*m_bot))
         {
@@ -2381,7 +2383,7 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 
 void PlayerbotAI::HandleTeleportAck()
 {
-    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+    m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
     m_bot->GetMotionMaster()->Clear(true);
     if (m_bot->IsBeingTeleportedNear())
     {
@@ -2533,7 +2535,14 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
             m_bot->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
         }
     }
-
+    else if (text == "leave")
+    {
+        Group* group = m_bot->GetGroup();
+        if (group) 
+        {
+            group->RemoveMember(m_bot->GetGUID(), 0);
+        }
+    }
     // handle cast command
     else if (text.size() > 2 && text.substr(0, 2) == "c " || text.size() > 5 && text.substr(0, 5) == "cast ")
     {
