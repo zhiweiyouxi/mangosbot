@@ -119,7 +119,7 @@ namespace ai
     public:
         CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
         virtual bool isUseful() {
-            return CastSpellAction::isUseful() && ai->GetHealthPercent() < 70;
+            return CastSpellAction::isUseful() && ai->GetHealthPercent() < 85;
         }
     };
     class HealPartyMemberAction : public CastSpellAction

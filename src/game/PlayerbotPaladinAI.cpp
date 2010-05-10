@@ -83,7 +83,6 @@ PlayerbotPaladinAI::PlayerbotPaladinAI(Player* const master, Player* const bot, 
     nonCombatEngine->addStrategy("nc");
     nonCombatEngine->addStrategy("tank assist");
     nonCombatEngine->addStrategy("stay");
-    nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");
     nonCombatEngine->addStrategy("food");
     nonCombatEngine->Init();

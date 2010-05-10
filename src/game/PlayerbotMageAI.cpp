@@ -74,7 +74,6 @@ PlayerbotMageAI::PlayerbotMageAI(Player* const master, Player* const bot, Player
     nonCombatEngine->addStrategy("nc");
     nonCombatEngine->addStrategy("dps assist");
     nonCombatEngine->addStrategy("stay");
-    nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");
     nonCombatEngine->addStrategy("food");
     nonCombatEngine->Init();

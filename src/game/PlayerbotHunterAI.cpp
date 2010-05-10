@@ -88,7 +88,6 @@ PlayerbotHunterAI::PlayerbotHunterAI(Player* const master, Player* const bot, Pl
     nonCombatEngine->addStrategy("nc");
     nonCombatEngine->addStrategy("dps assist");
     nonCombatEngine->addStrategy("stay");
-    nonCombatEngine->addStrategy("loot");
     nonCombatEngine->addStrategy("emote");
     nonCombatEngine->addStrategy("food");
     nonCombatEngine->Init();

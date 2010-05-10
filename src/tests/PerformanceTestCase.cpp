@@ -10,6 +10,7 @@
 #include "../game/MageActionFactory.h"
 #include "../game/HunterActionFactory.h"
 #include "../game/PriestActionFactory.h"
+#include "../game/ShamanActionFactory.h"
 
 using namespace ai;
 
@@ -25,6 +26,7 @@ class PerformanceTestCase : public EngineTestBase
         CPPUNIT_TEST( priest );
         CPPUNIT_TEST( mage );
         CPPUNIT_TEST( hunter );
+        CPPUNIT_TEST( shaman );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -101,6 +103,12 @@ protected:
         run();
     }
 
+    void shaman()
+    {
+        setupEngine(new ShamanActionFactory(ai), "heal", NULL);
+        engine->maxIterations = 100;
+        run();
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( PerformanceTestCase );

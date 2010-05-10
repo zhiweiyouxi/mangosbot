@@ -27,7 +27,7 @@ bool HealPartyMemberAction::ExecuteResult()
 
 bool HealPartyMemberAction::isUseful()
 {
-    return ai->GetPartyMinHealthPercent() < 75;
+    return ai->GetPartyMinHealthPercent() < 85;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

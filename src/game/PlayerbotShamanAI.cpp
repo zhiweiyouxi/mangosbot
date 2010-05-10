@@ -1,5 +1,6 @@
 
 #include "PlayerbotShamanAI.h"
+#include "ShamanActionFactory.h"
 
 class PlayerbotAI;
 PlayerbotShamanAI::PlayerbotShamanAI(Player* const master, Player* const bot, PlayerbotAI* const ai): PlayerbotClassAI(master, bot, ai)
@@ -66,6 +67,19 @@ PlayerbotShamanAI::PlayerbotShamanAI(Player* const master, Player* const bot, Pl
 	BLOOD_FURY               = ai->getSpellId("blood fury"); // orc
 	WAR_STOMP                = ai->getSpellId("war stomp"); // tauren
 	BERSERKING               = ai->getSpellId("berserking"); // troll
+
+    engine = new ai::Engine(facade, new ai::ShamanActionFactory(facade));
+    engine->addStrategy("heal");
+    engine->addStrategy("dps assist");
+    engine->addStrategy("boost");
+    engine->Init();
+
+    nonCombatEngine = new ai::Engine(facade, new ai::ShamanActionFactory(facade));
+    nonCombatEngine->addStrategy("nc");
+    nonCombatEngine->addStrategy("dps assist");
+    nonCombatEngine->addStrategy("stay");
+    nonCombatEngine->addStrategy("food");
+    nonCombatEngine->Init();
 }
 
 PlayerbotShamanAI::~PlayerbotShamanAI() {}
@@ -100,6 +114,8 @@ void PlayerbotShamanAI::DoNextCombatManeuver(Unit *pTarget)
     }
 
     // ------- Non Duel combat ----------
+    engine->DoNextAction(pTarget);
+    return;
 
     ai->SetMovementOrder( PlayerbotAI::MOVEMENT_FOLLOW, GetMaster() ); // dont want to melee mob <----changed
 
@@ -451,6 +467,9 @@ void PlayerbotShamanAI::DoNonCombatActions()
     Player * m_bot = GetPlayerBot();
     if (!m_bot)
         return;
+
+    nonCombatEngine->DoNextAction(NULL);
+    return;
 
     SpellSequence = SPELL_ENHANCEMENT;
 
