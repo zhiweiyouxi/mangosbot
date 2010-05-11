@@ -10,10 +10,16 @@ namespace ai
 {
     class FleeAction : public Action {
     public:
-        FleeAction(PlayerbotAIFacade* const ai) : Action(ai, "flee") {}
+        FleeAction(PlayerbotAIFacade* const ai, float distance = SPELL_DISTANCE) : Action(ai, "flee") {
+			this->distance = distance;
+		}
+
         virtual void Execute() {
-            ai->Flee(); 
+            ai->Flee(distance); 
         }
+
+	private:
+		float distance;
     };
 
     class FollowAction : public Action {

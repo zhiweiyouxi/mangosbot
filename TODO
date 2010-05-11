@@ -1,5 +1,5 @@
 [ ] ressurection
-[ ] ignore everything and flee (follow master)
+[?] ignore everything and flee (follow master)
 [ ] travel strategy (ignore if mounted/umount if attacked)
 [ ] use threat level
 [ ] do not interrupt channels
@@ -10,7 +10,7 @@
 [ ] move lifeblood, gift of the naaru to common place
 
 [ ] global spell cooldown
-[ ] distance depending on spell range
+[?] distance depending on spell range
 [ ] don't leave party if master logs out
 [ ] teleport only when logged in, stay otherwise
 

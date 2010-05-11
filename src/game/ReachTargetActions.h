@@ -41,6 +41,6 @@ namespace ai
 
     class ReachSpellAction : public ReachTargetAction {
     public:
-        ReachSpellAction(PlayerbotAIFacade* const ai) : ReachTargetAction(ai, "reach spell", SPELL_DISTANCE) {}
+        ReachSpellAction(PlayerbotAIFacade* const ai, float distance = SPELL_DISTANCE) : ReachTargetAction(ai, "reach spell", distance) {}
     };
 }

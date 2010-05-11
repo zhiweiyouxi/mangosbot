@@ -38,6 +38,20 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("shoot"), NULL), 
             /*C*/ NULL);
     }
+	else if (!strcmp("reach spell", name)) 
+	{
+		return new ActionNode (new ReachSpellAction(ai, 40.0f),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("flee", name)) 
+	{
+		return new ActionNode (new FleeAction(ai, 40.0f),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("frost nova", name)) 
     {
         return new ActionNode (new CastFrostNovaAction(ai),  

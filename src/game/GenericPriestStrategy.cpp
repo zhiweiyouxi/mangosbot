@@ -67,6 +67,20 @@ ActionNode* GenericPriestStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("reach spell", name)) 
+	{
+		return new ActionNode (new ReachSpellAction(ai, 30.0f),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("flee", name)) 
+	{
+		return new ActionNode (new FleeAction(ai, 30.0f),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("shadowform", name)) 
     {
         return new ActionNode (new CastShadowformAction(ai),  

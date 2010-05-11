@@ -47,6 +47,20 @@ ActionNode* DpsWarlockStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("reach spell", name)) 
+	{
+		return new ActionNode (new ReachSpellAction(ai, 30.0f),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("flee", name)) 
+	{
+		return new ActionNode (new FleeAction(ai, 30.0f),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("corruption", name)) 
     {
         return new ActionNode (new CastCorruptionAction(ai),  
