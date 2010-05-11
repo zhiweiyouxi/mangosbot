@@ -243,6 +243,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		void UseLongTimeItem(Item* pItem, uint8 time = 30);
         void SetInFront( const Unit* obj );
         void Attack(Unit* thingToAttack);
+		void Revive();
 
         void ItemLocalization(std::string& itemName, const uint32 itemID) const;
         void QuestLocalization(std::string& questTitle, const uint32 questID) const;

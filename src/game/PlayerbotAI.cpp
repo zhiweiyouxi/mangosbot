@@ -772,6 +772,10 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
             return;
         }
 
+		case SMSG_RESURRECT_REQUEST:
+			Revive();
+			break;
+
         /* uncomment this and your bots will tell you all their outgoing packet opcode names 
         case SMSG_MONSTER_MOVE:
         case SMSG_UPDATE_WORLD_STATE:
@@ -1838,6 +1842,18 @@ void PlayerbotAI::SetInFront( const Unit* obj )
 // hasUnitState(FLAG) FLAG like: UNIT_STAT_ROOT, UNIT_STAT_CONFUSED, UNIT_STAT_STUNNED
 // hasAuraType
 
+void PlayerbotAI::Revive()
+{
+	PlayerbotChatHandler ch(GetMaster());
+	if (! ch.revive(*m_bot))
+	{
+		ch.sysmessage(".. could not be revived ..");
+		return;
+	}
+	// set back to normal
+	SetState( BOTSTATE_NORMAL );
+}
+
 void PlayerbotAI::UpdateAI(const uint32 p_time)
 {
     if (m_bot->IsBeingTeleported() || m_bot->GetTrader())
@@ -1856,18 +1872,24 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     {
         if( m_botState != BOTSTATE_DEAD && m_botState != BOTSTATE_DEADRELEASED )
         {
-            //sLog.outDebug( "[PlayerbotAI]: %s died and is not in correct state...", m_bot->GetName() );
-            // clear loot list on death
             m_lootCreature.clear();
             m_lootCurrent = 0;
-            // clear combat orders
             m_bot->SetSelection(0);
             m_bot->GetMotionMaster()->Clear(true);
-            // set state to dead
             SetState( BOTSTATE_DEAD );
-            // wait 30sec
-            m_ignoreAIUpdatesUntilTime = time(0) + 30;
         }
+		else if (m_botState == BOTSTATE_DEADRELEASED)
+		{
+			Corpse* corpse = m_bot->GetCorpse();
+			time_t reclaimTime = corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
+			if (reclaimTime > time(0))
+			{
+				TellMaster("Will resurrect in %d secs", reclaimTime - time(0));
+				m_ignoreAIUpdatesUntilTime = reclaimTime;
+			}
+			else
+				Revive();
+		}
     }
     else
     {
@@ -2494,37 +2516,6 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
 		m_bot->TeleportTo( loc.mapid, loc.coord_x, loc.coord_y, loc.coord_z, m_bot->GetOrientation() );
 		// set state to released
 		SetState( BOTSTATE_DEADRELEASED );
-	}
-	else if(text == "revive" && !m_bot->isAlive())
-	{
-		// get bot's corpse
-		Corpse *corpse = m_bot->GetCorpse();
-		if( !corpse )
-		{
-			//sLog.outDebug( "[PlayerbotAI]: %s has no corpse!", m_bot->GetName() );
-			return;
-		}
-		// teleport ghost from graveyard to corpse
-		//sLog.outDebug( "[PlayerbotAI]: Teleport %s to corpse...", m_bot->GetName() );
-		FollowCheckTeleport( *corpse );
-		// check if we are allowed to resurrect now
-		if( corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP ) > time(0) )
-		{
-			m_ignoreAIUpdatesUntilTime = corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
-			//sLog.outDebug( "[PlayerbotAI]: %s has to wait for %d seconds to revive...", m_bot->GetName(), m_ignoreAIUpdatesUntilTime-time(0) );
-			return;
-		}
-		// resurrect now
-		//sLog.outDebug( "[PlayerbotAI]: Reviving %s to corpse...", m_bot->GetName() );
-		m_ignoreAIUpdatesUntilTime = time(0) + 6;
-		PlayerbotChatHandler ch(GetMaster());
-		if (! ch.revive(*m_bot))
-		{
-			ch.sysmessage(".. could not be revived ..");
-			return;
-		}
-		// set back to normal
-		SetState( BOTSTATE_NORMAL );
 	}
     // handle cast command
     else if (text.size() > 2 && text.substr(0, 2) == "c " || text.size() > 5 && text.substr(0, 5) == "cast ")
