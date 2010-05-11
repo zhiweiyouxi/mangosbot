@@ -4,10 +4,10 @@
 
 namespace ai
 {
-    class GenericMageStrategy : public Strategy
+    class GenericMageStrategy : public CombatStrategy
     {
     public:
-        GenericMageStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        GenericMageStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
         virtual const char* getName() { return "mage"; }
     
     public:

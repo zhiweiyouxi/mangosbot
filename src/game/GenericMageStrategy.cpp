@@ -8,7 +8,7 @@ using namespace ai;
 
 void GenericMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    Strategy::InitTriggers(triggers);
+    CombatStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
         new NeedCureTrigger(ai, "remove curse", DISPEL_CURSE),

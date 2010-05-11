@@ -3,6 +3,7 @@
 #include "GenericActions.h"
 #include "NonCombatActions.h"
 #include "GenericNonCombatStrategy.h"
+#include "RacialsStrategy.h"
 
 using namespace ai;
 
@@ -47,7 +48,7 @@ ActionNode* ActionFactory::createAction(const char* name)
     {
         return new ActionNode (new CastGiftOfTheNaaruAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("healing potion"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
 	else if (!strcmp("healthstone", name)) 
@@ -118,6 +119,9 @@ ActionNode* ActionFactory::createAction(const char* name)
 
 Strategy* ActionFactory::createStrategy(const char* name)
 {
+	if (!strcmp("racials", name))
+		return new RacialsStrategy(ai);
+
     if (!strcmp("follow", name))
         return new FollowMasterNonCombatStrategy(ai);
 

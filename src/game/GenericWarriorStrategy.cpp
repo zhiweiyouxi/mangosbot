@@ -7,6 +7,8 @@ using namespace ai;
 
 void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
+	CombatStrategy::InitTriggers(triggers);
+
     triggers.push_back(new TriggerNode(
         new AndTrigger(ai, new RageAvailable(ai, 40), new AttackerCountTrigger(ai, 2)),
         NextAction::array(0, new NextAction("cleave", 21.0f), NULL)));

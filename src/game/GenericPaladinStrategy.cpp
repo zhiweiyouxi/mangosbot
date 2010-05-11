@@ -7,6 +7,8 @@ using namespace ai;
 
 void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
+	CombatStrategy::InitTriggers(triggers);
+
     triggers.push_back(new TriggerNode(
         new EnemyOutOfMeleeTrigger(ai), 
         NextAction::array(0, new NextAction("melee", 50.0f), NULL)));
