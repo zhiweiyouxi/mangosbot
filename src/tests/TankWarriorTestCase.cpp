@@ -45,9 +45,6 @@ protected:
 
     void healing()
     {
-		tickWithLowHealth(24);
-		tickWithLowHealth(24);
-
         tickWithLowHealth(50); // defensive stance
         tickWithLowHealth(50); // shield wall
         tickWithLowHealth(50); // shield block
@@ -55,7 +52,7 @@ protected:
 		tickWithLowHealth(4); 
 		tickWithLowHealth(4); 
 
-        assertActions(">lifeblood>gift of the naaru>defensive stance>shield wall>shield block>last stand>intimidating shout");
+        assertActions(">defensive stance>shield wall>shield block>last stand>intimidating shout");
     }
 
     void buff()

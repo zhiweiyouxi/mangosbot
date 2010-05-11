@@ -8,10 +8,18 @@ using namespace ai;
 void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     CombatStrategy::InitTriggers(triggers);
-    
+
+	triggers.push_back(new TriggerNode(
+		new LowHealthTrigger(ai, 60, 40),
+		NextAction::array(0, new NextAction("rejuvenation", 50.0f), NULL)));
+
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 40, 25),
-        NextAction::array(0, new NextAction("lifeblood", 60.0f), new NextAction("rejuvenation", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("regrowth", 50.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new PartyMemberLowHealthTrigger(ai, 60, 40),
+		NextAction::array(0, new NextAction("rejuvenation on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PartyMemberLowHealthTrigger(ai),

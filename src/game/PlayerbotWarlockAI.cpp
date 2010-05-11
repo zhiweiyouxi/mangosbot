@@ -75,6 +75,7 @@ PlayerbotWarlockAI::PlayerbotWarlockAI(Player* const master, Player* const bot, 
     engine->addStrategy("dps");
     engine->addStrategy("dps assist");
     engine->addStrategy("boost");
+	engine->addStrategy("racials");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::WarlockActionFactory(facade));

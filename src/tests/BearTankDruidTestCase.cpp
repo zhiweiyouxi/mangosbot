@@ -133,40 +133,25 @@ protected:
 
 		tickInMeleeRange();
 
-		lowHealth(39);
-		tickWithSpellUnavailable("gift of the naaru");
-        tick();
-		addAura("lifeblood");
+		tickWithLowHealth(59);
+		tickWithLowHealth(59);
 
         tick();
-        tick();
-        
-        healthRestored();
-        removeAura("lifeblood");
-        
-		tick(); 
 		addAura("bear form");
-
+        tick();
+                
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
         
-        assertActions(">faerie fire>dire bear form>melee>lifeblood>-dire bear form>regrowth>bear form>melee>-bear form>rejuvenation");
+        assertActions(">faerie fire>dire bear form>melee>-dire bear form>rejuvenation>bear form>melee>-bear form>regrowth");
     }
 
     void intensiveHealing()
     {
         addAura("dire bear form");
-        
-		tickWithLowHealth(39);
-        tickWithLowHealth(39);
-        addAura("lifeblood");
-        
-		tickWithLowHealth(39);
-		addAura("gift of the naaru");
-        
 		tickWithLowHealth(1);
 
-        assertActions(">lifeblood>gift of the naaru>-dire bear form>survival instincts");
+        assertActions(">survival instincts");
     }
 
     void healOthers()
@@ -175,8 +160,8 @@ protected:
         tick();
         addAura("dire bear form");
 
-        tickWithPartyLowHealth(39);
-        tickWithPartyLowHealth(39);
+		tickWithPartyLowHealth(59);
+		tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
 
         assertActions(">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party");

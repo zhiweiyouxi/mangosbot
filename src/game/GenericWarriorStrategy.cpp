@@ -38,10 +38,6 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("challenging shout", 23.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new LowHealthTrigger(ai), 
-        NextAction::array(0, new NextAction("lifeblood", 60.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new BloodrageDebuffTrigger(ai), 
         NextAction::array(0, new NextAction("bloodrage", 40.0f), NULL)));
 

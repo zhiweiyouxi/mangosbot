@@ -698,6 +698,10 @@
 				RelativePath="..\..\src\tests\NonCombatEngineTestCase.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\tests\RacialsTestCase.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Warrior"

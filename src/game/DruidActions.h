@@ -14,17 +14,25 @@ namespace ai
 	};
 
   
-    BEGIN_SPELL_ACTION(CastRejuvenationAction, "rejuvenation")
-        virtual bool isPossible();
-        virtual bool isUseful();
-        virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
+	class CastRejuvenationAction : public CastHealingSpellAction {
+	public:
+		CastRejuvenationAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "rejuvenation") {}
 
-    BEGIN_SPELL_ACTION(CastRegrowthAction, "regrowth")
-        virtual bool isUseful();
-    virtual NextAction** getPrerequisites();
-    END_SPELL_ACTION()
+		virtual NextAction** getPrerequisites() {
+			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastHealingSpellAction::getPrerequisites());
+		}
 
+	};
+
+	class CastRegrowthAction : public CastHealingSpellAction {
+	public:
+		CastRegrowthAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "regrowth") {}
+
+		virtual NextAction** getPrerequisites() {
+			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastHealingSpellAction::getPrerequisites());
+		}
+
+	};
    
   
     class CastRejuvenationOnPartyAction : public HealPartyMemberAction
@@ -33,7 +41,10 @@ namespace ai
         CastRejuvenationOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "rejuvenation") {}
 
         virtual const char* getName() { return "rejuvenation on party"; }
-        virtual NextAction** getPrerequisites();
+		
+		virtual NextAction** getPrerequisites() {
+			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), HealPartyMemberAction::getPrerequisites());
+		}
     };
 
     class CastRegrowthOnPartyAction : public HealPartyMemberAction
@@ -41,7 +52,10 @@ namespace ai
     public:
         CastRegrowthOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "regrowth") {}
         virtual const char* getName() { return "regrowth on party"; }
-        virtual NextAction** getPrerequisites();
+		
+		virtual NextAction** getPrerequisites() {
+			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), HealPartyMemberAction::getPrerequisites());
+		}
     };
 
  

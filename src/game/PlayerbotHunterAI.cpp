@@ -82,6 +82,7 @@ PlayerbotHunterAI::PlayerbotHunterAI(Player* const master, Player* const bot, Pl
     engine->addStrategy("dps");
     engine->addStrategy("dps assist");
     engine->addStrategy("boost");
+	engine->addStrategy("racials");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::HunterActionFactory(facade));

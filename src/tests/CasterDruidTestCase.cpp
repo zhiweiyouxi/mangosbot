@@ -51,34 +51,28 @@ protected:
         assertActions(">moonkin form>faerie fire>insect swarm>moonfire>starfire>wrath>starfire>nature's grasp");
     }
 
-    void healHimself()
+	void healHimself()
     {
 		tickInSpellRange();
 
-		lowHealth(39);
-		tickWithSpellUnavailable("gift of the naaru");
-        tick();
-		addAura("lifeblood");
-
-        tick();
-        tick();
-        
-        healthRestored();
-        removeAura("lifeblood");
-        
+		tickWithLowHealth(59);
+		tickWithLowHealth(59);
+                
 		tick(); 
 		addAura("moonkin form");
 
+		tick();
+
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
         
-        assertActions(">faerie fire>lifeblood>-moonkin form>regrowth>moonkin form>insect swarm>-moonkin form>rejuvenation");
+        assertActions(">faerie fire>-moonkin form>rejuvenation>moonkin form>insect swarm>-moonkin form>regrowth");
     }
 
 	void healOthers()
     {
-        tickWithPartyLowHealth(39);
-        tickWithPartyLowHealth(39);
+        tickWithPartyLowHealth(59);
+        tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
 
         assertActions(">-moonkin form>rejuvenation on party>regrowth on party");

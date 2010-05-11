@@ -37,20 +37,6 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("lifeblood", name)) 
-    {
-        return new ActionNode (new CastLifeBloodAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("gift of the naaru"), NULL), 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("gift of the naaru", name)) 
-    {
-        return new ActionNode (new CastGiftOfTheNaaruAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
 	else if (!strcmp("healthstone", name)) 
 	{
 		return new ActionNode (new UseHealthstone(ai),  

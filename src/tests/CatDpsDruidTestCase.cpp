@@ -57,48 +57,34 @@ protected:
         assertActions(">rake>mangle (cat)>ferocious bite>rip");
     }
 
-    void healHimself()
-    {
+	void healHimself()
+	{
 		tickInMeleeRange();
 
-		lowHealth(39);
-		tickWithSpellUnavailable("gift of the naaru");
-        tick();
-		addAura("lifeblood");
+		tickWithLowHealth(59);
+		tickWithLowHealth(59);
 
-        tick();
-        tick();
-        
-        healthRestored();
-        removeAura("lifeblood");
-        
-		tick(); 
+		tick();
 		addAura("cat form");
+		tick();
 
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
-        
-        assertActions(">rake>lifeblood>-cat form>regrowth>cat form>mangle (cat)>-cat form>rejuvenation");
-    }
 
+		assertActions(">rake>-cat form>rejuvenation>cat form>mangle (cat)>-cat form>regrowth");
+	}
+	
     void intensiveHealing()
     {
-		tickWithLowHealth(39);
-        tickWithLowHealth(39);
-        addAura("lifeblood");
-        
-		tickWithLowHealth(39);
-		addAura("gift of the naaru");
-        
 		tickWithLowHealth(1);
 
-        assertActions(">lifeblood>gift of the naaru>-cat form>survival instincts");
+        assertActions(">survival instincts");
     }
 
 	void healOthers()
     {
-        tickWithPartyLowHealth(39);
-        tickWithPartyLowHealth(39);
+		tickWithPartyLowHealth(59);
+		tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
 
         assertActions(">-cat form>rejuvenation on party>regrowth on party");

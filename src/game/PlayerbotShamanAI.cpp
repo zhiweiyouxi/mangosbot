@@ -72,6 +72,7 @@ PlayerbotShamanAI::PlayerbotShamanAI(Player* const master, Player* const bot, Pl
     engine->addStrategy("heal");
     engine->addStrategy("dps assist");
     engine->addStrategy("boost");
+	engine->addStrategy("racials");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::ShamanActionFactory(facade));

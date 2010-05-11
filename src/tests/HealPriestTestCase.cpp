@@ -19,6 +19,7 @@ class HealPriestTestCase : public EngineTestBase
     CPPUNIT_TEST( dispel );
     CPPUNIT_TEST( fade );
     CPPUNIT_TEST( enemyTooClose );
+	CPPUNIT_TEST( racials );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +54,28 @@ protected:
 
         assertActions(">power word: shield>greater heal>renew>heal>lesser heal>shoot>flash heal>shoot");
     }
+
+	void racials()
+	{
+		engine->addStrategy("racials");
+		addPartyAura("power word: fortitude");
+
+		tickWithLowHealth(39);
+		tickWithLowHealth(39);
+		tickWithLowHealth(39);
+		tickWithLowHealth(39);
+		tickWithLowHealth(39);
+		tickWithLowHealth(39);
+		tickWithLowHealth(39);
+
+		tick();
+
+		tickWithLowHealth(59);
+
+		tickWithSpellAvailable("shoot");
+
+		assertActions(">lifeblood>gift of the naaru>power word: shield>greater heal>renew>heal>lesser heal>shoot>flash heal>shoot");
+	}
 
     void nonCombat()
     {

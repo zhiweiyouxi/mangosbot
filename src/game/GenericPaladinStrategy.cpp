@@ -18,10 +18,6 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("hammer of justice", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new LowHealthTrigger(ai), 
-        NextAction::array(0, new NextAction("lifeblood", 50.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 60, 40),
         NextAction::array(0, new NextAction("flash of light", 50.0f), NULL)));
 

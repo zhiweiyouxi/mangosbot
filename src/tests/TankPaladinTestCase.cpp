@@ -53,8 +53,6 @@ protected:
         
 		tickWithLowHealth(30);
 		tickWithLowHealth(30);
-		tickWithLowHealth(30);
-		tickWithLowHealth(30);
 
         tick(); 
 
@@ -63,7 +61,7 @@ protected:
 		spellAvailable("lay on hands");
 		tickWithPartyLowHealth(20);
 
-        assertActions(">flash of light>lifeblood>divine shield>holy light>gift of the naaru>divine protection>lay on hands>lay on hands on party");
+        assertActions(">flash of light>divine shield>holy light>divine protection>lay on hands>lay on hands on party");
     }
   
     void paladinMustHoldAggro()

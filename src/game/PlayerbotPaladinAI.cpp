@@ -77,6 +77,7 @@ PlayerbotPaladinAI::PlayerbotPaladinAI(Player* const master, Player* const bot, 
     engine->addStrategy("tank");
     engine->addStrategy("tank assist");
 	engine->addStrategy("boost");
+	engine->addStrategy("racials");
     engine->Init();
 
     nonCombatEngine = new ai::Engine(facade, new ai::PaladinActionFactory(facade));

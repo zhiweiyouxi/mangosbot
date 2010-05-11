@@ -4,21 +4,6 @@
 
 using namespace ai;
 
-bool CastRejuvenationAction::isPossible()
-{
-    return CastSpellAction::isPossible() && !ai->HasAura("lifeblood");
-}
-
-bool CastRejuvenationAction::isUseful()
-{
-    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
-}
-
-bool CastRegrowthAction::isUseful()
-{
-    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
-}
-
 bool CastCasterFormAction::ExecuteResult()
 {
     if (ai->HasAura("dire bear form")) 
@@ -36,29 +21,6 @@ bool CastCasterFormAction::ExecuteResult()
 
     return TRUE;
 }
-
-
-
-NextAction** CastRegrowthAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
-
-NextAction** CastRejuvenationAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
-
-NextAction** CastRegrowthOnPartyAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
-
-NextAction** CastRejuvenationOnPartyAction::getPrerequisites()
-{
-    return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastSpellAction::getPrerequisites());
-}
-
 
 
 NextAction** CastAbolishPoisonAction::getAlternatives()
