@@ -88,5 +88,6 @@ Engine* AiFactory::createNonCombatEngine(Player* player, PlayerbotAIFacade* cons
 			nonCombatEngine->addStrategy("dps assist");
             break;
     }
+    nonCombatEngine->addStrategies("nc", "emote", "food", "stay", NULL);
 	return nonCombatEngine;
 }
