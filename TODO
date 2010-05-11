@@ -1,4 +1,6 @@
-[ ] ressurection
+[?] ressurection
+[?] distance depending on spell range
+[?] teleport only when logged in, stay otherwise
 [?] ignore everything and flee (follow master)
 [ ] use threat level
 [ ] do not interrupt channels
@@ -9,8 +11,6 @@
 [v] move lifeblood, gift of the naaru to common place
 
 [ ] global spell cooldown
-[?] distance depending on spell range
-[ ] teleport only when logged in, stay otherwise
 
 [ ] aoe
 [ ] shaman

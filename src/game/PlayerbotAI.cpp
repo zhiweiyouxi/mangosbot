@@ -91,9 +91,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	m_targetAssist = 0;
 	m_targetProtect = 0;
 
-	// start following master (will also teleport bot to master)
-	SetMovementOrder( MOVEMENT_FOLLOW, GetMaster() );
-
+	FollowCheckTeleport(*GetMaster());
     m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);
 }
 
@@ -1179,7 +1177,6 @@ void PlayerbotAI::DoNextCombatManeuver()
     {
         m_bot->AttackStop();
         m_bot->SetSelection(0);
-        MovementReset();
         m_bot->InterruptNonMeleeSpells(true);
 		m_targetCombat = 0;
         m_targetChanged = false;
