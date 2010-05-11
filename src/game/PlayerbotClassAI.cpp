@@ -1,50 +1,42 @@
 #include "PlayerbotClassAI.h"
 #include "Common.h"
+#include "AiFactory.h"
 
-PlayerbotClassAI::PlayerbotClassAI(Player* const master, Player* const bot, PlayerbotAI* const ai): m_master(master), m_bot(bot), m_ai(ai) 
-{
-    engine = NULL; // must be created in subclasses
-    nonCombatEngine = NULL;
+PlayerbotClassAI::PlayerbotClassAI(Player* const master, Player* const bot, PlayerbotAI* const ai) : 
+		m_master(master), m_bot(bot), m_ai(ai)  {
     facade = new ai::PlayerbotAIFacade(ai);
+	engine = AiFactory::createCombatEngine(bot, facade);
+	nonCombatEngine = AiFactory::createNonCombatEngine(bot, facade);
 }
 
-PlayerbotClassAI::~PlayerbotClassAI() 
-{
-    if (engine) 
-    {
+PlayerbotClassAI::~PlayerbotClassAI() {
+    if (engine) {
         delete engine;
         engine = NULL;
     }
-    if (nonCombatEngine) 
-    {
+    if (nonCombatEngine) {
         delete nonCombatEngine;
         nonCombatEngine = NULL;
     }
-    if (facade) 
-    {
+    if (facade) {
         delete facade;
         facade = NULL;
     }
 }
 
-bool PlayerbotClassAI::DoFirstCombatManeuver(Unit *) 
-{
-    // return false, if done with opening moves/spells
-    return false;
+void PlayerbotClassAI::DoCombatAction(Unit *target) {
+	engine->DoNextAction(target);
 }
-void PlayerbotClassAI::DoNextCombatManeuver(Unit *) {}
 
-void PlayerbotClassAI::DoNonCombatActions(){}
+void PlayerbotClassAI::DoNonCombatAction() {
+	nonCombatEngine->DoNextAction(NULL);
+}
 
-void PlayerbotClassAI::BuffPlayer(Player* target) {}
-
-void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e )
-{
+void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e ) {
     if (!e)
         return;
     
-    switch (name[0])
-    {
+    switch (name[0]) {
     case '+':
         e->addStrategy(name+1);
         break;
@@ -55,5 +47,4 @@ void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e )
         m_ai->TellMaster(e->ListStrategies());
         break;
     }
-    
 }

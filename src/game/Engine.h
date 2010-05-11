@@ -55,6 +55,7 @@ namespace ai
 
 	    void Init();
         void addStrategy(const char* name);
+		void addStrategies(const char* first, ...);
         void removeStrategy(const char* name);
         void clearStrategies();
         std::string ListStrategies();

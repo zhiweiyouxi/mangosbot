@@ -23,15 +23,22 @@ void PlayerbotAIFacade::MoveToTarget(float distance)
 { 
 	Player* bot = ai->GetPlayerBot();
 	
-	bot->GetMotionMaster()->Clear(true);
-	bot->clearUnitState(UNIT_STAT_CHASE);
-	bot->clearUnitState(UNIT_STAT_FOLLOW);
-
-	if (!bot->IsStandState())
-		bot->SetStandState(UNIT_STAND_STATE_STAND);
+	Stay();
 	
 	Unit* target = ai->GetCurrentTarget();
 	bot->GetMotionMaster()->MoveFollow(target, distance, 0); 	
+}
+
+void PlayerbotAIFacade::Stay() 
+{
+	Player* bot = ai->GetPlayerBot();
+
+	bot->GetMotionMaster()->Clear( true );
+	bot->clearUnitState( UNIT_STAT_CHASE );
+	bot->clearUnitState( UNIT_STAT_FOLLOW );
+
+	if (!bot->IsStandState())
+		bot->SetStandState(UNIT_STAND_STATE_STAND);
 }
 
 float PlayerbotAIFacade::GetDistanceToEnemy(float ifNoTarget)
@@ -418,7 +425,7 @@ void PlayerbotAIFacade::GoAway(float distance)
         }
     }
 
-    ai->MovementClear();
+	Stay();
     bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
 }
 
@@ -480,7 +487,7 @@ void PlayerbotAIFacade::Flee(float distance)
         }
     }
 
-    ai->MovementClear();
+    Stay();
     bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
 }
 
@@ -705,4 +712,9 @@ bool PlayerbotAIFacade::HasAnyAuraOf(const char* first, ...) {
 
 	va_end(vl);
 	return false;
+}
+
+bool PlayerbotAIFacade::CastSpell(const char* spell, Unit* target) {
+	Stay();
+	return ai->CastSpell(ai->getSpellId(spell), target); 
 }

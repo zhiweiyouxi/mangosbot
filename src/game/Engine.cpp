@@ -239,6 +239,25 @@ void Engine::addStrategy(const char* name)
     Init();
 }
 
+void Engine::addStrategies(const char* first, ...)
+{
+	addStrategy(first);
+
+	va_list vl;
+	va_start(vl, first);
+
+	const char* cur = NULL;
+	do 
+	{
+		cur = va_arg(vl, const char*);
+		if (cur)
+			addStrategy(cur);
+	}
+	while (cur);
+
+	va_end(vl);
+}
+
 void Engine::removeStrategy(const char* name)
 {
     if (strategies.empty())

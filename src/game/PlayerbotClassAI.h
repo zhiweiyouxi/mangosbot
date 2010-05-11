@@ -21,41 +21,29 @@ class PlayerbotAI;
 
 class MANGOS_DLL_SPEC PlayerbotClassAI
 {
-    public:
-        PlayerbotClassAI(Player* const master, Player* const bot, PlayerbotAI* const ai);
-        virtual ~PlayerbotClassAI();
+public:
+    PlayerbotClassAI(Player* const master, Player* const bot, PlayerbotAI* const ai);
+    virtual ~PlayerbotClassAI();
 
-        // all combat actions go here
-        virtual bool DoFirstCombatManeuver(Unit*);
-        virtual void DoNextCombatManeuver(Unit*);
+    virtual void DoCombatAction(Unit*);
+    virtual void DoNonCombatAction();
 
-        // all non combat actions go here, ex buffs, heals, rezzes
-        virtual void DoNonCombatActions();
+    void DoSpecificAction(const char* name) { if (engine) engine->ExecuteAction(name); }
+    void ChangeStrategy( const char* name, ai::Engine* e );
+    void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, engine); }
+    void ChangeNonCombatStrategy(const char* name) { ChangeStrategy(name, nonCombatEngine); }
 
-        // buff a specific player, usually a real PC who is not in group
-        virtual void BuffPlayer(Player* target);
-
-        // Utilities
-        Player* GetMaster () {return m_master;}
-        Player* GetPlayerBot() {return m_bot;}
-        PlayerbotAI* GetAI (){return m_ai;};
-
-        virtual void DoSpecificAction(const char* name) { if (engine) engine->ExecuteAction(name); }
-        void ChangeStrategy( const char* name, ai::Engine* e );
-        void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, engine); }
-        void ChangeNonCombatStrategy(const char* name) { ChangeStrategy(name, nonCombatEngine); }
-
-    private:
-        Player* m_master;
-        Player* m_bot;
-        PlayerbotAI* m_ai;
+private:
+    Player* m_master;
+    Player* m_bot;
+    PlayerbotAI* m_ai;
 
 protected:
-        ai::PlayerbotAIFacade *facade;
+    ai::PlayerbotAIFacade *facade;
 
 protected:
-        ai::Engine* engine;
-        ai::Engine* nonCombatEngine;
+    ai::Engine* engine;
+    ai::Engine* nonCombatEngine;
 };
 
 #endif

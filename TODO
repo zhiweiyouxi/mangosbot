@@ -10,7 +10,6 @@
 
 [ ] global spell cooldown
 [?] distance depending on spell range
-[ ] don't leave party if master logs out
 [ ] teleport only when logged in, stay otherwise
 
 [ ] aoe

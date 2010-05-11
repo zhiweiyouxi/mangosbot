@@ -5,16 +5,7 @@
 #include "SpellMgr.h"
 #include "PlayerbotAI.h"
 #include "PlayerbotMgr.h"
-#include "PlayerbotDeathKnightAI.h"
-#include "PlayerbotDruidAI.h"
-#include "PlayerbotHunterAI.h"
-#include "PlayerbotMageAI.h"
-#include "PlayerbotPaladinAI.h"
-#include "PlayerbotPriestAI.h"
-#include "PlayerbotRogueAI.h"
-#include "PlayerbotShamanAI.h"
-#include "PlayerbotWarlockAI.h"
-#include "PlayerbotWarriorAI.h"
+#include "PlayerbotClassAI.h"
 #include "Player.h"
 #include "ObjectMgr.h"
 #include "Chat.h"
@@ -103,50 +94,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	// start following master (will also teleport bot to master)
 	SetMovementOrder( MOVEMENT_FOLLOW, GetMaster() );
 
-    // get class specific ai
-    switch (m_bot->getClass())
-    {
-        case CLASS_PRIEST:
-			m_combatStyle = COMBAT_RANGED;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotPriestAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_MAGE:
-			m_combatStyle = COMBAT_RANGED;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotMageAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_WARLOCK:
-			m_combatStyle = COMBAT_RANGED;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotWarlockAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_WARRIOR:
-			m_combatStyle = COMBAT_MELEE;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotWarriorAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_SHAMAN:
-			m_combatStyle = COMBAT_MELEE;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotShamanAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_PALADIN:
-			m_combatStyle = COMBAT_MELEE;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotPaladinAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_ROGUE:
-			m_combatStyle = COMBAT_MELEE;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotRogueAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_DRUID:
-			m_combatStyle = COMBAT_MELEE;
-            m_classAI = (PlayerbotClassAI*) new PlayerbotDruidAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_HUNTER:
-			m_combatStyle = COMBAT_RANGED;
-            m_classAI = (PlayerbotClassAI*)new PlayerbotHunterAI(GetMaster(), m_bot, this);
-            break;
-        case CLASS_DEATH_KNIGHT:
-			m_combatStyle = COMBAT_MELEE;
-            m_classAI = (PlayerbotClassAI*)new PlayerbotDeathKnightAI(GetMaster(), m_bot, this);
-            break;
-    }
+    m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);
 }
 
 PlayerbotAI::~PlayerbotAI()
@@ -1237,24 +1185,11 @@ void PlayerbotAI::DoNextCombatManeuver()
         m_targetChanged = false;
         m_targetType = TARGET_NORMAL;
 
-        (GetClassAI())->DoNonCombatActions();
+		m_classAI->DoNonCombatAction();
         return;
     }
 
-    // do opening moves, if we changed target
-    if( m_targetChanged )
-    {
-        if( GetClassAI() )
-            m_targetChanged = GetClassAI()->DoFirstCombatManeuver( m_targetCombat );
-        else
-            m_targetChanged = false;
-    }
-
-    // do normal combat movement
-	//DoCombatMovement();
-
-    if (GetClassAI() && !m_targetChanged )
-        (GetClassAI())->DoNextCombatManeuver( m_targetCombat );
+	m_classAI->DoCombatAction(m_targetCombat);
 }
 
 void PlayerbotAI::DoCombatMovement() {
@@ -1914,8 +1849,8 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
             DoNextCombatManeuver();
 
         // do class specific non combat actions
-        else if (GetClassAI())
-            (GetClassAI())->DoNonCombatActions();
+		else
+			m_classAI->DoNonCombatAction();
     }
 }
 
