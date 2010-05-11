@@ -27,10 +27,10 @@ namespace ai
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
         virtual void MoveToMaster() { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void FollowMaster() { ai->MovementClear();ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
-        virtual void Melee() { ai->Attack(ai->GetCurrentTarget()); }
+        virtual void Melee();
         virtual void Flee(float distance = SPELL_DISTANCE);
         virtual void GoAway(float distance = SPELL_DISTANCE);
-        virtual void MoveToTarget(float distance = 0.0f) { ai->MovementClear(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetCurrentTarget(), distance, 0); }
+		virtual void MoveToTarget(float distance = 0.0f);
         virtual void Stay() {ai->MovementClear();}
         virtual bool CastSpellOnCurrentTarget(const char* spell) { return ai->CastSpell(ai->getSpellId(spell), ai->GetCurrentTarget()); }
         virtual bool CastSpell(const char* spell, Unit* target = NULL) { return ai->CastSpell(ai->getSpellId(spell), target); }

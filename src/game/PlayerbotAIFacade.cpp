@@ -9,6 +9,31 @@
 
 using namespace ai;
 
+void PlayerbotAIFacade::Melee() 
+{ 
+	Unit* target = ai->GetCurrentTarget();
+	ai->Attack(target); 
+
+	Player* bot = ai->GetPlayerBot();
+	if (!bot->isInFrontInMap(target, 5.0f))
+		bot->SetInFront(target);
+}
+
+void PlayerbotAIFacade::MoveToTarget(float distance) 
+{ 
+	Player* bot = ai->GetPlayerBot();
+	
+	bot->GetMotionMaster()->Clear(true);
+	bot->clearUnitState(UNIT_STAT_CHASE);
+	bot->clearUnitState(UNIT_STAT_FOLLOW);
+
+	if (!bot->IsStandState())
+		bot->SetStandState(UNIT_STAND_STATE_STAND);
+	
+	Unit* target = ai->GetCurrentTarget();
+	bot->GetMotionMaster()->MoveFollow(target, distance, 0); 	
+}
+
 float PlayerbotAIFacade::GetDistanceToEnemy(float ifNoTarget)
 {
     Unit *target = ai->GetCurrentTarget();
