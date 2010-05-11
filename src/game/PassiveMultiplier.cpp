@@ -3,18 +3,15 @@
 
 using namespace ai;
 
-float PassiveMultiplier::GetValue(Action* action)
-{
-    if (action == NULL) return 1.0f;
+float PassiveMultiplier::GetValue(Action* action) {
+    if (!action) 
+		return 1.0f;
 
     const char* name = action->getName();
-    if (!strcmp("attack least threat", name) ||
-        !strcmp("attack bigger threat", name) ||
-        !strcmp("reach melee", name) ||
-        !strcmp("melee", name) ||
-        !strcmp("aspect of the pack", name) ||
-        !strcmp("reach spell", name))
-        return 0;
 
-    return 1.0f;
+    if (!strcmp("follow", name) ||
+        !strcmp("stay", name))
+        return 1.0f;
+
+    return 0;
 }

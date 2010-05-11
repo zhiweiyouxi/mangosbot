@@ -1,60 +1,22 @@
-[ ] global spell cooldown
 [ ] ressurection
-[v] sword and board: shield slam
 [ ] ignore everything and flee (follow master)
+[ ] travel strategy (ignore if mounted/umount if attacked)
+[ ] use threat level
+[ ] do not interrupt channels
+[ ] heal different party memebers
+[ ] combat with different targets
+[ ] attack priest's target
 [ ] better raid positioning
+[ ] move lifeblood, gift of the naaru to common place
+
+[ ] global spell cooldown
 [ ] distance depending on spell range
 [ ] don't leave party if master logs out
-[ ] heal different party memebers
-[ ] use threat level
-[ ] combat with different targets
 [ ] teleport only when logged in, stay otherwise
-[v] passive mode aspect of the pack
+
 [ ] aoe
 [ ] shaman
 [ ] rogue
 
-[v] do boost action
-[v] drain soul only if <20% health
-[ ] do not interrupt channels
 [ ] warlock: heal demon
-[v] attack threat, not follow 
-[ ] travel strategy (ignore if mounted/umount if attacked)
-[ ] attack priest's target
-[v] conjure and use items
-[ ] concentration aura before any healing
-[ ] move lifeblood, gift of the naaru to common place
 
-[v] use party size when calculating follow angle
-[v] skip unknown spells/skills when check triggers
-[v] shoot using wands
-[v] stay/follow - do not react
-[v] apply dots only if >50% health
-[v] no food/water strategy
-[v] low mana use strategy
-[v] possible infinite loop in action queue
-[v] reach spell before shoot/shot
-[v] do not heal died player
-[v] gift of the naauru
-[v] heal
-[v] decrease follow distance
-
-[v] dispell magic/curse...
-[v] stay at distance of each other
-[v] PW: shield
-
-[r] cat form if no mana - stack overflow
-[v] remove "i need some water", skip drink/eat action if nothing
-[v] abolish poison/disease
-[v] apply buffs only if >50% mana
-[v] sting if health > 50%
-[v] reach melee: CONTACT_DISTANCE vs ATTACK_DISTANCE
-[v] do not dispel demon skin
-
-[v] mangle
-[v] devastate, slam
-[v] cat form if mounted
-
-[v] hand of reckoning (paladin's taunt)
-[v] righteous fury
-[v] avenger's shield (aoe threat)
