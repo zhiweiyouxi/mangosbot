@@ -41,7 +41,7 @@ namespace ai
         virtual bool PetHasAura(const char* spell);
         virtual bool TargetHasAura(const char* spell);
         virtual bool IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
-        virtual Player* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
+        virtual Unit* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
         virtual void RemoveAura(const char* spell);
         virtual uint8 GetComboPoints() { return ai->GetPlayerBot()->GetComboPoints(); }
         virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
@@ -49,8 +49,8 @@ namespace ai
         virtual uint8 GetPetHealthPercent() { return ai->GetHealthPercent(*ai->GetPlayerBot()->GetPet()); }
         virtual bool HasPet() { return ai->GetPlayerBot()->GetPet() != NULL; }
         virtual bool IsPetDead() { return ai->GetPlayerBot()->GetPet()->getDeathState() != ALIVE; }
-        virtual Player* GetPartyMinHealthPlayer();
-		virtual Player* GetDeadPartyMember();
+        virtual Unit* GetPartyMinHealthPlayer();
+		virtual Unit* GetDeadPartyMember();
         virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual bool HasAggro();
@@ -80,7 +80,7 @@ namespace ai
 		virtual int GetItemCount(const char* name) { return ai->FindUsableItem(isTheSameName, (const void*)name) != NULL; }
 
         virtual void Emote(uint32 emote);
-        virtual Player* GetPartyMemberToDispell(uint32 dispelType);
+        virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
         virtual bool HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(ai->GetPlayerBot(), dispelType); }
         virtual float GetBalancePercent();
         virtual bool IsTargetMoving();
@@ -100,11 +100,12 @@ namespace ai
         static bool isDrink(const ItemPrototype* pItemProto, const void* param);
 		static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
         virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
-        Player* findPlayer(bool predicate(Player*, FindPlayerParam&), void *param);
-        static bool isPlayerWithoutAura(Player* player, FindPlayerParam &param /*const char* spell*/);
+        Unit* findPlayer(bool predicate(Unit*, FindPlayerParam*), void *param);
+        static bool isPlayerWithoutAura(Unit* player, FindPlayerParam *param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);
         void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
         bool HasAuraToDispel(Unit* player, uint32 dispelType);
+		bool checkPredicate(Unit* player, bool predicate(Unit*, FindPlayerParam*), FindPlayerParam *param);
 
     protected:
         PlayerbotAI *ai;

@@ -89,32 +89,38 @@ bool PlayerbotAIFacade::TargetHasAura(const char* spell)
     return ai->HasAura(spell, *ai->GetCurrentTarget());
 }
 
-Player* PlayerbotAIFacade::findPlayer(bool predicate(Player*, FindPlayerParam&), void* param)
+Unit* PlayerbotAIFacade::findPlayer(bool predicate(Unit*, FindPlayerParam*), void* param)
 {
-    Group* group = ai->GetMaster()->GetGroup();
-    if (group)
-    {
-        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
-        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
-        {
-            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
-            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
-                continue;
+	Player* bot = ai->GetPlayerBot();
+    Group* group = bot->GetGroup();
+	if (!group)
+		return NULL;
 
-            if (ai->GetPlayerBot()->GetDistance(player) > SPELL_DISTANCE)
-                continue;
-
-            FindPlayerParam pp; pp.ai = ai; pp.param = param;
-            if (predicate(player, pp))
-                return player;
-        }
-    }
-    return NULL;
+	FindPlayerParam pp; pp.ai = ai; pp.param = param;
+	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
+		Player* player = gref->getSource();
+		if (checkPredicate(player, predicate, &pp))
+			return player;
+		
+		Pet* pet = player->GetPet();
+		if (pet && pet->IsPermanentPetFor(player) && checkPredicate(player, predicate, &pp))
+			return player;
+	}
+	return NULL;
 }
 
-bool PlayerbotAIFacade::isPlayerWithoutAura(Player* player, FindPlayerParam &param )
+bool PlayerbotAIFacade::checkPredicate(Unit* player, bool predicate(Unit*, FindPlayerParam*), FindPlayerParam *param) {
+	Player* bot = ai->GetPlayerBot();
+
+    return (player != bot && 
+		bot->GetDistance(player) < BOT_REACT_DISTANCE &&
+		bot->IsWithinLOS(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ()) &&
+		(predicate==NULL || predicate(player, param)));
+}
+
+bool PlayerbotAIFacade::isPlayerWithoutAura(Unit* player, FindPlayerParam *param )
 {
-    return !param.ai->HasAura((const char*)param.param, *player);
+    return player->isAlive() && !param->ai->HasAura((const char*)param->param, *player);
 }
 
 void PlayerbotAIFacade::RemoveAura(const char* name)
@@ -235,7 +241,7 @@ bool PlayerbotAIFacade::isTheSameName(const ItemPrototype* pItemProto, const voi
 	return pItemProto && pItemProto->Name1 && strstri(pItemProto->Name1, name);
 }
 
-Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
+Unit* PlayerbotAIFacade::GetPartyMinHealthPlayer()
 {
 	Player* bot = ai->GetPlayerBot();
 	Group* group = bot->GetGroup();
@@ -243,14 +249,10 @@ Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
 		return NULL;
 
 	uint8 minHealth = 100;
-	Player* minHealthPlayer = NULL;
+	Unit* minHealthPlayer = NULL;
 	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
 		Player* player = gref->getSource();
-		if(player == bot || !player->isAlive())
-			continue;
-			
-		if (bot->GetDistance(player) >= BOT_REACT_DISTANCE ||
-			!bot->IsWithinLOS(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ()))
+		if (!checkPredicate(player, NULL, NULL) || !player->isAlive())
 			continue;
 
         uint8 health = ai->GetHealthPercent(*player);
@@ -259,11 +261,21 @@ Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
             minHealthPlayer = player;
             minHealth = health;
         }
+
+		Pet* pet = player->GetPet();
+		if (pet && pet->IsPermanentPetFor(player)) {
+			health = ai->GetHealthPercent(*pet);
+			if (!minHealthPlayer || minHealth > health)
+			{
+				minHealthPlayer = pet;
+				minHealth = health;
+			}
+		}
     }
     return minHealthPlayer;
 }
 
-Player* PlayerbotAIFacade::GetDeadPartyMember() {
+Unit* PlayerbotAIFacade::GetDeadPartyMember() {
 	Player* bot = ai->GetPlayerBot();
 
 	Group* group = bot->GetGroup();
@@ -272,11 +284,7 @@ Player* PlayerbotAIFacade::GetDeadPartyMember() {
 
 	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
 		Player* player = gref->getSource();
-		if(player == bot)
-			continue;
-
-		if (!player->isAlive() && bot->GetDistance(player) <= BOT_REACT_DISTANCE && 
-			bot->IsWithinLOS(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ()))
+		if (checkPredicate(player, NULL, NULL) && !player->isAlive())
 			return player;
 	}
 	return NULL;
@@ -284,7 +292,7 @@ Player* PlayerbotAIFacade::GetDeadPartyMember() {
 
 uint8 PlayerbotAIFacade::GetPartyMinHealthPercent()
 {
-    Player* player = GetPartyMinHealthPlayer();
+    Unit* player = GetPartyMinHealthPlayer();
     return player ? ai->GetHealthPercent(*player) : 100;
 }
 
@@ -307,14 +315,15 @@ int PlayerbotAIFacade::GetAttackerCount(float distance)
 
 int PlayerbotAIFacade::GetMyAttackerCount()
 {
+	Player* bot = ai->GetPlayerBot();
     int count = 0;
 
-    HostileReference *ref = ai->GetPlayerBot()->getHostileRefManager().getFirst();
+    HostileReference *ref = bot->getHostileRefManager().getFirst();
     while( ref )
     {
         ThreatManager *target = ref->getSource();
         Unit *attacker = target->getOwner();
-        if (attacker && !attacker->isDead() && attacker->getVictim() == ai->GetPlayerBot())
+        if (attacker && !attacker->isDead() && attacker->getVictim() == bot)
             count++;
         ref = ref->next();
     }
@@ -541,7 +550,7 @@ float PlayerbotAIFacade::GetFollowAngle()
     return 0;
 }
 
-Player* PlayerbotAIFacade::GetPartyMemberToDispell(uint32 dispelType)
+Unit* PlayerbotAIFacade::GetPartyMemberToDispell(uint32 dispelType)
 {
     Group* group = ai->GetMaster()->GetGroup();
     if (group)
@@ -555,6 +564,10 @@ Player* PlayerbotAIFacade::GetPartyMemberToDispell(uint32 dispelType)
 
             if (HasAuraToDispel(player, dispelType))
                 return player;
+
+			Pet* pet = player->GetPet();
+			if (pet && pet->IsPermanentPetFor(player) && HasAuraToDispel(pet, dispelType))
+				return pet;
         }
     }
     return NULL;

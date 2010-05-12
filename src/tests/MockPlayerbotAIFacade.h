@@ -39,7 +39,7 @@ namespace ai
         virtual bool TargetHasAura(const char* spell);
         virtual bool PetHasAura(const char* spell);
         virtual bool IsAllPartyHasAura(const char* spell);
-        virtual Player* GetPartyMemberWithoutAura(const char* spell) { return (Player*)0xEEEEEE; }
+        virtual Unit* GetPartyMemberWithoutAura(const char* spell) { return (Unit*)0xEEEEEE; }
         virtual uint8 GetHealthPercent() { return health; }
         virtual uint8 GetComboPoints() { return comboPoints; }
         virtual uint8 GetTargetHealthPercent() { return targetHealth; }
@@ -75,7 +75,7 @@ namespace ai
         virtual void AttackLeastThreat() {buffer.append(">attack least threat"); }
         virtual void AttackBiggerThreat() {buffer.append(">attack bigger threat"); }
 
-        virtual Player* GetPartyMinHealthPlayer() { return (Player*)0xEEEEEE; }
+        virtual Unit* GetPartyMinHealthPlayer() { return (Unit*)0xEEEEEE; }
         virtual uint8 GetPartyMinHealthPercent() { return partyMinHealth; }
         virtual void TellMaster(const char* text) { buffer.append(text); }
 
@@ -83,7 +83,7 @@ namespace ai
         virtual float GetFollowAngle() { return 0; }
         virtual bool HasSpell(const char* spell) { return TRUE; }
 
-        virtual Player* GetPartyMemberToDispell(uint32 dispelType) { return partyAurasToDispel == dispelType ? (Player*)0xEEEEEE : NULL; }
+        virtual Unit* GetPartyMemberToDispell(uint32 dispelType) { return partyAurasToDispel == dispelType ? (Unit*)0xEEEEEE : NULL; }
         virtual bool HasAuraToDispel(uint32 dispelType) { return aurasToDispel == dispelType; }
         virtual float GetBalancePercent() { return balancePercent; }
         virtual bool IsTargetMoving() { return targetIsMoving; }
@@ -91,7 +91,7 @@ namespace ai
         virtual bool TargetHasAuraToDispel(uint32 dispelType) { return targetAurasToDispel == dispelType; }
 
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0) { buffer.append(">").append(item); return true; }
-		virtual Player* GetDeadPartyMember() { return deadPartyMember ? (Player*)0xEEEEEE : NULL; }
+		virtual Unit* GetDeadPartyMember() { return deadPartyMember ? (Unit*)0xEEEEEE : NULL; }
 
     public:
         void resetSpells() {spellCooldowns.clear(); }
