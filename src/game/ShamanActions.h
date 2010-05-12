@@ -122,5 +122,11 @@ namespace ai
     public:
         CastWindShearAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "wind shear") {}
     };
+
+	class CastAncestralSpiritAction : public ResurrectPartyMemberAction
+	{
+	public:
+		CastAncestralSpiritAction(PlayerbotAIFacade* const ai) : ResurrectPartyMemberAction(ai, "ancestral spirit") {}
+	};
     
 }

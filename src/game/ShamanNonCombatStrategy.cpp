@@ -18,6 +18,9 @@ void ShamanNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new EarthlivingWeaponTrigger(ai), 
         NextAction::array(0, new NextAction("earthliving weapon", 22.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new PartyMemberDeadTrigger(ai),
+		NextAction::array(0, new NextAction("ancestral spirit", 23.0f), NULL)));
 }
 
 void ShamanNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -73,6 +76,13 @@ ActionNode* ShamanNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("ancestral spirit", name)) 
+	{
+		return new ActionNode (new CastAncestralSpiritAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else return NULL;
 }
 

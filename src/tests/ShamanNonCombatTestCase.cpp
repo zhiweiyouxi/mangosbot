@@ -11,6 +11,7 @@ class ShamanNonCombatTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( ShamanNonCombatTestCase );
     CPPUNIT_TEST( buff );
+	CPPUNIT_TEST( ressurect );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -30,6 +31,13 @@ protected:
 
         assertActions(">earthliving weapon>water shield");
     }
+
+	void ressurect()
+	{
+		tickWithDeadPartyMember();
+
+		assertActions(">ancestral spirit on party");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ShamanNonCombatTestCase );
