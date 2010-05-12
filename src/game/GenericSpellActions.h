@@ -130,7 +130,14 @@ namespace ai
         virtual bool isUseful();
         virtual bool ExecuteResult();
     };
+	class ResurrectPartyMemberAction : public CastSpellAction
+	{
+	public:
+		ResurrectPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
+		virtual bool isUseful();
+		virtual bool ExecuteResult();
+	};
     //---------------------------------------------------------------------------------------------------------------------
 
     class CurePartyMemberAction : public CastSpellAction

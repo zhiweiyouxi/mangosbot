@@ -58,7 +58,26 @@ namespace ai
 		}
     };
 
- 
+	class CastReviveAction : public ResurrectPartyMemberAction
+	{
+	public:
+		CastReviveAction(PlayerbotAIFacade* const ai) : ResurrectPartyMemberAction(ai, "revive") {}
+
+		virtual NextAction** getPrerequisites() {
+			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), ResurrectPartyMemberAction::getPrerequisites());
+		}
+	};
+
+	class CastRebirthAction : public ResurrectPartyMemberAction
+	{
+	public:
+		CastRebirthAction(PlayerbotAIFacade* const ai) : ResurrectPartyMemberAction(ai, "rebirth") {}
+
+		virtual NextAction** getPrerequisites() {
+			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), ResurrectPartyMemberAction::getPrerequisites());
+		}
+	};
+
     BEGIN_SPELL_ACTION(CastMarkOfTheWildAction, "mark of the wild")
     END_SPELL_ACTION()
 

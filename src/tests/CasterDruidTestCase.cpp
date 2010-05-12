@@ -13,6 +13,7 @@ class CasterDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( healOthers );
 	CPPUNIT_TEST( curePoison );
+	CPPUNIT_TEST( resurrect );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -91,6 +92,14 @@ protected:
 		tickWithPartyAuraToDispel(DISPEL_POISON);
 
 		assertActions(">abolish poison>abolish poison on party>cure poison>cure poison on party");
+	}
+
+	void resurrect()
+	{
+		tickWithDeadPartyMember();
+		tickWithDeadPartyMember();
+
+		assertActions(">-moonkin form>rebirth on party");
 	}
 };
 

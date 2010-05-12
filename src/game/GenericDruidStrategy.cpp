@@ -32,6 +32,10 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new PartyMemberNeedCureTrigger(ai, "cure poison", DISPEL_POISON),
         NextAction::array(0, new NextAction("abolish poison on party", 40.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new PartyMemberDeadTrigger(ai),
+		NextAction::array(0, new NextAction("rebirth", 30.0f), NULL)));
 }
 
 ActionNode* GenericDruidStrategy::createAction(const char* name)
@@ -113,6 +117,13 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("rebirth", name)) 
+	{
+		return new ActionNode (new CastRebirthAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
 
     else return NULL;
 }

@@ -261,6 +261,24 @@ Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
     return minHealthPlayer;
 }
 
+Player* PlayerbotAIFacade::GetDeadPartyMember() {
+	Player* bot = ai->GetPlayerBot();
+
+	Group* group = bot->GetGroup();
+	if (!group)
+		return NULL;
+
+	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
+		Player* player = gref->getSource();
+		if(player == bot)
+			continue;
+
+		if (!player->isAlive())
+			return player;
+	}
+	return NULL;
+}
+
 uint8 PlayerbotAIFacade::GetPartyMinHealthPercent()
 {
     Player* player = GetPartyMinHealthPlayer();

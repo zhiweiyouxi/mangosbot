@@ -50,6 +50,7 @@ namespace ai
         virtual bool HasPet() { return ai->GetPlayerBot()->GetPet() != NULL; }
         virtual bool IsPetDead() { return ai->GetPlayerBot()->GetPet()->getDeathState() != ALIVE; }
         virtual Player* GetPartyMinHealthPlayer();
+		virtual Player* GetDeadPartyMember();
         virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual bool HasAggro();

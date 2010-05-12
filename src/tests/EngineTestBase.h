@@ -63,6 +63,7 @@ protected:
 	void tickWithNoFood();
 	void tickWithNoDrink();
 	void itemAvailable(const char* item, int amount);
+	void tickWithDeadPartyMember();
 
 protected:
     MockPlayerbotAIFacade *ai;

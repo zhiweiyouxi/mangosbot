@@ -19,31 +19,40 @@ bool CastGiftOfTheNaaruAction::isUseful()
 
 //---------------------------------------------------------------------------------------------------------------------
 
+bool ResurrectPartyMemberAction::ExecuteResult()
+{
+	return ai->CastSpell(spell, ai->GetDeadPartyMember());
+}
+
+bool ResurrectPartyMemberAction::isUseful()
+{
+	return CastSpellAction::isUseful() && ai->GetDeadPartyMember();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 bool HealPartyMemberAction::ExecuteResult()
 {
-    ai->CastSpell(spell, ai->GetPartyMinHealthPlayer());
-    return TRUE;
+    return ai->CastSpell(spell, ai->GetPartyMinHealthPlayer());
 }
 
 bool HealPartyMemberAction::isUseful()
 {
-    return ai->GetPartyMinHealthPercent() < 85;
+    return CastSpellAction::isUseful() && ai->GetPartyMinHealthPercent() < 85;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
 bool CurePartyMemberAction::ExecuteResult()
 {
-    ai->CastSpell(spell, ai->GetPartyMemberToDispell(dispelType));
-    return TRUE;
+    return ai->CastSpell(spell, ai->GetPartyMemberToDispell(dispelType));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
 bool BuffOnPartyAction::ExecuteResult()
 {
-    ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
-    return TRUE;
+    return ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
 }
 
 bool BuffOnPartyAction::isUseful()

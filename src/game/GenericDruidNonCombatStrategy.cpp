@@ -17,6 +17,10 @@ void GenericDruidNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trigge
     triggers.push_back(new TriggerNode(
         new MarkOfTheWildOnPartyTrigger(ai),
         NextAction::array(0, new NextAction("mark of the wild on party", 1.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new PartyMemberDeadTrigger(ai),
+		NextAction::array(0, new NextAction("revive", 2.0f), NULL)));
 }
 
 
@@ -43,5 +47,12 @@ ActionNode* GenericDruidNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-   else return NULL;
+	else if (!strcmp("revive", name)) 
+	{
+		return new ActionNode (new CastReviveAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+    else return NULL;
 }

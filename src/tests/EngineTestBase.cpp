@@ -305,3 +305,10 @@ void EngineTestBase::itemAvailable(const char* item, int amount)
 {
 	ai->itemCounts[std::string(item)] = amount;
 }
+
+void EngineTestBase::tickWithDeadPartyMember() 
+{
+	ai->deadPartyMember = true;
+	tick();
+	ai->deadPartyMember = false;
+}

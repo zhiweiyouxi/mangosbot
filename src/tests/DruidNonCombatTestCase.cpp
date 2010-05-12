@@ -10,6 +10,7 @@ class DruidNonCombatTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( DruidNonCombatTestCase );
     CPPUNIT_TEST( buff );
+	CPPUNIT_TEST( resurrect );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -31,6 +32,13 @@ protected:
 
         assertActions(">mark of the wild>mark of the wild on party");
     }
+
+	void resurrect()
+	{
+		tickWithDeadPartyMember();
+
+		assertActions(">revive on party");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( DruidNonCombatTestCase );

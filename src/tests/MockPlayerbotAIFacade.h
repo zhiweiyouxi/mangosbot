@@ -20,6 +20,7 @@ namespace ai
             targetIsCastingNonMeleeSpell = false;
             haveTarget = true;
 			hasDrink = hasFood = true;
+			deadPartyMember = false;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -90,6 +91,7 @@ namespace ai
         virtual bool TargetHasAuraToDispel(uint32 dispelType) { return targetAurasToDispel == dispelType; }
 
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0) { buffer.append(">").append(item); return true; }
+		virtual Player* GetDeadPartyMember() { return deadPartyMember ? (Player*)0xEEEEEE : NULL; }
 
     public:
         void resetSpells() {spellCooldowns.clear(); }
@@ -117,6 +119,7 @@ namespace ai
         bool haveTarget;
 		bool hasDrink, hasFood;
 		std::map<string, int> itemCounts;
+		bool deadPartyMember;
     };
 
 }

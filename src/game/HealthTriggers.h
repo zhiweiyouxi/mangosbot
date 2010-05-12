@@ -47,4 +47,13 @@ namespace ai
         }
     };
 
+	class PartyMemberDeadTrigger : public Trigger {
+	public:
+		PartyMemberDeadTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "resurrect", 10) {}
+
+		virtual bool IsActive() {
+			return ai->GetDeadPartyMember();
+		}
+	};
+
 }
