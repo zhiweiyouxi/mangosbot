@@ -237,25 +237,27 @@ bool PlayerbotAIFacade::isTheSameName(const ItemPrototype* pItemProto, const voi
 
 Player* PlayerbotAIFacade::GetPartyMinHealthPlayer()
 {
-    uint8 minHealth = 100;
-    Player* minHealthPlayer = NULL;
+	Player* bot = ai->GetPlayerBot();
+	Group* group = bot->GetGroup();
+	if (!group)
+		return NULL;
 
-    Group* group = ai->GetMaster()->GetGroup();
-    if (group)
-    {
-        Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
-        for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+	uint8 minHealth = 100;
+	Player* minHealthPlayer = NULL;
+	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
+		Player* player = gref->getSource();
+		if(player == bot || !player->isAlive())
+			continue;
+			
+		if (bot->GetDistance(player) >= BOT_REACT_DISTANCE ||
+			!bot->IsWithinLOS(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ()))
+			continue;
+
+        uint8 health = ai->GetHealthPercent(*player);
+        if (!minHealthPlayer || minHealth > health)
         {
-            Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
-            if( !player || !player->isAlive() || player == ai->GetPlayerBot())
-                continue;
-
-            uint8 health = ai->GetHealthPercent(*player);
-            if (!minHealthPlayer || minHealth > health)
-            {
-                minHealthPlayer = player;
-                minHealth = health;
-            }
+            minHealthPlayer = player;
+            minHealth = health;
         }
     }
     return minHealthPlayer;
@@ -273,7 +275,8 @@ Player* PlayerbotAIFacade::GetDeadPartyMember() {
 		if(player == bot)
 			continue;
 
-		if (!player->isAlive())
+		if (!player->isAlive() && bot->GetDistance(player) <= BOT_REACT_DISTANCE && 
+			bot->IsWithinLOS(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ()))
 			return player;
 	}
 	return NULL;
