@@ -28,7 +28,7 @@ namespace ai
         virtual void MoveToMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void FollowMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void Melee();
-        virtual void Flee(float distance = SPELL_DISTANCE);
+        virtual bool Flee(float distance = SPELL_DISTANCE);
         virtual void GoAway(float distance = SPELL_DISTANCE);
 		virtual void MoveToTarget(float distance = 0.0f);
         virtual void Stay();

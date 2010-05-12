@@ -24,7 +24,7 @@ namespace ai
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
         virtual void MoveToMaster() { buffer.append(">master"); }
-        virtual void Flee(float distance = SPELL_DISTANCE) { buffer.append(">flee"); }
+        virtual bool Flee(float distance = SPELL_DISTANCE) { buffer.append(">flee"); return true; }
         virtual void Melee() { buffer.append(">melee"); }
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }

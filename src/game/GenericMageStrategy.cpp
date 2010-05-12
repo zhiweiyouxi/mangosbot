@@ -26,6 +26,9 @@ void GenericMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new InterruptSpellTrigger(ai, "counterspell"), 
         NextAction::array(0, new NextAction("counterspell", 40.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new LowHealthTrigger(ai, 25), 
+		NextAction::array(0, new NextAction("ice block", 80.0f), NULL)));
 }
 
 
@@ -94,6 +97,13 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("ice block", name)) 
+	{
+		return new ActionNode (new CastIceBlockAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else return NULL;
 }
 

@@ -14,8 +14,8 @@ namespace ai
 			this->distance = distance;
 		}
 
-        virtual void Execute() {
-            ai->Flee(distance); 
+        virtual bool ExecuteResult() {
+            return ai->Flee(distance); 
         }
 
 	private:

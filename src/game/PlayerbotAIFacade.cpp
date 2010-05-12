@@ -6,6 +6,7 @@
 #include "Unit.h"
 #include "SpellAuras.h"
 #include "PlayerbotAIFacade.h"
+#include "FleeManager.h"
 
 using namespace ai;
 
@@ -429,66 +430,21 @@ void PlayerbotAIFacade::GoAway(float distance)
     bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
 }
 
-void PlayerbotAIFacade::Flee(float distance)
+bool PlayerbotAIFacade::Flee(float distance)
 {
-    Player* bot = ai->GetPlayerBot();
-
-    float rx = bot->GetPositionX();
-    float ry = bot->GetPositionY();
-    float rz = bot->GetPositionZ();
-    float maxDistance = 0;
-
-    for (float r = distance; r>=10.0f; r -= 10.0f)
-    {
-        for (float angle = 0; angle < 2*M_PI; angle += M_PI / 8)
-        {
-            float x = bot->GetPositionX() + cos(angle) * r;
-            float y = bot->GetPositionY() + sin(angle) * r;
-            float z = bot->GetPositionZ();
-
-            if (!bot->IsWithinLOS(x, y, z))
-                continue;
-
-            std::list<ThreatManager*> attackers;
-            findAllAttackers(attackers);
-            for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
-            {  
-                Unit* unit = (*i)->getOwner();
-                
-                float maxPlayerDistance = 0;
-                if (ai->GetPlayerBot()->GetGroup())
-                {
-                    GroupReference *gref = bot->GetGroup()->GetFirstMember();
-                    while( gref )
-                    {
-                        if( gref->getSource() == bot || gref->getSource() == ai->GetMaster() )
-                        {
-                            gref = gref->next();
-                            continue;
-                        }
-                        Player* player = gref->getSource();
-                        float playerDistance = player->GetDistance(x, y, z);
-                        if (playerDistance > maxPlayerDistance)
-                        {
-                            maxPlayerDistance = playerDistance;
-                        }
-
-                        gref = gref->next();
-                    }
-                }
-
-                float distToCreature = unit->GetDistance(x, y, z);
-                if (maxPlayerDistance < SPELL_DISTANCE && maxDistance < distToCreature)
-                {
-                    maxDistance = distToCreature;
-                    rx = x; ry = y;
-                }
-            }
-        }
-    }
-
-    Stay();
-    bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
+	std::list<ThreatManager*> attackers;
+	findAllAttackers(attackers);
+	
+	Player* bot = ai->GetPlayerBot();
+	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
+	
+	float rx, ry, rz;
+	if (manager.flee(&rx, &ry, &rz)) {
+		Stay();
+		bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
+		return true;
+	}
+	return false;
 }
 
 void PlayerbotAIFacade::AttackLeastThreat()

@@ -1794,6 +1794,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\FleeManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\FleeManager.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\GenericActions.cpp"
 					>
 				</File>

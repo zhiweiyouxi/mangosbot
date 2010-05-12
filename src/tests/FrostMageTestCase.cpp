@@ -36,7 +36,9 @@ protected:
 		tickInSpellRange();
         tick();
 
-        assertActions(">frostbolt>frost nova>flee>frostbolt>shoot");
+		tickWithLowHealth(24);
+
+        assertActions(">frostbolt>frost nova>flee>frostbolt>shoot>ice block");
 	}
 
     void dispel() 
