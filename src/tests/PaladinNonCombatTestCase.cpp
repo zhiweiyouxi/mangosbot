@@ -10,6 +10,7 @@ class PaladinNonCombatTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( PaladinNonCombatTestCase );
         CPPUNIT_TEST( buff );
+		CPPUNIT_TEST( resurrect );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -47,7 +48,11 @@ protected:
         assertActions(">devotion aura>seal of righteousness>seal of justice>seal of light>blessing of sanctuary>blessing of kings on party");
     }
 
-
+	void resurrect()
+	{
+		tickWithDeadPartyMember();
+		assertActions(">redemption on party");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( PaladinNonCombatTestCase );

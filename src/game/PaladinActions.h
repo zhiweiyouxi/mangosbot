@@ -194,4 +194,9 @@ namespace ai
 	BEGIN_SPELL_ACTION(CastHolyShieldAction, "holy shield")
 	END_SPELL_ACTION()
 	
+	class CastRedemptionAction : public ResurrectPartyMemberAction
+	{
+	public:
+		CastRedemptionAction(PlayerbotAIFacade* const ai) : ResurrectPartyMemberAction(ai, "redemption") {}
+	};
 }
