@@ -190,4 +190,11 @@ namespace ai
         CastDispelMagicOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "dispel magic", DISPEL_MAGIC) {}
         virtual const char* getName() { return "dispel magic on party"; }
     };
+
+	class CastResurrectionAction : public ResurrectPartyMemberAction
+	{
+	public:
+		CastResurrectionAction(PlayerbotAIFacade* const ai) : ResurrectPartyMemberAction(ai, "resurrection") {}
+	};
+
 }

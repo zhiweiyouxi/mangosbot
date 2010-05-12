@@ -38,6 +38,9 @@ void HealPriestNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers
         new PartyMemberLowHealthTrigger(ai),
         NextAction::array(0, new NextAction("flash heal on party", 20.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new PartyMemberDeadTrigger(ai),
+		NextAction::array(0, new NextAction("resurrection", 20.0f), NULL)));
 }
 
 void HealPriestNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -247,6 +250,13 @@ ActionNode* HealPriestNonCombatStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("resurrection", name)) 
+	{
+		return new ActionNode (new CastResurrectionAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else return NULL;
 }
 

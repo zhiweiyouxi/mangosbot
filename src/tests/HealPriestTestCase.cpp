@@ -86,7 +86,9 @@ protected:
 
 		tickWithLowHealth(1);
 
-        assertActions(">flash heal");
+		tickWithDeadPartyMember();
+
+        assertActions(">flash heal>resurrection on party");
     }
 
     void healOthers()
