@@ -67,6 +67,20 @@ namespace ai
         const char* spell;
     };
 
+	class EnergyAvailable : public Trigger
+	{
+	public:
+		EnergyAvailable(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
+		{
+			this->amount = amount;
+		}
+	public: 
+		virtual bool IsActive();
+
+	protected:
+		int amount;
+	};
+
     class ComboPointsAvailable : public Trigger
     {
     public:

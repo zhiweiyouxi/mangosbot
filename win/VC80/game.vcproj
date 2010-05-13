@@ -2370,6 +2370,74 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Rogue"
+				>
+				<File
+					RelativePath="..\..\src\game\RogueActionFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueActionFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueActions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueComboActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueFinishingActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueMultipliers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueMultipliers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueOpeningActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueTriggers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\RogueTriggers.h"
+					>
+				</File>
+				<Filter
+					Name="Strategies"
+					>
+					<File
+						RelativePath="..\..\src\game\DpsRogueStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DpsRogueStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericRogueNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\GenericRogueNonCombatStrategy.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"

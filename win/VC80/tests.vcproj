@@ -779,6 +779,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Rogue"
+			>
+			<File
+				RelativePath="..\..\src\tests\DpsRogueTestCase.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\tests\main.cpp"
 			>

@@ -142,6 +142,13 @@ void EngineTestBase::tickWithRage(int amount)
     ai->rage = 0;
 }
 
+void EngineTestBase::tickWithEnergy(int amount)
+{
+	ai->energy = amount;
+	tick();
+	ai->energy = 0;
+}
+
 void EngineTestBase::tickWithAttackerCount(int count)
 {
 	ai->attackerCount = count;

@@ -74,6 +74,11 @@ uint8 PlayerbotAIFacade::GetRage()
     return ai->GetRagePercent();
 }
 
+uint8 PlayerbotAIFacade::GetEnergy()
+{
+	return ai->GetEnergyAmount();
+}
+
 bool PlayerbotAIFacade::HasAura(const char* spell)
 {
     return ai->HasAura(spell);
