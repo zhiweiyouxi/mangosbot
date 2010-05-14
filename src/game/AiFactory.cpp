@@ -9,6 +9,7 @@
 #include "PaladinActionFactory.h"
 #include "DruidActionFactory.h"
 #include "HunterActionFactory.h"
+#include "RogueActionFactory.h"
 
 Engine* AiFactory::createCombatEngine(Player* player, PlayerbotAIFacade* const facade) {
 	Engine* engine = NULL;
@@ -47,6 +48,10 @@ Engine* AiFactory::createCombatEngine(Player* player, PlayerbotAIFacade* const f
 			engine = new Engine(facade, new HunterActionFactory(facade));
 			engine->addStrategies("dps", "dps assist", NULL);
             break;
+		case CLASS_ROGUE:
+			engine = new Engine(facade, new RogueActionFactory(facade));
+			engine->addStrategies("dps", "dps assist", NULL);
+			break;
     }
 	return engine;
 }
@@ -87,6 +92,10 @@ Engine* AiFactory::createNonCombatEngine(Player* player, PlayerbotAIFacade* cons
 			nonCombatEngine = new Engine(facade, new HunterActionFactory(facade));
 			nonCombatEngine->addStrategy("dps assist");
             break;
+		case CLASS_ROGUE:
+			nonCombatEngine = new Engine(facade, new RogueActionFactory(facade));
+			nonCombatEngine->addStrategy("dps assist");
+			break;
     }
     nonCombatEngine->addStrategies("nc", "emote", "food", "stay", NULL);
 	return nonCombatEngine;

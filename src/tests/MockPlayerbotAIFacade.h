@@ -21,6 +21,7 @@ namespace ai
             haveTarget = true;
 			hasDrink = hasFood = true;
 			deadPartyMember = false;
+			energy = 0;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -35,6 +36,7 @@ namespace ai
         virtual bool canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
         virtual uint8 GetRage() { return rage; } 
+		virtual uint8 GetEnergy() { return energy; } 
         virtual bool HasAura(const char* spell);
         virtual bool TargetHasAura(const char* spell);
         virtual bool PetHasAura(const char* spell);
@@ -120,6 +122,7 @@ namespace ai
 		bool hasDrink, hasFood;
 		std::map<string, int> itemCounts;
 		bool deadPartyMember;
+		uint32 energy;
     };
 
 }

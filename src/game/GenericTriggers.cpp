@@ -11,6 +11,11 @@ bool RageAvailable::IsActive()
     return ai->GetRage() >= amount;
 }
 
+bool EnergyAvailable::IsActive()
+{
+	return ai->GetEnergy() >= amount;
+}
+
 bool ComboPointsAvailable::IsActive()
 {
     return ai->GetComboPoints() >= amount;

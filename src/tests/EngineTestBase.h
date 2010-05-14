@@ -42,6 +42,7 @@ protected:
 	void tickInSpellRange();
 	void tickWithNoAggro();
 	void tickWithRage(int amount);
+	void tickWithEnergy(int amount);
 	void tickWithAttackerCount(int count);
 	void tickWithMyAttackerCount(int count);
 	void tickWithLowHealth(int amount);
