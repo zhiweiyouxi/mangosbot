@@ -2011,6 +2011,75 @@ void PlayerbotAI::extractItemIds(const std::string& text, std::list<uint32>& ite
     }
 }
 
+bool PlayerbotAI::extractGOinfo(const std::string& text, uint32 &guid, uint32 &entry, int &mapid, float &x, float &y, float &z) const
+{
+
+	//    Link format
+	//    |cFFFFFF00|Hfound:" << guid << ':'  << entry << ':' << x << ':' << y << ':' << z  << ':' << mapid << ':' <<  "|h[" << gInfo->name << "]|h|r";
+	//    |cFFFFFF00|Hfound:5093:1731:-9295:-270:81.874:0:|h[Copper Vein]|h|r
+
+	uint8 pos = 0;
+
+	// extract GO guid
+	int i = text.find("Hfound:", pos); // base H = 11
+	if (i == -1) // break if error
+		return false;
+
+	pos = i + 7; //start of window in text 11 + 7 = 18
+	int endPos = text.find(':', pos); // end of window in text 22
+	if (endPos == -1) //break if error
+		return false;
+	std::string guidC = text.substr(pos, endPos - pos); // get string within window i.e guid 22 - 18 =  4
+	guid = atol(guidC.c_str()); // convert ascii to long int
+
+	// extract GO entry
+	pos = endPos + 1;
+	endPos = text.find(':', pos); // end of window in text
+	if (endPos == -1) //break if error
+		return false;
+
+	std::string entryC = text.substr(pos, endPos - pos); // get string within window i.e entry
+	entry = atol(entryC.c_str()); // convert ascii to float
+
+	// extract GO x
+	pos = endPos + 1;
+	endPos = text.find(':', pos); // end of window in text
+	if (endPos == -1) //break if error
+		return false;
+
+	std::string xC = text.substr(pos, endPos - pos); // get string within window i.e x
+	x = atof(xC.c_str()); // convert ascii to float
+
+	// extract GO y
+	pos = endPos + 1;
+	endPos = text.find(':', pos); // end of window in text
+	if (endPos == -1) //break if error
+		return false;
+
+	std::string yC = text.substr(pos, endPos - pos); // get string within window i.e y
+	y = atof(yC.c_str()); // convert ascii to float
+
+	// extract GO z
+	pos = endPos + 1;
+	endPos = text.find(':', pos); // end of window in text
+	if (endPos == -1) //break if error
+		return false;
+
+	std::string zC = text.substr(pos, endPos - pos); // get string within window i.e z
+	z = atof(zC.c_str()); // convert ascii to float
+
+	//extract GO mapid
+	pos = endPos + 1;
+	endPos = text.find(':', pos); // end of window in text
+	if (endPos == -1) //break if error
+		return false;
+
+	std::string mapidC = text.substr(pos, endPos - pos); // get string within window i.e mapid
+	mapid = atoi(mapidC.c_str()); // convert ascii to int
+	pos = endPos; // end
+	return true;
+}
+
 // extracts currency in #g#s#c format
 uint32 PlayerbotAI::extractMoney(const std::string& text) const
 {
@@ -2602,8 +2671,253 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         SendWhisper("and here's my attack spells:", fromPlayer);
         ch.SendSysMessage(negOut.str().c_str());
     }
-    
-    
+
+	// find item in world
+	else if (text.size() > 2 && text.substr(0, 2) == "f " || text.size() > 5 && text.substr(0, 5) == "find ")
+	{
+		uint32 guid;
+		float x,y,z;
+		uint32 entry;
+		int mapid;
+		if(extractGOinfo(text, guid, entry, mapid, x, y, z))
+		{    // sLog.outDebug("find: guid : %u entry : %u x : (%f) y : (%f) z : (%f) mapid : %d",guid, entry, x, y, z, mapid);
+			m_bot->UpdateGroundPositionZ(x,y,z);
+			SetMovementOrder( MOVEMENT_STAY );
+			m_bot->GetMotionMaster()->MovePoint( mapid, x, y, z );
+		}
+		else
+			SendWhisper("I have no info on that object", fromPlayer);
+	}
+
+	// find item in world
+	else if (text.size() > 2 && text.substr(0, 2) == "f " || text.size() > 5 && text.substr(0, 5) == "find ")
+	{
+		uint32 guid;
+		float x,y,z;
+		uint32 entry;
+		int mapid;
+		if(extractGOinfo(text, guid, entry, mapid, x, y, z))
+		{    // sLog.outDebug("find: guid : %u entry : %u x : (%f) y : (%f) z : (%f) mapid : %d",guid, entry, x, y, z, mapid);
+			m_bot->UpdateGroundPositionZ(x,y,z);
+			SetMovementOrder( MOVEMENT_STAY );
+			m_bot->GetMotionMaster()->MovePoint( mapid, x, y, z );
+		}
+		else
+			SendWhisper("I have no info on that object", fromPlayer);
+	}
+
+	// get project: 18:50 03/05/10 rev.3 allows bots to retrieve all lootable & quest items from gameobjects
+	else if (text.size() > 2 && text.substr(0, 2) == "g " || text.size() > 4 && text.substr(0, 4) == "get ")
+	{
+		uint32 guid;
+		float x,y,z;
+		uint32 entry;
+		int mapid;
+		bool looted = false;
+		if (extractGOinfo(text, guid, entry, mapid, x, y, z))
+		{
+
+			//sLog.outDebug("find: guid : %u entry : %u x : (%f) y : (%f) z : (%f) mapid : %d",guid, entry, x, y, z, mapid);
+			m_lootCurrent = MAKE_NEW_GUID(guid, entry, HIGHGUID_GAMEOBJECT);
+			GameObject *go = m_bot->GetMap()->GetGameObject(m_lootCurrent);
+			if (!go)
+			{
+				m_lootCurrent = 0;
+				return;
+			}
+
+			if ( !go->isSpawned() )
+				return;
+
+			m_bot->UpdateGroundPositionZ(x,y,z);
+			m_bot->GetMotionMaster()->MovePoint( mapid, x, y, z );
+			m_bot->SetPosition(x, y, z, m_bot->GetOrientation());
+			m_bot->SendLoot( m_lootCurrent, LOOT_CORPSE );
+			Loot *loot = &go->loot;
+			uint32 lootNum = loot->GetMaxSlotInLootFor( m_bot );
+			// sLog.outDebug( "[PlayerbotAI]: GetGOType %u - %s looting: '%s' got %d items", go->GetGoType(), m_bot->GetName(), go->GetGOInfo()->name, loot->GetMaxSlotInLootFor( m_bot ));
+			if(lootNum == 0) // Handle opening gameobjects that contain no items
+			{
+				uint32 lockId = go->GetGOInfo()->GetLockId();
+				LockEntry const *lockInfo = sLockStore.LookupEntry(lockId);
+				if(lockInfo)
+				{
+					for(int i = 0; i < 8; ++i)
+					{
+						uint32 skillId = SkillByLockType(LockType(lockInfo->Index[i]));
+						if(skillId > 0)
+						{
+							if (m_bot->HasSkill(skillId)) // Has skill
+							{
+								uint32 reqSkillValue = lockInfo->Skill[i];
+								uint32 SkillValue = m_bot->GetPureSkillValue(skillId);
+								if (SkillValue >= reqSkillValue)
+								{
+									// sLog.outDebug("[PlayerbotAI]i: skillId : %u SkillValue : %u reqSkillValue : %u",skillId,SkillValue,reqSkillValue);
+									m_bot->UpdateGatherSkill(skillId, SkillValue, reqSkillValue);
+									looted = true;
+								}
+							}
+							break;
+						}
+					}
+				}
+			}
+			for ( uint32 l=0; l<lootNum; l++ )
+			{
+				// sLog.outDebug("[PlayerbotAI]: lootNum : %u",lootNum);
+				QuestItem *qitem=0, *ffaitem=0, *conditem=0;
+				LootItem *item = loot->LootItemInSlot( l, m_bot, &qitem, &ffaitem, &conditem );
+				if ( !item )
+					continue;
+
+				if ( !qitem && item->is_blocked )
+				{
+					m_bot->SendLootRelease( m_lootCurrent );
+					continue;
+				}
+
+				if ( m_needItemList[item->itemid]>0 )
+				{
+					ItemPosCountVec dest;
+					if ( m_bot->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item->itemid, item->count ) == EQUIP_ERR_OK )
+					{
+						Item * newitem = m_bot->StoreNewItem( dest, item->itemid, true, item->randomPropertyId);
+
+						if ( qitem )
+						{
+							qitem->is_looted = true;
+							if ( item->freeforall || loot->GetPlayerQuestItems().size() == 1 )
+								m_bot->SendNotifyLootItemRemoved( l );
+							else
+								loot->NotifyQuestItemRemoved( qitem->index );
+						}
+						else
+						{
+							if ( ffaitem )
+							{
+								ffaitem->is_looted=true;
+								m_bot->SendNotifyLootItemRemoved( l );
+							}
+							else
+							{
+								if ( conditem )
+									conditem->is_looted=true;
+								loot->NotifyItemRemoved( l );
+							}
+						}
+						if (!item->freeforall)
+							item->is_looted = true;
+						--loot->unlootedCount;
+						m_bot->SendNewItem( newitem, uint32(item->count), false, false, true );
+						m_bot->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count );
+						looted = true;
+					}
+					continue;
+				}
+
+				uint32 lockId = go->GetGOInfo()->GetLockId();
+				LockEntry const *lockInfo = sLockStore.LookupEntry(lockId);
+				if(lockInfo)
+				{
+					uint32 skillId = 0;
+					uint32 reqSkillValue = 0;
+					for(int i = 0; i < 8; ++i)
+					{
+						skillId = SkillByLockType(LockType(lockInfo->Index[i]));
+						if(skillId > 0)
+						{
+							reqSkillValue = lockInfo->Skill[i];
+							break;
+						}
+					}
+
+					if (m_bot->HasSkill(skillId) || skillId == SKILL_NONE) // Has skill or skill not required
+					{
+						if((skillId == SKILL_MINING) && !HasPick())
+							continue;
+
+						ItemPosCountVec dest;
+						if ( m_bot->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item->itemid, item->count) == EQUIP_ERR_OK )
+						{
+							Item* pItem = m_bot->StoreNewItem (dest,item->itemid,true,item->randomPropertyId);
+							uint32 SkillValue = m_bot->GetPureSkillValue(skillId);
+							if (SkillValue >= reqSkillValue)
+							{
+								m_bot->SendNewItem(pItem, uint32(item->count), false, false, true);
+								m_bot->UpdateGatherSkill(skillId, SkillValue, reqSkillValue);
+								--loot->unlootedCount;
+								looted = true;
+							}
+						}
+					}
+				}
+			}
+			// release loot
+			if(looted)
+				m_bot->GetSession()->DoLootRelease( m_lootCurrent );
+			else
+				m_bot->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOOTING);
+			// sLog.outDebug( "[PlayerbotAI]: %s looted target 0x%08X", m_bot->GetName(), m_lootCurrent );
+			SetQuestNeedItems();
+		}
+		else
+			SendWhisper("I have no info on that object", fromPlayer);
+	}    
+	// stats project: 10:00 19/04/10 rev.1 display bot statistics
+	else if (text == "stats")
+	{
+		std::ostringstream out;
+
+		uint32 totalused = 0;
+		// list out items in main backpack
+		for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
+		{
+			const Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+			if (pItem)
+				totalused++;
+		}
+		uint32 totalfree = 16 - totalused;
+		// list out items in other removable backpacks
+		for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
+		{
+			const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
+			if (pBag)
+			{
+				ItemPrototype const* pBagProto = pBag->GetProto();
+				if (pBagProto->Class == ITEM_CLASS_CONTAINER && pBagProto->SubClass == ITEM_SUBCLASS_CONTAINER)
+					totalfree =  totalfree + pBag->GetFreeSlots();
+			}
+
+		}
+
+		// calculate how much money bot has
+		uint32 copper = m_bot->GetMoney();
+		uint32 gold = uint32(copper / 10000);
+		copper -= (gold * 10000);
+		uint32 silver = uint32(copper / 100);
+		copper -= (silver * 100);
+
+		out << "|cffffffff[|h|cff00ffff" << m_bot->GetName() << "|h|cffffffff]" << " has |r|cff00ff00" << gold
+			<< "|r|cfffffc00g|r|cff00ff00" << silver
+			<< "|r|cffcdcdcds|r|cff00ff00" << copper
+			<< "|r|cffffd333c" << "|h|cffffffff bag slots |h|cff00ff00" << totalfree;
+
+		// estimate how much item damage the bot has
+		copper = EstRepairAll();
+		gold = uint32(copper / 10000);
+		copper -= (gold * 10000);
+		silver = uint32(copper / 100);
+		copper -= (silver * 100);
+
+		out << "|h|cffffffff & item damage cost " << "|r|cff00ff00" << gold
+			<< "|r|cfffffc00g|r|cff00ff00" << silver
+			<< "|r|cffcdcdcds|r|cff00ff00" << copper
+			<< "|r|cffffd333c";
+		ChatHandler ch(&fromPlayer);
+		ch.SendSysMessage(out.str().c_str());
+	}    
+
     else
     {
     	// if this looks like an item link, reward item it completed quest and talking to NPC
@@ -2701,4 +3015,149 @@ void PlayerbotAI::Attack(Unit* thingToAttack)
         TellMaster("This is not in my sight, maybe later?");
     }
     else GetCombatTarget( thingToAttack );
+}
+
+bool PlayerbotAI::HasPick()
+{
+	QueryResult *result;
+
+	// list out equiped items
+	for( uint8 slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; slot++)
+	{
+		Item* const pItem = m_bot->GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
+		if (pItem )
+		{
+			const ItemPrototype* const pItemProto = pItem->GetProto();
+			if (!pItemProto )
+				continue;
+
+			result = WorldDatabase.PQuery("SELECT TotemCategory FROM item_template WHERE entry = '%i'", pItemProto->ItemId);
+			if (result)
+			{
+				Field *fields = result->Fetch();
+				uint32 tc = fields[0].GetUInt32();
+				// sLog.outDebug("HasPick %u",tc);
+				if(tc ==  165 || tc == 167) // pick = 165, hammer = 162 or hammer pick = 167
+					return true;
+			}
+		}
+	}
+
+	// list out items in backpack
+	for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
+	{
+		// sLog.outDebug("[%s's]backpack slot = %u",m_bot->GetName(),slot); // 23 to 38 = 16
+		Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot); // 255, 23 to 38
+		if (pItem)
+		{
+			const ItemPrototype* const pItemProto = pItem->GetProto();
+			if (!pItemProto )
+				continue;
+
+			result = WorldDatabase.PQuery("SELECT TotemCategory FROM item_template WHERE entry = '%i'", pItemProto->ItemId);
+			if (result)
+			{
+				Field *fields = result->Fetch();
+				uint32 tc = fields[0].GetUInt32();
+				// sLog.outDebug("HasPick %u",tc);
+				if(tc ==  165 || tc == 167) // pick = 165, hammer = 162 or hammer pick = 167
+					return true;
+			}
+		}
+	}
+
+	// list out items in other removable backpacks
+	for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag) // 20 to 23 = 4
+	{
+		const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag); // 255, 20 to 23
+		if (pBag)
+		{
+			for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
+			{
+				// sLog.outDebug("[%s's]bag[%u] slot = %u",m_bot->GetName(),bag,slot); // 1 to bagsize = ?
+				Item* const pItem = m_bot->GetItemByPos(bag, slot); // 20 to 23, 1 to bagsize
+				if (pItem)
+				{
+					const ItemPrototype* const pItemProto = pItem->GetProto();
+					if (!pItemProto )
+						continue;
+
+					result = WorldDatabase.PQuery("SELECT TotemCategory FROM item_template WHERE entry = '%i'", pItemProto->ItemId);
+					if (result)
+					{
+						Field *fields = result->Fetch();
+						uint32 tc = fields[0].GetUInt32();
+						// sLog.outDebug("HasPick %u",tc);
+						if(tc ==  165 || tc == 167)
+							return true;
+					}
+				}
+			}
+		}
+	}
+	std::ostringstream out;
+	out << "|cffffffffI do not have a pick!";
+	TellMaster( out.str().c_str() );
+	return false;
+}
+
+uint32 PlayerbotAI::EstRepairAll()
+{
+	uint32 TotalCost = 0;
+	// equipped, backpack, bags itself
+	for(int i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; ++i)
+		TotalCost += EstRepair(( (INVENTORY_SLOT_BAG_0 << 8) | i ));
+
+	// bank, buyback and keys not repaired
+
+	// items in inventory bags
+	for(int j = INVENTORY_SLOT_BAG_START; j < INVENTORY_SLOT_BAG_END; ++j)
+		for(int i = 0; i < MAX_BAG_SIZE; ++i)
+			TotalCost += EstRepair(( (j << 8) | i ));
+	return TotalCost;
+}
+
+uint32 PlayerbotAI::EstRepair(uint16 pos)
+{
+	Item* item = m_bot->GetItemByPos(pos);
+
+	uint32 TotalCost = 0;
+	if(!item)
+		return TotalCost;
+
+	uint32 maxDurability = item->GetUInt32Value(ITEM_FIELD_MAXDURABILITY);
+	if(!maxDurability)
+		return TotalCost;
+
+	uint32 curDurability = item->GetUInt32Value(ITEM_FIELD_DURABILITY);
+
+	uint32 LostDurability = maxDurability - curDurability;
+	if(LostDurability>0)
+	{
+		ItemPrototype const *ditemProto = item->GetProto();
+
+		DurabilityCostsEntry const *dcost = sDurabilityCostsStore.LookupEntry(ditemProto->ItemLevel);
+		if(!dcost)
+		{
+			sLog.outError("RepairDurability: Wrong item lvl %u", ditemProto->ItemLevel);
+			return TotalCost;
+		}
+
+		uint32 dQualitymodEntryId = (ditemProto->Quality+1)*2;
+		DurabilityQualityEntry const *dQualitymodEntry = sDurabilityQualityStore.LookupEntry(dQualitymodEntryId);
+		if(!dQualitymodEntry)
+		{
+			sLog.outError("RepairDurability: Wrong dQualityModEntry %u", dQualitymodEntryId);
+			return TotalCost;
+		}
+
+		uint32 dmultiplier = dcost->multiplier[ItemSubClassToDurabilityMultiplierId(ditemProto->Class,ditemProto->SubClass)];
+		uint32 costs = uint32(LostDurability*dmultiplier*double(dQualitymodEntry->quality_mod));
+
+		if (costs==0)                                   //fix for ITEM_QUALITY_ARTIFACT
+			costs = 1;
+
+		TotalCost = costs;
+	}
+	return TotalCost;
 }

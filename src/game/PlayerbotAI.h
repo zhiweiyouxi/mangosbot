@@ -137,6 +137,14 @@ class MANGOS_DLL_SPEC PlayerbotAI
         // extracts currency from a string as #g#s#c and returns the total in copper
         uint32 extractMoney(const std::string& text) const;
 
+		// extracts gameobject info from link
+		bool extractGOinfo(const std::string& text, uint32 &guid,  uint32 &entry, int &mapid, float &x, float &y, float &z) const;
+
+		bool HasPick();
+
+		uint32 EstRepairAll();
+		uint32 EstRepair(uint16 pos);
+
         // finds items in bots equipment and adds them to foundItemList, removes found items from itemIdSearchList
         void findItemsInEquip(std::list<uint32>& itemIdSearchList, std::list<Item*>& foundItemList) const;
         // finds items in bots inventory and adds them to foundItemList, removes found items from itemIdSearchList
