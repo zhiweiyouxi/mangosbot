@@ -38,7 +38,7 @@ bool HealPartyMemberAction::ExecuteResult()
 
 bool HealPartyMemberAction::isUseful()
 {
-    return CastSpellAction::isUseful() && ai->GetPartyMinHealthPercent() < 85;
+    return CastSpellAction::isUseful() && ai->GetPartyMinHealthPercent() < (100 - estAmount);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

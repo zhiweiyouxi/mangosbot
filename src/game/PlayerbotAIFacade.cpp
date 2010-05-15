@@ -253,31 +253,24 @@ Unit* PlayerbotAIFacade::GetPartyMinHealthPlayer()
 	if (!group)
 		return NULL;
 
-	uint8 minHealth = 100;
-	Unit* minHealthPlayer = NULL;
+    MinValueCalculator calc(100);
 	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
 		Player* player = gref->getSource();
 		if (!checkPredicate(player, NULL, NULL) || !player->isAlive())
 			continue;
 
         uint8 health = ai->GetHealthPercent(*player);
-        if (!minHealthPlayer || minHealth > health)
-        {
-            minHealthPlayer = player;
-            minHealth = health;
-        }
+        if (health < 25 || !IsTargetOfHealingSpell(player))
+            calc.probe(health, player);
 
 		Pet* pet = player->GetPet();
 		if (pet && pet->IsPermanentPetFor(player)) {
 			health = ai->GetHealthPercent(*pet);
-			if (!minHealthPlayer || minHealth > health)
-			{
-				minHealthPlayer = pet;
-				minHealth = health;
-			}
+            if (health < 25 || !IsTargetOfHealingSpell(player))
+                calc.probe(health, player);
 		}
     }
-    return minHealthPlayer;
+    return (Unit*)calc.param;
 }
 
 Unit* PlayerbotAIFacade::GetDeadPartyMember() {
@@ -289,7 +282,7 @@ Unit* PlayerbotAIFacade::GetDeadPartyMember() {
 
 	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
 		Player* player = gref->getSource();
-		if (checkPredicate(player, NULL, NULL) && !player->isAlive())
+		if (checkPredicate(player, NULL, NULL) && !player->isAlive() && !IsTargetOfResurrectSpell(player))
 			return player;
 	}
 	return NULL;
@@ -712,4 +705,56 @@ bool PlayerbotAIFacade::HasAnyAuraOf(const char* first, ...) {
 bool PlayerbotAIFacade::CastSpell(const char* spell, Unit* target) {
 	Stay();
 	return ai->CastSpell(ai->getSpellId(spell), target); 
+}
+
+bool IsHealingSpell(SpellEntry const* spell) {
+    for (int i=0; i<3; i++) {
+        if (spell->Effect[i] == SPELL_EFFECT_HEAL ||
+            spell->Effect[i] == SPELL_EFFECT_HEAL_MAX_HEALTH ||
+            spell->Effect[i] == SPELL_EFFECT_HEAL_MECHANICAL || 
+            spell->Effect[i] == SPELL_EFFECT_HEAL_PCT)
+            return true;
+    }
+    return false;
+}
+
+bool IsResurrectSpell(SpellEntry const* spell) {
+    for (int i=0; i<3; i++) {
+        if (spell->Effect[i] == SPELL_EFFECT_RESURRECT || 
+            spell->Effect[i] == SPELL_EFFECT_RESURRECT_NEW || 
+            spell->Effect[i] == SPELL_EFFECT_SELF_RESURRECT)
+            return true;
+    }
+    return false;
+}
+
+
+bool PlayerbotAIFacade::IsTargetOfHealingSpell(Player* target) {
+    return IsTargetOfSpellCast(target, IsHealingSpell);
+}
+
+bool PlayerbotAIFacade::IsTargetOfResurrectSpell(Player* target) {
+    return IsTargetOfSpellCast(target, IsResurrectSpell);
+}
+
+bool PlayerbotAIFacade::IsTargetOfSpellCast(Player* target, bool predicate(SpellEntry const*)) {
+    Player* bot = ai->GetPlayerBot();
+    Group* group = bot->GetGroup();
+    uint32 targetGuid = target ? target->GetGUID() : bot->GetGUID();
+
+    for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
+        Player* player = gref->getSource();
+        if (player == bot)
+            continue;
+
+        if (player->GetSelection() == targetGuid && player->IsNonMeleeSpellCasted(true)) {
+            for (int type = CURRENT_GENERIC_SPELL; type < CURRENT_MAX_SPELL; type++) {
+                Spell* spell = player->GetCurrentSpell((CurrentSpellTypes)type);
+                if (spell && predicate(spell->m_spellInfo))
+                    return true;
+            }
+        }
+    }
+
+    return false;
 }

@@ -117,19 +117,26 @@ namespace ai
     class CastHealingSpellAction : public CastSpellAction
     {
     public:
-        CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual bool isUseful() {
-            return CastSpellAction::isUseful() && ai->GetHealthPercent() < 85;
+        CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastSpellAction(ai, spell) {
+            this->estAmount = estAmount;
         }
+        virtual bool isUseful() {
+            return CastSpellAction::isUseful() && ai->GetHealthPercent() < (100 - estAmount);
+        }
+
+    protected:
+        uint8 estAmount;
     };
-    class HealPartyMemberAction : public CastSpellAction
+
+    class HealPartyMemberAction : public CastHealingSpellAction
     {
     public:
-        HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+        HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastHealingSpellAction(ai, spell, estAmount) {}
 
         virtual bool isUseful();
         virtual bool ExecuteResult();
     };
+
 	class ResurrectPartyMemberAction : public CastSpellAction
 	{
 	public:

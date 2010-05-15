@@ -18,6 +18,26 @@ namespace ai
         void* param;
     };
 
+    class MinValueCalculator {
+    public:
+        MinValueCalculator(float def = 0.0f) {
+            param = NULL;
+            minValue = def;
+        }
+
+    public:
+        void probe(float value, void* p) {
+            if (!param || minValue >= value) {
+                minValue = value;
+                param = p;
+            }
+        }
+
+    public:
+        void* param;
+        float minValue;
+    };
+
     class PlayerbotAIFacade
     {
     public:
@@ -87,6 +107,10 @@ namespace ai
         virtual bool IsTargetMoving();
         virtual bool IsTargetCastingNonMeleeSpell();
         virtual bool TargetHasAuraToDispel(uint32 dispelType);
+        virtual bool IsTargetOfSpellCast(Player* target, bool predicate(SpellEntry const*));
+        virtual bool IsTargetOfHealingSpell(Player* target);
+        virtual bool IsTargetOfResurrectSpell(Player* target);
+
 
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
 		{
