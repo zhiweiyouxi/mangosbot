@@ -21,8 +21,8 @@ void DpsRogueStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("melee", 10.0f), NULL)));
 
 	triggers.push_back(new TriggerNode(
-		new EnergyAvailable(ai, 50), 
-		NextAction::array(0, new NextAction("sinister strike", 20.0f), NULL)));
+		new EnergyAvailable(ai, 60), 
+		NextAction::array(0, new NextAction("mutilate", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new ComboPointsAvailable(ai, 5), 
@@ -49,7 +49,14 @@ void DpsRogueStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 
 ActionNode* DpsRogueStrategy::createAction(const char* name)
 {
-    if (!strcmp("sinister strike", name)) 
+    if (!strcmp("mutilate", name)) 
+    {
+        return new ActionNode (new CastMutilateAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("sinister strike"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("sinister strike", name)) 
     {
         return new ActionNode (new CastSinisterStrikeAction(ai),  
             /*P*/ NULL,

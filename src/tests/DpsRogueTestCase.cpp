@@ -28,14 +28,15 @@ protected:
 		tickOutOfMeleeRange();
 		tickInMeleeRange();
 
-		tickWithEnergy(60);
+		tickWithEnergy(70);
+        tickWithEnergy(70);
 
         tickWithComboPoints(5);
         tickWithComboPoints(5);
 		tickWithComboPoints(5);
 		tickWithComboPoints(5);
         
-        assertActions(">reach melee>melee>sinister strike>kidney shot>rupture>slice and dice>eviscerate");
+        assertActions(">reach melee>melee>mutilate>sinister strike>kidney shot>rupture>slice and dice>eviscerate");
     }
 
 	void healHimself()

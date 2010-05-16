@@ -10,6 +10,12 @@ namespace ai
 		CastSinisterStrikeAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "sinister strike") {} 
 	};
 
+    class CastMutilateAction : public CastMeleeSpellAction 
+    { 
+    public: 
+        CastMutilateAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "mutilate") {} 
+    };
+
 	class CastGougeAction : public CastMeleeSpellAction 
 	{ 
 	public: 
