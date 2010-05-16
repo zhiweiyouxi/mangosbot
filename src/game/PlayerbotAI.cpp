@@ -1795,7 +1795,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     if (currentTime < m_ignoreAIUpdatesUntilTime)
         return;
 
-    m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
+    m_ignoreAIUpdatesUntilTime = time(0) + 1;
 
 	// send heartbeat
 	MovementUpdate();
@@ -1965,6 +1965,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
 
     m_CurrentlyCastingSpellId = spellId;
 	int32 castTime = (int32)ceil((float)pSpell->GetCastTime()/1000.0f);
+    if (castTime < GLOBAL_COOLDOWN) castTime = GLOBAL_COOLDOWN;
     m_ignoreAIUpdatesUntilTime = time(0) + castTime;
 	
 	m_ignoreAIUpdatesUntilTime += UpdateIgnoreTime(spellId);
