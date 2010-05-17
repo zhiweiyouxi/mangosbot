@@ -77,7 +77,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
     m_mgr(mgr), m_bot(bot), m_ignoreAIUpdatesUntilTime(0),
     m_combatOrder(ORDERS_NONE), m_ScenarioType(SCENARIO_PVEEASY),
     m_TimeDoneEating(0), m_TimeDoneDrinking(0),
-    m_CurrentlyCastingSpellId(0), m_spellIdCommand(0), 
+    m_CurrentlyCastingSpellId(0), m_CurrentlyCastingSpellTarget(0), m_spellIdCommand(0), 
 	m_targetGuidCommand(0), m_classAI(0) {
 
     // set bot state and needed item list
@@ -422,6 +422,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
             {
                 m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
                 m_CurrentlyCastingSpellId = 0;
+				m_CurrentlyCastingSpellTarget = 0;
             }
             return;
         }
@@ -711,6 +712,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 				int ignoreTime = UpdateIgnoreTime(spellId);
 				if (!ignoreTime) {
 					m_CurrentlyCastingSpellId = 0;
+					m_CurrentlyCastingSpellTarget = 0;
 					ignoreTime = GLOBAL_COOLDOWN;
 				}
 				m_ignoreAIUpdatesUntilTime = time(0) + ignoreTime;
@@ -1005,6 +1007,7 @@ void PlayerbotAI::InterruptCurrentCastingSpell()
     *packet << m_CurrentlyCastingSpellId;
     *packet << m_targetGuidCommand;   //changed from thetourist suggestion
     m_CurrentlyCastingSpellId = 0;
+	m_CurrentlyCastingSpellTarget = 0;
     m_bot->GetSession()->QueuePacket(packet);
 }
 
@@ -1964,6 +1967,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
         return false;
 
     m_CurrentlyCastingSpellId = spellId;
+	m_CurrentlyCastingSpellTarget = pTarget->GetGUID();
 	int32 castTime = (int32)ceil((float)pSpell->GetCastTime()/1000.0f);
     if (castTime < GLOBAL_COOLDOWN) castTime = GLOBAL_COOLDOWN;
     m_ignoreAIUpdatesUntilTime = time(0) + castTime;

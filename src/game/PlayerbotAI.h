@@ -155,6 +155,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
         // get current casting spell (will return NULL if no spell!)
         Spell* GetCurrentSpell() const;
+		uint64 GetCurrentSpellTarget() { return m_CurrentlyCastingSpellTarget; }
 
         bool HasAura(uint32 spellId, const Unit& player);
         bool HasAura(const char* spellName, const Unit& player);
@@ -293,6 +294,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
         time_t m_TimeDoneEating;
         time_t m_TimeDoneDrinking;
         uint32 m_CurrentlyCastingSpellId;
+		uint64 m_CurrentlyCastingSpellTarget;
         //bool m_IsFollowingMaster;
 
         // if master commands bot to do something, store here until updateAI

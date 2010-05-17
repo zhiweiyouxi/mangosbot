@@ -747,7 +747,7 @@ bool PlayerbotAIFacade::IsTargetOfSpellCast(Player* target, bool predicate(Spell
         if (player == bot)
             continue;
 
-        if (player->GetSelection() == targetGuid && player->IsNonMeleeSpellCasted(true)) {
+        if (ai->GetCurrentSpellTarget() == targetGuid && player->IsNonMeleeSpellCasted(true)) {
             for (int type = CURRENT_GENERIC_SPELL; type < CURRENT_MAX_SPELL; type++) {
                 Spell* spell = player->GetCurrentSpell((CurrentSpellTypes)type);
                 if (spell && predicate(spell->m_spellInfo))
