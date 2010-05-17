@@ -22,6 +22,7 @@ namespace ai
 			hasDrink = hasFood = true;
 			deadPartyMember = false;
 			energy = 0;
+			targetMana = 100;
         }
 
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f) { return distanceToEnemy; }
@@ -45,6 +46,7 @@ namespace ai
         virtual uint8 GetHealthPercent() { return health; }
         virtual uint8 GetComboPoints() { return comboPoints; }
         virtual uint8 GetTargetHealthPercent() { return targetHealth; }
+		virtual uint8 GetTargetManaPercent() { return targetMana; }
         virtual uint8 GetManaPercent() {return mana; }
         virtual bool HasAggro() { return aggro; }
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE) { return attackerCount; }
@@ -106,7 +108,8 @@ namespace ai
         std::list<std::string> petAuras;
         float distanceToEnemy;
         uint8 rage, health, mana;
-        uint8 targetHealth, petHealth;
+        uint8 targetHealth, targetMana;
+		uint8 petHealth;
         uint8 comboPoints;
         bool aggro;
         bool hasPet;

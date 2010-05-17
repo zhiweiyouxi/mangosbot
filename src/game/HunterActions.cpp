@@ -11,7 +11,7 @@ bool CastSerpentStingAction::isUseful()
 
 bool CastViperStingAction::isUseful()
 {
-    return ai->GetManaPercent() < 50;
+    return ai->GetManaPercent() < 50 && ai->GetTargetManaPercent() >= 30;
 }
 
 bool CastArcaneShotAction::isUseful()
