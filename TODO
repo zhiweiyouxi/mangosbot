@@ -1,14 +1,17 @@
+[ ] resistance auras, spells etc on (from enemy spells)
+[ ] aoe
+[ ] flee out of damaging aoe
+[ ] ignore auras for specific spells (i.e. frostbolt)
+
 [ ] use threat level
 [ ] do not interrupt channels
-[ ] heal different party memebers
 [ ] combat with different targets
 [ ] attack priest's target
-[?] do not cast spell if somebody else casts the same
-[ ] resistance auras, spells etc on (from enemy spells)
 
-[ ] global spell cooldown
+[v] global spell cooldown
+[v] heal different party memebers
+[v] do not cast spell if somebody else casts the same
 
-[ ] aoe
 [?] rogue
 
 [ ] warlock: heal demon

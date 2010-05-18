@@ -702,9 +702,9 @@ bool PlayerbotAIFacade::HasAnyAuraOf(const char* first, ...) {
 	return false;
 }
 
-bool PlayerbotAIFacade::CastSpell(const char* spell, Unit* target) {
+bool PlayerbotAIFacade::CastSpell(const char* spell, Unit* target, bool checkAura) {
 	Stay();
-	return ai->CastSpell(ai->getSpellId(spell), target); 
+	return ai->CastSpell(spell, target, checkAura); 
 }
 
 bool IsHealingSpell(SpellEntry const* spell) {

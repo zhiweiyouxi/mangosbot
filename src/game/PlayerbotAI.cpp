@@ -1834,16 +1834,6 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
         if (pSpell && !(pSpell->IsChannelActive() || pSpell->IsAutoRepeat()))
             InterruptCurrentCastingSpell();
 
-        // direct cast command from master
-        else if (m_spellIdCommand != 0)
-        {
-            Unit* pTarget = ObjectAccessor::GetUnit(*m_bot, m_targetGuidCommand);
-            if (pTarget != NULL)
-                CastSpell(m_spellIdCommand, *pTarget);
-            m_spellIdCommand = 0;
-            m_targetGuidCommand = 0;
-        }
-
         // handle combat (either self/master/group in combat, or combat state and valid target)
         else if ( IsInCombat() || (m_botState == BOTSTATE_COMBAT && m_targetCombat) )
             DoNextCombatManeuver();
@@ -1891,22 +1881,20 @@ bool PlayerbotAI::canObeyCommandFrom(const Player& player) const
     return player.GetSession()->GetAccountId() == GetMaster()->GetSession()->GetAccountId();
 }
 
-bool PlayerbotAI::CastSpell(const char* args)
-{
-    uint32 spellId = getSpellId(args);
-    return (spellId) ? CastSpell(spellId) : false;
-}
-
-bool PlayerbotAI::CastSpell(uint32 spellId, Unit& target)
+bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target, bool checkAura)
 {
     uint64 oldSel = m_bot->GetSelection();
-    m_bot->SetSelection(target.GetGUID());
-    bool rv = CastSpell(spellId);
-    m_bot->SetSelection(oldSel);
+	
+	if (target)
+		m_bot->SetSelection(target->GetGUID());
+
+    bool rv = CastSpell(spellId, checkAura);
+    
+	m_bot->SetSelection(oldSel);
     return rv;
 }
 
-bool PlayerbotAI::CastSpell(uint32 spellId)
+bool PlayerbotAI::CastSpell(uint32 spellId, bool checkAura)
 {
     // some AIs don't check if the bot doesn't have spell before using it
     // so just return false when this happens
@@ -1953,7 +1941,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId)
         pTarget = m_bot;
     }
 
-    if (HasAura(spellId, *pTarget))
+    if (checkAura && HasAura(spellId, *pTarget))
         return false;
 
     // stop movement to prevent cancel spell casting

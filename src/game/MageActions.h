@@ -7,9 +7,14 @@ namespace ai
     BEGIN_SPELL_ACTION(CastFrostNovaAction, "frost nova")
     END_SPELL_ACTION()
 
-    BEGIN_RANGED_SPELL_ACTION(CastFrostboltAction, "frostbolt")
-    END_SPELL_ACTION()
-    
+	class CastFrostboltAction : public CastRangedSpellAction
+	{
+	public:
+		CastFrostboltAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "frostbolt") {
+			checkAura = false;
+		}
+	};
+
     BEGIN_SPELL_ACTION(CastArcaneIntellectAction, "arcane intellect")
     END_SPELL_ACTION()
 

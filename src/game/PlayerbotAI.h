@@ -195,13 +195,11 @@ class MANGOS_DLL_SPEC PlayerbotAI
         void TellMaster(const std::string& text) const;
         void TellMaster( const char *fmt, ... ) const;
         void SendWhisper(const std::string& text, Player& player) const;
-        bool CastSpell(const char* args);
-        bool CastSpell(uint32 spellId);
-        bool CastSpell(uint32 spellId, Unit& target);
-        bool CastSpell(uint32 spellId, Unit* target)
-        {
-            return target ? CastSpell(spellId, *target) : CastSpell(spellId);
-        }
+        
+		bool CastSpell(const char* args, Unit* target = NULL, bool checkAura = true) {
+			return CastSpell(getSpellId(args), target, checkAura);
+		}
+
 		int UpdateIgnoreTime(uint32 spellId);
 
         void UseItem(Item& item);
@@ -258,6 +256,9 @@ class MANGOS_DLL_SPEC PlayerbotAI
         void QuestLocalization(std::string& questTitle, const uint32 questID) const;
 
     private:
+		bool CastSpell(uint32 spellId, Unit* target = NULL, bool checkAura = true);
+		bool CastSpell(uint32 spellId, bool checkAura = true);
+
         // ****** Closed Actions ********************************
         // These actions may only be called at special times.
         // Trade methods are only applicable when the trade window is open

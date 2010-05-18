@@ -50,13 +50,15 @@ namespace ai
         CastSpellAction(PlayerbotAIFacade* const ai, const char* spell) : Action(ai, spell)
         {
             this->spell = spell;
+			this->checkAura = true;
         }
 
-        bool ExecuteResult() { return ai->CastSpell(spell); }
+        bool ExecuteResult() { return ai->CastSpell(spell, NULL, checkAura); }
         virtual bool isPossible() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
 
     protected:
         const char* spell;
+		bool checkAura;
     };
 
 	//---------------------------------------------------------------------------------------------------------------------

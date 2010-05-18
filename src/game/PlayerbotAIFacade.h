@@ -53,7 +53,7 @@ namespace ai
 		virtual void MoveToTarget(float distance = 0.0f);
         virtual void Stay();
         virtual bool CastSpellOnCurrentTarget(const char* spell) { return CastSpell(spell, ai->GetCurrentTarget()); }
-        virtual bool CastSpell(const char* spell, Unit* target = NULL);
+        virtual bool CastSpell(const char* spell, Unit* target = NULL, bool checkAura = true);
         virtual bool canCastSpell( const char* spell );
         virtual uint8 GetRage();
 		virtual uint8 GetEnergy();

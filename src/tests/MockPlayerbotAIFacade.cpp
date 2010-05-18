@@ -15,7 +15,7 @@ bool MockPlayerbotAIFacade::canCastSpell(const char* spell)
     return TRUE;
 }
 
-bool MockPlayerbotAIFacade::CastSpell(const char* spell, Unit* target) 
+bool MockPlayerbotAIFacade::CastSpell(const char* spell, Unit* target, bool checkAura) 
 {
     if (distanceToEnemy > SPELL_DISTANCE)
         return FALSE;

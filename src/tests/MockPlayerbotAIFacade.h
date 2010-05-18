@@ -32,7 +32,7 @@ namespace ai
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }
         virtual void Stay() { buffer.append(">stay"); }
-        virtual bool CastSpell(const char* spell, Unit* target = NULL);
+        virtual bool CastSpell(const char* spell, Unit* target = NULL, bool checkAura = true);
         virtual bool CastSpellOnCurrentTarget(const char* spell);
         virtual bool canCastSpell(const char* spell);
         virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
