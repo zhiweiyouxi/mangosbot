@@ -3,9 +3,13 @@
 
 #include "Common.h"
 #include "QuestDef.h"
+#include "PlayerbotAIBase.h"
+#include "AiSpellManager.h"
+#include "AiTargetManager.h"
+#include "AiStatsManager.h"
 
 using namespace std;
-
+using namespace ai;
 
 class WorldPacket;
 class WorldObject;
@@ -21,7 +25,8 @@ class PlayerbotMgr;
 #define SPELL_DISTANCE 25.0f
 #define BOT_REACT_DISTANCE 50.0f
 
-class MANGOS_DLL_SPEC PlayerbotAI
+
+class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
 {
     public:
         enum ScenarioType
@@ -99,7 +104,7 @@ class MANGOS_DLL_SPEC PlayerbotAI
 
     public:
         PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot);
-        PlayerbotAI() : m_mgr(NULL), m_bot(NULL) {} // for mocking purpose
+        PlayerbotAI() : PlayerbotAIBase(NULL, NULL), m_mgr(NULL), m_bot(NULL) {} // for mocking purpose
         virtual ~PlayerbotAI();
 
         // This is called from Unit.cpp and is called every second (I think)
@@ -213,7 +218,6 @@ class MANGOS_DLL_SPEC PlayerbotAI
         Unit *GetCurrentTarget() { return m_targetCombat; };
         void DoNextCombatManeuver();
 		void DoCombatMovement();
-        void SetIgnoreUpdateTime(uint8 t) {m_ignoreAIUpdatesUntilTime=time(0) + t; };
 
         Player *GetPlayerBot() const {return m_bot;}
         Player *GetPlayer() const {return m_bot;}
@@ -255,6 +259,12 @@ class MANGOS_DLL_SPEC PlayerbotAI
         void ItemLocalization(std::string& itemName, const uint32 itemID) const;
         void QuestLocalization(std::string& questTitle, const uint32 questID) const;
 
+	public:
+		AiSpellManager* GetSpellManager() { return spellManager; }
+		AiTargetManager* GetTargetManager() { return targetManager; }
+		AiStatsManager* GetStatsManager() { return statsManager; }
+
+
     private:
 		bool CastSpell(uint32 spellId, Unit* target = NULL, bool checkAura = true);
 		bool CastSpell(uint32 spellId, bool checkAura = true);
@@ -272,9 +282,9 @@ class MANGOS_DLL_SPEC PlayerbotAI
         Player* const m_bot;
         PlayerbotClassAI* m_classAI;
 
-        // ignores AI updates until time specified
-        // no need to waste CPU cycles during casting etc
-        time_t m_ignoreAIUpdatesUntilTime;
+		AiSpellManager* spellManager;
+		AiTargetManager* targetManager;
+		AiStatsManager* statsManager;
 
 		CombatStyle m_combatStyle;
         CombatOrderType m_combatOrder;

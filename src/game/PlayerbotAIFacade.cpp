@@ -7,6 +7,7 @@
 #include "SpellAuras.h"
 #include "PlayerbotAIFacade.h"
 #include "FleeManager.h"
+#include "PlayerbotAIBase.h"
 
 using namespace ai;
 
@@ -162,7 +163,7 @@ bool PlayerbotAIFacade::FindAndUse(bool predicate(const ItemPrototype*, const vo
     {
         ai->UseItem(*item);
         if (ignore_time)
-            ai->SetIgnoreUpdateTime(ignore_time);
+            ai->SetNextCheckDelay(ignore_time);
         return TRUE;
     }
     return FALSE;

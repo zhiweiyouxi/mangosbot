@@ -74,7 +74,8 @@ public:
 };
 
 PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
-    m_mgr(mgr), m_bot(bot), m_ignoreAIUpdatesUntilTime(0),
+	PlayerbotAIBase(mgr, bot),
+    m_mgr(mgr), m_bot(bot),
     m_combatOrder(ORDERS_NONE), m_ScenarioType(SCENARIO_PVEEASY),
     m_TimeDoneEating(0), m_TimeDoneDrinking(0),
     m_CurrentlyCastingSpellId(0), m_CurrentlyCastingSpellTarget(0), m_spellIdCommand(0), 
@@ -91,6 +92,10 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	m_targetAssist = 0;
 	m_targetProtect = 0;
 
+	spellManager = new AiSpellManager(this);
+	statsManager = new AiStatsManager(this);
+	targetManager = new AiTargetManager(this, spellManager, statsManager);
+
 	FollowCheckTeleport(*GetMaster());
     m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);
 }
@@ -98,6 +103,9 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 PlayerbotAI::~PlayerbotAI()
 {
     if (m_classAI) delete m_classAI;
+	if (spellManager) delete spellManager;
+	if (statsManager) delete statsManager;
+	if (targetManager) delete targetManager;
 }
 
 Player* PlayerbotAI::GetMaster() const
@@ -347,7 +355,6 @@ void PlayerbotAI::SendOrders( Player& player )
         else if( m_movementOrder == MOVEMENT_STAY )
             out << "STAY";
         out << ". Got " << m_attackerInfo.size() << " attacker(s) in list.";
-        out << " Next action in " << (m_ignoreAIUpdatesUntilTime-time(0)) << "sec.";
     }
 
 	TellMaster( out.str().c_str() );
@@ -365,7 +372,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
         }
         case SMSG_DUEL_COMPLETE:
         {
-            m_ignoreAIUpdatesUntilTime = time(0) + 4;
+			SetNextCheckDelay(4);
             m_ScenarioType = SCENARIO_PVEEASY;
             m_bot->GetMotionMaster()->Clear(true);
             return;
@@ -377,7 +384,6 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
         }
         case SMSG_DUEL_REQUESTED:
         {
-            m_ignoreAIUpdatesUntilTime = 0;
             WorldPacket p(packet);
             uint64 flagGuid;
             p >> flagGuid;
@@ -399,7 +405,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
                 m_bot->GetMotionMaster()->MoveFollow(pPlayer, dist, angle);
 
                 m_bot->SetSelection(playerGuid);
-                m_ignoreAIUpdatesUntilTime = time(0) + 4;
+				SetNextCheckDelay(4);
                 m_ScenarioType = SCENARIO_DUEL;
             }
             return;
@@ -420,7 +426,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
             p >> spellId;
             if (m_CurrentlyCastingSpellId == spellId)
             {
-                m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
+				SetNextCheckDelay(GLOBAL_COOLDOWN);
                 m_CurrentlyCastingSpellId = 0;
 				m_CurrentlyCastingSpellTarget = 0;
             }
@@ -715,7 +721,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 					m_CurrentlyCastingSpellTarget = 0;
 					ignoreTime = GLOBAL_COOLDOWN;
 				}
-				m_ignoreAIUpdatesUntilTime = time(0) + ignoreTime;
+				SetNextCheckDelay(ignoreTime);
             }
             return;
         }
@@ -1022,7 +1028,7 @@ void PlayerbotAI::Feast()
 
     // wait 3 seconds before checking if we need to drink more or eat more
     time_t currentTime = time(0);
-    m_ignoreAIUpdatesUntilTime = currentTime + 3;
+	SetNextCheckDelay(3);
 
     // should we drink another
     if (m_bot->getPowerType() == POWER_MANA && currentTime > m_TimeDoneDrinking
@@ -1135,12 +1141,11 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
     // prevents bot from helping
     if (m_targetCombat->GetTypeId() == TYPEID_PLAYER && dynamic_cast<Player*> (m_targetCombat)->duel)
     {
-        m_ignoreAIUpdatesUntilTime = time(0) + 6;
+		SetNextCheckDelay(6);
         return;
     }
 
     m_bot->SetSelection(m_targetCombat->GetGUID());
-    //m_ignoreAIUpdatesUntilTime = time(0) + 1;
 
     if (m_bot->getStandState() != UNIT_STAND_STATE_STAND)
         m_bot->SetStandState(UNIT_STAND_STATE_STAND);
@@ -1794,11 +1799,10 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     if (m_bot->IsBeingTeleported() || m_bot->GetTrader())
         return;
 
-    time_t currentTime = time(0);
-    if (currentTime < m_ignoreAIUpdatesUntilTime)
-        return;
+	if (!CanUpdateAI())
+		return;
 
-    m_ignoreAIUpdatesUntilTime = time(0) + 1;
+	SetNextCheckDelay(1);
 
 	// send heartbeat
 	MovementUpdate();
@@ -1820,7 +1824,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
 			if (reclaimTime > time(0))
 			{
 				TellMaster("Will resurrect in %d secs", reclaimTime - time(0));
-				m_ignoreAIUpdatesUntilTime = reclaimTime;
+				SetNextCheckDelay(reclaimTime - time(0));
 			}
 			else
 				Revive();
@@ -1828,8 +1832,6 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     }
     else
     {
-        // if we are casting a spell then interrupt it
-        // make sure any actions that cast a spell set a proper m_ignoreAIUpdatesUntilTime!
         Spell* const pSpell = GetCurrentSpell();
         if (pSpell && !(pSpell->IsChannelActive() || pSpell->IsAutoRepeat()))
             InterruptCurrentCastingSpell();
@@ -1958,9 +1960,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId, bool checkAura)
 	m_CurrentlyCastingSpellTarget = pTarget->GetGUID();
 	int32 castTime = (int32)ceil((float)pSpell->GetCastTime()/1000.0f);
     if (castTime < GLOBAL_COOLDOWN) castTime = GLOBAL_COOLDOWN;
-    m_ignoreAIUpdatesUntilTime = time(0) + castTime;
-	
-	m_ignoreAIUpdatesUntilTime += UpdateIgnoreTime(spellId);
+	SetNextCheckDelay(castTime + UpdateIgnoreTime(spellId));
 
     // if this caused the caster to move (blink) update the position
     // I think this is normally done on the client
@@ -2321,7 +2321,7 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 	
     if (!m_bot->IsWithinDistInMap( &obj, 50, true ))
     {
-        m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
+		SetNextCheckDelay(GLOBAL_COOLDOWN);
         PlayerbotChatHandler ch(GetMaster());
         if (! ch.teleport(*m_bot))
         {
@@ -2335,7 +2335,7 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 
 void PlayerbotAI::HandleTeleportAck()
 {
-    m_ignoreAIUpdatesUntilTime = time(0) + GLOBAL_COOLDOWN;
+	SetNextCheckDelay(GLOBAL_COOLDOWN);
     m_bot->GetMotionMaster()->Clear(true);
     if (m_bot->IsBeingTeleportedNear())
     {
@@ -2465,7 +2465,7 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
     else if (text == "stay" || text == "stop")
 	{
         SetMovementOrder( MOVEMENT_STAY );
-		SetIgnoreUpdateTime(255);
+		SetNextCheckDelay(255);
 	}
     else if (text == "drink")
 		Drink();
@@ -2989,7 +2989,7 @@ void PlayerbotAI::UseLongTimeItem(Item* pItem, uint8 time)
     if (pItem != NULL)
     {
         UseItem(*pItem);
-        SetIgnoreUpdateTime(time);
+		SetNextCheckDelay(time);
         return;
     }
 }

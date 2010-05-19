@@ -18,25 +18,6 @@ namespace ai
         void* param;
     };
 
-    class MinValueCalculator {
-    public:
-        MinValueCalculator(float def = 0.0f) {
-            param = NULL;
-            minValue = def;
-        }
-
-    public:
-        void probe(float value, void* p) {
-            if (!param || minValue >= value) {
-                minValue = value;
-                param = p;
-            }
-        }
-
-    public:
-        void* param;
-        float minValue;
-    };
 
     class PlayerbotAIFacade
     {
