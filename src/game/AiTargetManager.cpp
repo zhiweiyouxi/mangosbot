@@ -84,7 +84,7 @@ bool AiTargetManager::CheckPredicate(Unit* player, FindPlayerPredicate predicate
 
 bool AiTargetManager::PlayerWithoutAuraPredicate(Unit* player, void *param )
 {
-	return player->isAlive() && !spellManager->HasAura((const char*)param, *player);
+	return player->isAlive() && !spellManager->HasAura((const char*)param, player);
 }
 
 
@@ -193,3 +193,93 @@ bool AiTargetManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
 	return false;
 }
 
+
+void AiTargetManager::findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out)
+{
+	while( ref )
+	{
+		ThreatManager *source = ref->getSource();
+		Unit *attacker = source->getOwner();
+		if (attacker && 
+			!attacker->isDead() && 
+			!attacker->IsPolymorphed() && 
+			!attacker->isFrozen() && 
+			!attacker->IsFriendlyTo(bot) && 
+			bot->IsWithinLOSInMap(attacker))
+		{
+			bool found = FALSE;
+			for (std::list<ThreatManager*>::iterator i = out.begin(); i != out.end(); i++)
+			{
+				ThreatManager *cur = *i;
+				if (cur->getOwner() == attacker)
+				{
+					found = TRUE;
+					break;
+				}
+			}
+			if (!found)
+				out.push_back(source);
+		}
+		ref = ref->next();
+	}
+}
+
+void AiTargetManager::findAllAttackers(std::list<ThreatManager*> &out)
+{
+	if (bot->GetGroup())
+	{
+		GroupReference *gref = bot->GetGroup()->GetFirstMember();
+		while( gref )
+		{
+			HostileReference *ref = gref->getSource()->getHostileRefManager().getFirst();
+			findAllAttackers(ref, out);
+			gref = gref->next();
+		}
+	}
+}
+
+Unit* AiTargetManager::FindLeastThreat()
+{
+	std::list<ThreatManager*> attackers;
+	findAllAttackers(attackers);
+
+	float minThreat = 1e8;
+	Unit* target = NULL;
+	for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+	{  
+		ThreatManager* attacker = *i;
+		float threat = attacker->getThreat(bot);
+		if (!target || threat < minThreat)
+		{
+			minThreat = threat;
+			target = attacker->getOwner();
+		}
+	}
+	return target;
+}
+
+Unit* AiTargetManager::FindBiggerThreat()
+{
+	std::list<ThreatManager*> attackers;
+	findAllAttackers(attackers);
+
+	float maxThreat = -1;
+	Unit* target = NULL;
+	for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+	{  
+		ThreatManager* attacker = *i;
+		float threat = attacker->getThreat(bot);
+		if (!target || threat > maxThreat)
+		{
+			maxThreat = threat;
+			target = attacker->getOwner();
+		}
+	}
+	return target;
+}
+
+Unit* AiTargetManager::GetCurrentTarget()
+{
+	uint64 guid = bot->GetSelection();
+	return guid ? ObjectAccessor::GetUnit(*bot, guid) : NULL;
+}

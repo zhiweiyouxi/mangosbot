@@ -81,9 +81,12 @@ uint32 AiSpellManager::FindSpellId(const char* args)
 	return foundSpellId;
 }
 
-bool AiSpellManager::HasAura(uint32 spellId, const Unit& player) 
+bool AiSpellManager::HasAura(uint32 spellId, const Unit* player) 
 {
-	for (AuraMap::const_iterator iter = player.GetAuras().begin(); iter != player.GetAuras().end(); ++iter) 
+	if (!spellId) 
+		return false;
+
+	for (AuraMap::const_iterator iter = player->GetAuras().begin(); iter != player->GetAuras().end(); ++iter) 
 	{
 		if (iter->second->GetId() == spellId)
 			return true;
@@ -174,4 +177,11 @@ void AiSpellManager::InterruptSpell()
 	lastSpellId = 0;
 	lastSpellTarget = 0;
 	lastCastTime = 0;
+}
+
+void AiSpellManager::RemoveAura(const char* name)
+{
+	uint32 spellid = GetSpellId(name);
+	if (spellid)
+		bot->RemoveAurasDueToSpell(spellid);
 }

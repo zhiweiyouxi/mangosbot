@@ -30,6 +30,9 @@ namespace ai
 		virtual Unit* GetPartyMinHealthPlayer();
 		virtual Unit* GetDeadPartyMember();
 		virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
+		virtual Unit* FindBiggerThreat();
+		virtual Unit* FindLeastThreat();
+		virtual Unit* GetCurrentTarget();
 
 	private:
 		Unit* FindPartyMember(FindPlayerPredicate predicate, void *param);
@@ -40,6 +43,9 @@ namespace ai
 		virtual bool HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(bot, dispelType); }
 		bool HasAuraToDispel(Unit* player, uint32 dispelType);
 		bool canDispel(const SpellEntry* entry, uint32 dispelType);
+		void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
+		void findAllAttackers(std::list<ThreatManager*> &out);
+
 
 	private:
 		bool IsHealingSpell(SpellEntry const* spell);

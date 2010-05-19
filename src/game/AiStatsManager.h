@@ -16,7 +16,7 @@ namespace ai
 		}
 
 	public:
-		uint8 GetHealthPercent(const Unit& target);
+		virtual uint8 GetHealthPercent(const Unit& target);
 	};
 
 };
