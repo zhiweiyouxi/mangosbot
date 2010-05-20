@@ -25,6 +25,9 @@ namespace ai
             this->name = name;
 			this->checkInterval = checkInterval;
 			ticksElapsed = 0;
+			this->spellManager = ai->GetSpellManager();
+			this->targetManager = ai->GetTargetManager();
+			this->statsManager = ai->GetStatsManager();
         }
         virtual ~Trigger() {}
 
@@ -45,6 +48,9 @@ namespace ai
         const char* name;
 		int checkInterval;
 		int ticksElapsed;
+		AiSpellManager* spellManager;
+		AiTargetManager* targetManager;
+		AiStatsManager* statsManager;
 	};
 
 

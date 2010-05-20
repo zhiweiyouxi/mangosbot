@@ -6,7 +6,7 @@ using namespace ai;
 
 bool CastSerpentStingAction::isUseful()
 {
-    return ai->GetTargetHealthPercent() > 50;
+    return statsManager->GetHealthPercent(GetTarget()) > 50;
 }
 
 bool CastViperStingAction::isUseful()
@@ -16,36 +16,28 @@ bool CastViperStingAction::isUseful()
 
 bool CastArcaneShotAction::isUseful()
 {
-    return ai->GetTargetHealthPercent() >= 5 && ai->GetManaPercent() >= 30;
+    return statsManager->GetHealthPercent(GetTarget()) >= 5 && ai->GetManaPercent() >= 30;
 }
 
 bool CastExplosiveShotAction::isUseful()
 {
-    return ai->GetTargetHealthPercent() >= 25 && ai->GetManaPercent() >= 30;
+    return statsManager->GetHealthPercent(GetTarget()) >= 25 && ai->GetManaPercent() >= 30;
 }
 
 bool CastAimedShotAction::isUseful()
 {
-    return ai->GetTargetHealthPercent() >= 5 && ai->GetManaPercent() >= 30;
+    return statsManager->GetHealthPercent(GetTarget()) >= 5 && ai->GetManaPercent() >= 30;
 }
 
-bool CastMendPetAction::isUseful()
+Unit* CastMendPetAction::GetTarget()
 {
-    return !ai->PetHasAura(spell) && !ai->IsMounted();
-}
-
-bool CastAspectOfThePackAction::isUseful() {
-    return !ai->HasAura("aspect of the pack");
-}
-
-bool CastAspectOfTheHawkAction::isUseful() {
-    return !ai->HasAura("aspect of the hawk");
+	return targetManager->GetPet();
 }
 
 bool CastAspectOfTheCheetahAction::isUseful() {
-    return !ai->HasAura("aspect of the cheetah") && !ai->HasAura("aspect of the pack");
+    return !spellManager->HasAnyAuraOf(GetTarget(), "aspect of the cheetah", "aspect of the pack");
 }
 
 bool CastAspectOfTheViperAction::isUseful() {
-    return !ai->HasAura("aspect of the viper") && ai->GetManaPercent() < 50;
+	return CastBuffSpellAction::isUseful() && ai->GetManaPercent() < 50;
 }

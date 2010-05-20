@@ -12,7 +12,7 @@ namespace ai
             ai->UseDrink();
         }
         virtual bool isUseful() {
-            return ai->GetManaPercent() < EAT_DRINK_PERCENT && !ai->HasAura("drink") && ai->HasDrink();
+            return ai->GetManaPercent() < EAT_DRINK_PERCENT && ai->HasDrink();
         }
     };
 
@@ -23,7 +23,8 @@ namespace ai
             ai->UseFood();
         }
         virtual bool isUseful() {
-            return ai->GetHealthPercent() < EAT_DRINK_PERCENT && !ai->HasAura("eat") && ai->HasFood();
+            return ai->GetStatsManager()->GetHealthPercent(ai->GetTargetManager()->GetSelf()) < EAT_DRINK_PERCENT && 
+				ai->HasFood();
         }
     };
 

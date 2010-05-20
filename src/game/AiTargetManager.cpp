@@ -25,14 +25,14 @@ Unit* AiTargetManager::GetPartyMinHealthPlayer()
 		if (!CheckPredicate(player, NULL, NULL) || !player->isAlive())
 			continue;
 
-		uint8 health = statsManager->GetHealthPercent(*player);
+		uint8 health = statsManager->GetHealthPercent(player);
 		if (health < 25 || !IsTargetOfHealingSpell(player))
 			calc.probe(health, player);
 
 		Pet* pet = player->GetPet();
 		if (pet && pet->IsPermanentPetFor(player)) 
 		{
-			health = statsManager->GetHealthPercent(*pet);
+			health = statsManager->GetHealthPercent(pet);
 			if (health < 25 || !IsTargetOfHealingSpell(player))
 				calc.probe(health, player);
 		}
@@ -282,4 +282,15 @@ Unit* AiTargetManager::GetCurrentTarget()
 {
 	uint64 guid = bot->GetSelection();
 	return guid ? ObjectAccessor::GetUnit(*bot, guid) : NULL;
+}
+
+Unit* AiTargetManager::GetSelf()
+{
+	return bot;
+}
+
+Unit* AiTargetManager::GetPet()
+{
+	Pet* pet = bot->GetPet();
+	return (pet && pet->IsPermanentPetFor(bot)) ? pet : NULL;
 }

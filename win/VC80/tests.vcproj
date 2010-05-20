@@ -787,16 +787,48 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Mocks"
+			>
+			<File
+				RelativePath="..\..\src\tests\MockAiSpellManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiSpellManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiStatsManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiStatsManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiTargetManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiTargetManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockedTargets.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockPlayerbotAIFacade.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockPlayerbotAIFacade.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\tests\main.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\MockPlayerbotAIFacade.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\tests\MockPlayerbotAIFacade.h"
 			>
 		</File>
 		<File

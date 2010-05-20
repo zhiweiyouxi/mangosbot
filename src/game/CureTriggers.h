@@ -3,43 +3,33 @@
 
 namespace ai
 {
-    class NeedCureTrigger : public Trigger {
+	class SpellTrigger;
+
+    class NeedCureTrigger : public SpellTrigger {
     public:
-        NeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType, const char* name = "need cure") : Trigger(ai, name) {
-            this->dispelType = dispelType;
-            this->spell = spell;
+        NeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : SpellTrigger(ai, spell) 
+  	    {
+			this->dispelType = dispelType;
         }
-        virtual bool IsActive() {
-            return ai->HasAuraToDispel(dispelType) && ai->HasSpell(spell);
-        }
+		virtual Unit* GetTarget();
+        virtual bool IsActive();
 
     protected:
         uint32 dispelType;
-        const char* spell;
     };
 
-    class TargetAuraDispelTrigger : public Trigger {
+    class TargetAuraDispelTrigger : public NeedCureTrigger {
     public:
-        TargetAuraDispelTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType, const char* name = "target aura dispel") : Trigger(ai, name) {
-            this->dispelType = dispelType;
-            this->spell = spell;
-        }
-        virtual bool IsActive() {
-            return ai->TargetHasAuraToDispel(dispelType) && ai->HasSpell(spell);
-        }
-
-    protected:
-        uint32 dispelType;
-        const char* spell;
+        TargetAuraDispelTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : 
+			NeedCureTrigger(ai, spell, dispelType) {}
+		virtual Unit* GetTarget();
     };
 
     class PartyMemberNeedCureTrigger : public NeedCureTrigger {
     public:
         PartyMemberNeedCureTrigger(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : 
-            NeedCureTrigger(ai, spell, dispelType, "party member need cure") {}
+            NeedCureTrigger(ai, spell, dispelType) {}
 
-        virtual bool IsActive() {
-            return ai->GetPartyMemberToDispell(dispelType) && ai->HasSpell(spell);
-        }
+		virtual Unit* GetTarget();
     };
 }

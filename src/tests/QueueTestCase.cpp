@@ -5,6 +5,7 @@
 #include "../game/Queue.h"
 #include "../game/Engine.h"
 #include "../game/GenericActions.h"
+#include "MockPlayerbotAIFacade.h"
 
 using namespace ai;
 
@@ -24,9 +25,10 @@ public:
 protected:
 	void queueMustHaveOrder()
 	{
-		CastSpellAction action1(NULL, "1");
-        CastSpellAction action2(NULL, "2");
-        CastSpellAction action3(NULL, "3");
+		MockPlayerbotAIFacade mock;
+		CastSpellAction action1(&mock, "1");
+        CastSpellAction action2(&mock, "2");
+        CastSpellAction action3(&mock, "3");
 
 		Queue q;
 		q.Push(new ActionBasket(new ActionNode(&action1, NULL, NULL, NULL), 0.5f));

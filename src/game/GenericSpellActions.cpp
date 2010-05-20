@@ -5,64 +5,73 @@
 
 using namespace ai;
 
-//---------------------------------------------------------------------------------------------------------------------
-
-bool CastLifeBloodAction::isUseful()
+Unit* CastSpellAction::GetTarget()
 {
-    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
+	return targetManager->GetCurrentTarget();
 }
 
-bool CastGiftOfTheNaaruAction::isUseful()
+bool CastSpellAction::ExecuteResult() 
 {
-    return ai->GetHealthPercent() <= EAT_DRINK_PERCENT;
+	return spellManager->CastSpell(spell, GetTarget()); 
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-bool ResurrectPartyMemberAction::ExecuteResult()
+bool CastSpellAction::isPossible() 
 {
-	return ai->CastSpell(spell, ai->GetDeadPartyMember());
+	return spellManager->CanCastSpell(spell, GetTarget());
 }
 
-bool ResurrectPartyMemberAction::isUseful()
+bool CastSpellAction::isUseful() 
 {
-	return CastSpellAction::isUseful() && ai->GetDeadPartyMember();
+	return GetTarget();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
 
-bool HealPartyMemberAction::ExecuteResult()
+bool CastAuraSpellAction::isPossible() 
 {
-    return ai->CastSpell(spell, ai->GetPartyMinHealthPlayer());
+	return CastSpellAction::isPossible() && !spellManager->HasAura(spell, GetTarget());
 }
 
-bool HealPartyMemberAction::isUseful()
+bool CastAuraSpellAction::isUseful() 
 {
-    return CastSpellAction::isUseful() && ai->GetPartyMinHealthPercent() < (100 - estAmount);
+	return CastSpellAction::isUseful() && !spellManager->HasAura(spell, GetTarget());
 }
 
-//---------------------------------------------------------------------------------------------------------------------
 
-bool CurePartyMemberAction::ExecuteResult()
+Unit* ResurrectPartyMemberAction::GetTarget()
 {
-    return ai->CastSpell(spell, ai->GetPartyMemberToDispell(dispelType));
+	return targetManager->GetDeadPartyMember();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
 
-bool BuffOnPartyAction::ExecuteResult()
+Unit* HealPartyMemberAction::GetTarget()
 {
-    return ai->CastSpell(spell, ai->GetPartyMemberWithoutAura(spell));
+	return targetManager->GetPartyMinHealthPlayer();
 }
 
-bool BuffOnPartyAction::isUseful()
+Unit* CastHealingSpellAction::GetTarget()
 {
-    return !ai->IsAllPartyHasAura(spell);
+	return targetManager->GetSelf();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-bool CastDebuffSpellAction::isPossible()
+bool CastHealingSpellAction::isUseful() 
 {
-    return CastSpellAction::isPossible() && !ai->TargetHasAura(spell);
+	Unit* target = GetTarget();
+	return CastSpellAction::isUseful() && statsManager->GetHealthPercent(target) < (100 - estAmount);
+}
+
+
+Unit* CurePartyMemberAction::GetTarget()
+{
+	return targetManager->GetPartyMemberToDispell(dispelType);
+}
+
+
+Unit* BuffOnPartyAction::GetTarget()
+{
+	return targetManager->GetPartyMemberWithoutAura(spell);
+}
+
+Unit* CastBuffSpellAction::GetTarget()
+{
+	return targetManager->GetSelf();
 }

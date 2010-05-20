@@ -3,43 +3,43 @@
 #include "GenericActions.h"
 
 namespace ai {
-	class CastBearFormAction : public CastAuraSpellAction { 
+	class CastBearFormAction : public CastBuffSpellAction { 
 	public: 
-		CastBearFormAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "bear form") {} 
+		CastBearFormAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "bear form") {} 
 
         virtual bool isPossible() {
-			return CastAuraSpellAction::isPossible() && !ai->HasAura("dire bear form");
+			return CastBuffSpellAction::isPossible() && !spellManager->HasAura("dire bear form", GetTarget());
 		}
         virtual bool isUseful() {
-			return CastAuraSpellAction::isUseful() && !ai->HasAura("dire bear form");
+			return CastBuffSpellAction::isUseful() && !spellManager->HasAura("dire bear form", GetTarget());
 		}
 	};
 
-	class CastDireBearFormAction : public CastAuraSpellAction { 
+	class CastDireBearFormAction : public CastBuffSpellAction { 
 	public: 
-		CastDireBearFormAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "dire bear form") {} 
+		CastDireBearFormAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "dire bear form") {} 
         
         virtual NextAction** getAlternatives() {
 			return NextAction::merge(NextAction::array(0, new NextAction("bear form"), NULL), CastSpellAction::getAlternatives());
 		}
 	};
 
-	class CastCatFormAction : public CastAuraSpellAction { 
+	class CastCatFormAction : public CastBuffSpellAction { 
 	public: 
-		CastCatFormAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "cat form") {} 
+		CastCatFormAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "cat form") {} 
 	};
 
-	class CastMoonkinFormAction : public CastAuraSpellAction { 
+	class CastMoonkinFormAction : public CastBuffSpellAction { 
 	public: 
-		CastMoonkinFormAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "moonkin form") {} 
+		CastMoonkinFormAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "moonkin form") {} 
 	};
 
-	class CastCasterFormAction : public CastSpellAction { 
+	class CastCasterFormAction : public CastBuffSpellAction { 
 	public: 
-		CastCasterFormAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "caster form") {} 
+		CastCasterFormAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "caster form") {} 
 
 		virtual bool isUseful() {
-			return ai->HasAnyAuraOf("dire bear form", "bear form", "cat form", "travel form", "aquatic form", 
+			return spellManager->HasAnyAuraOf(GetTarget(), "dire bear form", "bear form", "cat form", "travel form", "aquatic form", 
 				"flight form", "swift flight form", "moonkin form", NULL); 
 		}
 		virtual bool isPossible() { return TRUE; }

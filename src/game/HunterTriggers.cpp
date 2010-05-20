@@ -6,13 +6,12 @@ using namespace ai;
 
 bool HunterNoStingsActiveTrigger::IsActive()
 {
-    return ai->GetTargetHealthPercent() > 40 &&
-        !ai->TargetHasAura("serpent sting") && 
-        !ai->TargetHasAura("scorpid sting") &&
-        !ai->TargetHasAura("viper sting");
+	Unit* target = targetManager->GetCurrentTarget();
+    return target && statsManager->GetHealthPercent(target) > 40 &&
+        !spellManager->HasAura("serpent sting", target) && 
+        !spellManager->HasAura("scorpid sting", target) &&
+        !spellManager->HasAura("viper sting", target);
 }
-
-
 
 bool HuntersPetDeadTrigger::IsActive()
 {

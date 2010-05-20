@@ -146,17 +146,15 @@ namespace ai
     BEGIN_SPELL_ACTION(CastBattleShoutAction, "battle shout")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastDefensiveStanceAction, "defensive stance")
-        virtual bool isUseful() {
-            return CastSpellAction::isUseful() && !ai->HasAura("defensive stance");
-        }
-    END_SPELL_ACTION()
+	class CastDefensiveStanceAction : public CastBuffSpellAction {
+	public:
+		CastDefensiveStanceAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "defensive stance") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastBattleStanceAction, "battle stance")
-    virtual bool isUseful() {
-        return CastSpellAction::isUseful() && !ai->HasAura("battle stance");
-    }
-    END_SPELL_ACTION()
+	class CastBattleStanceAction : public CastBuffSpellAction {
+	public:
+		CastBattleStanceAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "battle stance") {}
+	};
 
     BEGIN_RANGED_SPELL_ACTION(CastChargeAction, "charge")
     END_SPELL_ACTION()

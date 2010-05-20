@@ -46,28 +46,34 @@ namespace ai
     BEGIN_RANGED_SPELL_ACTION(CastScorpidStingAction, "scorpid sting")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastAspectOfTheHawkAction, "aspect of the hawk")
-        virtual bool isUseful();
-    END_SPELL_ACTION()
+	class CastAspectOfTheHawkAction : public CastBuffSpellAction {
+	public:
+		CastAspectOfTheHawkAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the hawk") {}
+	};
 
     BEGIN_SPELL_ACTION(CastAspectOfTheCheetahAction, "aspect of the cheetah")
         virtual bool isUseful();
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastAspectOfThePackAction, "aspect of the pack")
-        virtual bool isUseful();
-    END_SPELL_ACTION()
+	class CastAspectOfThePackAction : public CastBuffSpellAction {
+	public:
+		CastAspectOfThePackAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the pack") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastAspectOfTheViperAction, "aspect of the viper")
-        virtual bool isUseful();
-    END_SPELL_ACTION()
+	class CastAspectOfTheViperAction : public CastBuffSpellAction {
+	public:
+		CastAspectOfTheViperAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the viper") {}
+		virtual bool isUseful();
+	};
 
     BEGIN_SPELL_ACTION(CastCallPetAction, "call pet")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastMendPetAction, "mend pet")
-        virtual bool isUseful();
-    END_SPELL_ACTION()
+	class CastMendPetAction : public CastAuraSpellAction {
+	public:
+		CastMendPetAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "mend pet") {}
+		virtual Unit* GetTarget();
+	};
 
     BEGIN_SPELL_ACTION(CastRevivePetAction, "revive pet")
     END_SPELL_ACTION()

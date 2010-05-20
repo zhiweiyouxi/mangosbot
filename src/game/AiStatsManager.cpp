@@ -5,7 +5,7 @@
 using namespace ai;
 using namespace std;
 
-uint8 AiStatsManager::GetHealthPercent(const Unit& target)
+uint8 AiStatsManager::GetHealthPercent(Unit* target)
 {
-	return (static_cast<float> (target.GetHealth()) / target.GetMaxHealth()) * 100;
+	return (static_cast<float> (target->GetHealth()) / target->GetMaxHealth()) * 100;
 }

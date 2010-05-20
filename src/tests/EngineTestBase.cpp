@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "EngineTestBase.h"
+#include "MockedTargets.h"
 
 void EngineTestBase::setUp()
 {
 	ai = new MockPlayerbotAIFacade();
+	spellManager = (MockAiSpellManager*)ai->GetSpellManager();
+	targetManager = (MockAiTargetManager*)ai->GetTargetManager();
+	statsManager = (MockAiStatsManager*)ai->GetStatsManager();
 }
 
 void EngineTestBase::tearDown()
@@ -78,7 +82,7 @@ void EngineTestBase::tickWithNoTarget()
 
 void EngineTestBase::spellUnavailable(const char* spell)
 {
-	ai->spellCooldowns.push_back(spell);
+	spellManager->spellCooldowns.push_back(spell);
 }
 
 void EngineTestBase::tickWithSpellUnavailable(const char* spell)
@@ -95,17 +99,17 @@ void EngineTestBase::tickWithSpellAvailable(const char* spell)
 
 void EngineTestBase::spellAvailable(const char* spell)
 {
-	ai->spellCooldowns.remove(spell);
+	spellManager->spellCooldowns.remove(spell);
 }
 
 void EngineTestBase::addAura(const char* spell)
 {
-	ai->auras.push_back(spell);
+	spellManager->auras[MockedTargets::GetSelf()].push_back(spell);
 }
 
 void EngineTestBase::removeAura(const char* spell)
 {
-	ai->auras.remove(spell);
+	spellManager->auras[MockedTargets::GetSelf()].remove(spell);
 }
 
 void EngineTestBase::tickOutOfSpellRange()
@@ -172,28 +176,28 @@ void EngineTestBase::tickWithLowHealth(int amount)
 
 void EngineTestBase::tickWithPartyLowHealth(int amount)
 {
-	ai->partyMinHealth = amount;
+	statsManager->health[MockedTargets::GetPartyMember()] = amount;
 	tick();
-	ai->partyMinHealth = 100;
+	statsManager->health[MockedTargets::GetPartyMember()] = 100;
 }
 
 void EngineTestBase::tickWithAuraToDispel(uint32 type)
 {
-	ai->aurasToDispel = type;
+	spellManager->dispels[MockedTargets::GetSelf()] = type;
 	tick();
-	ai->aurasToDispel = 0;
+	spellManager->dispels[MockedTargets::GetSelf()] = 0;
 }
 
 void EngineTestBase::tickWithPartyAuraToDispel(uint32 type)
 {
-	ai->partyAurasToDispel = type;
+	spellManager->dispels[MockedTargets::GetPartyMember()] = type;
 	tick();
-	ai->partyAurasToDispel = 0;
+	spellManager->dispels[MockedTargets::GetPartyMember()] = 0;
 }
 
 void EngineTestBase::lowHealth(int amount)
 {
-	ai->health = amount;
+	statsManager->health[MockedTargets::GetSelf()] = amount;
 }
 
 void EngineTestBase::lowMana(int amount)
@@ -203,7 +207,7 @@ void EngineTestBase::lowMana(int amount)
 
 void EngineTestBase::healthRestored()
 {
-	ai->health = 100;
+	statsManager->health[MockedTargets::GetSelf()] = 100;
 }
 
 void EngineTestBase::tickWithComboPoints(int amount)
@@ -215,9 +219,9 @@ void EngineTestBase::tickWithComboPoints(int amount)
 
 void EngineTestBase::tickWithTargetIsCastingNonMeleeSpell() 
 {
-    ai->targetIsCastingNonMeleeSpell = true;
+    spellManager->targetIsCastingNonMeleeSpell = true;
     tick();
-    ai->targetIsCastingNonMeleeSpell = false;
+    spellManager->targetIsCastingNonMeleeSpell = false;
 }
 
 void EngineTestBase::tickWithBalancePercent(int percent)
@@ -250,9 +254,9 @@ void EngineTestBase::tickWithLowMana(int amount)
 
 void EngineTestBase::tickWithTargetLowHealth(int amount)
 {
-    ai->targetHealth = amount;
+	statsManager->health[MockedTargets::GetCurrentTarget()] = amount;
     tick();
-    ai->targetHealth = 100;
+    statsManager->health[MockedTargets::GetCurrentTarget()] = 100;
 }
 void EngineTestBase::tickWithTargetIsMoving()
 {
@@ -269,22 +273,22 @@ void EngineTestBase::tickInSpellRange()
 
 void EngineTestBase::addTargetAura(const char* spell)
 {
-    ai->targetAuras.push_back(spell);
+	spellManager->auras[MockedTargets::GetCurrentTarget()].push_back(spell);
 }
 
 void EngineTestBase::removeTargetAura(const char* spell)
 {
-    ai->targetAuras.remove(spell);
+    spellManager->auras[MockedTargets::GetCurrentTarget()].remove(spell);
 }
 
 void EngineTestBase::addPartyAura(const char* spell)
 {
-    ai->partyAuras.push_back(spell);
+    spellManager->auras[MockedTargets::GetPartyMember()].push_back(spell);
 }
 
 void EngineTestBase::removePartyAura(const char* spell)
 {
-    ai->partyAuras.remove(spell);
+    spellManager->auras[MockedTargets::GetPartyMember()].remove(spell);
 }
 
 void EngineTestBase::tickWithLootAvailable()
@@ -315,7 +319,7 @@ void EngineTestBase::itemAvailable(const char* item, int amount)
 
 void EngineTestBase::tickWithDeadPartyMember() 
 {
-	ai->deadPartyMember = true;
+	targetManager->deadPartyMember = true;
 	tick();
-	ai->deadPartyMember = false;
+	targetManager->deadPartyMember = false;
 }

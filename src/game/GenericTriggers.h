@@ -22,78 +22,77 @@
         clazz(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, spell) {} \
     };
 
-#define SPELL_AVAILABLE_TRIGGER(clazz, spell, relevance) \
-class clazz : public SpellAvailableTrigger \
-    { \
-    public: \
-        clazz(PlayerbotAIFacade* const ai) : SpellAvailableTrigger(ai, spell) {} \
-    };
-
-#include "RangeTriggers.h"
-#include "HealthTriggers.h"
-#include "CureTriggers.h"
-
 namespace ai
 {
-
-    BEGIN_TRIGGER(LoseAggroTrigger, Trigger)
-    END_TRIGGER()
-
-    class RageAvailable : public Trigger
-    {
-    public:
-        RageAvailable(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
-        {
-            this->amount = amount;
-        }
-    public: 
-        virtual bool IsActive();
-
-    protected:
-        int amount;
-    };
-
-    class InterruptSpellTrigger : public Trigger {
-    public:
-        InterruptSpellTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai, "interrupt spell") {
-            this->spell = spell;
-        }
-
-        virtual bool IsActive() {
-            return ai->IsTargetCastingNonMeleeSpell() && ai->canCastSpell(spell);
-        }
-
-    protected:
-        const char* spell;
-    };
-
-	class EnergyAvailable : public Trigger
+	class StatAvailable : public Trigger
 	{
 	public:
-		EnergyAvailable(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
+		StatAvailable(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
 		{
 			this->amount = amount;
 		}
-	public: 
-		virtual bool IsActive();
 
 	protected:
 		int amount;
 	};
 
-    class ComboPointsAvailable : public Trigger
+	class RageAvailable : public StatAvailable
     {
     public:
-        ComboPointsAvailable(PlayerbotAIFacade* const ai, int amount) : Trigger(ai) 
-        {
-            this->amount = amount;
-        }
-    public: 
+        RageAvailable(PlayerbotAIFacade* const ai, int amount) : StatAvailable(ai, amount) {}
         virtual bool IsActive();
-
-    protected:
-        int amount;
     };
+
+	class EnergyAvailable : public StatAvailable
+	{
+	public:
+		EnergyAvailable(PlayerbotAIFacade* const ai, int amount) : StatAvailable(ai, amount) {}
+		virtual bool IsActive();
+	};
+
+	class ComboPointsAvailable : public StatAvailable
+	{
+	public:
+		ComboPointsAvailable(PlayerbotAIFacade* const ai, int amount) : StatAvailable(ai, amount) {}
+		virtual bool IsActive();
+	};
+
+	class LoseAggroTrigger : public Trigger {
+	public:
+		LoseAggroTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "lose aggro") {}
+		virtual bool IsActive();
+	};
+
+	class SpellTrigger : public Trigger
+	{
+	public:
+		SpellTrigger(PlayerbotAIFacade* const ai, const char* spell, int checkInterval = 1) : Trigger(ai, spell, checkInterval) 
+		{
+			this->spell = spell;
+		}
+
+		virtual Unit* GetTarget();
+		virtual const char* getName() { return spell; }
+		virtual bool IsActive();
+
+	protected:
+		const char* spell;
+	};
+
+	class SpellCanBeCastTrigger : public SpellTrigger {
+	public:
+		SpellCanBeCastTrigger(PlayerbotAIFacade* const ai, const char* spell) : SpellTrigger(ai, spell) {}
+		virtual bool IsActive();
+	};
+
+	// TODO: check other targets
+    class InterruptSpellTrigger : public SpellTrigger {
+    public:
+        InterruptSpellTrigger(PlayerbotAIFacade* const ai, const char* spell) : SpellTrigger(ai, spell) {}
+		virtual Unit* GetTarget();
+        virtual bool IsActive();
+    };
+
 
     class AttackerCountTrigger : public Trigger
     {
@@ -123,19 +122,13 @@ namespace ai
         virtual const char* getName() { return "my attacker count"; }
     };    
 
-    class BuffTrigger : public Trigger
+    class BuffTrigger : public SpellTrigger
     {
     public:
-        BuffTrigger(PlayerbotAIFacade* const ai, const char* spell) : Trigger(ai, spell, 5) 
-        {
-            this->spell = spell;
-        }
+        BuffTrigger(PlayerbotAIFacade* const ai, const char* spell) : SpellTrigger(ai, spell, 5) {}
     public: 
+		virtual Unit* GetTarget();
         virtual bool IsActive();
-        virtual const char* getName() { return spell; }
-
-    protected:
-        const char* spell;
     };
 
     class BuffOnPartyTrigger : public BuffTrigger
@@ -143,21 +136,7 @@ namespace ai
     public:
         BuffOnPartyTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
     public: 
-       virtual bool IsActive();
-    };
-
-    class BoostTrigger : public BuffTrigger
-    {
-    public:
-        BoostTrigger(PlayerbotAIFacade* const ai, const char* spell, float balance) : BuffTrigger(ai, spell) 
-        {
-            this->balance = balance;
-        }
-    public: 
-        virtual bool IsActive();
-
-    protected:
-        float balance;
+		virtual Unit* GetTarget();
     };
 
     BEGIN_TRIGGER(NoAttackersTrigger, Trigger)
@@ -170,19 +149,27 @@ namespace ai
 			checkInterval = 1;
 		}
     public: 
-        virtual bool IsActive();
-    };
-
-    class SpellAvailableTrigger : public BuffTrigger
-    {
-    public:
-        SpellAvailableTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
-    public: 
+		virtual Unit* GetTarget();
         virtual bool IsActive();
     };
 
     BEGIN_TRIGGER(LootAvailableTrigger, Trigger)
     END_TRIGGER()
+
+
+	class BoostTrigger : public BuffTrigger
+	{
+	public:
+		BoostTrigger(PlayerbotAIFacade* const ai, const char* spell, float balance) : BuffTrigger(ai, spell) 
+		{
+			this->balance = balance;
+		}
+	public: 
+		virtual bool IsActive();
+
+	protected:
+		float balance;
+	};
 
     class RandomTrigger : public Trigger
     {
@@ -221,19 +208,13 @@ namespace ai
         Trigger* rs;
     };
 
-    class SnareTargetTrigger : public Trigger
+    class SnareTargetTrigger : public DebuffTrigger
     {
     public:
-        SnareTargetTrigger(PlayerbotAIFacade* const ai, const char* aura) : Trigger(ai) 
-        {
-            this->aura = aura;
-        }
+        SnareTargetTrigger(PlayerbotAIFacade* const ai, const char* aura) : DebuffTrigger(ai, aura) {}
     public: 
         virtual bool IsActive();
         virtual const char* getName() { return "target is moving"; }
-
-    protected:
-        const char* aura;
     };
 
 	class LowManaTrigger : public Trigger {
@@ -280,11 +261,14 @@ namespace ai
 			this->spell = spell;
 		}
 
-		virtual bool IsActive() {
-			return ai->HasAura(spell);
-		}
+		virtual Unit* GetTarget();
+		virtual bool IsActive();
 
 	protected:
 		const char* spell;
 	};
 }
+
+#include "RangeTriggers.h"
+#include "HealthTriggers.h"
+#include "CureTriggers.h"

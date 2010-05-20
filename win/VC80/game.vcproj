@@ -1830,6 +1830,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\CureTriggers.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\CureTriggers.h"
 					>
 				</File>
@@ -1871,6 +1875,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\GenericTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\HealthTriggers.cpp"
 					>
 				</File>
 				<File

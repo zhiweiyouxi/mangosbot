@@ -15,13 +15,11 @@ public:
 	{
 		this->ai = ai;
 		this->bot = ai->GetBot();
-		this->master = ai->GetMaster();
 	}
 
 protected:
 	PlayerbotAIBase* ai;
 	Player* bot;
-	Player* master;
 };
 
 };

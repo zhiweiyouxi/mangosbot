@@ -9,13 +9,19 @@ namespace ai
     DEBUFF_TRIGGER(DisarmDebuffTrigger, "disarm", "disarm")
     DEBUFF_TRIGGER(SunderArmorDebuffTrigger, "sunder armor", "sunder armor")
 
-    SPELL_AVAILABLE_TRIGGER(RevengeAvailableTrigger, "revenge", 50.0f)
+	class RevengeAvailableTrigger : public SpellCanBeCastTrigger
+	{
+	public:
+		RevengeAvailableTrigger(PlayerbotAIFacade* const ai) : SpellCanBeCastTrigger(ai, "revenge") {}
+	};
 
     class BloodrageDebuffTrigger : public DebuffTrigger {
     public:
         BloodrageDebuffTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "bloodrage") {}
         virtual bool IsActive() {
-            return DebuffTrigger::IsActive() && ai->GetHealthPercent() >= 75 && ai->GetRage() < 20;
+            return DebuffTrigger::IsActive() && 
+				statsManager->GetHealthPercent(targetManager->GetSelf()) >= 75 && 
+				ai->GetRage() < 20;
         }
     };
 }

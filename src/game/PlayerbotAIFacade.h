@@ -24,6 +24,12 @@ namespace ai
     public:
         PlayerbotAIFacade(PlayerbotAI* const ai) { this->ai = ai; }
 
+	public:
+		virtual AiSpellManager* GetSpellManager() { return ai->GetSpellManager(); }
+		virtual AiTargetManager* GetTargetManager() { return ai->GetTargetManager(); }
+		virtual AiStatsManager* GetStatsManager() { return ai->GetStatsManager(); }
+
+
     public:
         virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
         virtual void MoveToMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
@@ -33,28 +39,28 @@ namespace ai
         virtual void GoAway(float distance = SPELL_DISTANCE);
 		virtual void MoveToTarget(float distance = 0.0f);
         virtual void Stay();
-        virtual bool CastSpellOnCurrentTarget(const char* spell) { return CastSpell(spell, ai->GetCurrentTarget()); }
-        virtual bool CastSpell(const char* spell, Unit* target = NULL, bool checkAura = true);
-        virtual bool canCastSpell( const char* spell );
+        //virtual bool CastSpellOnCurrentTarget(const char* spell) { return CastSpell(spell, ai->GetCurrentTarget()); }
+        //virtual bool CastSpell(const char* spell, Unit* target = NULL, bool checkAura = true);
+        //virtual bool canCastSpell( const char* spell );
         virtual uint8 GetRage();
 		virtual uint8 GetEnergy();
-        virtual bool HasAura(const char* spell);
-		virtual bool HasAnyAuraOf(const char* first, ...);
-        virtual bool PetHasAura(const char* spell);
-        virtual bool TargetHasAura(const char* spell);
-        virtual bool IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
-        virtual Unit* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
-        virtual void RemoveAura(const char* spell);
+        //virtual bool HasAura(const char* spell);
+		//virtual bool HasAnyAuraOf(const char* first, ...);
+        //virtual bool PetHasAura(const char* spell);
+        //virtual bool TargetHasAura(const char* spell);
+        //virtual bool IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
+        //virtual Unit* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
+        //virtual void RemoveAura(const char* spell);
         virtual uint8 GetComboPoints() { return ai->GetPlayerBot()->GetComboPoints(); }
-        virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
-        virtual uint8 GetTargetHealthPercent() { return ai->GetHealthPercent(*ai->GetCurrentTarget()); }
+        //virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
+        //virtual uint8 GetTargetHealthPercent() { return ai->GetHealthPercent(*ai->GetCurrentTarget()); }
 		virtual uint8 GetTargetManaPercent() { return ai->GetManaPercent(*ai->GetCurrentTarget()); }
         virtual uint8 GetPetHealthPercent() { return ai->GetHealthPercent(*ai->GetPlayerBot()->GetPet()); }
         virtual bool HasPet() { return ai->GetPlayerBot()->GetPet() != NULL; }
         virtual bool IsPetDead() { return ai->GetPlayerBot()->GetPet()->getDeathState() != ALIVE; }
-        virtual Unit* GetPartyMinHealthPlayer();
-		virtual Unit* GetDeadPartyMember();
-        virtual uint8 GetPartyMinHealthPercent();
+        //virtual Unit* GetPartyMinHealthPlayer();
+		//virtual Unit* GetDeadPartyMember();
+        //virtual uint8 GetPartyMinHealthPercent();
         virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual bool HasAggro();
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
@@ -83,15 +89,15 @@ namespace ai
 		virtual int GetItemCount(const char* name) { return ai->FindUsableItem(isTheSameName, (const void*)name) != NULL; }
 
         virtual void Emote(uint32 emote);
-        virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
-        virtual bool HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(ai->GetPlayerBot(), dispelType); }
+        //virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
+        //virtual bool HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(ai->GetPlayerBot(), dispelType); }
         virtual float GetBalancePercent();
         virtual bool IsTargetMoving();
-        virtual bool IsTargetCastingNonMeleeSpell();
-        virtual bool TargetHasAuraToDispel(uint32 dispelType);
-        virtual bool IsTargetOfSpellCast(Player* target, bool predicate(SpellEntry const*));
-        virtual bool IsTargetOfHealingSpell(Player* target);
-        virtual bool IsTargetOfResurrectSpell(Player* target);
+        //virtual bool IsTargetCastingNonMeleeSpell();
+        //virtual bool TargetHasAuraToDispel(uint32 dispelType);
+        //virtual bool IsTargetOfSpellCast(Player* target, bool predicate(SpellEntry const*));
+        //virtual bool IsTargetOfHealingSpell(Player* target);
+        //virtual bool IsTargetOfResurrectSpell(Player* target);
 
 
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
@@ -111,7 +117,7 @@ namespace ai
         static bool isPlayerWithoutAura(Unit* player, FindPlayerParam *param /*const char* spell*/);
         void findAllAttackers(std::list<ThreatManager*> &out);
         void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
-        bool HasAuraToDispel(Unit* player, uint32 dispelType);
+        //bool HasAuraToDispel(Unit* player, uint32 dispelType);
 		bool checkPredicate(Unit* player, bool predicate(Unit*, FindPlayerParam*), FindPlayerParam *param);
 
     protected:

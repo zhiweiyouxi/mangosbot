@@ -68,5 +68,8 @@ protected:
 
 protected:
     MockPlayerbotAIFacade *ai;
+	MockAiSpellManager* spellManager;
+	MockAiTargetManager* targetManager;
+	MockAiStatsManager* statsManager;
     Engine *engine;
 };

@@ -13,8 +13,7 @@ namespace ai
 			checkInterval = 1;
 		}
         virtual bool IsActive() {
-            return !ai->HasAura(spell) && ai->canCastSpell(spell) && 
-                !ai->HasAura("aspect of the viper") && ai->GetManaPercent() > 50;
+			return BuffTrigger::IsActive() && !spellManager->HasAura("aspect of the viper", GetTarget());
         };
     };
 
@@ -23,7 +22,8 @@ namespace ai
     public: 
         HunterAspectOfTheViperTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the viper") {}
         virtual bool IsActive() {
-            return !ai->HasAura(spell) && ai->canCastSpell(spell) && ai->GetManaPercent() < 50; 
+			Unit* target = GetTarget();
+            return !spellManager->HasAura(spell, target) && spellManager->CanCastSpell(spell, target) && ai->GetManaPercent() < 50; 
         };
     };
 
@@ -32,7 +32,7 @@ namespace ai
     public: 
         HunterAspectOfThePackTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the pack") {}
         virtual bool IsActive() {
-            return !ai->HasAura(spell) && !ai->HasAura("aspect of the cheetah");
+			return BuffTrigger::IsActive() && !spellManager->HasAura("aspect of the cheetah", GetTarget());
         };
     };
 

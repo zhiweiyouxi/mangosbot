@@ -28,19 +28,26 @@ bool LoseAggroTrigger::IsActive()
 
 bool PanicTrigger::IsActive()
 {
-    return ai->GetHealthPercent() < 25 && ai->GetManaPercent() != 0 && ai->GetManaPercent() < 25;
+    return ai->GetStatsManager()->GetHealthPercent(ai->GetTargetManager()->GetSelf()) < 25 && 
+		ai->GetManaPercent() != 0 && 
+		ai->GetManaPercent() < 25;
+}
+
+Unit* BuffTrigger::GetTarget()
+{
+	return targetManager->GetSelf();
 }
 
 bool BuffTrigger::IsActive()
 {
-    return !ai->HasAura(spell) && ai->canCastSpell(spell) &&
-        (ai->GetManaPercent() > 30 || !ai->GetManaPercent());
+	return SpellTrigger::IsActive() && 
+		!spellManager->HasAura(spell, GetTarget()) && 
+        (ai->GetManaPercent() > 40 || !ai->GetManaPercent());
 }
 
-bool BuffOnPartyTrigger::IsActive()
+Unit* BuffOnPartyTrigger::GetTarget()
 {
-    return !ai->IsAllPartyHasAura(spell) && ai->canCastSpell(spell) && 
-        (ai->GetManaPercent() > 50 || !ai->GetManaPercent());
+	return targetManager->GetPartyMemberWithoutAura(spell);
 }
 
 bool NoAttackersTrigger::IsActive()
@@ -53,15 +60,30 @@ bool MyAttackerCountTrigger::IsActive()
     return ai->GetMyAttackerCount() >= amount;
 }
 
-bool DebuffTrigger::IsActive()
+Unit* DebuffTrigger::GetTarget()
 {
-    return !ai->TargetHasAura(spell) && ai->canCastSpell(spell) && ai->GetTargetHealthPercent() > 25 &&
-        (ai->GetManaPercent() > 30 || !ai->GetManaPercent());
+	return targetManager->GetCurrentTarget();
 }
 
-bool SpellAvailableTrigger::IsActive()
+bool DebuffTrigger::IsActive()
 {
-    return ai->canCastSpell(spell);
+	return BuffTrigger::IsActive() && statsManager->GetHealthPercent(GetTarget()) > 25;
+}
+
+Unit* SpellTrigger::GetTarget()
+{
+	return targetManager->GetCurrentTarget();
+}
+
+bool SpellTrigger::IsActive()
+{
+	return GetTarget();
+}
+
+bool SpellCanBeCastTrigger::IsActive()
+{
+	Unit* target = GetTarget();
+	return target && spellManager->CanCastSpell(spell, target);
 }
 
 bool LootAvailableTrigger::IsActive()
@@ -90,16 +112,37 @@ const char* AndTrigger::getName()
 
 bool BoostTrigger::IsActive()
 {
-    return ai->HasSpell(spell) && !ai->HasAura(spell) && ai->GetBalancePercent() <= balance;
+	Unit* target = GetTarget();
+	return target && !spellManager->HasAura(spell, target) && ai->GetBalancePercent() <= balance;
 }
-
 
 bool SnareTargetTrigger::IsActive()
 {
-    return ai->IsTargetMoving() && !ai->TargetHasAura(aura) && ai->HasSpell(aura);
+	Unit* target = GetTarget();
+	return DebuffTrigger::IsActive() && ai->IsTargetMoving() && !spellManager->HasAura(spell, target);
 }
 
 bool ItemCountTrigger::IsActive()
 {
 	return ai->GetItemCount(item) < count;
+}
+
+Unit* InterruptSpellTrigger::GetTarget()
+{
+	return targetManager->GetCurrentTarget();
+}
+
+bool InterruptSpellTrigger::IsActive() 
+{
+	return SpellTrigger::IsActive() && spellManager->IsSpellCasting(GetTarget());
+}
+
+Unit* HasAuraTrigger::GetTarget()
+{
+	return targetManager->GetSelf();
+}
+
+bool HasAuraTrigger::IsActive()
+{
+	return spellManager->HasAura(spell, GetTarget());
 }

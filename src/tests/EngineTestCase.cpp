@@ -5,6 +5,7 @@
 #include "../game/Queue.h"
 #include "../game/Trigger.h"
 #include "../game/Engine.h"
+#include "MockPlayerbotAIFacade.h"
 
 using namespace ai;
 
@@ -198,7 +199,8 @@ public:
 protected:
 	void engineMustRepeatActions()
 	{
-		Engine engine(NULL, new TestActionFactory(NULL));
+		MockPlayerbotAIFacade mock;
+		Engine engine(&mock, new TestActionFactory(&mock));
         engine.addStrategy("TestStrategy");
         engine.Init();
 
@@ -221,7 +223,8 @@ protected:
 
     void addRemoveStrategies()
     {
-        Engine engine(NULL, new TestActionFactory(NULL));
+		MockPlayerbotAIFacade mock;
+        Engine engine(&mock, new TestActionFactory(&mock));
         engine.addStrategy("AnotherTestStrategy");
         engine.removeStrategy("AnotherTestStrategy");
         engine.Init();
@@ -235,7 +238,8 @@ protected:
 
     void listStrategies()
     {
-        Engine engine(NULL, new TestActionFactory(NULL));
+		MockPlayerbotAIFacade mock;
+        Engine engine(&mock, new TestActionFactory(&mock));
         engine.addStrategy("AnotherTestStrategy");
         engine.addStrategy("TestStrategy");
         engine.Init();

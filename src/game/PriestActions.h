@@ -74,21 +74,19 @@ namespace ai
         CastFadeAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "fade") {}
     };
 
-    class CastShadowformAction : public CastSpellAction {
+    class CastShadowformAction : public CastBuffSpellAction {
     public:
-        CastShadowformAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "shadowform") {}
-        virtual bool isUseful() { return !ai->HasAura("shadowform"); }
+        CastShadowformAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "shadowform") {}
     };
 
     class CastRemoveShadowformAction : public Action {
     public:
         CastRemoveShadowformAction(PlayerbotAIFacade* const ai) : Action(ai) {}
-        virtual bool isUseful() { return ai->HasAura("shadowform"); }
-        virtual bool isPossible() { return TRUE; }
+        virtual bool isUseful() { return ai->GetSpellManager()->HasAura("shadowform", ai->GetTargetManager()->GetSelf()); }
+        virtual bool isPossible() { return true; }
         virtual bool ExecuteResult() {
-            if (ai->HasAura("shadowform")) 
-                ai->RemoveAura("shadowform");
-            return TRUE;
+            ai->GetSpellManager()->RemoveAura("shadowform");
+            return true;
         }
     };
 
@@ -114,19 +112,19 @@ namespace ai
 
     BEGIN_SPELL_ACTION(CastHolyNovaAction, "holy nova")
     virtual bool isUseful() {
-        return !ai->HasAura("shadowform") && ai->GetPartyMinHealthPercent() <= 80;
+        return !spellManager->HasAura("shadowform", targetManager->GetSelf());
     }
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastHolyFireAction, "holy fire")
         virtual bool isUseful() {
-            return !ai->HasAura("shadowform");
+            return !spellManager->HasAura("shadowform", targetManager->GetSelf());
         }
     END_SPELL_ACTION()
 
     BEGIN_RANGED_SPELL_ACTION(CastSmiteAction, "smite")
         virtual bool isUseful() {
-            return !ai->HasAura("shadowform");
+			return !spellManager->HasAura("shadowform", targetManager->GetSelf());
         }
     END_SPELL_ACTION()
 
@@ -179,9 +177,6 @@ namespace ai
     class CastDispelMagicOnTargetAction : public CastSpellAction {
     public:
         CastDispelMagicOnTargetAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "dispel magic") {}
-        virtual bool ExecuteResult() {
-            return ai->CastSpellOnCurrentTarget(spell);
-        }
     };
 
     class CastDispelMagicOnPartyAction : public CurePartyMemberAction

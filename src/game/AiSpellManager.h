@@ -34,16 +34,21 @@ namespace ai
 			return CastSpell(GetSpellId(name), target);
 		}
 
-		virtual bool HasAura(const char* spellName, const Unit* player) 
+		virtual bool HasAura(const char* spellName, Unit* player) 
 		{
 			return HasAura(GetSpellId(spellName), player);
 		}
+		virtual bool HasAnyAuraOf(Unit* player, ...);
+
+		virtual bool IsSpellCasting(Unit* player);
+		virtual bool HasAuraToDispel(Unit* player, uint32 dispelType);
 
 	private:
 		uint32 FindSpellId(const char* args);
 		bool HasAura(uint32 spellId, const Unit* player);
 		bool CanCastSpell(uint32 spellid, Unit* target);
 		bool CastSpell(uint32 spellId, Unit* target);
+		bool canDispel(const SpellEntry* entry, uint32 dispelType);
 
 	public:
 		uint32 GetLastSpellId() { return lastSpellId; }

@@ -20,40 +20,41 @@ namespace ai
         float maxValue, minValue;
     };
 
-    class LowHealthTrigger : public ValueInRangeTrigger {
+	class HealthInRangeTrigger : public ValueInRangeTrigger {
+	public:
+		HealthInRangeTrigger(PlayerbotAIFacade* const ai, const char* name, float maxValue, float minValue = 0) :
+		  ValueInRangeTrigger(ai, name, maxValue, minValue) {}
+
+		  virtual Unit* GetTarget() = NULL;
+		  virtual float GetValue();
+	};
+
+    class LowHealthTrigger : public HealthInRangeTrigger {
     public:
         LowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) :
-            ValueInRangeTrigger(ai, "low health", value, minValue) {}
-        virtual float GetValue() {
-          return ai->GetHealthPercent();
-        }
+            HealthInRangeTrigger(ai, "low health", value, minValue) {}
+
+		virtual Unit* GetTarget();
     };
 
-    class PartyMemberLowHealthTrigger : public ValueInRangeTrigger {
+    class PartyMemberLowHealthTrigger : public HealthInRangeTrigger {
     public:
         PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) :
-            ValueInRangeTrigger(ai, "party member low health", value, minValue) {}
-        virtual float GetValue() {
-            return ai->GetPartyMinHealthPercent();
-        }
+            HealthInRangeTrigger(ai, "party member low health", value, minValue) {}
+        virtual Unit* GetTarget();
     };
 
-    class TargetLowHealthTrigger : public ValueInRangeTrigger {
+    class TargetLowHealthTrigger : public HealthInRangeTrigger {
     public:
         TargetLowHealthTrigger(PlayerbotAIFacade* const ai, float value, float minValue = 0) : 
-            ValueInRangeTrigger(ai, "target low health", value, minValue) {}
-        virtual float GetValue() {
-            return ai->GetTargetHealthPercent();
-        }
+            HealthInRangeTrigger(ai, "target low health", value, minValue) {}
+        virtual Unit* GetTarget();
     };
 
 	class PartyMemberDeadTrigger : public Trigger {
 	public:
 		PartyMemberDeadTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "resurrect", 10) {}
-
-		virtual bool IsActive() {
-			return ai->GetDeadPartyMember();
-		}
+		virtual bool IsActive();
 	};
 
 }

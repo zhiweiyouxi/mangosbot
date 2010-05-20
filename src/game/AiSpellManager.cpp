@@ -94,6 +94,28 @@ bool AiSpellManager::HasAura(uint32 spellId, const Unit* player)
 	return false;
 }
 
+bool AiSpellManager::HasAnyAuraOf(Unit* player, ...)
+{
+	if (!player)
+		return false;
+
+	va_list vl;
+	va_start(vl, player);
+
+	const char* cur = NULL;
+	do {
+		cur = va_arg(vl, const char*);
+		if (cur && HasAura(cur, player)) {
+			va_end(vl);
+			return true;
+		}
+	}
+	while (cur);
+
+	va_end(vl);
+	return false;
+}
+
 bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 {
 	if (!spellid)
@@ -182,6 +204,39 @@ void AiSpellManager::InterruptSpell()
 void AiSpellManager::RemoveAura(const char* name)
 {
 	uint32 spellid = GetSpellId(name);
-	if (spellid)
+	if (spellid && HasAura(spellid, bot))
 		bot->RemoveAurasDueToSpell(spellid);
+}
+
+bool AiSpellManager::IsSpellCasting(Unit* player)
+{
+	return player->IsNonMeleeSpellCasted(true);
+}
+
+bool AiSpellManager::HasAuraToDispel(Unit* player, uint32 dispelType) 
+{
+	Unit::AuraMap &uAuras = player->GetAuras();
+	for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)
+	{
+		const SpellEntry* entry = itr->second->GetSpellProto();
+		uint32 spellId = entry->Id;
+		if (IsPositiveSpell(spellId))
+			continue;
+
+		if (canDispel(entry, dispelType))
+			return TRUE;
+	}
+	return FALSE;
+}
+
+
+bool AiSpellManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
+	if (entry->Dispel == dispelType) {
+		return !entry->SpellName[0] ||
+			(strcmpi((const char*)entry->SpellName[0], "demon skin") &&
+			strcmpi((const char*)entry->SpellName[0], "mage armor") &&
+			strcmpi((const char*)entry->SpellName[0], "frost armor") &&
+			strcmpi((const char*)entry->SpellName[0], "ice armor"));
+	}
+	return false;
 }

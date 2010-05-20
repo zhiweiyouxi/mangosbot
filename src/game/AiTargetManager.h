@@ -33,6 +33,8 @@ namespace ai
 		virtual Unit* FindBiggerThreat();
 		virtual Unit* FindLeastThreat();
 		virtual Unit* GetCurrentTarget();
+		virtual Unit* GetSelf();
+		virtual Unit* GetPet();
 
 	private:
 		Unit* FindPartyMember(FindPlayerPredicate predicate, void *param);
@@ -54,7 +56,7 @@ namespace ai
 	private:
 		bool PlayerWithoutAuraPredicate(Unit* player, void *param /*const char* spell*/);
 
-	private:
+	protected:
 		AiSpellManager* spellManager;
 		AiStatsManager* statsManager;
 	};

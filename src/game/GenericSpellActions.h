@@ -2,6 +2,9 @@
 
 #include "Action.h"
 #include "PlayerbotAIFacade.h"
+#include "AiSpellManager.h"
+#include "AiTargetManager.h"
+#include "AiStatsManager.h"
 
 #define BEGIN_SPELL_ACTION(clazz, name) \
 class clazz : public CastSpellAction \
@@ -51,14 +54,22 @@ namespace ai
         {
             this->spell = spell;
 			this->checkAura = true;
+			this->spellManager = ai->GetSpellManager();
+			this->targetManager = ai->GetTargetManager();
+			this->statsManager = ai->GetStatsManager();
         }
 
-        bool ExecuteResult() { return ai->CastSpell(spell, NULL, checkAura); }
-        virtual bool isPossible() { return ai->canCastSpell(spell) && ai->GetDistanceToEnemy() < BOT_REACT_DISTANCE; }
+		virtual Unit* GetTarget();
+        virtual bool ExecuteResult();
+        virtual bool isPossible();
+		virtual bool isUseful();
 
     protected:
         const char* spell;
 		bool checkAura;
+		AiSpellManager* spellManager;
+		AiTargetManager* targetManager;
+		AiStatsManager* statsManager;
     };
 
 	//---------------------------------------------------------------------------------------------------------------------
@@ -67,14 +78,8 @@ namespace ai
 	public:
 		CastAuraSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
-		virtual bool isPossible() 
-		{
-			return CastSpellAction::isPossible() && !ai->HasAura(spell);
-		}
-		virtual bool isUseful() 
-		{
-			return CastSpellAction::isUseful() && !ai->HasAura(spell);
-		}
+		virtual bool isPossible();
+		virtual bool isUseful();
 	};
 
     //---------------------------------------------------------------------------------------------------------------------
@@ -98,45 +103,41 @@ namespace ai
 
     };
     //---------------------------------------------------------------------------------------------------------------------
-    class CastDebuffSpellAction : public CastSpellAction
+    class CastDebuffSpellAction : public CastAuraSpellAction
     {
     public:
-        CastDebuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual bool isPossible();
+        CastDebuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastAuraSpellAction(ai, spell) {}
     };
-    //---------------------------------------------------------------------------------------------------------------------
 
-    BEGIN_SPELL_ACTION(CastLifeBloodAction, "lifeblood")
-        virtual bool isUseful();
-    END_SPELL_ACTION()
+	class CastBuffSpellAction : public CastAuraSpellAction
+	{
+	public:
+		CastBuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastAuraSpellAction(ai, spell) {}
+		virtual Unit* GetTarget();
+	};
 
-    BEGIN_SPELL_ACTION(CastGiftOfTheNaaruAction, "gift of the naaru")
-        virtual bool isUseful();
-    END_SPELL_ACTION()
-        
     //---------------------------------------------------------------------------------------------------------------------
     
-    class CastHealingSpellAction : public CastSpellAction
+    class CastHealingSpellAction : public CastAuraSpellAction
     {
     public:
-        CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastSpellAction(ai, spell) {
+        CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastAuraSpellAction(ai, spell) {
             this->estAmount = estAmount;
         }
-        virtual bool isUseful() {
-            return CastSpellAction::isUseful() && ai->GetHealthPercent() < (100 - estAmount);
-        }
+		virtual Unit* GetTarget();
+        virtual bool isUseful();
 
     protected:
         uint8 estAmount;
     };
+
 
     class HealPartyMemberAction : public CastHealingSpellAction
     {
     public:
         HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastHealingSpellAction(ai, spell, estAmount) {}
 
-        virtual bool isUseful();
-        virtual bool ExecuteResult();
+		virtual Unit* GetTarget();
     };
 
 	class ResurrectPartyMemberAction : public CastSpellAction
@@ -144,8 +145,7 @@ namespace ai
 	public:
 		ResurrectPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 
-		virtual bool isUseful();
-		virtual bool ExecuteResult();
+		virtual Unit* GetTarget();
 	};
     //---------------------------------------------------------------------------------------------------------------------
 
@@ -157,7 +157,7 @@ namespace ai
             this->dispelType = dispelType;
         }
 
-        virtual bool ExecuteResult();
+		virtual Unit* GetTarget();
 
     protected:
         uint32 dispelType;
@@ -165,17 +165,29 @@ namespace ai
 
     //---------------------------------------------------------------------------------------------------------------------
 
-    class BuffOnPartyAction : public CastSpellAction
+    class BuffOnPartyAction : public CastBuffSpellAction
     {
     public:
-        BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+        BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastBuffSpellAction(ai, spell) {}
     public: 
-        virtual bool ExecuteResult();
-        virtual bool isUseful();
+		virtual Unit* GetTarget();
     };
 
     //---------------------------------------------------------------------------------------------------------------------
 
     BEGIN_RANGED_SPELL_ACTION(CastShootAction, "shoot")
     END_SPELL_ACTION()
+
+
+	class CastLifeBloodAction : public CastHealingSpellAction
+	{
+	public:
+		CastLifeBloodAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "lifeblood") {}
+	};
+
+	class CastGiftOfTheNaaruAction : public CastHealingSpellAction
+	{
+	public:
+		CastGiftOfTheNaaruAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "gift of the naaru") {}
+	};
 }
