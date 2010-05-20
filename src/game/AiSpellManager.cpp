@@ -127,9 +127,11 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 	if (!bot->HasSpell(spellid) || bot->HasSpellCooldown(spellid))
 		return false;
 
-	if (IsPositiveSpell(spellid) && bot->IsHostileTo(target))
+	bool positiveSpell = IsPositiveSpell(spellid);
+	if (positiveSpell && bot->IsHostileTo(target))
 		return false;
-	else if (bot->IsFriendlyTo(target))
+	
+	if (!positiveSpell && bot->IsFriendlyTo(target))
 		return false;
 
 	SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellid );
