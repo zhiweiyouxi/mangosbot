@@ -131,6 +131,13 @@ namespace ai
         uint8 estAmount;
     };
 
+	class CastCureSpellAction : public CastSpellAction
+	{
+	public:
+		CastCureSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+
+		virtual Unit* GetTarget();
+	};
 
     class HealPartyMemberAction : public CastHealingSpellAction
     {

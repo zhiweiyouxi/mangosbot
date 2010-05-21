@@ -53,6 +53,11 @@ Unit* CastHealingSpellAction::GetTarget()
 	return targetManager->GetSelf();
 }
 
+Unit* CastCureSpellAction::GetTarget()
+{
+	return targetManager->GetSelf();
+}
+
 bool CastHealingSpellAction::isUseful() 
 {
 	Unit* target = GetTarget();

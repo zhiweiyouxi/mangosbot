@@ -78,59 +78,88 @@ namespace ai
 		}
 	};
 
-    BEGIN_SPELL_ACTION(CastMarkOfTheWildAction, "mark of the wild")
-    END_SPELL_ACTION()
+	class CastMarkOfTheWildAction : public CastBuffSpellAction {
+	public:
+		CastMarkOfTheWildAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "mark of the wild") {}
+	};
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastMarkOfTheWildOnPartyAction, "mark of the wild")
-        virtual const char* getName() { return "mark of the wild on party";}
-    END_SPELL_ACTION()
+	class CastMarkOfTheWildOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastMarkOfTheWildOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "mark of the wild") {}
+		virtual const char* getName() { return "mark of the wild on party";}
+	};
 
-    BEGIN_SPELL_ACTION(CastSurvivalInstinctsAction, "survival instincts")
-    END_SPELL_ACTION()
+	class CastSurvivalInstinctsAction : public CastBuffSpellAction {
+	public:
+		CastSurvivalInstinctsAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "survival instincts") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastThornsAction, "thorns")
-    END_SPELL_ACTION()
+	class CastThornsAction : public CastBuffSpellAction {
+	public:
+		CastThornsAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "thorns") {}
+	};
 
-	BEGIN_SPELL_ACTION(CastWrathAction, "wrath")
-	END_SPELL_ACTION()
+	class CastWrathAction : public CastRangedSpellAction 
+	{ 
+	public: 
+		CastWrathAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "wrath") {} 
+	};
 
-	BEGIN_SPELL_ACTION(CastMoonfireAction, "moonfire")
-	END_SPELL_ACTION()
+	class CastMoonfireAction : public CastDebuffSpellAction 
+	{ 
+	public: 
+		CastMoonfireAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "moonfire") {} 
+	};
 
-	BEGIN_SPELL_ACTION(CastInsectSwarmAction, "insect swarm")
-	END_SPELL_ACTION()
+	class CastInsectSwarmAction : public CastDebuffSpellAction 
+	{ 
+	public: 
+		CastInsectSwarmAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "insect swarm") {} 
+	};
 
-	BEGIN_SPELL_ACTION(CastStarfireAction, "starfire")
-	END_SPELL_ACTION()
+	class CastStarfireAction : public CastRangedSpellAction 
+	{ 
+	public: 
+		CastStarfireAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "starfire") {} 
+	};
 
-	BEGIN_SPELL_ACTION(CastEntanglingRootsAction, "entangling roots")
-	END_SPELL_ACTION()
+	class CastEntanglingRootsAction : public CastDebuffSpellAction 
+	{ 
+	public: 
+		CastEntanglingRootsAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "entangling roots") {} 
+	};
 
-	BEGIN_SPELL_ACTION(CastNaturesGraspAction, "nature's grasp")
-	END_SPELL_ACTION()
+	class CastNaturesGraspAction : public CastBuffSpellAction 
+	{ 
+	public: 
+		CastNaturesGraspAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "nature's grasp") {} 
+	};
 	
-	BEGIN_SPELL_ACTION(CastHibernateAction, "hibernate")
-	END_SPELL_ACTION()
-	
+	class CastHibernateAction : public CastDebuffSpellAction 
+	{ 
+	public: 
+		CastHibernateAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "hibernate") {} 
+	};
 
-    //--------------------------------------------------------------------------------------
-
-
-
-    BEGIN_SPELL_ACTION(CastCurePoisonAction, "cure poison")
-    END_SPELL_ACTION()
+	class CastCurePoisonAction : public CastCureSpellAction 
+	{ 
+	public: 
+		CastCurePoisonAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "cure poison") {} 
+	};
 
     class CastCurePoisonOnPartyAction : public CurePartyMemberAction
     {
     public:
         CastCurePoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "cure poison", DISPEL_POISON) {}
-
-        virtual const char* getName() { return "cure poison on party"; }
+		virtual const char* getName() { return "cure poison on party";}
     };
 
-    BEGIN_SPELL_ACTION(CastAbolishPoisonAction, "abolish poison")
-        virtual NextAction** getAlternatives();
-    END_SPELL_ACTION()
+	class CastAbolishPoisonAction : public CastCureSpellAction 
+	{ 
+	public: 
+		CastAbolishPoisonAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "abolish poison") {} 
+		virtual NextAction** getAlternatives();
+	};
 
     class CastAbolishPoisonOnPartyAction : public CurePartyMemberAction
     {
@@ -140,8 +169,5 @@ namespace ai
         virtual const char* getName() { return "abolish poison on party"; }
         virtual NextAction** getAlternatives();
     };
-
-	//-----------------------------------------------------------------------
-
 
 }
