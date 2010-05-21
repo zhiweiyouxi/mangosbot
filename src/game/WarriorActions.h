@@ -146,8 +146,10 @@ namespace ai
     END_SPELL_ACTION()
 
     // buffs
-    BEGIN_SPELL_ACTION(CastBattleShoutAction, "battle shout")
-    END_SPELL_ACTION()
+	class CastBattleShoutAction : public CastBuffSpellAction {
+	public:
+		CastBattleShoutAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "battle shout") {}
+	};
 
 	class CastDefensiveStanceAction : public CastBuffSpellAction {
 	public:

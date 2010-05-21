@@ -52,7 +52,7 @@ protected:
 
 		tickWithSpellAvailable("shoot");
 
-        assertActions(">power word: shield>greater heal>renew>heal>lesser heal>shoot>flash heal>shoot");
+		assertActions(">S:power word: shield>S:greater heal>S:renew>S:heal>S:lesser heal>T:shoot>S:flash heal>T:shoot");
     }
 
 	void racials()
@@ -74,7 +74,7 @@ protected:
 
 		tickWithSpellAvailable("shoot");
 
-		assertActions(">lifeblood>gift of the naaru>power word: shield>greater heal>renew>heal>lesser heal>shoot>flash heal>shoot");
+		assertActions(">S:lifeblood>S:gift of the naaru>S:power word: shield>S:greater heal>S:renew>S:heal>S:lesser heal>T:shoot>S:flash heal>T:shoot");
 	}
 
     void nonCombat()
@@ -88,7 +88,7 @@ protected:
 
 		tickWithDeadPartyMember();
 
-        assertActions(">flash heal>resurrection on party");
+		assertActions(">S:flash heal>P:resurrection");
     }
 
     void healOthers()
@@ -108,7 +108,7 @@ protected:
         tickWithSpellAvailable("shoot"); // shoot
 
 
-        assertActions(">shoot>power word: shield on party>greater heal on party>renew on party>heal on party>lesser heal on party>shoot>flash heal on party>shoot");
+		assertActions(">T:shoot>P:power word: shield>P:greater heal>P:renew>P:heal>P:lesser heal>T:shoot>P:flash heal>T:shoot");
     }
 
     void buff()
@@ -134,7 +134,7 @@ protected:
 
 		tickWithSpellAvailable("divine spirit");
 
-        assertActions(">power word: fortitude>divine spirit>inner fire>power word: fortitude on party>divine spirit on party");
+		assertActions(">S:power word: fortitude>S:divine spirit>S:inner fire>P:power word: fortitude>P:divine spirit");
     }
 
     void fade()
@@ -145,7 +145,7 @@ protected:
 
 		tickWithSpellAvailable("shoot");
 
-        assertActions(">shoot>fade>shoot");
+		assertActions(">T:shoot>S:fade>T:shoot");
     }
 
     void enemyTooClose()
@@ -158,7 +158,7 @@ protected:
 		spellAvailable("shoot");
 		tickInSpellRange();
 
-        assertActions(">shoot>fade>flee>shoot");
+		assertActions(">T:shoot>S:fade>flee>T:shoot");
     }
 
     void dispel() 
@@ -182,7 +182,7 @@ protected:
 
         tickWithSpellAvailable("shoot");
 
-        assertActions(">shoot>dispel magic>dispel magic on party>abolish disease>abolish disease on party>cure disease>cure disease on party>shoot");
+		assertActions(">T:shoot>S:dispel magic>P:dispel magic>S:abolish disease>P:abolish disease>S:cure disease>P:cure disease>T:shoot");
     }
 
 };

@@ -36,7 +36,7 @@ protected:
         tick();
         tickInMeleeRange();
 
-        assertActions(">chain heal>riptide>reach melee>melee");
+		assertActions(">S:chain heal>S:riptide>reach melee>melee");
     }
 
     void healOthers()
@@ -45,7 +45,7 @@ protected:
         tickWithPartyLowHealth(35);
 		tickWithPartyLowHealth(35);
 
-        assertActions(">chain heal on party>riptide on party>earth shield on party");
+		assertActions(">P:chain heal>P:riptide>P:earth shield");
     }
 
     void buff()
@@ -60,14 +60,14 @@ protected:
         tickWithAttackerCount(3);
         tickWithAttackerCount(3);
 
-        assertActions(">water shield>strength of earth totem>windfury totem>flametongue totem>mana spring totem");
+		assertActions(">S:water shield>S:strength of earth totem>S:windfury totem>S:flametongue totem>S:mana spring totem");
     }
 
     void interruptSpell() 
     {
         tickWithTargetIsCastingNonMeleeSpell();
         
-        assertActions(">wind shear");
+		assertActions(">T:wind shear");
     }
 };
 

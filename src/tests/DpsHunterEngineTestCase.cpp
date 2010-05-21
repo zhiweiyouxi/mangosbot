@@ -48,7 +48,7 @@ protected:
         tick();
 		tickWithSpellAvailable("auto shot");
                 
-        assertActions(">aspect of the hawk>hunter's mark>black arrow>serpent sting>explosive shot>auto shot>flee>concussive shot>wyvern sting>arcane shot>auto shot");
+		assertActions(">S:aspect of the hawk>T:hunter's mark>T:black arrow>T:serpent sting>T:explosive shot>T:auto shot>flee>T:concussive shot>T:wyvern sting>T:arcane shot>T:auto shot");
 
 	}
 
@@ -63,7 +63,7 @@ protected:
         
 		tick();
 
-        assertActions(">aspect of the viper>viper sting>aspect of the hawk");
+		assertActions(">S:aspect of the viper>T:viper sting>S:aspect of the hawk");
 
     }
 
@@ -74,7 +74,7 @@ protected:
 		tickWithPetLowHealth(0); // dead
 		tickWithPetLowHealth(30);
 
-		assertActions(">call pet>revive pet>mend pet");
+		assertActions(">S:call pet>S:revive pet>S:mend pet");
 	}    
 
 
@@ -88,7 +88,7 @@ protected:
 		tickWithBalancePercent(1);
 		tickWithBalancePercent(1);
 
-        assertActions(">hunter's mark>rapid fire>readyness");
+		assertActions(">T:hunter's mark>S:rapid fire>S:readyness");
     }
 };
 

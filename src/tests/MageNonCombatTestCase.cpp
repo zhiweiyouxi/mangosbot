@@ -31,7 +31,7 @@ protected:
 		tickWithNoDrink();
 		tickWithNoFood();
 
-        assertActions(">arcane intellect>arcane intellect on party>conjure water>conjure food");
+		assertActions(">S:arcane intellect>P:arcane intellect>S:conjure water>S:conjure food");
     }
     
 };

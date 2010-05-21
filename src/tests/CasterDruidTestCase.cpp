@@ -49,7 +49,7 @@ protected:
 
 		tickWithAttackerCount(3);
         
-        assertActions(">moonkin form>faerie fire>insect swarm>moonfire>starfire>wrath>starfire>nature's grasp");
+		assertActions(">S:moonkin form>T:faerie fire>T:insect swarm>T:moonfire>T:starfire>T:wrath>T:starfire>S:nature's grasp");
     }
 
 	void healHimself()
@@ -67,7 +67,7 @@ protected:
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
         
-        assertActions(">faerie fire>-moonkin form>rejuvenation>moonkin form>insect swarm>-moonkin form>regrowth");
+		assertActions(">T:faerie fire>-moonkin form>S:rejuvenation>S:moonkin form>T:insect swarm>-moonkin form>S:regrowth");
     }
 
 	void healOthers()
@@ -76,7 +76,7 @@ protected:
         tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
 
-        assertActions(">-moonkin form>rejuvenation on party>regrowth on party");
+		assertActions(">-moonkin form>P:rejuvenation>P:regrowth");
     }
 
 	void curePoison() 
@@ -91,7 +91,7 @@ protected:
 		spellAvailable("cure poison");
 		tickWithPartyAuraToDispel(DISPEL_POISON);
 
-		assertActions(">abolish poison>abolish poison on party>cure poison>cure poison on party");
+		assertActions(">S:abolish poison>P:abolish poison>S:cure poison>P:cure poison");
 	}
 
 	void resurrect()
@@ -99,7 +99,7 @@ protected:
 		tickWithDeadPartyMember();
 		tickWithDeadPartyMember();
 
-		assertActions(">-moonkin form>rebirth on party");
+		assertActions(">-moonkin form>P:rebirth");
 	}
 };
 

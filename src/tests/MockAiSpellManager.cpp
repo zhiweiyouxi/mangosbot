@@ -32,9 +32,16 @@ bool MockAiSpellManager::CanCastSpell(const char* name, Unit* target)
 
 bool MockAiSpellManager::CastSpell(const char* name, Unit* target)
 {
-	buffer->append(">").append(name); 
+	buffer->append(">");
 	if (target == MockedTargets::GetPartyMember()) 
-		buffer->append(" on party"); 
+		buffer->append("P:"); 
+	if (target == MockedTargets::GetCurrentTarget()) 
+		buffer->append("T:"); 
+	if (target == MockedTargets::GetSelf()) 
+		buffer->append("S:"); 
+	if (target == MockedTargets::GetPet()) 
+		buffer->append("Pet:"); 
+	buffer->append(name); 
 
 	spellCooldowns.push_back(name); 
 

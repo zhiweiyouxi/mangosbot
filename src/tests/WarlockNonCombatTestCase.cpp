@@ -38,7 +38,7 @@ protected:
 		tick();
 		itemAvailable("spellstone", 1);
 
-        assertActions(">demon skin>demon armor>create healthstone>create firestone>create spellstone");
+		assertActions(">S:demon skin>S:demon armor>S:create healthstone>S:create firestone>S:create spellstone");
     }
     
 };

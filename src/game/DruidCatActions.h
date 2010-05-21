@@ -37,15 +37,21 @@ namespace ai {
 	public:
 		CastCatMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastMeleeSpellAction(ai, spell) {}
 
-		virtual NextAction** getPrerequisites() {
+		virtual NextAction** getPrerequisites() 
+		{
 			return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
 		}
 	};
 
-	class CastCowerAction : public CastCatSpellAction 
+	class CastCowerAction : public CastBuffSpellAction 
 	{
 	public:
-		CastCowerAction(PlayerbotAIFacade* const ai) : CastCatSpellAction(ai, "cower") {}
+		CastCowerAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "cower") {}
+
+		virtual NextAction** getPrerequisites() 
+		{
+			return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastBuffSpellAction::getPrerequisites());
+		}
 	};
 
 

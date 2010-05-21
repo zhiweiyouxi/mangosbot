@@ -38,14 +38,14 @@ protected:
 		spellAvailable("drain soul");
 		tickWithTargetLowHealth(19);
 
-        assertActions(">corruption>curse of agony>drain life>shoot>drain soul");
+		assertActions(">T:corruption>T:curse of agony>T:drain life>T:shoot>T:drain soul");
 	}
 
     void summonPet()
     {
         tickWithNoPet();
 
-        assertActions(">summon imp");
+		assertActions(">S:summon imp");
     }
 };
 

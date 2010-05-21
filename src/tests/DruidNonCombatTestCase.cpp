@@ -30,14 +30,14 @@ protected:
         
 		tick();
 
-        assertActions(">mark of the wild>mark of the wild on party");
+		assertActions(">S:mark of the wild>P:mark of the wild");
     }
 
 	void resurrect()
 	{
 		tickWithDeadPartyMember();
 
-		assertActions(">revive on party");
+		assertActions(">P:revive");
 	}
 };
 

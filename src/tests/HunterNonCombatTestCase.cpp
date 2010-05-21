@@ -30,7 +30,7 @@ protected:
 
 		tickWithAttackerCount(1);
         
-        assertActions(">aspect of the pack>aspect of the hawk");
+		assertActions(">S:aspect of the pack>S:aspect of the hawk");
     }
 
     void summonPet()
@@ -40,14 +40,14 @@ protected:
 		tickWithPetLowHealth(0); // dead
 		tickWithPetLowHealth(30);
 
-		assertActions(">call pet>revive pet>mend pet");
+		assertActions(">S:call pet>S:revive pet>S:mend pet");
 	}        
 
     void buffIfPackUnavailable()
     {
         tickWithSpellUnavailable("aspect of the pack");
 
-        assertActions(">aspect of the cheetah");
+		assertActions(">S:aspect of the cheetah");
     }
     
 };

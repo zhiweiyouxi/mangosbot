@@ -29,14 +29,14 @@ protected:
                         
 		tick();
 
-        assertActions(">earthliving weapon>water shield");
+		assertActions(">S:earthliving weapon>S:water shield");
     }
 
 	void ressurect()
 	{
 		tickWithDeadPartyMember();
 
-		assertActions(">ancestral spirit on party");
+		assertActions(">P:ancestral spirit");
 	}
 };
 

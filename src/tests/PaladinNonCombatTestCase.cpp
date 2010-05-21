@@ -45,13 +45,13 @@ protected:
 		addPartyAura("blessing of kings");
         tick(); 
 
-        assertActions(">devotion aura>seal of righteousness>seal of justice>seal of light>blessing of sanctuary>blessing of kings on party");
+		assertActions(">S:devotion aura>S:seal of righteousness>S:seal of justice>S:seal of light>S:blessing of sanctuary>P:blessing of kings");
     }
 
 	void resurrect()
 	{
 		tickWithDeadPartyMember();
-		assertActions(">redemption on party");
+		assertActions(">P:redemption");
 	}
 };
 

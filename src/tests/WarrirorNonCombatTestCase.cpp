@@ -39,7 +39,7 @@ protected:
         engine.DoNextAction(NULL);
 
         std::cout << ai->buffer;
-        CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">defensive stance"));
+		CPPUNIT_ASSERT(!strcmp(ai->buffer.c_str(), ">S:defensive stance"));
     }
 };
 

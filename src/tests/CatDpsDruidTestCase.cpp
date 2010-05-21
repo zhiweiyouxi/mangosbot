@@ -42,7 +42,7 @@ protected:
 		tickOutOfMeleeRange();
 		tickInMeleeRange();
 
-        assertActions(">reach spell>faerie fire>cat form>reach melee>rake");
+		assertActions(">reach spell>T:faerie fire>S:cat form>reach melee>T:rake");
     }
 
     void combatVsMelee()
@@ -54,7 +54,7 @@ protected:
         tickWithComboPoints(5);
         tickWithComboPoints(5);
         
-        assertActions(">rake>mangle (cat)>ferocious bite>rip");
+		assertActions(">T:rake>T:mangle (cat)>T:ferocious bite>T:rip");
     }
 
 	void healHimself()
@@ -71,14 +71,14 @@ protected:
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
 
-		assertActions(">rake>-cat form>rejuvenation>cat form>mangle (cat)>-cat form>regrowth");
+		assertActions(">T:rake>-cat form>S:rejuvenation>S:cat form>T:mangle (cat)>-cat form>S:regrowth");
 	}
 	
     void intensiveHealing()
     {
 		tickWithLowHealth(1);
 
-        assertActions(">survival instincts");
+		assertActions(">S:survival instincts");
     }
 
 	void healOthers()
@@ -87,7 +87,7 @@ protected:
 		tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
 
-        assertActions(">-cat form>rejuvenation on party>regrowth on party");
+		assertActions(">-cat form>P:rejuvenation>P:regrowth");
     }
 
     void boost()
@@ -98,7 +98,7 @@ protected:
 		tickWithBalancePercent(1);
 		tick();
 
-        assertActions(">berserk>tiger's fury>reach melee");
+		assertActions(">S:berserk>S:tiger's fury>reach melee");
     }
 
     void cower()
@@ -106,7 +106,7 @@ protected:
 		tickWithMyAttackerCount(2);
 
 		tickOutOfMeleeRange();
-        assertActions(">cower>reach melee");
+		assertActions(">S:cower>reach melee");
     }
 
 };

@@ -41,7 +41,7 @@ namespace ai
         virtual void FollowMaster() { buffer.append(">follow"); }
         virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }
         virtual void Stay() { buffer.append(">stay"); }
-        virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
+		virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
         virtual uint8 GetRage() { return rage; } 
 		virtual uint8 GetEnergy() { return energy; } 
         virtual uint8 GetComboPoints() { return comboPoints; }

@@ -40,7 +40,7 @@ protected:
         
         tick(); // rend
 
-        assertActions(">shield bash>defensive stance");
+        assertActions(">T:shield bash>S:defensive stance");
     }
 
     void healing()
@@ -52,7 +52,7 @@ protected:
 		tickWithLowHealth(4); 
 		tickWithLowHealth(4); 
 
-        assertActions(">defensive stance>shield wall>shield block>last stand>intimidating shout");
+		assertActions(">S:defensive stance>T:shield wall>S:shield block>S:last stand>T:intimidating shout");
     }
 
     void buff()
@@ -71,7 +71,7 @@ protected:
         tick(); // melee
         tick(); // battle shout
 
-        assertActions(">battle stance>battle shout>defensive stance>reach melee>melee>bloodrage>rend");
+		assertActions(">S:battle stance>S:battle shout>S:defensive stance>reach melee>melee>S:bloodrage>T:rend");
 
     }
 
@@ -94,7 +94,7 @@ protected:
 		
 		tick();
 
-        assertActions(">melee>shockwave>demoralizing shout>thunder clap>cleave>shield slam>challenging shout>devastate");
+        assertActions(">melee>T:shockwave>T:demoralizing shout>T:thunder clap>T:cleave>T:shield slam>T:challenging shout>T:devastate");
     }
 
     void warriorMustHoldAggro()
@@ -108,7 +108,7 @@ protected:
         
         tick();
 
-        assertActions(">defensive stance>melee>taunt>devastate>revenge");
+		assertActions(">S:defensive stance>melee>T:taunt>T:devastate>T:revenge");
     }
 
     void combatVsMelee()
@@ -159,7 +159,7 @@ protected:
         addAura("sword and board");
         tickWithSpellAvailable("shield slam");
 
-        assertActions(">defensive stance>reach melee>melee>bloodrage>rend>devastate>revenge>sunder armor>shield slam>disarm>heroic strike>melee>devastate>slam>heroic strike>shield slam");
+		assertActions(">S:defensive stance>reach melee>melee>S:bloodrage>T:rend>T:devastate>T:revenge>T:sunder armor>T:shield slam>T:disarm>T:heroic strike>melee>T:devastate>T:slam>T:heroic strike>T:shield slam");
     }
 
     void revengeIfDodge()
@@ -169,7 +169,7 @@ protected:
         tick(); // defensive stance
         tick(); // revenge
 
-        assertActions(">melee>defensive stance>revenge");
+		assertActions(">melee>S:defensive stance>T:revenge");
     }
 
 	void snare()
@@ -178,7 +178,7 @@ protected:
 		tick();
 		tickWithTargetIsMoving();
 		
-		assertActions(">defensive stance>melee>concussion blow");
+		assertActions(">S:defensive stance>melee>T:concussion blow");
 	}
     
 };

@@ -38,7 +38,7 @@ protected:
 
 		tickWithLowHealth(24);
 
-        assertActions(">frostbolt>frost nova>flee>frostbolt>shoot>ice block");
+		assertActions(">T:frostbolt>T:frost nova>flee>T:frostbolt>T:shoot>S:ice block");
 	}
 
     void dispel() 
@@ -52,7 +52,7 @@ protected:
 
         tick(); 
 
-        assertActions(">frostbolt>remove curse>remove curse on party>shoot");
+		assertActions(">T:frostbolt>S:remove curse>P:remove curse>T:shoot");
     }
 
     void boost() 
@@ -68,7 +68,7 @@ protected:
 
         tick(); // shoot
 
-        assertActions(">frostbolt>icy veins>frostbolt>shoot");
+		assertActions(">T:frostbolt>S:icy veins>T:frostbolt>T:shoot");
     }
 
     void interruptSpells() 
@@ -77,7 +77,7 @@ protected:
 
         tick(); // frostbolt
 
-        assertActions(">counterspell>frostbolt");
+        assertActions(">T:counterspell>T:frostbolt");
     }
 
 };

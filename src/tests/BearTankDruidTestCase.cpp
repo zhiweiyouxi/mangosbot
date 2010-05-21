@@ -38,7 +38,7 @@ protected:
         
 		tickWithSpellUnavailable("dire bear form");
 
-        assertActions(">faerie fire>bear form");
+		assertActions(">T:faerie fire>S:bear form");
     }
 
     void tooFarForSpells()
@@ -53,7 +53,7 @@ protected:
         
 		tickInMeleeRange();
 
-        assertActions(">reach spell>faerie fire>dire bear form>feral charge - bear>melee");
+		assertActions(">reach spell>T:faerie fire>S:dire bear form>T:feral charge - bear>melee");
     }
 
     void druidMustDemoralizeAttackers()
@@ -71,7 +71,7 @@ protected:
         
 		tick(); 
 
-        assertActions(">faerie fire>dire bear form>dire bear form>reach melee>demoralizing roar>melee");
+		assertActions(">T:faerie fire>S:dire bear form>S:dire bear form>reach melee>T:demoralizing roar>melee");
     }
 
     void druidMustHoldAggro()
@@ -85,7 +85,7 @@ protected:
         tick();
         tick();
 
-        assertActions(">faerie fire>dire bear form>growl>feral charge - bear>melee");
+		assertActions(">T:faerie fire>S:dire bear form>T:growl>T:feral charge - bear>melee");
     }
 
     void druidMustDoMauls()
@@ -101,7 +101,7 @@ protected:
         
 		tickWithSpellAvailable("maul");
     
-        assertActions(">faerie fire>dire bear form>melee>mangle (bear)>maul>melee");
+		assertActions(">T:faerie fire>S:dire bear form>melee>T:mangle (bear)>T:maul>melee");
     }
 
     void combatVsMelee()
@@ -122,7 +122,7 @@ protected:
 
         tickWithRage(40);
         
-        assertActions(">faerie fire>dire bear form>feral charge - bear>melee>reach melee>melee>mangle (bear)>swipe>maul");
+        assertActions(">T:faerie fire>S:dire bear form>T:feral charge - bear>melee>reach melee>melee>T:mangle (bear)>T:swipe>T:maul");
     }
 
     void healHimself()
@@ -143,7 +143,7 @@ protected:
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
         
-        assertActions(">faerie fire>dire bear form>melee>-dire bear form>rejuvenation>bear form>melee>-bear form>regrowth");
+		assertActions(">T:faerie fire>S:dire bear form>melee>-dire bear form>S:rejuvenation>S:bear form>melee>-bear form>S:regrowth");
     }
 
     void intensiveHealing()
@@ -151,7 +151,7 @@ protected:
         addAura("dire bear form");
 		tickWithLowHealth(1);
 
-        assertActions(">survival instincts");
+		assertActions(">S:survival instincts");
     }
 
     void healOthers()
@@ -164,7 +164,7 @@ protected:
 		tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
 
-        assertActions(">faerie fire>dire bear form>-dire bear form>rejuvenation on party>regrowth on party");
+		assertActions(">T:faerie fire>S:dire bear form>-dire bear form>P:rejuvenation>P:regrowth");
     }
     void curePoison() 
     {
@@ -183,7 +183,7 @@ protected:
 		spellAvailable("cure poison");
 		tickWithPartyAuraToDispel(DISPEL_POISON);
 
-        assertActions(">faerie fire>dire bear form>-dire bear form>abolish poison>abolish poison on party>cure poison>cure poison on party");
+		assertActions(">T:faerie fire>S:dire bear form>-dire bear form>S:abolish poison>P:abolish poison>S:cure poison>P:cure poison");
     }
     void interruptSpells() 
     {
@@ -195,7 +195,7 @@ protected:
 
 		tickWithTargetIsCastingNonMeleeSpell();
 
-        assertActions(">faerie fire>dire bear form>melee>bash");
+        assertActions(">T:faerie fire>S:dire bear form>melee>T:bash");
     }
 	void buff() 
 	{
@@ -204,7 +204,7 @@ protected:
 		
 		tick();
 
-		assertActions(">thorns>faerie fire");
+		assertActions(">S:thorns>T:faerie fire");
 	}
 };
 

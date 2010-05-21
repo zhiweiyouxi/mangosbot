@@ -44,7 +44,7 @@ protected:
 		tick();
 		addAura("holy shield");
 
-        assertActions(">righteous fury>holy shield");
+		assertActions(">S:righteous fury>S:holy shield");
     }
 
     void healing()
@@ -61,7 +61,7 @@ protected:
 		spellAvailable("lay on hands");
 		tickWithPartyLowHealth(20);
 
-        assertActions(">flash of light>divine shield>holy light>divine protection>lay on hands>lay on hands on party");
+		assertActions(">S:flash of light>S:divine shield>S:holy light>S:divine protection>S:lay on hands>P:lay on hands");
     }
   
     void paladinMustHoldAggro()
@@ -74,7 +74,7 @@ protected:
 		tickWithNoAggro();
 		tickWithNoAggro();
 
-        assertActions(">hammer of the righteous>holy wrath>consecration>avenger's shield>hand of reckoning>judgement of justice");
+		assertActions(">T:hammer of the righteous>T:holy wrath>T:consecration>T:avenger's shield>T:hand of reckoning>T:judgement of justice");
     }
 
     void combatVsMelee()
@@ -86,7 +86,7 @@ protected:
 
 		tickWithTargetLowHealth(24);
 
-        assertActions(">reach melee>melee>judgement of light>hammer of wrath");
+        assertActions(">reach melee>melee>T:judgement of light>T:hammer of wrath");
     }
 
     void stopEnemyMove()
@@ -97,7 +97,7 @@ protected:
 		tick(); 
 		tick(); 
 
-        assertActions(">hammer of justice>judgement of justice>melee>judgement of light");
+        assertActions(">T:hammer of justice>T:judgement of justice>melee>T:judgement of light");
     }
 
 	void interruptSpells() 
@@ -106,7 +106,7 @@ protected:
 
 		tick();
 
-		assertActions(">hammer of justice>melee");
+		assertActions(">T:hammer of justice>melee");
 	}
 };
 

@@ -31,7 +31,7 @@ protected:
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
 
-        assertActions(">lifeblood>gift of the naaru");
+		assertActions(">S:lifeblood>S:gift of the naaru");
     }
 };
 
