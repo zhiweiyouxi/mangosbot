@@ -41,11 +41,11 @@ protected:
 
     void healOthers()
     {
-        tickWithPartyLowHealth(65);
         tickWithPartyLowHealth(45);
         tickWithPartyLowHealth(35);
+		tickWithPartyLowHealth(35);
 
-        assertActions(">earth shield on party>chain heal on party>riptide on party");
+        assertActions(">chain heal on party>riptide on party>earth shield on party");
     }
 
     void buff()

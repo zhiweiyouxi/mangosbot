@@ -51,9 +51,11 @@ namespace ai
 		CastAspectOfTheHawkAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the hawk") {}
 	};
 
-    BEGIN_SPELL_ACTION(CastAspectOfTheCheetahAction, "aspect of the cheetah")
-        virtual bool isUseful();
-    END_SPELL_ACTION()
+	class CastAspectOfTheCheetahAction : public CastBuffSpellAction {
+	public:
+		CastAspectOfTheCheetahAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the cheetah") {}
+		virtual bool isUseful();
+	};
 
 	class CastAspectOfThePackAction : public CastBuffSpellAction {
 	public:
@@ -66,8 +68,10 @@ namespace ai
 		virtual bool isUseful();
 	};
 
-    BEGIN_SPELL_ACTION(CastCallPetAction, "call pet")
-    END_SPELL_ACTION()
+	class CastCallPetAction : public CastBuffSpellAction {
+	public:
+		CastCallPetAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "call pet") {}
+	};
 
 	class CastMendPetAction : public CastAuraSpellAction {
 	public:
@@ -75,16 +79,24 @@ namespace ai
 		virtual Unit* GetTarget();
 	};
 
-    BEGIN_SPELL_ACTION(CastRevivePetAction, "revive pet")
-    END_SPELL_ACTION()
+	class CastRevivePetAction : public CastBuffSpellAction {
+	public:
+		CastRevivePetAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "revive pet") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastRapidFireAction, "rapid fire")
-    END_SPELL_ACTION()
+	class CastRapidFireAction : public CastBuffSpellAction {
+	public:
+		CastRapidFireAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "rapid fire") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastReadynessAction, "readyness")
-    END_SPELL_ACTION()
+	class CastReadynessAction : public CastBuffSpellAction {
+	public:
+		CastReadynessAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "readyness") {}
+	};
 
-    BEGIN_RANGED_SPELL_ACTION(CastBlackArrow, "black arrow")
-    END_SPELL_ACTION()
+	class CastBlackArrow : public CastDebuffSpellAction {
+	public:
+		CastBlackArrow(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "black arrow") {}
+	};
    
 }

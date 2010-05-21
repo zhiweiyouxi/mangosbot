@@ -13,17 +13,26 @@ namespace ai
 		CastFrostboltAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "frostbolt") {}
 	};
 
-    BEGIN_SPELL_ACTION(CastArcaneIntellectAction, "arcane intellect")
-    END_SPELL_ACTION()
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastArcaneIntellectOnPartyAction, "arcane intellect")
-    END_SPELL_ACTION()
+	class CastArcaneIntellectAction : public CastBuffSpellAction {
+	public:
+		CastArcaneIntellectAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "arcane intellect") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastRemoveCurseAction, "remove curse")
-    END_SPELL_ACTION()
+	class CastArcaneIntellectOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastArcaneIntellectOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "arcane intellect") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastIcyVeinsAction, "icy veins")
-    END_SPELL_ACTION()
+	class CastRemoveCurseAction : public CastCureSpellAction {
+	public:
+		CastRemoveCurseAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "remove curse") {}
+	};
+
+	class CastIcyVeinsAction : public CastBuffSpellAction {
+	public:
+		CastIcyVeinsAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "icy veins") {}
+	};
 
     BEGIN_SPELL_ACTION(CastCounterspellAction, "counterspell")
     END_SPELL_ACTION()
@@ -32,15 +41,20 @@ namespace ai
     {
     public:
         CastRemoveCurseOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "remove curse", DISPEL_CURSE) {}
-        virtual const char* getName() { return "remove curse on party"; }
     };
 
-	BEGIN_SPELL_ACTION(CastConjureFoodAction, "conjure food")
-	END_SPELL_ACTION()
+	class CastConjureFoodAction : public CastBuffSpellAction {
+	public:
+		CastConjureFoodAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "conjure food") {}
+	};
 
-	BEGIN_SPELL_ACTION(CastConjureWaterAction, "conjure water")
-	END_SPELL_ACTION()
+	class CastConjureWaterAction : public CastBuffSpellAction {
+	public:
+		CastConjureWaterAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "conjure water") {}
+	};
 
-	BEGIN_SPELL_ACTION(CastIceBlockAction, "ice block")
-	END_SPELL_ACTION()
+	class CastIceBlockAction : public CastBuffSpellAction {
+	public:
+		CastIceBlockAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "ice block") {}
+	};
 }

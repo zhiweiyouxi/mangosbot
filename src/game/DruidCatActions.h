@@ -3,46 +3,37 @@
 #include "GenericActions.h"
 
 namespace ai {
-	class CastFeralChargeCatAction : public CastReachTargetSpellAction {
+	class CastFeralChargeCatAction : public CastReachTargetSpellAction 
+	{
 	public:
 		CastFeralChargeCatAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - cat", 1.5f) {}
 	};
 
-	class CastCatSpellAction : public CastSpellAction {
+	class CastCatSpellAction : public CastSpellAction 
+	{
 	public:
 		CastCatSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
 		
-		virtual NextAction** getPrerequisites() {
+		virtual NextAction** getPrerequisites() 
+		{
 			return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastSpellAction::getPrerequisites());
 		}
 	};
 
-	class CastCowerAction : public CastCatSpellAction {
-	public:
-		CastCowerAction(PlayerbotAIFacade* const ai) : CastCatSpellAction(ai, "cower") {}
-	};
 
-
-	class CastBerserkAction : public CastCatSpellAction {
+	class CastCatBuffSpellAction : public CastBuffSpellAction 
+	{
 	public:
-		CastBerserkAction(PlayerbotAIFacade* const ai) : CastCatSpellAction(ai, "berserk") {}
-	};
+		CastCatBuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastBuffSpellAction(ai, spell) {}
 
-	class CastTigersFuryAction : public CastCatSpellAction {
-	public:
-		CastTigersFuryAction(PlayerbotAIFacade* const ai) : CastCatSpellAction(ai, "tiger's fury") {}
-	};
-	
-	class CastRakeAction : public CastDebuffSpellAction {
-	public:
-		CastRakeAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "rake") {}
-
-		virtual NextAction** getPrerequisites() {
-			return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), new NextAction("cat form"), NULL), CastDebuffSpellAction::getPrerequisites());
+		virtual NextAction** getPrerequisites() 
+		{
+			return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastBuffSpellAction::getPrerequisites());
 		}
 	};
 
-	class CastCatMeleeSpellAction : public CastMeleeSpellAction {
+	class CastCatMeleeSpellAction : public CastMeleeSpellAction 
+	{
 	public:
 		CastCatMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastMeleeSpellAction(ai, spell) {}
 
@@ -50,6 +41,37 @@ namespace ai {
 			return NextAction::merge( NextAction::array(0, new NextAction("cat form"), NULL), CastMeleeSpellAction::getPrerequisites());
 		}
 	};
+
+	class CastCowerAction : public CastCatSpellAction 
+	{
+	public:
+		CastCowerAction(PlayerbotAIFacade* const ai) : CastCatSpellAction(ai, "cower") {}
+	};
+
+
+	class CastBerserkAction : public CastCatBuffSpellAction 
+	{
+	public:
+		CastBerserkAction(PlayerbotAIFacade* const ai) : CastCatBuffSpellAction(ai, "berserk") {}
+	};
+
+	class CastTigersFuryAction : public CastCatBuffSpellAction 
+	{
+	public:
+		CastTigersFuryAction(PlayerbotAIFacade* const ai) : CastCatBuffSpellAction(ai, "tiger's fury") {}
+	};
+	
+	class CastRakeAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastRakeAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "rake") {}
+
+		virtual NextAction** getPrerequisites() 
+		{
+			return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), new NextAction("cat form"), NULL), CastDebuffSpellAction::getPrerequisites());
+		}
+	};
+
 
 	class CastClawAction : public CastCatMeleeSpellAction {
 	public:

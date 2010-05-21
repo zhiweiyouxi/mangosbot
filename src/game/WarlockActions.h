@@ -4,51 +4,94 @@
 
 namespace ai
 {
-    BEGIN_SPELL_ACTION(CastDemonSkinAction, "demon skin")
-    END_SPELL_ACTION()
+	class CastDemonSkinAction : public CastBuffSpellAction {
+	public:
+		CastDemonSkinAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "demon skin") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastDemonArmorAction, "demon armor")
-    END_SPELL_ACTION()
+	class CastDemonArmorAction : public CastBuffSpellAction 
+	{
+	public:
+		CastDemonArmorAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "demon armor") {}
+	};
 
     BEGIN_RANGED_SPELL_ACTION(CastShadowBoltAction, "shadow bolt")
     END_SPELL_ACTION()
 
-    BEGIN_RANGED_SPELL_ACTION(CastImmolateAction, "immolate")
-    END_SPELL_ACTION()
+	class CastImmolateAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastImmolateAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "immolate") {}
+	};
 
-    BEGIN_RANGED_SPELL_ACTION(CastDrainSoulAction, "drain soul")
-		virtual bool isUseful() {
+	class CastDrainSoulAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastDrainSoulAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "drain soul") {}
+		virtual bool isUseful() 
+		{
 			return ai->GetItemCount("soulstone") < 2;
 		}
-    END_SPELL_ACTION()
+	};
 
-    BEGIN_RANGED_SPELL_ACTION(CastDrainManaAction, "drain mana")
-    END_SPELL_ACTION()
+	class CastDrainManaAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastDrainManaAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "drain mana") {}
+	};
 
-    BEGIN_RANGED_SPELL_ACTION(CastDrainLifeAction, "drain life")
-    END_SPELL_ACTION()
+	class CastDrainLifeAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastDrainLifeAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "drain life") {}
+	};
 
-    BEGIN_RANGED_SPELL_ACTION(CastCurseOfAgonyAction, "curse of agony")
-    END_SPELL_ACTION()
+	class CastCurseOfAgonyAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastCurseOfAgonyAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "curse of agony") {}
+	};
 
-    BEGIN_RANGED_SPELL_ACTION(CastCurseOfWeaknessAction, "curse of weakness")
-    END_SPELL_ACTION()
+	class CastCurseOfWeaknessAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastCurseOfWeaknessAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "curse of weakness") {}
+	};
 
-    BEGIN_RANGED_SPELL_ACTION(CastCorruptionAction, "corruption")
-    END_SPELL_ACTION()
+	class CastCorruptionAction : public CastDebuffSpellAction 
+	{
+	public:
+		CastCorruptionAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "corruption") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastSummonVoidwalkerAction, "summon voidwalker")
-    END_SPELL_ACTION()
+	
+	class CastSummonVoidwalkerAction : public CastBuffSpellAction 
+	{
+	public:
+		CastSummonVoidwalkerAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "summon voidwalker") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastSummonImpAction, "summon imp")
-    END_SPELL_ACTION()
+	class CastSummonImpAction : public CastBuffSpellAction 
+	{
+	public:
+		CastSummonImpAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "summon imp") {}
+	};
 
-	BEGIN_SPELL_ACTION(CastCreateHealthstoneAction, "create healthstone")
-	END_SPELL_ACTION()
+	class CastCreateHealthstoneAction : public CastBuffSpellAction 
+	{
+	public:
+		CastCreateHealthstoneAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "create healthstone") {}
+	};
 
-	BEGIN_SPELL_ACTION(CastCreateFirestoneAction, "create firestone")
-	END_SPELL_ACTION()
+	class CastCreateFirestoneAction : public CastBuffSpellAction 
+	{
+	public:
+		CastCreateFirestoneAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "create firestone") {}
+	};
 
-	BEGIN_SPELL_ACTION(CastCreateSpellstoneAction, "create spellstone")
-	END_SPELL_ACTION()
+	class CastCreateSpellstoneAction : public CastBuffSpellAction 
+	{
+	public:
+		CastCreateSpellstoneAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "create spellstone") {}
+	};
 }

@@ -7,16 +7,16 @@
 
 namespace ai
 {
-	class CastEvasionAction : public CastSpellAction 
+	class CastEvasionAction : public CastBuffSpellAction 
 	{ 
 	public: 
-		CastEvasionAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "evasion") {} 
+		CastEvasionAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "evasion") {} 
 	};
 
-	class CastSprintAction : public CastSpellAction 
+	class CastSprintAction : public CastBuffSpellAction 
 	{ 
 	public: 
-		CastSprintAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "sprint") {} 
+		CastSprintAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "sprint") {} 
 	};
 
 	class CastKickAction : public CastSpellAction 
@@ -43,16 +43,16 @@ namespace ai
 		CastDistractAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "distract") {} 
 	};
 	
-	class CastVanishAction : public CastSpellAction 
+	class CastVanishAction : public CastBuffSpellAction 
 	{ 
 	public: 
-		CastVanishAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "vanish") {} 
+		CastVanishAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "vanish") {} 
 	};
 
-	class CastBlindAction : public CastSpellAction 
+	class CastBlindAction : public CastDebuffSpellAction 
 	{ 
 	public: 
-		CastBlindAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "blind") {} 
+		CastBlindAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "blind") {} 
 	};
 	
 	
@@ -62,22 +62,22 @@ namespace ai
 		CastRiposteAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "riposte") {} 
 	};
 
-	class CastBladeFlurryAction : public CastSpellAction 
+	class CastBladeFlurryAction : public CastBuffSpellAction 
 	{ 
 	public: 
-		CastBladeFlurryAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "blade flurry") {} 
+		CastBladeFlurryAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "blade flurry") {} 
 	};
 
-	class CastAdrenalineRushAction : public CastSpellAction 
+	class CastAdrenalineRushAction : public CastBuffSpellAction 
 	{ 
 	public: 
-		CastAdrenalineRushAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "adrenaline rush") {} 
+		CastAdrenalineRushAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "adrenaline rush") {} 
 	};
 
-	class CastKillingSpreeAction : public CastSpellAction 
+	class CastKillingSpreeAction : public CastBuffSpellAction 
 	{ 
 	public: 
-		CastKillingSpreeAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "killing spree") {} 
+		CastKillingSpreeAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "killing spree") {} 
 	};
 
 }

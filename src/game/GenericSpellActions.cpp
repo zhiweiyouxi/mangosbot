@@ -48,6 +48,7 @@ Unit* HealPartyMemberAction::GetTarget()
 	return targetManager->GetPartyMinHealthPlayer();
 }
 
+
 Unit* CastHealingSpellAction::GetTarget()
 {
 	return targetManager->GetSelf();

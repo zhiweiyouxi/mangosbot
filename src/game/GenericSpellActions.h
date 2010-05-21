@@ -146,12 +146,27 @@ namespace ai
 		virtual Unit* GetTarget();
 	};
 
-    class HealPartyMemberAction : public CastHealingSpellAction
+	class PartyMemberActionNameSupport {
+	public:
+		PartyMemberActionNameSupport(const char* spell) 
+		{
+			name = string(spell) + " on party";
+		}
+
+		virtual const char* getName() { return name.c_str(); }
+
+	private:
+		string name;
+	};
+
+    class HealPartyMemberAction : public CastHealingSpellAction, public PartyMemberActionNameSupport
     {
     public:
-        HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastHealingSpellAction(ai, spell, estAmount) {}
+        HealPartyMemberAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : 
+			CastHealingSpellAction(ai, spell, estAmount), PartyMemberActionNameSupport(spell) {}
 
 		virtual Unit* GetTarget();
+		virtual const char* getName() { return PartyMemberActionNameSupport::getName(); }
     };
 
 	class ResurrectPartyMemberAction : public CastSpellAction
@@ -163,15 +178,17 @@ namespace ai
 	};
     //---------------------------------------------------------------------------------------------------------------------
 
-    class CurePartyMemberAction : public CastSpellAction
+    class CurePartyMemberAction : public CastSpellAction, public PartyMemberActionNameSupport
     {
     public:
-        CurePartyMemberAction(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : CastSpellAction(ai, spell) 
+        CurePartyMemberAction(PlayerbotAIFacade* const ai, const char* spell, uint32 dispelType) : 
+			CastSpellAction(ai, spell), PartyMemberActionNameSupport(spell)
         {
             this->dispelType = dispelType;
         }
 
 		virtual Unit* GetTarget();
+		virtual const char* getName() { return PartyMemberActionNameSupport::getName(); }
 
     protected:
         uint32 dispelType;
@@ -179,12 +196,14 @@ namespace ai
 
     //---------------------------------------------------------------------------------------------------------------------
 
-    class BuffOnPartyAction : public CastBuffSpellAction
+    class BuffOnPartyAction : public CastBuffSpellAction, public PartyMemberActionNameSupport
     {
     public:
-        BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : CastBuffSpellAction(ai, spell) {}
+        BuffOnPartyAction(PlayerbotAIFacade* const ai, const char* spell) : 
+			CastBuffSpellAction(ai, spell), PartyMemberActionNameSupport(spell) {}
     public: 
 		virtual Unit* GetTarget();
+		virtual const char* getName() { return PartyMemberActionNameSupport::getName(); }
     };
 
     //---------------------------------------------------------------------------------------------------------------------

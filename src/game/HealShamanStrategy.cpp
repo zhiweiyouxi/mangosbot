@@ -16,10 +16,6 @@ void HealShamanStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     GenericShamanStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
-        new PartyMemberLowHealthTrigger(ai, 80, 60),
-        NextAction::array(0, new NextAction("earth shield on party", 25.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new PartyMemberLowHealthTrigger(ai, 60, 40),
         NextAction::array(0, new NextAction("chain heal on party", 25.0f), NULL)));
 
@@ -67,7 +63,7 @@ ActionNode* HealShamanStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastRiptideAction(ai),  
             /*P*/ NULL,
-            /*A*/ NULL, 
+			/*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("chain heal on party", name)) 
@@ -81,7 +77,7 @@ ActionNode* HealShamanStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastRiptideOnPartyAction(ai),  
             /*P*/ NULL,
-            /*A*/ NULL, 
+			/*A*/ NextAction::array(0, new NextAction("earth shield on party"), NULL), 
             /*C*/ NULL);
     }
 

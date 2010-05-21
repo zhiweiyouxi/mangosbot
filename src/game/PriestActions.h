@@ -136,13 +136,15 @@ namespace ai
         }
     END_SPELL_ACTION()
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastPowerWordFortitudeOnPartyAction, "power word: fortitude")
-    virtual const char* getName() { return "power word: fortitude on party";}
-    END_SPELL_ACTION()
+	class CastPowerWordFortitudeOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastPowerWordFortitudeOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "power word: fortitude") {}
+	};
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastDivineSpiritOnPartyAction, "divine spirit")
-        virtual const char* getName() { return "divine spirit on party";}
-    END_SPELL_ACTION()
+	class CastDivineSpiritOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastDivineSpiritOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "divine spirit") {}
+	};
 
 
     BEGIN_DEBUFF_ACTION(CastPowerWordPainAction, "shadow word: pain")

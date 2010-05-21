@@ -39,8 +39,6 @@ namespace ai
     {
     public:
         CastRejuvenationOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "rejuvenation") {}
-
-        virtual const char* getName() { return "rejuvenation on party"; }
 		
 		virtual NextAction** getPrerequisites() {
 			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), HealPartyMemberAction::getPrerequisites());
@@ -51,7 +49,6 @@ namespace ai
     {
     public:
         CastRegrowthOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "regrowth") {}
-        virtual const char* getName() { return "regrowth on party"; }
 		
 		virtual NextAction** getPrerequisites() {
 			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), HealPartyMemberAction::getPrerequisites());
@@ -86,7 +83,6 @@ namespace ai
 	class CastMarkOfTheWildOnPartyAction : public BuffOnPartyAction {
 	public:
 		CastMarkOfTheWildOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "mark of the wild") {}
-		virtual const char* getName() { return "mark of the wild on party";}
 	};
 
 	class CastSurvivalInstinctsAction : public CastBuffSpellAction {
@@ -151,7 +147,6 @@ namespace ai
     {
     public:
         CastCurePoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "cure poison", DISPEL_POISON) {}
-		virtual const char* getName() { return "cure poison on party";}
     };
 
 	class CastAbolishPoisonAction : public CastCureSpellAction 
@@ -166,7 +161,6 @@ namespace ai
     public:
         CastAbolishPoisonOnPartyAction(PlayerbotAIFacade* const ai) : CurePartyMemberAction(ai, "abolish poison", DISPEL_POISON) {}
 
-        virtual const char* getName() { return "abolish poison on party"; }
         virtual NextAction** getAlternatives();
     };
 

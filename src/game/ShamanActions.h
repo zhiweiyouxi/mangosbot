@@ -13,8 +13,6 @@ namespace ai
     {
     public:
         CastLesserHealingWaveOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "lesser healing wave") {}
-
-        virtual const char* getName() { return "lesser healing wave on party"; }
     };
 
 
@@ -27,8 +25,6 @@ namespace ai
     {
     public:
         CastHealingWaveOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "healing wave") {}
-
-        virtual const char* getName() { return "healing wave on party"; }
     };
 
     class CastChainHealAction : public CastHealingSpellAction {
@@ -40,8 +36,6 @@ namespace ai
     {
     public:
         CastChainHealOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "chain heal") {}
-
-        virtual const char* getName() { return "chain heal on party"; }
     };
 
     class CastRiptideAction : public CastHealingSpellAction {
@@ -53,69 +47,65 @@ namespace ai
     {
     public:
         CastRiptideOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "riptide") {}
-
-        virtual const char* getName() { return "riptide on party"; }
     };
 
 
-    class CastEarthShieldAction : public CastHealingSpellAction {
+    class CastEarthShieldAction : public CastBuffSpellAction {
     public:
-        CastEarthShieldAction(PlayerbotAIFacade* const ai) : CastHealingSpellAction(ai, "earth shield") {}
+        CastEarthShieldAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "earth shield") {}
     };
 
-    class CastEarthShieldOnPartyAction : public HealPartyMemberAction
+    class CastEarthShieldOnPartyAction : public BuffOnPartyAction
     {
     public:
-        CastEarthShieldOnPartyAction(PlayerbotAIFacade* const ai) : HealPartyMemberAction(ai, "earth shield") {}
-
-        virtual const char* getName() { return "earth shield on party"; }
+        CastEarthShieldOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "earth shield") {}
     };
 
-    class CastWaterShieldAction : public CastSpellAction {
+    class CastWaterShieldAction : public CastBuffSpellAction {
     public:
-        CastWaterShieldAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "water shield") {}
+        CastWaterShieldAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "water shield") {}
     };
 
 
-    class CastEarthlivingWeaponAction : public CastSpellAction {
+    class CastEarthlivingWeaponAction : public CastBuffSpellAction {
     public:
-        CastEarthlivingWeaponAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "earthliving weapon") {}
+        CastEarthlivingWeaponAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "earthliving weapon") {}
     };
     
 
-    class CastStoneskinTotemAction : public CastSpellAction {
+    class CastStoneskinTotemAction : public CastBuffSpellAction {
     public:
-        CastStoneskinTotemAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "stoneskin totem") {}
+        CastStoneskinTotemAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "stoneskin totem") {}
     };
 
-    class CastEarthbindTotemAction : public CastSpellAction {
+    class CastEarthbindTotemAction : public CastBuffSpellAction {
     public:
-        CastEarthbindTotemAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "earthbind totem") {}
+        CastEarthbindTotemAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "earthbind totem") {}
     };
 
-    class CastStrengthOfEarthTotemAction : public CastSpellAction {
+    class CastStrengthOfEarthTotemAction : public CastBuffSpellAction {
     public:
-        CastStrengthOfEarthTotemAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "strength of earth totem") {}
+        CastStrengthOfEarthTotemAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "strength of earth totem") {}
     };
 
-    class CastManaSpringTotemAction : public CastSpellAction {
+    class CastManaSpringTotemAction : public CastBuffSpellAction {
     public:
-        CastManaSpringTotemAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "mana spring totem") {}
+        CastManaSpringTotemAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "mana spring totem") {}
     };
 
-    class CastCleansingTotemAction : public CastSpellAction {
+    class CastCleansingTotemAction : public CastBuffSpellAction {
     public:
-        CastCleansingTotemAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "cleansing totem") {}
+        CastCleansingTotemAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "cleansing totem") {}
     };
 
-    class CastFlametongueTotemAction : public CastSpellAction {
+    class CastFlametongueTotemAction : public CastBuffSpellAction {
     public:
-        CastFlametongueTotemAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "flametongue totem") {}
+        CastFlametongueTotemAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "flametongue totem") {}
     };
 
-    class CastWindfuryTotemAction : public CastSpellAction {
+    class CastWindfuryTotemAction : public CastBuffSpellAction {
     public:
-        CastWindfuryTotemAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "windfury totem") {}
+        CastWindfuryTotemAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "windfury totem") {}
     };
 
     class CastWindShearAction : public CastSpellAction {

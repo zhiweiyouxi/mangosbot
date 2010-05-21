@@ -73,9 +73,12 @@ namespace ai
     };
 
     // defensive
-    class CastShieldBlockAction : public CastDefensiveMeleeSpellAction {
+    class CastShieldBlockAction : public CastBuffSpellAction {
     public:
-        CastShieldBlockAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "shield block") {}
+        CastShieldBlockAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "shield block") {}
+		virtual NextAction** getPrerequisites() {
+			return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastSpellAction::getPrerequisites());
+		}
     };
 
     // defensive
@@ -84,9 +87,9 @@ namespace ai
         CastShieldWallAction(PlayerbotAIFacade* const ai) : CastDefensiveMeleeSpellAction(ai, "shield wall") {}
     };
 
-    class CastBloodrageAction : public CastSpellAction {
+    class CastBloodrageAction : public CastBuffSpellAction {
     public:
-        CastBloodrageAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "bloodrage") {}
+        CastBloodrageAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "bloodrage") {}
     };
 
     // defensive
@@ -159,14 +162,20 @@ namespace ai
     BEGIN_RANGED_SPELL_ACTION(CastChargeAction, "charge")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastDeathWishAction, "death wish")
-    END_SPELL_ACTION()   
+	class CastDeathWishAction : public CastBuffSpellAction {
+	public:
+		CastDeathWishAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "death wish") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastBerserkerRageAction, "berserker rage")
-    END_SPELL_ACTION()   
+	class CastBerserkerRageAction : public CastBuffSpellAction {
+	public:
+		CastBerserkerRageAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "berserker rage") {}
+	};
 
-	BEGIN_SPELL_ACTION(CastLastStandAction, "last stand")
-	END_SPELL_ACTION()   
+	class CastLastStandAction : public CastBuffSpellAction {
+	public:
+		CastLastStandAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "last stand") {}
+	};
 
 	// defensive
 	class CastShockwaveAction : public CastDefensiveMeleeSpellAction {
