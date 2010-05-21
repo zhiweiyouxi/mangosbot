@@ -10,9 +10,7 @@ namespace ai
 	class CastFrostboltAction : public CastRangedSpellAction
 	{
 	public:
-		CastFrostboltAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "frostbolt") {
-			checkAura = false;
-		}
+		CastFrostboltAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "frostbolt") {}
 	};
 
     BEGIN_SPELL_ACTION(CastArcaneIntellectAction, "arcane intellect")

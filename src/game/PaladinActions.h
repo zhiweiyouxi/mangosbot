@@ -19,72 +19,111 @@ namespace ai
         CastJudgementOfJusticeAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "judgement of justice") {}
     };
 
-    BEGIN_SPELL_ACTION(CastRighteousFuryAction, "righteous fury")
-    END_SPELL_ACTION()
+	class CastRighteousFuryAction : public CastBuffSpellAction {
+	public:
+		CastRighteousFuryAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "righteous fury") {}
+	};
 
-    // buffs
-    BEGIN_SPELL_ACTION(CastDevotionAuraAction, "devotion aura")
-    END_SPELL_ACTION()
+	class CastDevotionAuraAction : public CastBuffSpellAction {
+	public:
+		CastDevotionAuraAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "devotion aura") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastRetributionAuraAction, "retribution aura")
-    END_SPELL_ACTION()
+	class CastRetributionAuraAction : public CastBuffSpellAction {
+	public:
+		CastRetributionAuraAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "retribution aura") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastConcentrationAuraAction, "concentration aura")
-    END_SPELL_ACTION()
+	class CastConcentrationAuraAction : public CastBuffSpellAction {
+	public:
+		CastConcentrationAuraAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "concentration aura") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastShadowResistanceAuraAction, "shadow resistance aura")
-    END_SPELL_ACTION()
+	class CastShadowResistanceAuraAction : public CastBuffSpellAction {
+	public:
+		CastShadowResistanceAuraAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "shadow resistance aura") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastFrostResistanceAuraAction, "frost resistance aura")
-    END_SPELL_ACTION()
+	class CastFrostResistanceAuraAction : public CastBuffSpellAction {
+	public:
+		CastFrostResistanceAuraAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "frost resistance aura") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastFireResistanceAuraAction, "fire resistance aura")
-    END_SPELL_ACTION()
+	class CastFireResistanceAuraAction : public CastBuffSpellAction {
+	public:
+		CastFireResistanceAuraAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "fire resistance aura") {}
+	};
 
+	class CastSealOfRighteousnessAction : public CastBuffSpellAction {
+	public:
+		CastSealOfRighteousnessAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "seal of righteousness") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastSealOfRighteousnessAction, "seal of righteousness")
-    END_SPELL_ACTION()
+	class CastSealOfJusticeAction : public CastBuffSpellAction {
+	public:
+		CastSealOfJusticeAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "seal of justice") {}
+	};
     
-    BEGIN_SPELL_ACTION(CastSealOfJusticeAction, "seal of justice")
-    END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastSealOfLightAction, "seal of light")
-    END_SPELL_ACTION()
+	class CastSealOfLightAction : public CastBuffSpellAction {
+	public:
+		CastSealOfLightAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "seal of light") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastSealOfWisdomAction, "seal of wisdom")
-    END_SPELL_ACTION()
+	class CastSealOfWisdomAction : public CastBuffSpellAction {
+	public:
+		CastSealOfWisdomAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "seal of wisdom") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastSealOfCommandAction, "seal of command")
-    END_SPELL_ACTION()
+	class CastSealOfCommandAction : public CastBuffSpellAction {
+	public:
+		CastSealOfCommandAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "seal of command") {}
+	};
 
     
-    BEGIN_SPELL_ACTION(CastBlessingOfMightAction, "blessing of might")
-    END_SPELL_ACTION()
+	class CastBlessingOfMightAction : public CastBuffSpellAction {
+	public:
+		CastBlessingOfMightAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "blessing of might") {}
+	};
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastBlessingOfMightOnPartyAction, "blessing of might")
+	class CastBlessingOfMightOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastBlessingOfMightOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "blessing of might") {}
         virtual const char* getName() { return "blessing of might on party";}
-    END_SPELL_ACTION()
+	};
 
-    BEGIN_SPELL_ACTION(CastBlessingOfWisdomAction, "blessing of wisdom")
-    END_SPELL_ACTION()
+	class CastBlessingOfWisdomAction : public CastBuffSpellAction {
+	public:
+		CastBlessingOfWisdomAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "blessing of wisdom") {}
+	};
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastBlessingOfWisdomOnPartyAction, "blessing of wisdom")
+	class CastBlessingOfWisdomOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastBlessingOfWisdomOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "blessing of wisdom") {}
         virtual const char* getName() { return "blessing of wisdom on party";}
-    END_SPELL_ACTION()
+	};
 
-    BEGIN_SPELL_ACTION(CastBlessingOfKingsAction, "blessing of kings")
-    END_SPELL_ACTION()
+	class CastBlessingOfKingsAction : public CastBuffSpellAction {
+	public:
+		CastBlessingOfKingsAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "blessing of kings") {}
+	};
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastBlessingOfKingsOnPartyAction, "blessing of kings")
+	class CastBlessingOfKingsOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastBlessingOfKingsOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "blessing of kings") {}
         virtual const char* getName() { return "blessing of kings on party";}
-    END_SPELL_ACTION()
+	};
 
-    BEGIN_SPELL_ACTION(CastBlessingOfSanctuaryAction, "blessing of sanctuary")
-    END_SPELL_ACTION()
+	class CastBlessingOfSanctuaryAction : public CastBuffSpellAction {
+	public:
+		CastBlessingOfSanctuaryAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "blessing of sanctuary") {}
+	};
 
-    BEGIN_BUFF_ON_PARTY_ACTION(CastBlessingOfSanctuaryOnPartyAction, "blessing of sanctuary")
+	class CastBlessingOfSanctuaryOnPartyAction : public BuffOnPartyAction {
+	public:
+		CastBlessingOfSanctuaryOnPartyAction(PlayerbotAIFacade* const ai) : BuffOnPartyAction(ai, "blessing of sanctuary") {}
         virtual const char* getName() { return "blessing of sanctuary on party";}
-    END_SPELL_ACTION()
+	};
 
     class CastHolyLightAction : public CastHealingSpellAction {
     public:
@@ -125,8 +164,10 @@ namespace ai
         virtual const char* getName() { return "lay on hands on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastDivineProtectionAction, "divine protection")
-    END_SPELL_ACTION()
+	class CastDivineProtectionAction : public CastBuffSpellAction {
+	public:
+		CastDivineProtectionAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "divine protection") {}
+	};
 
     class CastDivineProtectionOnPartyAction : public HealPartyMemberAction
     {
@@ -136,8 +177,10 @@ namespace ai
         virtual const char* getName() { return "divine protection on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastDivineShieldAction, "divine shield")
-    END_SPELL_ACTION()
+	class CastDivineShieldAction: public CastBuffSpellAction {
+	public:
+		CastDivineShieldAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "divine shield") {}
+	};
 
     BEGIN_SPELL_ACTION(CastConsecrationAction, "consecration")
     END_SPELL_ACTION()
@@ -160,8 +203,10 @@ namespace ai
 		CastHammerOfTheRighteousAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "hammer of the righteous") {}
 	};
 
-    BEGIN_SPELL_ACTION(CastPurifyAction, "purify")
-    END_SPELL_ACTION()
+	class CastPurifyAction : public CastCureSpellAction {
+	public:
+		CastPurifyAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "purify") {}
+	};
 
     class CastPurifyOnPartyAction : public CurePartyMemberAction
     {
@@ -171,11 +216,15 @@ namespace ai
         virtual const char* getName() { return "purify on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastHandOfReckoningAction, "hand of reckoning")
-    END_SPELL_ACTION()
+	class CastHandOfReckoningAction : public CastDebuffSpellAction {
+	public:
+		CastHandOfReckoningAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "hand of reckoning") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastCleanseAction, "cleanse")
-    END_SPELL_ACTION()
+	class CastCleanseAction : public CastCureSpellAction {
+	public:
+		CastCleanseAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "cleanse") {}
+	};
 
     class CastCleanseOnPartyAction : public CurePartyMemberAction
     {
@@ -191,8 +240,10 @@ namespace ai
 	BEGIN_SPELL_ACTION(CastExorcismAction, "exorcism")
 	END_SPELL_ACTION()
 
-	BEGIN_SPELL_ACTION(CastHolyShieldAction, "holy shield")
-	END_SPELL_ACTION()
+	class CastHolyShieldAction : public CastBuffSpellAction {
+	public:
+		CastHolyShieldAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "holy shield") {}
+	};
 	
 	class CastRedemptionAction : public ResurrectPartyMemberAction
 	{

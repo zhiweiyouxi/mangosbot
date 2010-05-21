@@ -45,7 +45,7 @@ protected:
         tickWithLowHealth(1); // -shadowform
         tickWithLowHealth(1); // greater heal
         
-        assertActions(">shadowform>devouring plague>shadow word: pain>mind blast>shoot>power word: shield>-shadowform>greater heal");
+        assertActions(">shadowform>devouring plague>shadow word: pain>mind blast>shoot>-shadowform>power word: shield>greater heal");
     }
 };
 

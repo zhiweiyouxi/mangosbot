@@ -50,10 +50,10 @@ namespace ai
     class CastSpellAction : public Action
     {
     public:
-        CastSpellAction(PlayerbotAIFacade* const ai, const char* spell) : Action(ai, spell)
+        CastSpellAction(PlayerbotAIFacade* const ai, const char* spell) : Action(ai, spell),
+			range(SPELL_DISTANCE)
         {
             this->spell = spell;
-			this->checkAura = true;
 			this->spellManager = ai->GetSpellManager();
 			this->targetManager = ai->GetTargetManager();
 			this->statsManager = ai->GetStatsManager();
@@ -64,9 +64,19 @@ namespace ai
         virtual bool isPossible();
 		virtual bool isUseful();
 
+		virtual NextAction** getPrerequisites() 
+		{
+			if (range > SPELL_DISTANCE)
+				return NULL;
+			else if (range > ATTACK_DISTANCE)
+				return NextAction::merge( NextAction::array(0, new NextAction("reach spell"), NULL), Action::getPrerequisites());
+			else
+				return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), NULL), Action::getPrerequisites());
+		}
+
     protected:
         const char* spell;
-		bool checkAura;
+		float range;
 		AiSpellManager* spellManager;
 		AiTargetManager* targetManager;
 		AiStatsManager* statsManager;
@@ -86,10 +96,9 @@ namespace ai
     class CastMeleeSpellAction : public CastSpellAction
     {
     public:
-        CastMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual NextAction** getPrerequisites() {
-            return NextAction::merge( NextAction::array(0, new NextAction("reach melee"), NULL), CastSpellAction::getPrerequisites());
-        }
+        CastMeleeSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {
+			range = ATTACK_DISTANCE;
+		}
     };
     //---------------------------------------------------------------------------------------------------------------------
 
@@ -97,9 +106,6 @@ namespace ai
     {
     public:
         CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-        virtual NextAction** getPrerequisites() {
-            return NextAction::merge( NextAction::array(0, new NextAction("reach spell"), NULL), CastSpellAction::getPrerequisites());
-        }
 
     };
     //---------------------------------------------------------------------------------------------------------------------
@@ -112,7 +118,10 @@ namespace ai
 	class CastBuffSpellAction : public CastAuraSpellAction
 	{
 	public:
-		CastBuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastAuraSpellAction(ai, spell) {}
+		CastBuffSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastAuraSpellAction(ai, spell) 
+		{
+			range = BOT_REACT_DISTANCE;
+		}
 		virtual Unit* GetTarget();
 	};
 
@@ -121,8 +130,10 @@ namespace ai
     class CastHealingSpellAction : public CastAuraSpellAction
     {
     public:
-        CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastAuraSpellAction(ai, spell) {
+        CastHealingSpellAction(PlayerbotAIFacade* const ai, const char* spell, uint8 estAmount = 15.0f) : CastAuraSpellAction(ai, spell) 
+		{
             this->estAmount = estAmount;
+			range = BOT_REACT_DISTANCE;
         }
 		virtual Unit* GetTarget();
         virtual bool isUseful();
@@ -134,7 +145,10 @@ namespace ai
 	class CastCureSpellAction : public CastSpellAction
 	{
 	public:
-		CastCureSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
+		CastCureSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) 
+		{
+			range = BOT_REACT_DISTANCE;
+		}
 
 		virtual Unit* GetTarget();
 	};

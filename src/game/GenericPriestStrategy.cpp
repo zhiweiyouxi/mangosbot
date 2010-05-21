@@ -63,7 +63,7 @@ ActionNode* GenericPriestStrategy::createAction(const char* name)
     if (!strcmp("inner fire", name)) 
     {
         return new ActionNode (new CastInnerFireAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
@@ -105,42 +105,42 @@ ActionNode* GenericPriestStrategy::createAction(const char* name)
     else if (!strcmp("power word: fortitude", name)) 
     {
         return new ActionNode (new CastPowerWordFortitudeAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("power word: fortitude on party", name)) 
     {
         return new ActionNode (new CastPowerWordFortitudeOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("divine spirit", name)) 
     {
         return new ActionNode (new CastDivineSpiritAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("divine spirit on party", name)) 
     {
         return new ActionNode (new CastDivineSpiritOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     if (!strcmp("power word: shield", name)) 
     {
         return new ActionNode (new CastPowerWordShieldAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NextAction::array(0, new NextAction("renew", 50.0f), NULL), 
             /*C*/ NULL);
     }
     else if (!strcmp("power word: shield on party", name)) 
     {
         return new ActionNode (new CastPowerWordShieldOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NextAction::array(0, new NextAction("renew on party", 50.0f), NULL), 
             /*C*/ NULL);
     }
@@ -168,7 +168,7 @@ ActionNode* GenericPriestStrategy::createAction(const char* name)
     else if (!strcmp("greater heal on party", name)) 
     {
         return new ActionNode (new CastGreaterHealOnPartyAction(ai),  
-            /*P*/ NULL,
+            /*P*/ NextAction::array(0, new NextAction("remove shadowform"), NULL),
             /*A*/ NextAction::array(0, new NextAction("heal on party"), NULL), 
             /*C*/ NULL);
     }

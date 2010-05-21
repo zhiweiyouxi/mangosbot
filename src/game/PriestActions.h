@@ -69,9 +69,9 @@ namespace ai
         virtual const char* getName() { return "renew on party"; }
     };
 
-    class CastFadeAction : public CastSpellAction {
+    class CastFadeAction : public CastBuffSpellAction {
     public:
-        CastFadeAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "fade") {}
+        CastFadeAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "fade") {}
     };
 
     class CastShadowformAction : public CastBuffSpellAction {
@@ -90,8 +90,10 @@ namespace ai
         }
     };
 
-    BEGIN_SPELL_ACTION(CastPowerWordShieldAction, "power word: shield")
-    END_SPELL_ACTION()
+	class CastPowerWordShieldAction : public CastBuffSpellAction {
+	public:
+		CastPowerWordShieldAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "power word: shield") {}
+	};
 
     class CastPowerWordShieldOnPartyAction : public HealPartyMemberAction
     {
@@ -101,14 +103,20 @@ namespace ai
         virtual const char* getName() { return "power word: shield on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastPowerWordFortitudeAction, "power word: fortitude")
-    END_SPELL_ACTION()
+	class CastPowerWordFortitudeAction : public CastBuffSpellAction {
+	public:
+		CastPowerWordFortitudeAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "power word: fortitude") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastDivineSpiritAction, "divine spirit")
-    END_SPELL_ACTION()
+	class CastDivineSpiritAction : public CastBuffSpellAction {
+	public:
+		CastDivineSpiritAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "divine spirit") {}
+	};
 
-    BEGIN_SPELL_ACTION(CastInnerFireAction, "inner fire")
-    END_SPELL_ACTION()
+	class CastInnerFireAction : public CastBuffSpellAction {
+	public:
+		CastInnerFireAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "inner fire") {}
+	};
 
     BEGIN_SPELL_ACTION(CastHolyNovaAction, "holy nova")
     virtual bool isUseful() {
@@ -149,8 +157,10 @@ namespace ai
     BEGIN_RANGED_SPELL_ACTION(CastMindFlayAction, "mind flay")
     END_SPELL_ACTION()
 
-    BEGIN_SPELL_ACTION(CastCureDiseaseAction, "cure disease")
-    END_SPELL_ACTION()
+	class CastCureDiseaseAction : public CastCureSpellAction {
+	public:
+		CastCureDiseaseAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "cure disease") {}
+	};
 
     class CastCureDiseaseOnPartyAction : public CurePartyMemberAction
     {
@@ -159,9 +169,11 @@ namespace ai
         virtual const char* getName() { return "cure disease on party"; }
     };
 
-    BEGIN_SPELL_ACTION(CastAbolishDiseaseAction, "abolish disease")
-        virtual NextAction** getAlternatives();
-    END_SPELL_ACTION()
+	class CastAbolishDiseaseAction : public CastCureSpellAction {
+	public:
+		CastAbolishDiseaseAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "abolish disease") {}
+		virtual NextAction** getAlternatives();
+	};
 
     class CastAbolishDiseaseOnPartyAction : public CurePartyMemberAction
     {
@@ -171,8 +183,10 @@ namespace ai
         virtual NextAction** getAlternatives();
     };
 
-    BEGIN_SPELL_ACTION(CastDispelMagicAction, "dispel magic")
-    END_SPELL_ACTION()
+	class CastDispelMagicAction : public CastCureSpellAction {
+	public:
+		CastDispelMagicAction(PlayerbotAIFacade* const ai) : CastCureSpellAction(ai, "dispel magic") {}
+	};
 
     class CastDispelMagicOnTargetAction : public CastSpellAction {
     public:
