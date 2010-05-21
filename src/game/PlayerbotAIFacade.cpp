@@ -53,40 +53,6 @@ float PlayerbotAIFacade::GetDistanceToEnemy(float ifNoTarget)
     return ifNoTarget;
 }
 
-Unit* PlayerbotAIFacade::findPlayer(bool predicate(Unit*, FindPlayerParam*), void* param)
-{
-	Player* bot = ai->GetPlayerBot();
-    Group* group = bot->GetGroup();
-	if (!group)
-		return NULL;
-
-	FindPlayerParam pp; pp.ai = ai; pp.param = param;
-	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
-		Player* player = gref->getSource();
-		if (checkPredicate(player, predicate, &pp))
-			return player;
-		
-		Pet* pet = player->GetPet();
-		if (pet && pet->IsPermanentPetFor(player) && checkPredicate(player, predicate, &pp))
-			return player;
-	}
-	return NULL;
-}
-
-bool PlayerbotAIFacade::checkPredicate(Unit* player, bool predicate(Unit*, FindPlayerParam*), FindPlayerParam *param) {
-	Player* bot = ai->GetPlayerBot();
-
-    return (player != bot && 
-		bot->GetDistance(player) < BOT_REACT_DISTANCE &&
-		bot->IsWithinLOS(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ()) &&
-		(predicate==NULL || predicate(player, param)));
-}
-
-bool PlayerbotAIFacade::isPlayerWithoutAura(Unit* player, FindPlayerParam *param )
-{
-    return player->isAlive() && !param->ai->HasAura((const char*)param->param, *player);
-}
-
 bool PlayerbotAIFacade::HasAggro()
 {
     Unit* currentTarget = ai->GetCurrentTarget();

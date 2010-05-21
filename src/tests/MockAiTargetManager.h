@@ -20,6 +20,7 @@ namespace ai
 			  deadPartyMember = false;
 			  partyMemberWithoutAura = false;
 			  haveTarget = true;
+			  hasPet = true;
           }
 
 	public:
@@ -38,6 +39,7 @@ namespace ai
 
 	public:
 		bool haveTarget;
+		bool hasPet;
 		bool partyMemberWithoutAura;
 		bool deadPartyMember;
     };

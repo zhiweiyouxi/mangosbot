@@ -233,9 +233,9 @@ void EngineTestBase::tickWithBalancePercent(int percent)
 
 void EngineTestBase::tickWithNoPet()
 {
-	ai->hasPet = FALSE;
+	targetManager->hasPet = false;
 	tick();
-	ai->hasPet = TRUE;
+	targetManager->hasPet = true;
 }
 
 void EngineTestBase::tickWithPetLowHealth(int amount)

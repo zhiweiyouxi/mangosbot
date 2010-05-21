@@ -18,7 +18,6 @@ namespace ai
 			targetManager = new MockAiTargetManager(this, spellManager, statsManager);
 
             distanceToEnemy = 15.0f; aggro = TRUE; 
-            hasPet = TRUE;
             attackerCount = 1;myAttackerCount = 1;
             lootAvailable = false;
             balancePercent = 100;
@@ -55,7 +54,6 @@ namespace ai
 		virtual int GetItemCount(const char* name)  { return itemCounts[std::string(name)]; }
 
 
-        virtual bool HasPet() { return hasPet; }
 
         virtual bool IsMounted() { return FALSE; }
         virtual bool HaveTarget() { return haveTarget; }
@@ -89,7 +87,6 @@ namespace ai
         //uint8 targetMana;
 		//uint8 petHealth;
         bool aggro;
-        bool hasPet;
         int attackerCount;
         int myAttackerCount;
         //int partyMinHealth;

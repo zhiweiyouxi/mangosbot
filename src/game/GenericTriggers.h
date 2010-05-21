@@ -236,7 +236,7 @@ namespace ai
 		NoPetTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "no pet", 5) {}
 
 		virtual bool NoPetTrigger::IsActive() {
-			return !ai->HasPet() && !ai->IsMounted();
+			return !targetManager->GetPet() && !ai->IsMounted();
 		}
 	};
 

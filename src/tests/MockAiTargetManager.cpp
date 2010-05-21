@@ -50,5 +50,5 @@ Player* MockAiTargetManager::GetSelf()
 
 Unit* MockAiTargetManager::GetPet()
 {
-	return MockedTargets::GetPet();
+	return hasPet ? MockedTargets::GetPet() : NULL;
 }
