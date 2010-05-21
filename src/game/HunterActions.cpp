@@ -32,7 +32,7 @@ bool CastAimedShotAction::isUseful()
 
 Unit* CastMendPetAction::GetTarget()
 {
-	return targetManager->GetSelf();
+	return targetManager->GetPet();
 }
 
 bool CastAspectOfTheCheetahAction::isUseful() {

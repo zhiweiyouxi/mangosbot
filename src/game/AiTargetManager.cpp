@@ -299,8 +299,7 @@ Player* AiTargetManager::GetMaster()
 
 Unit* AiTargetManager::GetPet()
 {
-	Pet* pet = bot->GetPet();
-	return (pet && CanHealPet(pet)) ? pet : NULL;
+	return bot->GetPet();
 }
 
 bool AiTargetManager::CanHealPet(Pet* pet) 
