@@ -129,11 +129,14 @@ bool AiTargetManager::IsTargetOfSpellCast(Player* target, SpellEntryPredicate pr
 		if (player == bot)
 			continue;
 
-		if (spellManager->GetLastSpellTarget() == targetGuid && player->IsNonMeleeSpellCasted(true)) 
+		if (player->IsNonMeleeSpellCasted(true)) 
 		{
 			for (int type = CURRENT_GENERIC_SPELL; type < CURRENT_MAX_SPELL; type++) {
 				Spell* spell = player->GetCurrentSpell((CurrentSpellTypes)type);
-				if (spell && (this->*predicate)(spell->m_spellInfo))
+				if (spell && (this->*predicate)(spell->m_spellInfo) && 
+					(spell->CheckTarget(target, 0) ||
+					spell->CheckTarget(target, 1) ||
+					spell->CheckTarget(target, 2)))
 					return true;
 			}
 		}
