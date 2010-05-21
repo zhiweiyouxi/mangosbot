@@ -64,11 +64,11 @@ namespace ai
     };
 
     // defensive
-    class CastTauntAction : public CastRangedSpellAction {
+    class CastTauntAction : public CastSpellAction {
     public:
-        CastTauntAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "taunt") {}
+        CastTauntAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "taunt") {}
         virtual NextAction** getPrerequisites() {
-            return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastRangedSpellAction::getPrerequisites());
+            return NextAction::merge( NextAction::array(0, new NextAction("defensive stance"), NULL), CastSpellAction::getPrerequisites());
         }
     };
 

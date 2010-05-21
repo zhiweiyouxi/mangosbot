@@ -23,10 +23,10 @@ class clazz : public CastDebuffSpellAction \
         clazz(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, name) {} \
 
 #define BEGIN_RANGED_SPELL_ACTION(clazz, name) \
-class clazz : public CastRangedSpellAction \
+class clazz : public CastSpellAction \
         { \
         public: \
-        clazz(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, name) {} \
+        clazz(PlayerbotAIFacade* const ai) : CastSpellAction(ai, name) {} \
 
 #define BEGIN_MELEE_SPELL_ACTION(clazz, name) \
 class clazz : public CastMeleeSpellAction \
@@ -100,14 +100,7 @@ namespace ai
 			range = ATTACK_DISTANCE;
 		}
     };
-    //---------------------------------------------------------------------------------------------------------------------
 
-    class CastRangedSpellAction : public CastSpellAction
-    {
-    public:
-        CastRangedSpellAction(PlayerbotAIFacade* const ai, const char* spell) : CastSpellAction(ai, spell) {}
-
-    };
     //---------------------------------------------------------------------------------------------------------------------
     class CastDebuffSpellAction : public CastAuraSpellAction
     {

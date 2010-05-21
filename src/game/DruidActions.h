@@ -7,10 +7,10 @@
 
 namespace ai
 {
-	class CastFaerieFireAction : public CastRangedSpellAction 
+	class CastFaerieFireAction : public CastSpellAction 
 	{ 
 	public: 
-		CastFaerieFireAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "faerie fire") {} 
+		CastFaerieFireAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "faerie fire") {} 
 	};
 
   
@@ -99,10 +99,10 @@ namespace ai
 		CastThornsAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "thorns") {}
 	};
 
-	class CastWrathAction : public CastRangedSpellAction 
+	class CastWrathAction : public CastSpellAction 
 	{ 
 	public: 
-		CastWrathAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "wrath") {} 
+		CastWrathAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "wrath") {} 
 	};
 
 	class CastMoonfireAction : public CastDebuffSpellAction 
@@ -117,10 +117,10 @@ namespace ai
 		CastInsectSwarmAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "insect swarm") {} 
 	};
 
-	class CastStarfireAction : public CastRangedSpellAction 
+	class CastStarfireAction : public CastSpellAction 
 	{ 
 	public: 
-		CastStarfireAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "starfire") {} 
+		CastStarfireAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "starfire") {} 
 	};
 
 	class CastEntanglingRootsAction : public CastDebuffSpellAction 

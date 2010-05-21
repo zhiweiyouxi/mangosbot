@@ -8,9 +8,9 @@ namespace ai {
 		CastFeralChargeBearAction(PlayerbotAIFacade* const ai) : CastReachTargetSpellAction(ai, "feral charge - bear", 1.5f) {}
 	};
 
-	class CastGrowlAction : public CastRangedSpellAction {
+	class CastGrowlAction : public CastSpellAction {
 	public:
-		CastGrowlAction(PlayerbotAIFacade* const ai) : CastRangedSpellAction(ai, "growl") {}
+		CastGrowlAction(PlayerbotAIFacade* const ai) : CastSpellAction(ai, "growl") {}
 	};
 
 	class CastMaulAction : public CastMeleeSpellAction {
