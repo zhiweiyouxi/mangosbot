@@ -19,7 +19,7 @@ public:
 		setupEngine(new WarriorActionFactory(ai), "tank", NULL);
 
 		engine->addStrategy("racials");
-		ai->distanceToEnemy = 0;
+		moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 0;
 		
 		addAura("battle shout");
 		addAura("defensive stance");

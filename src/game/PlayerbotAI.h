@@ -7,6 +7,7 @@
 #include "AiSpellManager.h"
 #include "AiTargetManager.h"
 #include "AiStatsManager.h"
+#include "AiMoveManager.h"
 
 using namespace std;
 using namespace ai;
@@ -19,11 +20,6 @@ class Object;
 class Item;
 class PlayerbotClassAI;
 class PlayerbotMgr;
-
-#define BOTLOOT_DISTANCE 25.0f
-#define EAT_DRINK_PERCENT 40
-#define SPELL_DISTANCE 25.0f
-#define BOT_REACT_DISTANCE 50.0f
 
 
 class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
@@ -263,6 +259,7 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
 		AiSpellManager* GetSpellManager() { return spellManager; }
 		AiTargetManager* GetTargetManager() { return targetManager; }
 		AiStatsManager* GetStatsManager() { return statsManager; }
+		AiMoveManager* GetMoveManager() { return moveManager; }
 
 
     private:
@@ -285,6 +282,7 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
 		AiSpellManager* spellManager;
 		AiTargetManager* targetManager;
 		AiStatsManager* statsManager;
+		AiMoveManager* moveManager;
 
 		CombatStyle m_combatStyle;
         CombatOrderType m_combatOrder;

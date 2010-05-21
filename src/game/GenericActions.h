@@ -14,8 +14,9 @@ namespace ai
 			this->distance = distance;
 		}
 
-        virtual bool ExecuteResult() {
-            return ai->Flee(distance); 
+        virtual bool ExecuteResult() 
+		{
+            return ai->GetMoveManager()->Flee(ai->GetTargetManager()->GetCurrentTarget(), distance); 
         }
 
 	private:
@@ -25,8 +26,9 @@ namespace ai
     class FollowAction : public Action {
     public:
         FollowAction(PlayerbotAIFacade* const ai) : Action(ai, "follow") {}
-        virtual void Execute() {
-            ai->FollowMaster(); 
+        virtual void Execute() 
+		{
+			ai->GetMoveManager()->Follow(ai->GetTargetManager()->GetMaster());
         }
     };
 
@@ -34,15 +36,16 @@ namespace ai
     public:
         StayAction(PlayerbotAIFacade* const ai) : Action(ai, "stay") {}
         virtual void Execute() {
-            ai->Stay(); 
+            ai->GetMoveManager()->Stay();
         }
     };
 
     class GoAwayAction : public Action {
     public:
         GoAwayAction(PlayerbotAIFacade* const ai) : Action(ai, "goaway") {}
-        virtual void Execute() {
-            ai->GoAway(); 
+        virtual void Execute() 
+		{
+			ai->GetMoveManager()->Flee(ai->GetTargetManager()->GetMaster()); 
         }
     };
 

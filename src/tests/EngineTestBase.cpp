@@ -8,6 +8,7 @@ void EngineTestBase::setUp()
 	spellManager = (MockAiSpellManager*)ai->GetSpellManager();
 	targetManager = (MockAiTargetManager*)ai->GetTargetManager();
 	statsManager = (MockAiStatsManager*)ai->GetStatsManager();
+	moveManager = (MockAiMoveManager*)ai->GetMoveManager();
 }
 
 void EngineTestBase::tearDown()
@@ -114,21 +115,21 @@ void EngineTestBase::removeAura(const char* spell)
 
 void EngineTestBase::tickOutOfSpellRange()
 {
-    ai->distanceToEnemy = 49.0f;
+	moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 49.0f;
     tick(); 
-    ai->distanceToEnemy = 15.0f;	
+    moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 15.0f;	
 }
 
 void EngineTestBase::tickOutOfMeleeRange()
 {
-    ai->distanceToEnemy = 15.0f;
+    moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 15.0f;
     tick(); 
-    ai->distanceToEnemy = 0.0f;	
+    moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 0.0f;	
 }
 
 void EngineTestBase::tickInMeleeRange()
 {
-    ai->distanceToEnemy = 0.0f;
+    moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 0.0f;
 	tick();
 }
 
@@ -260,14 +261,14 @@ void EngineTestBase::tickWithTargetLowHealth(int amount)
 }
 void EngineTestBase::tickWithTargetIsMoving()
 {
-    ai->targetIsMoving = true;
+    moveManager->moving[MockedTargets::GetCurrentTarget()] = true;
     tick();
-    ai->targetIsMoving = false;
+    moveManager->moving[MockedTargets::GetCurrentTarget()] = false;
 }
 
 void EngineTestBase::tickInSpellRange()
 {
-    ai->distanceToEnemy = 15.0f;
+    moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 15.0f;
     tick();
 }
 

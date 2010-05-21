@@ -28,17 +28,17 @@ namespace ai
 		virtual AiSpellManager* GetSpellManager() { return ai->GetSpellManager(); }
 		virtual AiTargetManager* GetTargetManager() { return ai->GetTargetManager(); }
 		virtual AiStatsManager* GetStatsManager() { return ai->GetStatsManager(); }
-
+		virtual AiMoveManager* GetMoveManager() { return ai->GetMoveManager(); }
 
     public:
-        virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
-        virtual void MoveToMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
-        virtual void FollowMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
+        //virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
+        //virtual void MoveToMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
+        //virtual void FollowMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void Melee();
-        virtual bool Flee(float distance = SPELL_DISTANCE);
-        virtual void GoAway(float distance = SPELL_DISTANCE);
-		virtual void MoveToTarget(float distance = 0.0f);
-        virtual void Stay();
+        //virtual bool Flee(float distance = SPELL_DISTANCE);
+        //virtual void GoAway(float distance = SPELL_DISTANCE);
+		//virtual void MoveToTarget(float distance = 0.0f);
+        //virtual void Stay();
         virtual bool HasAggro();
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
         virtual int GetMyAttackerCount();
@@ -50,7 +50,7 @@ namespace ai
 
         virtual void AttackLeastThreat();
         virtual void AttackBiggerThreat();
-        virtual float GetFollowAngle();
+        //virtual float GetFollowAngle();
         
         virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
         virtual void UseManaPotion() { FindAndUse(isManaPotion); }
@@ -66,7 +66,7 @@ namespace ai
 
         virtual void Emote(uint32 emote);
         virtual float GetBalancePercent();
-        virtual bool IsTargetMoving();
+        //virtual bool IsTargetMoving();
 
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
 		{

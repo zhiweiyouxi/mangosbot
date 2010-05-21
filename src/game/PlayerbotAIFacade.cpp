@@ -21,38 +21,6 @@ void PlayerbotAIFacade::Melee()
 		bot->SetInFront(target);
 }
 
-void PlayerbotAIFacade::MoveToTarget(float distance) 
-{ 
-	Player* bot = ai->GetPlayerBot();
-	
-	Stay();
-	
-	Unit* target = ai->GetCurrentTarget();
-	bot->GetMotionMaster()->MoveFollow(target, distance, 0); 	
-}
-
-void PlayerbotAIFacade::Stay() 
-{
-	Player* bot = ai->GetPlayerBot();
-
-	bot->GetMotionMaster()->Clear( true );
-	bot->clearUnitState( UNIT_STAT_CHASE );
-	bot->clearUnitState( UNIT_STAT_FOLLOW );
-
-	if (!bot->IsStandState())
-		bot->SetStandState(UNIT_STAND_STATE_STAND);
-}
-
-float PlayerbotAIFacade::GetDistanceToEnemy(float ifNoTarget)
-{
-    Unit *target = ai->GetCurrentTarget();
-    if (target && !target->isDead())
-    {
-        return ai->GetPlayerBot()->GetDistance(target); 
-    }
-    return ifNoTarget;
-}
-
 bool PlayerbotAIFacade::HasAggro()
 {
     Unit* currentTarget = ai->GetCurrentTarget();
@@ -244,107 +212,6 @@ void PlayerbotAIFacade::findAllAttackers(std::list<ThreatManager*> &out)
     }
 }
 
-void PlayerbotAIFacade::GoAway(float distance)
-{
-    Player* bot = ai->GetPlayerBot();
-
-    float rx = bot->GetPositionX();
-    float ry = bot->GetPositionY();
-    float rz = bot->GetPositionZ();
-    float maxDistance = 0;
-
-    for (float r = distance; r>=ATTACK_DISTANCE; r -= ATTACK_DISTANCE)
-    {
-        for (float angle = 0; angle < 2*M_PI; angle += M_PI / 12)
-        {
-            float x = bot->GetPositionX() + cos(angle) * r;
-            float y = bot->GetPositionY() + sin(angle) * r;
-            float z = bot->GetPositionZ();
-
-            if (!bot->IsWithinLOS(x, y, z))
-                continue;
-
-            std::list<ThreatManager*> attackers;
-            findAllAttackers(attackers);
-            for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
-            {  
-                Unit* unit = (*i)->getOwner();
-
-                float maxPlayerDistance = 0;
-                if (ai->GetPlayerBot()->GetGroup())
-                {
-                    GroupReference *gref = bot->GetGroup()->GetFirstMember();
-                    while( gref )
-                    {
-                        if( gref->getSource() == bot || gref->getSource() == ai->GetMaster() )
-                        {
-                            gref = gref->next();
-                            continue;
-                        }
-                        Player* player = gref->getSource();
-                        float playerDistance = player->GetDistance(x, y, z);
-                        if (playerDistance < SPELL_DISTANCE && maxDistance < playerDistance)
-                        {
-                            maxDistance = playerDistance;
-                            rx = x; ry = y;
-                        }
-
-                        gref = gref->next();
-                    }
-                }
-
-                float distToCreature = unit->GetDistance(x, y, z);
-                if (maxPlayerDistance < SPELL_DISTANCE && maxDistance < distToCreature)
-                {
-                    maxDistance = distToCreature;
-                    rx = x; ry = y;
-                }
-            }
-            if (ai->GetPlayerBot()->GetGroup())
-            {
-                GroupReference *gref = bot->GetGroup()->GetFirstMember();
-                while( gref )
-                {
-                    if( gref->getSource() == bot || gref->getSource() == ai->GetMaster() )
-                    {
-                        gref = gref->next();
-                        continue;
-                    }
-                    Player* player = gref->getSource();
-                    float playerDistance = player->GetDistance(x, y, z);
-                    if (playerDistance < SPELL_DISTANCE && maxDistance < playerDistance)
-                    {
-                        maxDistance = playerDistance;
-                        rx = x; ry = y;
-                    }
-
-                    gref = gref->next();
-                }
-            }
-        }
-    }
-
-	Stay();
-    bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
-}
-
-bool PlayerbotAIFacade::Flee(float distance)
-{
-	std::list<ThreatManager*> attackers;
-	findAllAttackers(attackers);
-	
-	Player* bot = ai->GetPlayerBot();
-	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
-	
-	float rx, ry, rz;
-	if (manager.flee(&rx, &ry, &rz)) {
-		Stay();
-		bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
-		return true;
-	}
-	return false;
-}
-
 void PlayerbotAIFacade::AttackLeastThreat()
 {
     std::list<ThreatManager*> attackers;
@@ -397,26 +264,7 @@ void PlayerbotAIFacade::Emote(uint32 emote)
     ai->GetPlayerBot()->HandleEmoteCommand(emote);
 }
 
-float PlayerbotAIFacade::GetFollowAngle() 
-{
-    Player* bot = ai->GetPlayerBot();
-	Group* group = bot->GetGroup();
-    if (group)
-    {
-        GroupReference *gref = group->GetFirstMember();
-        int index = 0;
-        while( gref )
-        {
-            if( gref->getSource() == bot)
-            {
-                return M_PI / group->GetMembersCount() * index;
-            }
-            gref = gref->next();
-            index++;
-        }
-    }
-    return 0;
-}
+
 
 float PlayerbotAIFacade::GetBalancePercent()
 {
@@ -469,11 +317,5 @@ float PlayerbotAIFacade::GetBalancePercent()
     }
 
     return !attackerLevel ? 100 : playerLevel * 100 / attackerLevel;
-}
-
-bool PlayerbotAIFacade::IsTargetMoving()
-{
-    Unit *target = ai->GetCurrentTarget();
-    return target && target->GetMotionMaster()->GetCurrentMovementGeneratorType() != IDLE_MOTION_TYPE;
 }
 

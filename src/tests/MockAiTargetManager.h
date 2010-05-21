@@ -33,6 +33,7 @@ namespace ai
 		virtual Unit* GetCurrentTarget();
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();
+		virtual Player* GetMaster();
 
 	public:
 		static MockAiTargetManager* Instance();

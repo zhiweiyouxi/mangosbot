@@ -71,5 +71,6 @@ protected:
 	MockAiSpellManager* spellManager;
 	MockAiTargetManager* targetManager;
 	MockAiStatsManager* statsManager;
+	MockAiMoveManager* moveManager;
     Engine *engine;
 };

@@ -1630,6 +1630,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\AiMoveManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\AiMoveManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\AiSpellManager.cpp"
 				>
 			</File>

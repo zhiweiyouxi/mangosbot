@@ -28,6 +28,7 @@ namespace ai
 			this->spellManager = ai->GetSpellManager();
 			this->targetManager = ai->GetTargetManager();
 			this->statsManager = ai->GetStatsManager();
+			this->moveManager = ai->GetMoveManager();
         }
         virtual ~Trigger() {}
 
@@ -51,6 +52,7 @@ namespace ai
 		AiSpellManager* spellManager;
 		AiTargetManager* targetManager;
 		AiStatsManager* statsManager;
+		AiMoveManager* moveManager;
 	};
 
 

@@ -14,6 +14,7 @@ namespace ai
 		static Unit* GetCurrentTarget()  { return (Unit*)7; }
 		static Player* GetSelf() { return (Player*)9; }
 		static Unit* GetPet() { return (Unit*)10; }
+		static Player* GetMaster() { return (Player*)2; }
    };
 
 }

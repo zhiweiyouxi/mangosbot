@@ -30,7 +30,7 @@ public:
 
 		addAura("holy shield");
 
-		ai->distanceToEnemy = 0;
+		moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 0;
     }
  
 protected:

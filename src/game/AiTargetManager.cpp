@@ -292,6 +292,11 @@ Player* AiTargetManager::GetSelf()
 	return bot;
 }
 
+Player* AiTargetManager::GetMaster()
+{
+	return ai->GetMaster();
+}
+
 Unit* AiTargetManager::GetPet()
 {
 	Pet* pet = bot->GetPet();

@@ -30,7 +30,7 @@ public:
         // this buff is combat-only, so skip for most test cases
         addAura("battle shout");
         statsManager->rage[MockedTargets::GetSelf()] = 20;
-		ai->distanceToEnemy = 0.0f; 
+		moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 0;
     }
 
 protected:
@@ -113,12 +113,12 @@ protected:
 
     void combatVsMelee()
     {
-        ai->distanceToEnemy = 15.0f; // enemy too far
+		moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 15.0f; // enemy too far
         statsManager->rage[MockedTargets::GetSelf()] = 11;
         
         tick(); // defensive stance
         tick(); // reach melee
-        ai->distanceToEnemy = 0.0f; 
+        moveManager->distanceTo[MockedTargets::GetCurrentTarget()] = 0.0f; 
         tick(); // melee
 
         tick(); // bloodrage

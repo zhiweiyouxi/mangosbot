@@ -95,6 +95,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	spellManager = new AiSpellManager(this);
 	statsManager = new AiStatsManager(this);
 	targetManager = new AiTargetManager(this, spellManager, statsManager);
+	moveManager = new AiMoveManager(this, targetManager);
 
 	FollowCheckTeleport(*GetMaster());
     m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);
@@ -106,6 +107,7 @@ PlayerbotAI::~PlayerbotAI()
 	if (spellManager) delete spellManager;
 	if (statsManager) delete statsManager;
 	if (targetManager) delete targetManager;
+	if (moveManager) delete moveManager;
 }
 
 Player* PlayerbotAI::GetMaster() const
