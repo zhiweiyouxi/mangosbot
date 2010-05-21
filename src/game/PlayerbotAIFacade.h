@@ -42,8 +42,8 @@ namespace ai
         //virtual bool CastSpellOnCurrentTarget(const char* spell) { return CastSpell(spell, ai->GetCurrentTarget()); }
         //virtual bool CastSpell(const char* spell, Unit* target = NULL, bool checkAura = true);
         //virtual bool canCastSpell( const char* spell );
-        virtual uint8 GetRage();
-		virtual uint8 GetEnergy();
+        //virtual uint8 GetRage();
+		//virtual uint8 GetEnergy();
         //virtual bool HasAura(const char* spell);
 		//virtual bool HasAnyAuraOf(const char* first, ...);
         //virtual bool PetHasAura(const char* spell);
@@ -51,17 +51,17 @@ namespace ai
         //virtual bool IsAllPartyHasAura(const char* spell) { return GetPartyMemberWithoutAura(spell) == NULL; }
         //virtual Unit* GetPartyMemberWithoutAura(const char* spell) { return findPlayer(isPlayerWithoutAura, (void*)spell); }
         //virtual void RemoveAura(const char* spell);
-        virtual uint8 GetComboPoints() { return ai->GetPlayerBot()->GetComboPoints(); }
+        //virtual uint8 GetComboPoints() { return ai->GetPlayerBot()->GetComboPoints(); }
         //virtual uint8 GetHealthPercent() { return ai->GetHealthPercent(); }
         //virtual uint8 GetTargetHealthPercent() { return ai->GetHealthPercent(*ai->GetCurrentTarget()); }
-		virtual uint8 GetTargetManaPercent() { return ai->GetManaPercent(*ai->GetCurrentTarget()); }
-        virtual uint8 GetPetHealthPercent() { return ai->GetHealthPercent(*ai->GetPlayerBot()->GetPet()); }
+		//virtual uint8 GetTargetManaPercent() { return ai->GetManaPercent(*ai->GetCurrentTarget()); }
+        //virtual uint8 GetPetHealthPercent() { return ai->GetHealthPercent(*ai->GetPlayerBot()->GetPet()); }
         virtual bool HasPet() { return ai->GetPlayerBot()->GetPet() != NULL; }
-        virtual bool IsPetDead() { return ai->GetPlayerBot()->GetPet()->getDeathState() != ALIVE; }
+        //virtual bool IsPetDead() { return ai->GetPlayerBot()->GetPet()->getDeathState() != ALIVE; }
         //virtual Unit* GetPartyMinHealthPlayer();
 		//virtual Unit* GetDeadPartyMember();
         //virtual uint8 GetPartyMinHealthPercent();
-        virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
+        //virtual uint8 GetManaPercent() { return ai->GetManaPercent(); }
         virtual bool HasAggro();
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
         virtual int GetMyAttackerCount();

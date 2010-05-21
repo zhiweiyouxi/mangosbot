@@ -141,16 +141,16 @@ void EngineTestBase::tickWithNoAggro()
 
 void EngineTestBase::tickWithRage(int amount)
 {
-    ai->rage = amount;
+	statsManager->rage[MockedTargets::GetSelf()] = amount;
     tick();
-    ai->rage = 0;
+    statsManager->rage[MockedTargets::GetSelf()] = 0;
 }
 
 void EngineTestBase::tickWithEnergy(int amount)
 {
-	ai->energy = amount;
+	statsManager->energy[MockedTargets::GetSelf()] = amount;
 	tick();
-	ai->energy = 0;
+	statsManager->energy[MockedTargets::GetSelf()] = 0;
 }
 
 void EngineTestBase::tickWithAttackerCount(int count)
@@ -202,7 +202,7 @@ void EngineTestBase::lowHealth(int amount)
 
 void EngineTestBase::lowMana(int amount)
 {
-	ai->mana = amount;
+	statsManager->mana[MockedTargets::GetSelf()] = amount;
 }
 
 void EngineTestBase::healthRestored()
@@ -212,9 +212,9 @@ void EngineTestBase::healthRestored()
 
 void EngineTestBase::tickWithComboPoints(int amount)
 {
-	ai->comboPoints = amount;
+	statsManager->comboPoints[MockedTargets::GetSelf()] = amount;
 	tick();
-	ai->comboPoints = 0;
+	statsManager->comboPoints[MockedTargets::GetSelf()] = 0;
 }
 
 void EngineTestBase::tickWithTargetIsCastingNonMeleeSpell() 
@@ -240,16 +240,16 @@ void EngineTestBase::tickWithNoPet()
 
 void EngineTestBase::tickWithPetLowHealth(int amount)
 {
-	ai->petHealth = amount;
+	statsManager->health[MockedTargets::GetPet()] = amount;
 	tick();
-	ai->petHealth = 100;
+	statsManager->health[MockedTargets::GetPet()] = 100;
 }
 
 void EngineTestBase::tickWithLowMana(int amount)
 {
-    ai->mana = amount;
+    statsManager->mana[MockedTargets::GetSelf()] = amount;
     tick();
-    ai->mana = 100;
+    statsManager->mana[MockedTargets::GetSelf()] = 100;
 }
 
 void EngineTestBase::tickWithTargetLowHealth(int amount)

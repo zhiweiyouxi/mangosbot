@@ -12,7 +12,7 @@ namespace ai
 	public:
 		static Unit* GetPartyMember() { return (Unit*)1; }
 		static Unit* GetCurrentTarget()  { return (Unit*)7; }
-		static Unit* GetSelf() { return (Unit*)9; }
+		static Player* GetSelf() { return (Player*)9; }
 		static Unit* GetPet() { return (Unit*)10; }
    };
 

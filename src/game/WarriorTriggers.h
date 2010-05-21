@@ -21,7 +21,7 @@ namespace ai
         virtual bool IsActive() {
             return DebuffTrigger::IsActive() && 
 				statsManager->GetHealthPercent(targetManager->GetSelf()) >= 75 && 
-				ai->GetRage() < 20;
+				statsManager->GetRage(targetManager->GetSelf()) < 20;
         }
     };
 }

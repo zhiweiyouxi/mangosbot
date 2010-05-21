@@ -53,16 +53,6 @@ float PlayerbotAIFacade::GetDistanceToEnemy(float ifNoTarget)
     return ifNoTarget;
 }
 
-uint8 PlayerbotAIFacade::GetRage()
-{
-    return ai->GetRagePercent();
-}
-
-uint8 PlayerbotAIFacade::GetEnergy()
-{
-	return ai->GetEnergyAmount();
-}
-
 Unit* PlayerbotAIFacade::findPlayer(bool predicate(Unit*, FindPlayerParam*), void* param)
 {
 	Player* bot = ai->GetPlayerBot();

@@ -29,7 +29,7 @@ public:
 
         // this buff is combat-only, so skip for most test cases
         addAura("battle shout");
-        ai->rage = 20;
+        statsManager->rage[MockedTargets::GetSelf()] = 20;
 		ai->distanceToEnemy = 0.0f; 
     }
 
@@ -57,7 +57,7 @@ protected:
 
     void buff()
     {
-        ai->rage = 0;
+        statsManager->rage[MockedTargets::GetSelf()] = 0;
         removeAura("battle shout");
 
         tickInSpellRange(); // battle stance
@@ -81,7 +81,7 @@ protected:
 
         tick(); // melee
 
-        ai->rage = 41;
+        statsManager->rage[MockedTargets::GetSelf()] = 41;
 
 		tickWithAttackerCount(2);
 		tickWithAttackerCount(2);
@@ -89,7 +89,7 @@ protected:
 		tickWithAttackerCount(2);
 		tickWithAttackerCount(2);
 
-        ai->rage = 21;
+        statsManager->rage[MockedTargets::GetSelf()] = 21;
 		tickWithAttackerCount(3);
 		
 		tick();
@@ -114,7 +114,7 @@ protected:
     void combatVsMelee()
     {
         ai->distanceToEnemy = 15.0f; // enemy too far
-        ai->rage = 11;
+        statsManager->rage[MockedTargets::GetSelf()] = 11;
         
         tick(); // defensive stance
         tick(); // reach melee
@@ -126,19 +126,19 @@ protected:
         spellAvailable("rend");
         addTargetAura("rend");
 
-        ai->rage = 21;
+        statsManager->rage[MockedTargets::GetSelf()] = 21;
         tick(); // devastate
         tick(); // revenge
         tick(); // sunder armor
 
-		ai->rage = 31;
+		statsManager->rage[MockedTargets::GetSelf()] = 31;
 		tick();
 
         tick(); // disarm
         spellAvailable("disarm");
         addTargetAura("disarm");
 
-        ai->rage = 41;
+        statsManager->rage[MockedTargets::GetSelf()] = 41;
         tick(); // heroic strike
 
         tick(); 
@@ -154,7 +154,7 @@ protected:
 
         spellAvailable("heroic strike");
         tick(); 
-        ai->rage = 20;
+        statsManager->rage[MockedTargets::GetSelf()] = 20;
 
         addAura("sword and board");
         tickWithSpellAvailable("shield slam");

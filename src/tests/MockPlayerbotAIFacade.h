@@ -17,17 +17,14 @@ namespace ai
 			spellManager = new MockAiSpellManager(this, &buffer);
 			targetManager = new MockAiTargetManager(this, spellManager, statsManager);
 
-            distanceToEnemy = 15.0f; rage = 0; aggro = TRUE; mana = 100; 
-            petHealth = 100; hasPet = TRUE;
+            distanceToEnemy = 15.0f; aggro = TRUE; 
+            hasPet = TRUE;
             attackerCount = 1;myAttackerCount = 1;
-            comboPoints = 0;
             lootAvailable = false;
             balancePercent = 100;
             targetIsMoving = false;
             haveTarget = true;
 			hasDrink = hasFood = true;
-			energy = 0;
-			targetMana = 100;
         }
 
 		AiSpellManager* GetSpellManager() { return spellManager; }
@@ -42,11 +39,6 @@ namespace ai
         virtual void GoAway(float distance = SPELL_DISTANCE) { buffer.append(">goaway"); }
         virtual void Stay() { buffer.append(">stay"); }
 		virtual void MoveToTarget(float distance = 0.0f) {if (distance == SPELL_DISTANCE) buffer.append(">reach spell"); else buffer.append(">reach melee"); }
-        virtual uint8 GetRage() { return rage; } 
-		virtual uint8 GetEnergy() { return energy; } 
-        virtual uint8 GetComboPoints() { return comboPoints; }
-		virtual uint8 GetTargetManaPercent() { return targetMana; }
-        virtual uint8 GetManaPercent() {return mana; }
         virtual bool HasAggro() { return aggro; }
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE) { return attackerCount; }
         virtual int GetMyAttackerCount() {return myAttackerCount; }
@@ -63,9 +55,7 @@ namespace ai
 		virtual int GetItemCount(const char* name)  { return itemCounts[std::string(name)]; }
 
 
-        virtual uint8 GetPetHealthPercent() { return petHealth; }
         virtual bool HasPet() { return hasPet; }
-        virtual bool IsPetDead() { return petHealth <= 0; }
 
         virtual bool IsMounted() { return FALSE; }
         virtual bool HaveTarget() { return haveTarget; }
@@ -95,10 +85,9 @@ namespace ai
         //std::list<std::string> targetAuras;
         //std::list<std::string> petAuras;
         float distanceToEnemy;
-        uint8 rage, mana;
-        uint8 targetMana;
-		uint8 petHealth;
-        uint8 comboPoints;
+        //uint8 rage, mana;
+        //uint8 targetMana;
+		//uint8 petHealth;
         bool aggro;
         bool hasPet;
         int attackerCount;
@@ -113,7 +102,7 @@ namespace ai
 		bool hasDrink, hasFood;
 		std::map<string, int> itemCounts;
 		//bool deadPartyMember;
-		uint32 energy;
+		//uint32 energy;
     
 		AiSpellManager* spellManager;
 		AiTargetManager* targetManager;

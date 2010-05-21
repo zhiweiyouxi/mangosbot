@@ -21,9 +21,12 @@ namespace ai
     { 
     public: 
         HunterAspectOfTheViperTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the viper") {}
-        virtual bool IsActive() {
+        virtual bool IsActive() 
+		{
 			Unit* target = GetTarget();
-            return !spellManager->HasAura(spell, target) && spellManager->CanCastSpell(spell, target) && ai->GetManaPercent() < 50; 
+            return !spellManager->HasAura(spell, target) && 
+				spellManager->CanCastSpell(spell, target) && 
+				statsManager->GetManaPercent(targetManager->GetSelf()) < 50; 
         };
     };
 

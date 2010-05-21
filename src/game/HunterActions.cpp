@@ -11,22 +11,23 @@ bool CastSerpentStingAction::isUseful()
 
 bool CastViperStingAction::isUseful()
 {
-    return ai->GetManaPercent() < 50 && ai->GetTargetManaPercent() >= 30;
+    return statsManager->GetManaPercent(targetManager->GetSelf()) < 50 &&
+		statsManager->GetManaPercent(targetManager->GetCurrentTarget()) >= 30;
 }
 
 bool CastArcaneShotAction::isUseful()
 {
-    return statsManager->GetHealthPercent(GetTarget()) >= 5 && ai->GetManaPercent() >= 30;
+    return statsManager->GetHealthPercent(GetTarget()) >= 5 && statsManager->GetManaPercent(targetManager->GetSelf()) >= 30;
 }
 
 bool CastExplosiveShotAction::isUseful()
 {
-    return statsManager->GetHealthPercent(GetTarget()) >= 25 && ai->GetManaPercent() >= 30;
+    return statsManager->GetHealthPercent(GetTarget()) >= 25 && statsManager->GetManaPercent(targetManager->GetSelf()) >= 30;
 }
 
 bool CastAimedShotAction::isUseful()
 {
-    return statsManager->GetHealthPercent(GetTarget()) >= 5 && ai->GetManaPercent() >= 30;
+    return statsManager->GetHealthPercent(GetTarget()) >= 5 && statsManager->GetManaPercent(targetManager->GetSelf()) >= 30;
 }
 
 Unit* CastMendPetAction::GetTarget()
@@ -39,5 +40,5 @@ bool CastAspectOfTheCheetahAction::isUseful() {
 }
 
 bool CastAspectOfTheViperAction::isUseful() {
-	return CastBuffSpellAction::isUseful() && ai->GetManaPercent() < 50;
+	return CastBuffSpellAction::isUseful() && statsManager->GetManaPercent(targetManager->GetSelf()) < 50;
 }

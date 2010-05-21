@@ -43,7 +43,7 @@ Unit* MockAiTargetManager::GetCurrentTarget()
 	return haveTarget ? MockedTargets::GetCurrentTarget() : NULL;
 }
 
-Unit* MockAiTargetManager::GetSelf()
+Player* MockAiTargetManager::GetSelf()
 {
 	return MockedTargets::GetSelf();
 }

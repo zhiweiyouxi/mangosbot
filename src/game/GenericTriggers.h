@@ -217,13 +217,12 @@ namespace ai
         virtual const char* getName() { return "target is moving"; }
     };
 
-	class LowManaTrigger : public Trigger {
+	class LowManaTrigger : public Trigger 
+	{
 	public:
 		LowManaTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "low mana", 5) {}
 
-		virtual bool LowManaTrigger::IsActive() {
-			return ai->GetManaPercent() != 0 && ai->GetManaPercent() < EAT_DRINK_PERCENT;
-		}
+		virtual bool IsActive();
 	};
 
     BEGIN_TRIGGER(PanicTrigger, Trigger)
@@ -231,7 +230,8 @@ namespace ai
     END_TRIGGER()
 
 
-	class NoPetTrigger : public Trigger {
+	class NoPetTrigger : public Trigger 
+	{
 	public:
 		NoPetTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "no pet", 5) {}
 

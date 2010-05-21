@@ -30,7 +30,7 @@ namespace ai
 		virtual Unit* FindBiggerThreat();
 		virtual Unit* FindLeastThreat();
 		virtual Unit* GetCurrentTarget();
-		virtual Unit* GetSelf();
+		virtual Player* GetSelf();
 		virtual Unit* GetPet();
 
 	public:

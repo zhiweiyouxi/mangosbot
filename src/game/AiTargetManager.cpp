@@ -287,7 +287,7 @@ Unit* AiTargetManager::GetCurrentTarget()
 	return guid ? ObjectAccessor::GetUnit(*bot, guid) : NULL;
 }
 
-Unit* AiTargetManager::GetSelf()
+Player* AiTargetManager::GetSelf()
 {
 	return bot;
 }

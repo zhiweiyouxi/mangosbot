@@ -6,19 +6,26 @@
 
 using namespace ai;
 
+bool LowManaTrigger::IsActive() 
+{
+	Unit* target = targetManager->GetSelf();
+	return statsManager->HasMana(target) && statsManager->GetManaPercent(target) < EAT_DRINK_PERCENT;
+}
+
+
 bool RageAvailable::IsActive()
 {
-    return ai->GetRage() >= amount;
+    return statsManager->GetRage(targetManager->GetSelf()) >= amount;
 }
 
 bool EnergyAvailable::IsActive()
 {
-	return ai->GetEnergy() >= amount;
+	return statsManager->GetEnergy(targetManager->GetSelf()) >= amount;
 }
 
 bool ComboPointsAvailable::IsActive()
 {
-    return ai->GetComboPoints() >= amount;
+    return statsManager->GetComboPoints(targetManager->GetSelf()) >= amount;
 }
 
 bool LoseAggroTrigger::IsActive()
@@ -29,8 +36,7 @@ bool LoseAggroTrigger::IsActive()
 bool PanicTrigger::IsActive()
 {
     return ai->GetStatsManager()->GetHealthPercent(ai->GetTargetManager()->GetSelf()) < 25 && 
-		ai->GetManaPercent() != 0 && 
-		ai->GetManaPercent() < 25;
+		(!statsManager->HasMana(targetManager->GetSelf()) || statsManager->GetManaPercent(targetManager->GetSelf()) < 25);
 }
 
 Unit* BuffTrigger::GetTarget()
@@ -42,7 +48,8 @@ bool BuffTrigger::IsActive()
 {
 	return SpellTrigger::IsActive() && 
 		!spellManager->HasAura(spell, GetTarget()) && 
-        (ai->GetManaPercent() > 40 || !ai->GetManaPercent());
+		(!statsManager->HasMana(targetManager->GetSelf()) ||
+		statsManager->GetManaPercent(targetManager->GetSelf()) > 40);
 }
 
 Unit* BuffOnPartyTrigger::GetTarget()
