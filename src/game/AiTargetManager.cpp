@@ -30,7 +30,7 @@ Unit* AiTargetManager::GetPartyMinHealthPlayer()
 			calc.probe(health, player);
 
 		Pet* pet = player->GetPet();
-		if (pet && pet->IsPermanentPetFor(player)) 
+		if (pet && CanHealPet(pet)) 
 		{
 			health = statsManager->GetHealthPercent(pet);
 			if (health < 25 || !IsTargetOfHealingSpell(player))
@@ -68,7 +68,7 @@ Unit* AiTargetManager::FindPartyMember(FindPlayerPredicate predicate, void* para
 			return player;
 
 		Pet* pet = player->GetPet();
-		if (pet && pet->IsPermanentPetFor(player) && CheckPredicate(player, predicate, param))
+		if (pet && CanHealPet(pet) && CheckPredicate(player, predicate, param))
 			return player;
 	}
 	return NULL;
@@ -161,7 +161,7 @@ Unit* AiTargetManager::GetPartyMemberToDispell(uint32 dispelType)
 			return player;
 
 		Pet* pet = player->GetPet();
-		if (pet && pet->IsPermanentPetFor(player) && HasAuraToDispel(pet, dispelType))
+		if (pet && CanHealPet(pet) && HasAuraToDispel(pet, dispelType))
 			return pet;
 	}
 
@@ -295,5 +295,11 @@ Unit* AiTargetManager::GetSelf()
 Unit* AiTargetManager::GetPet()
 {
 	Pet* pet = bot->GetPet();
-	return (pet && pet->IsPermanentPetFor(bot)) ? pet : NULL;
+	return (pet && CanHealPet(pet)) ? pet : NULL;
+}
+
+bool AiTargetManager::CanHealPet(Pet* pet) 
+{
+	PetType type = pet->getPetType();
+	return type != SUMMON_PET && type != MINI_PET;
 }

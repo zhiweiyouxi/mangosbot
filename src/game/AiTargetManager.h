@@ -52,6 +52,7 @@ namespace ai
 	private:
 		bool IsHealingSpell(SpellEntry const* spell);
 		bool IsResurrectSpell(SpellEntry const* spell);
+		bool CanHealPet(Pet* pet);
 
 	private:
 		bool PlayerWithoutAuraPredicate(Unit* player, void *param /*const char* spell*/);
