@@ -13,12 +13,15 @@ using namespace ai;
 
 void PlayerbotAIFacade::Melee() 
 { 
-	Unit* target = ai->GetCurrentTarget();
-	ai->Attack(target); 
+	Unit* target = GetTargetManager()->GetCurrentTarget();
+    if (!target)
+        return;
 
 	Player* bot = ai->GetPlayerBot();
 	if (!bot->isInFrontInMap(target, 5.0f))
 		bot->SetInFront(target);
+    
+    Attack(target); 
 }
 
 bool PlayerbotAIFacade::HasAggro()
@@ -210,48 +213,6 @@ void PlayerbotAIFacade::findAllAttackers(std::list<ThreatManager*> &out)
             gref = gref->next();
         }
     }
-}
-
-void PlayerbotAIFacade::AttackLeastThreat()
-{
-    std::list<ThreatManager*> attackers;
-    findAllAttackers(attackers);
-
-    float minThreat = 1e8;
-    Unit* target = NULL;
-    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
-    {  
-        ThreatManager* attacker = *i;
-        float threat = attacker->getThreat(ai->GetPlayerBot());
-        if (!target || threat < minThreat)
-        {
-            minThreat = threat;
-            target = attacker->getOwner();
-        }
-    }
-    if (target)
-        ai->Attack(target);
-}
-
-void PlayerbotAIFacade::AttackBiggerThreat()
-{
-    std::list<ThreatManager*> attackers;
-    findAllAttackers(attackers);
-
-    float maxThreat = -1;
-    Unit* target = NULL;
-    for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
-    {  
-        ThreatManager* attacker = *i;
-        float threat = attacker->getThreat(ai->GetPlayerBot());
-        if (!target || threat > maxThreat)
-        {
-            maxThreat = threat;
-            target = attacker->getOwner();
-        }
-    }
-    if (target)
-        ai->Attack(target);
 }
 
 bool PlayerbotAIFacade::IsMounted()

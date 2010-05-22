@@ -5,19 +5,34 @@
 
 namespace ai
 {
-    class AttackLeastThreatAction : public Action {
+    class AttackAction : public Action {
     public:
-        AttackLeastThreatAction(PlayerbotAIFacade* const ai) : Action(ai, "attack least threat") {}
+        AttackAction(PlayerbotAIFacade* const ai, const char* name) : Action(ai, name) {}
+        
+        virtual Unit* GetTarget() = NULL;
+
         virtual void Execute() {
-            ai->AttackLeastThreat();
+            Unit* target = GetTarget();
+            if (target)
+                ai->Attack(target);
+        }
+    };   
+
+    class AttackLeastThreatAction : public AttackAction {
+    public:
+        AttackLeastThreatAction(PlayerbotAIFacade* const ai) : AttackAction(ai, "attack least threat") {}
+        virtual Unit* GetTarget() 
+        {
+            return ai->GetTargetManager()->FindLeastThreat();
         }
     };   
     
-    class AttackBiggerThreatAction : public Action {
+    class AttackBiggerThreatAction : public AttackAction {
     public:
-        AttackBiggerThreatAction(PlayerbotAIFacade* const ai) : Action(ai, "attack bigger threat") {}
-        virtual void Execute() {
-            ai->AttackBiggerThreat();
+        AttackBiggerThreatAction(PlayerbotAIFacade* const ai) : AttackAction(ai, "attack bigger threat") {}
+        virtual Unit* GetTarget() 
+        {
+            return ai->GetTargetManager()->FindBiggerThreat();
         }
     };   
   

@@ -31,11 +31,11 @@ Unit* MockAiTargetManager::GetPartyMemberToDispell(uint32 dispelType)
 
 Unit* MockAiTargetManager::FindBiggerThreat()
 {
-	return NULL;
+    return MockedTargets::GetBiggerThreat();
 }
 Unit* MockAiTargetManager::FindLeastThreat()
 {
-	return NULL;
+    return MockedTargets::GetLeastThreat();
 }
 
 Unit* MockAiTargetManager::GetCurrentTarget()

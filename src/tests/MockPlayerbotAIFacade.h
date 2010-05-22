@@ -23,7 +23,6 @@ namespace ai
             attackerCount = 1;myAttackerCount = 1;
             lootAvailable = false;
             balancePercent = 100;
-            haveTarget = true;
 			hasDrink = hasFood = true;
         }
 
@@ -41,6 +40,7 @@ namespace ai
 		AiMoveManager* GetMoveManager() { return moveManager; }
 
         virtual void Melee() { buffer.append(">melee"); }
+        virtual void Attack(Unit* target);
         virtual bool HasAggro() { return aggro; }
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE) { return attackerCount; }
         virtual int GetMyAttackerCount() {return myAttackerCount; }
@@ -59,7 +59,6 @@ namespace ai
 
 
         virtual bool IsMounted() { return FALSE; }
-        virtual bool HaveTarget() { return haveTarget; }
 
         virtual bool HasHealingPotion() { return FALSE; }
         virtual bool HasManaPotion() { return FALSE; }
@@ -97,8 +96,7 @@ namespace ai
         float balancePercent;
         //bool targetIsMoving;
         //bool targetIsCastingNonMeleeSpell;
-        bool haveTarget;
-		bool hasDrink, hasFood;
+ 		bool hasDrink, hasFood;
 		std::map<string, int> itemCounts;
 		//bool deadPartyMember;
 		//uint32 energy;

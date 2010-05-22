@@ -35,6 +35,7 @@ namespace ai
         //virtual void MoveToMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         //virtual void FollowMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void Melee();
+        virtual void Attack(Unit* target) { if (target) ai->Attack(target); }
         //virtual bool Flee(float distance = SPELL_DISTANCE);
         //virtual void GoAway(float distance = SPELL_DISTANCE);
 		//virtual void MoveToTarget(float distance = 0.0f);
@@ -43,13 +44,13 @@ namespace ai
         virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
         virtual int GetMyAttackerCount();
         virtual bool IsMounted();
-        virtual bool HaveTarget() { return ai->GetCurrentTarget() != NULL; }
+        //virtual bool HaveTarget() { return ai->GetCurrentTarget() != NULL; }
         virtual bool CanLoot() { return ai->CanLoot(); }
         virtual void Loot() { ai->DoLoot(); }
         virtual void TellMaster(const char* text) { ai->TellMaster(text); }
 
-        virtual void AttackLeastThreat();
-        virtual void AttackBiggerThreat();
+        //virtual void AttackLeastThreat();
+        //virtual void AttackBiggerThreat();
         //virtual float GetFollowAngle();
         
         virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }

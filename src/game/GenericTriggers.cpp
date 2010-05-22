@@ -59,7 +59,7 @@ Unit* BuffOnPartyTrigger::GetTarget()
 
 bool NoAttackersTrigger::IsActive()
 {
-    return !ai->HaveTarget() && ai->GetAttackerCount() > 0;
+    return !targetManager->GetCurrentTarget() && ai->GetAttackerCount() > 0;
 }
 
 bool MyAttackerCountTrigger::IsActive()

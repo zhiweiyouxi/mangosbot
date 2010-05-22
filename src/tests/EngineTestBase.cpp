@@ -72,13 +72,13 @@ void EngineTestBase::assertActions(const char* expected)
 
 void EngineTestBase::tickWithNoTarget()
 {
-    ai->haveTarget = FALSE;
+    targetManager->haveTarget = FALSE;
     ai->myAttackerCount = 0;
     
 	tick();
     
 	ai->myAttackerCount = 1;
-    ai->haveTarget = TRUE;
+    targetManager->haveTarget = TRUE;
 }
 
 void EngineTestBase::spellUnavailable(const char* spell)
