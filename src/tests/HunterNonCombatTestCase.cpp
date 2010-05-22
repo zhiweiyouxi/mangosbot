@@ -40,7 +40,7 @@ protected:
 		tickWithPetLowHealth(0); // dead
 		tickWithPetLowHealth(30);
 
-		assertActions(">S:call pet>S:revive pet>S:mend pet");
+		assertActions(">S:call pet>S:revive pet>Pet:mend pet");
 	}        
 
     void buffIfPackUnavailable()

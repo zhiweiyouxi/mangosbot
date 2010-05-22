@@ -122,6 +122,7 @@ bool AiTargetManager::IsTargetOfSpellCast(Player* target, SpellEntryPredicate pr
 {
 	Group* group = bot->GetGroup();
 	uint32 targetGuid = target ? target->GetGUID() : bot->GetGUID();
+    uint32 corpseGuid = target && target->GetCorpse() ? target->GetCorpse()->GetGUID() : 0;
 
 	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
 	{
@@ -134,9 +135,8 @@ bool AiTargetManager::IsTargetOfSpellCast(Player* target, SpellEntryPredicate pr
 			for (int type = CURRENT_GENERIC_SPELL; type < CURRENT_MAX_SPELL; type++) {
 				Spell* spell = player->GetCurrentSpell((CurrentSpellTypes)type);
 				if (spell && (this->*predicate)(spell->m_spellInfo) && 
-					(spell->CheckTarget(target, 0) ||
-					spell->CheckTarget(target, 1) ||
-					spell->CheckTarget(target, 2)))
+					(spell->m_targets.getUnitTargetGUID() == targetGuid ||
+                    spell->m_targets.getCorpseTargetGUID() == corpseGuid))
 					return true;
 			}
 		}
