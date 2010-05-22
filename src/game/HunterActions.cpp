@@ -36,7 +36,7 @@ Unit* CastMendPetAction::GetTarget()
 }
 
 bool CastAspectOfTheCheetahAction::isUseful() {
-    return !spellManager->HasAnyAuraOf(GetTarget(), "aspect of the cheetah", "aspect of the pack");
+    return !spellManager->HasAnyAuraOf(GetTarget(), "aspect of the cheetah", "aspect of the pack", NULL);
 }
 
 bool CastAspectOfTheViperAction::isUseful() {
