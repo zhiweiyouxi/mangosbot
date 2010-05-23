@@ -1,22 +1,15 @@
+[ ] do not leave group until said so
 [ ] resistance auras, spells etc on (from enemy spells)
 [ ] aoe
 [ ] flee out of damaging aoe
-[?] ignore auras for specific spells (i.e. frostbolt)
 [ ] crowd control
 
-[v] log on all bots within group
 [ ] soul shard
 
 [ ] use threat level
 [ ] do not interrupt channels
 [ ] combat with different targets
 [ ] attack priest's target
-
-[v] global spell cooldown
-[v] heal different party memebers
-[v] do not cast spell if somebody else casts the same
-
-[?] rogue
 
 [ ] warlock: heal demon
 
