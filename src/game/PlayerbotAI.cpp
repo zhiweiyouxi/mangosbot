@@ -19,8 +19,6 @@
 
 using namespace std;
 
-#define GLOBAL_COOLDOWN 2
-
 // returns a float in range of..
 float rand_float(float low, float high)
 {
@@ -420,18 +418,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
         }
         case SMSG_SPELL_FAILURE:
         {
-            WorldPacket p(packet);
-            uint64 casterGuid = extractGuid(p);
-            if (casterGuid != m_bot->GetGUID())
-                return;
-            uint32 spellId;
-            p >> spellId;
-            if (m_CurrentlyCastingSpellId == spellId)
-            {
-				SetNextCheckDelay(GLOBAL_COOLDOWN);
-                m_CurrentlyCastingSpellId = 0;
-				m_CurrentlyCastingSpellTarget = 0;
-            }
+			spellManager->SpellInterrupted();
             return;
         }
 
@@ -698,41 +685,12 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
             return;
         }
 
-        case SMSG_SPELL_GO:
-        {
-            WorldPacket p(packet);
-            uint64 castItemGuid = extractGuid(p);
-            uint64 casterGuid = extractGuid(p);
-            if (casterGuid != m_bot->GetGUID())
-                return;
-
-            uint32 spellId;
-            p >> spellId;
-            uint16 castFlags;
-            p >> castFlags;
-            uint32 msTime;
-            p >> msTime;
-            uint8 numHit;
-            p >> numHit;
-
-            if (m_CurrentlyCastingSpellId == spellId)
-            {
-				int ignoreTime = UpdateIgnoreTime(spellId);
-				if (!ignoreTime) {
-					m_CurrentlyCastingSpellId = 0;
-					m_CurrentlyCastingSpellTarget = 0;
-					ignoreTime = GLOBAL_COOLDOWN;
-				}
-				SetNextCheckDelay(ignoreTime);
-            }
-            return;
-        }
-
 		case SMSG_RESURRECT_REQUEST:
 			Revive();
 			break;
 
         /* uncomment this and your bots will tell you all their outgoing packet opcode names 
+		case SMSG_SPELL_GO:
         case SMSG_MONSTER_MOVE:
         case SMSG_UPDATE_WORLD_STATE:
         case SMSG_COMPRESSED_UPDATE_OBJECT:
@@ -2323,7 +2281,6 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 	
     if (!m_bot->IsWithinDistInMap( &obj, 50, true ))
     {
-		SetNextCheckDelay(GLOBAL_COOLDOWN);
         PlayerbotChatHandler ch(GetMaster());
         if (! ch.teleport(*m_bot))
         {
@@ -2337,7 +2294,6 @@ bool PlayerbotAI::FollowCheckTeleport( WorldObject &obj )
 
 void PlayerbotAI::HandleTeleportAck()
 {
-	SetNextCheckDelay(GLOBAL_COOLDOWN);
     m_bot->GetMotionMaster()->Clear(true);
     if (m_bot->IsBeingTeleportedNear())
     {

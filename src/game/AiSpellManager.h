@@ -22,6 +22,7 @@ namespace ai
 	public:
 		virtual uint32 GetSpellId(const char* args);
 		virtual void InterruptSpell();
+		virtual void SpellInterrupted();
 		virtual void RemoveAura(const char* name);
 
 		virtual bool CanCastSpell(const char* name, Unit* target)
@@ -53,6 +54,7 @@ namespace ai
 	public:
 		uint32 GetLastSpellId() { return lastSpellId; }
 		uint64 GetLastSpellTarget() { return lastSpellTarget; }
+		int32 CalculateGlobalCooldown(uint32 spellid);
 
 	private:
 		std::map<std::string, uint32> spellMap;

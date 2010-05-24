@@ -179,8 +179,9 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
 	else if (pSpell->IsAutoRepeat())
 		return castTime += 6;
 
-	if (castTime < GLOBAL_COOLDOWN) 
-		castTime = GLOBAL_COOLDOWN;
+	int32 globalCooldown = CalculateGlobalCooldown(spellId);
+	if (castTime < globalCooldown) 
+		castTime = globalCooldown;
 
 	lastCastTime = time(0);
 	ai->SetNextCheckDelay(castTime);
@@ -194,13 +195,40 @@ void AiSpellManager::InterruptSpell()
 	*packet << lastSpellTarget;
 	bot->GetSession()->QueuePacket(packet);
 
+	SpellInterrupted();
+}
+
+void AiSpellManager::SpellInterrupted()
+{
 	int castTimeSpent = time(0) - lastCastTime;
-	if (castTimeSpent < GLOBAL_COOLDOWN)
-		ai->SetNextCheckDelay(GLOBAL_COOLDOWN - castTimeSpent);
+	
+	int32 globalCooldown = CalculateGlobalCooldown(lastSpellId);
+	if (castTimeSpent < globalCooldown)
+		ai->SetNextCheckDelay(globalCooldown - castTimeSpent);
+	else
+		ai->SetNextCheckDelay(0);
 
 	lastSpellId = 0;
 	lastSpellTarget = 0;
 	lastCastTime = 0;
+}
+
+int32 AiSpellManager::CalculateGlobalCooldown(uint32 spellid)
+{
+	if (!spellid) 
+		return 0;
+
+	SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellid );
+
+	if (!spellInfo || 
+		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_1 || 
+		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_2 || 
+		spellInfo->Attributes & SPELL_ATTR_OUTDOORS_ONLY ||
+		spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE ||
+		spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
+		return 0;
+	
+	return GLOBAL_COOLDOWN;
 }
 
 void AiSpellManager::RemoveAura(const char* name)
