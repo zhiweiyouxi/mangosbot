@@ -1,4 +1,3 @@
-
 #include "Config/ConfigEnv.h"
 #include "Player.h"
 #include "PlayerbotAI.h"
@@ -54,146 +53,6 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
             if (bot) bot->GetPlayerbotAI()->SendNotEquipList(*bot);
             return;
         }
-
-        // handle emotes from the master
-        //case CMSG_EMOTE:
-        case CMSG_TEXT_EMOTE:
-        {
-            WorldPacket p(packet);
-            p.rpos(0); // reset reader
-            uint32 emoteNum;
-            p >> emoteNum;
-
-            /* std::ostringstream out;
-            out << "emote is: " << emoteNum;
-            ChatHandler ch(m_master);
-            ch.SendSysMessage(out.str().c_str()); */
-
-            switch (emoteNum)
-            {
-                case TEXTEMOTE_BOW:
-                {
-                    // Buff anyone who bows before me. Useful for players not in bot's group
-                    // How do I get correct target???
-                    //Player* const pPlayer = GetPlayerBot(m_master->GetSelection());
-                    //if (pPlayer->GetPlayerbotAI()->GetClassAI())
-                    //    pPlayer->GetPlayerbotAI()->GetClassAI()->BuffPlayer(pPlayer);
-                    return;
-                }
-                /*
-                case TEXTEMOTE_BONK:
-                {
-                    Player* const pPlayer = GetPlayerBot(m_master->GetSelection());
-                    if (!pPlayer || !pPlayer->GetPlayerbotAI())
-                        return;
-                    PlayerbotAI* const pBot = pPlayer->GetPlayerbotAI();
-
-                    ChatHandler ch(m_master);
-                    {
-                        std::ostringstream out;
-                        out << "time(0): " << time(0)
-                            << " m_ignoreAIUpdatesUntilTime: " << pBot->m_ignoreAIUpdatesUntilTime;
-                        ch.SendSysMessage(out.str().c_str());
-                    }
-                    {
-                        std::ostringstream out;
-                        out << "m_TimeDoneEating: " << pBot->m_TimeDoneEating
-                            << " m_TimeDoneDrinking: " << pBot->m_TimeDoneDrinking;
-                        ch.SendSysMessage(out.str().c_str());
-                    }
-                    {
-                        std::ostringstream out;
-                        out << "m_CurrentlyCastingSpellId: " << pBot->m_CurrentlyCastingSpellId;
-                        ch.SendSysMessage(out.str().c_str());
-                    }
-                    {
-                        std::ostringstream out;
-                        out << "IsBeingTeleported() " << pBot->GetPlayer()->IsBeingTeleported();
-                        ch.SendSysMessage(out.str().c_str());
-                    }
-                    {
-                        std::ostringstream out;
-                        bool tradeActive = (pBot->GetPlayer()->GetTrader()) ? true : false;
-                        out << "tradeActive: " << tradeActive;
-                        ch.SendSysMessage(out.str().c_str());
-                    }
-                    {
-                        std::ostringstream out;
-                        out << "IsCharmed() " << pBot->getPlayer()->isCharmed();
-                        ch.SendSysMessage(out.str().c_str());
-                    }
-                    return;
-                }
-                */
-
-                case TEXTEMOTE_EAT:
-                case TEXTEMOTE_DRINK:
-                {
-                    for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
-                    {
-                        Player* const bot = it->second;
-                        bot->GetPlayerbotAI()->Feast();
-                    }
-                    return;
-                }
-
-                // emote to attack selected target
-                case TEXTEMOTE_POINT:
-                {
-                    uint64 attackOnGuid = m_master->GetSelection();
-                    if( !attackOnGuid ) return;
-
-                    Unit* thingToAttack = ObjectAccessor::GetUnit(*m_master, attackOnGuid);
-                    if( !thingToAttack ) return;
-
-                    Player *bot = 0;
-                    for( PlayerBotMap::iterator itr=m_playerBots.begin(); itr!=m_playerBots.end(); ++itr )
-                    {
-                        bot = itr->second;
-                        if (!bot->IsFriendlyTo(thingToAttack) && bot->IsWithinLOSInMap(thingToAttack))
-                            bot->GetPlayerbotAI()->GetCombatTarget( thingToAttack );
-                    }
-                    return;
-                }
-
-                // emote to stay
-                case TEXTEMOTE_STAND:
-                {
-                    Player* const bot = GetPlayerBot(m_master->GetSelection());
-                    if (bot)
-						bot->GetPlayerbotAI()->SetMovementOrder( PlayerbotAI::MOVEMENT_STAY );
-                    else
-                    {
-                        for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
-                        {
-                            Player* const bot = it->second;
-                            bot->GetPlayerbotAI()->SetMovementOrder( PlayerbotAI::MOVEMENT_STAY );
-                        }
-                    }
-                    return;
-                }
-
-                // 324 is the followme emote (not defined in enum)
-                // if master has bot selected then only bot follows, else all bots follow
-                case 324:
-                case TEXTEMOTE_WAVE:
-                {
-                    Player* const bot = GetPlayerBot(m_master->GetSelection());
-                    if (bot)
-                        bot->GetPlayerbotAI()->SetMovementOrder( PlayerbotAI::MOVEMENT_FOLLOW, m_master );
-                    else
-                    {
-                        for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
-                        {
-                            Player* const bot = it->second;
-                            bot->GetPlayerbotAI()->SetMovementOrder( PlayerbotAI::MOVEMENT_FOLLOW, m_master);
-                        }
-                    }
-                    return;
-                }
-            }
-            return;
-        } /* EMOTE ends here */
 
         case CMSG_GAMEOBJ_USE:
             {
@@ -416,18 +275,6 @@ void PlayerbotMgr::LogoutAllBots()
     }
 }
 
-
-
-void PlayerbotMgr::Stay()
-{
-    for (PlayerBotMap::const_iterator itr = GetPlayerBotsBegin(); itr != GetPlayerBotsEnd(); ++itr)
-    {
-        Player* bot= itr->second;
-        bot->GetMotionMaster()->Clear();
-    }
-}
-
-
 // Playerbot mod: logs out a Playerbot.
 void PlayerbotMgr::LogoutPlayerBot(uint64 guid)
 {
@@ -457,28 +304,11 @@ void PlayerbotMgr::OnBotLogin(Player * const bot)
     // tell the world session that they now manage this new bot
     m_playerBots[bot->GetGUID()] = bot;
 
-    // if bot is in a group and master is not in group then
-    // have bot leave their group
-    if (bot->GetGroup() &&
-        (m_master->GetGroup() == NULL ||
-         m_master->GetGroup()->IsMember(bot->GetGUID()) == false))
-         bot->RemoveFromGroup();
-
     // sometimes master can lose leadership, pass leadership to master check
     const uint64 masterGuid = m_master->GetGUID();
     if (m_master->GetGroup() && 
         ! m_master->GetGroup()->IsLeader(masterGuid))
         m_master->GetGroup()->ChangeLeader(masterGuid);
-}
-
-void PlayerbotMgr::RemoveAllBotsFromGroup()
-{
-    for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); m_master->GetGroup() && it != GetPlayerBotsEnd(); ++it)
-    {
-        Player* const bot = it->second;
-        if (bot->IsInSameGroupWith(m_master))
-            m_master->GetGroup()->RemoveMember(bot->GetGUID(), 0);
-    }
 }
 
 bool processBotCommand(WorldSession* session, string cmdStr, uint64 guid)

@@ -37,9 +37,7 @@ class MANGOS_DLL_SPEC PlayerbotMgr
         PlayerBotMap::const_iterator GetPlayerBotsEnd()   const { return m_playerBots.end();   }
 
         void LogoutAllBots();
-        void RemoveAllBotsFromGroup();
         void OnBotLogin(Player * const bot);
-        void Stay();
 
     public:
         // config variables

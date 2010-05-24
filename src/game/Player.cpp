@@ -1605,11 +1605,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     // preparing unsummon pet if lost (we must get pet before teleportation or will not find it later)
     Pet* pet = GetPet();
 
-    // Playerbot mod: if this user has bots, tell them to stop following master
-    // so they don't try to follow the master after the master teleports
-    if (GetPlayerbotMgr())
-        GetPlayerbotMgr()->Stay();
-
     MapEntry const* mEntry = sMapStore.LookupEntry(mapid);
 
     // don't let enter battlegrounds without assigned battleground id (for example through areatrigger)...
