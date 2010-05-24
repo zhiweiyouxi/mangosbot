@@ -73,11 +73,11 @@ void EngineTestBase::assertActions(const char* expected)
 void EngineTestBase::tickWithNoTarget()
 {
     targetManager->haveTarget = FALSE;
-    ai->myAttackerCount = 0;
+    statsManager->myAttackerCount = 0;
     
 	tick();
     
-	ai->myAttackerCount = 1;
+	statsManager->myAttackerCount = 1;
     targetManager->haveTarget = TRUE;
 }
 
@@ -135,9 +135,9 @@ void EngineTestBase::tickInMeleeRange()
 
 void EngineTestBase::tickWithNoAggro()
 {
-    ai->aggro = FALSE;
+    statsManager->aggro = FALSE;
     tick();
-    ai->aggro = TRUE;
+    statsManager->aggro = TRUE;
 }
 
 void EngineTestBase::tickWithRage(int amount)
@@ -156,16 +156,16 @@ void EngineTestBase::tickWithEnergy(int amount)
 
 void EngineTestBase::tickWithAttackerCount(int count)
 {
-	ai->attackerCount = count;
+	statsManager->attackerCount = count;
 	tick();
-	ai->attackerCount = 1;
+	statsManager->attackerCount = 1;
 }
 
 void EngineTestBase::tickWithMyAttackerCount(int count)
 {
-	ai->myAttackerCount = count;
+	statsManager->myAttackerCount = count;
 	tickWithAttackerCount(count + 1);
-	ai->myAttackerCount = 1;
+	statsManager->myAttackerCount = 1;
 }
 
 void EngineTestBase::tickWithLowHealth(int amount)
@@ -227,9 +227,9 @@ void EngineTestBase::tickWithTargetIsCastingNonMeleeSpell()
 
 void EngineTestBase::tickWithBalancePercent(int percent)
 {
-	ai->balancePercent = percent;
+	statsManager->balancePercent = percent;
 	tick();
-	ai->balancePercent = 100;
+	statsManager->balancePercent = 100;
 }
 
 void EngineTestBase::tickWithNoPet()

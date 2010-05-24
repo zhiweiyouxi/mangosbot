@@ -201,55 +201,10 @@ bool AiTargetManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
 	return false;
 }
 
-
-void AiTargetManager::findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out)
-{
-	while( ref )
-	{
-		ThreatManager *source = ref->getSource();
-		Unit *attacker = source->getOwner();
-		if (attacker && 
-			!attacker->isDead() && 
-			!attacker->IsPolymorphed() && 
-			!attacker->isFrozen() && 
-			!attacker->IsFriendlyTo(bot) && 
-			bot->IsWithinLOSInMap(attacker))
-		{
-			bool found = FALSE;
-			for (std::list<ThreatManager*>::iterator i = out.begin(); i != out.end(); i++)
-			{
-				ThreatManager *cur = *i;
-				if (cur->getOwner() == attacker)
-				{
-					found = TRUE;
-					break;
-				}
-			}
-			if (!found)
-				out.push_back(source);
-		}
-		ref = ref->next();
-	}
-}
-
-void AiTargetManager::findAllAttackers(std::list<ThreatManager*> &out)
-{
-	if (bot->GetGroup())
-	{
-		GroupReference *gref = bot->GetGroup()->GetFirstMember();
-		while( gref )
-		{
-			HostileReference *ref = gref->getSource()->getHostileRefManager().getFirst();
-			findAllAttackers(ref, out);
-			gref = gref->next();
-		}
-	}
-}
-
 Unit* AiTargetManager::FindLeastThreat()
 {
 	std::list<ThreatManager*> attackers;
-	findAllAttackers(attackers);
+	statsManager->findAllAttackers(attackers);
 
 	float minThreat = 1e8;
 	Unit* target = NULL;
@@ -269,7 +224,7 @@ Unit* AiTargetManager::FindLeastThreat()
 Unit* AiTargetManager::FindBiggerThreat()
 {
 	std::list<ThreatManager*> attackers;
-	findAllAttackers(attackers);
+	statsManager->findAllAttackers(attackers);
 
 	float maxThreat = -1;
 	Unit* target = NULL;

@@ -20,7 +20,7 @@ public:
 		EngineTestBase::setUp();
 		setupEngine(new HunterActionFactory(ai), "nc", NULL);
 
-        ai->attackerCount = 0;
+        statsManager->attackerCount = 0;
     }
 
 protected:

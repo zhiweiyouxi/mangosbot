@@ -30,7 +30,7 @@ bool ComboPointsAvailable::IsActive()
 
 bool LoseAggroTrigger::IsActive()
 {
-    return !ai->HasAggro();
+    return !statsManager->HasAggro(targetManager->GetCurrentTarget());
 }
 
 bool PanicTrigger::IsActive()
@@ -59,12 +59,12 @@ Unit* BuffOnPartyTrigger::GetTarget()
 
 bool NoAttackersTrigger::IsActive()
 {
-    return !targetManager->GetCurrentTarget() && ai->GetAttackerCount() > 0;
+    return !targetManager->GetCurrentTarget() && statsManager->GetAttackerCount() > 0;
 }
 
 bool MyAttackerCountTrigger::IsActive()
 {
-    return ai->GetMyAttackerCount() >= amount;
+    return statsManager->GetMyAttackerCount() >= amount;
 }
 
 Unit* DebuffTrigger::GetTarget()
@@ -120,7 +120,7 @@ const char* AndTrigger::getName()
 bool BoostTrigger::IsActive()
 {
 	Unit* target = GetTarget();
-	return target && !spellManager->HasAura(spell, target) && ai->GetBalancePercent() <= balance;
+	return target && !spellManager->HasAura(spell, target) && statsManager->GetBalancePercent() <= balance;
 }
 
 bool SnareTargetTrigger::IsActive()

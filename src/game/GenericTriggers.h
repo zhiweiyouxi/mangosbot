@@ -79,14 +79,16 @@ namespace ai
 		const char* spell;
 	};
 
-	class SpellCanBeCastTrigger : public SpellTrigger {
+	class SpellCanBeCastTrigger : public SpellTrigger 
+	{
 	public:
 		SpellCanBeCastTrigger(PlayerbotAIFacade* const ai, const char* spell) : SpellTrigger(ai, spell) {}
 		virtual bool IsActive();
 	};
 
 	// TODO: check other targets
-    class InterruptSpellTrigger : public SpellTrigger {
+    class InterruptSpellTrigger : public SpellTrigger 
+	{
     public:
         InterruptSpellTrigger(PlayerbotAIFacade* const ai, const char* spell) : SpellTrigger(ai, spell) {}
 		virtual Unit* GetTarget();
@@ -103,8 +105,9 @@ namespace ai
             this->distance = distance;
         }
     public: 
-        virtual bool IsActive() {
-            return ai->GetAttackerCount(distance) >= amount;
+        virtual bool IsActive() 
+		{
+            return statsManager->GetAttackerCount(distance) >= amount;
         }
         virtual const char* getName() { return "attacker count"; }
 

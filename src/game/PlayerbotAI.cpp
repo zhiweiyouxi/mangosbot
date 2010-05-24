@@ -93,7 +93,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	spellManager = new AiSpellManager(this);
 	statsManager = new AiStatsManager(this);
 	targetManager = new AiTargetManager(this, spellManager, statsManager);
-	moveManager = new AiMoveManager(this, targetManager);
+	moveManager = new AiMoveManager(this, targetManager, statsManager);
 
 	FollowCheckTeleport(*GetMaster());
     m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);

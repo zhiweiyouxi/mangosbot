@@ -45,7 +45,7 @@ void AiMoveManager::Follow(Unit* target, float distance)
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
 	std::list<ThreatManager*> attackers;
-	targetManager->findAllAttackers(attackers);
+	statsManager->findAllAttackers(attackers);
 
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
 

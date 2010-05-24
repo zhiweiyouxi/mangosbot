@@ -31,28 +31,12 @@ namespace ai
 		virtual AiMoveManager* GetMoveManager() { return ai->GetMoveManager(); }
 
     public:
-        //virtual float GetDistanceToEnemy(float ifNoTarget = 0.0f);
-        //virtual void MoveToMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
-        //virtual void FollowMaster() { Stay(); ai->GetPlayerBot()->GetMotionMaster()->MoveFollow(ai->GetMaster(), 1.5f, GetFollowAngle()); }
         virtual void Melee();
         virtual void Attack(Unit* target) { if (target) ai->Attack(target); }
-        //virtual bool Flee(float distance = SPELL_DISTANCE);
-        //virtual void GoAway(float distance = SPELL_DISTANCE);
-		//virtual void MoveToTarget(float distance = 0.0f);
-        //virtual void Stay();
-        virtual bool HasAggro();
-        virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
-        virtual int GetMyAttackerCount();
         virtual bool IsMounted();
-        //virtual bool HaveTarget() { return ai->GetCurrentTarget() != NULL; }
         virtual bool CanLoot() { return ai->CanLoot(); }
         virtual void Loot() { ai->DoLoot(); }
-        virtual void TellMaster(const char* text) { ai->TellMaster(text); }
-
-        //virtual void AttackLeastThreat();
-        //virtual void AttackBiggerThreat();
-        //virtual float GetFollowAngle();
-        
+        virtual void TellMaster(const char* text) { ai->TellMaster(text); }        
         virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
         virtual void UseManaPotion() { FindAndUse(isManaPotion); }
         virtual void UsePanicPotion()  { FindAndUse(isPanicPotion); }
@@ -66,8 +50,6 @@ namespace ai
 		virtual int GetItemCount(const char* name) { return ai->FindUsableItem(isTheSameName, (const void*)name) != NULL; }
 
         virtual void Emote(uint32 emote);
-        virtual float GetBalancePercent();
-        //virtual bool IsTargetMoving();
 
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
 		{
@@ -82,8 +64,6 @@ namespace ai
         static bool isDrink(const ItemPrototype* pItemProto, const void* param);
 		static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
         virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
-        void findAllAttackers(std::list<ThreatManager*> &out);
-        void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
 
     protected:
         PlayerbotAI *ai;

@@ -37,9 +37,6 @@ namespace ai
 		virtual Unit* GetPet();
 		virtual Player* GetMaster();
 
-	public:
-		void findAllAttackers(std::list<ThreatManager*> &out);
-
 	private:
 		Unit* FindPartyMember(FindPlayerPredicate predicate, void *param);
 		bool CheckPredicate(Unit* player, FindPlayerPredicate predicate, void *param);
@@ -49,8 +46,6 @@ namespace ai
 		virtual bool HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(bot, dispelType); }
 		bool HasAuraToDispel(Unit* player, uint32 dispelType);
 		bool canDispel(const SpellEntry* entry, uint32 dispelType);
-		void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
-
 
 	private:
 		bool IsHealingSpell(SpellEntry const* spell);

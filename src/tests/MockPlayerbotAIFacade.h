@@ -17,12 +17,9 @@ namespace ai
 			statsManager = new MockAiStatsManager(this);
 			spellManager = new MockAiSpellManager(this, &buffer);
 			targetManager = new MockAiTargetManager(this, spellManager, statsManager);
-			moveManager = new MockAiMoveManager(this, targetManager, &buffer);
+			moveManager = new MockAiMoveManager(this, targetManager, statsManager, &buffer);
 
-            aggro = TRUE; 
-            attackerCount = 1;myAttackerCount = 1;
             lootAvailable = false;
-            balancePercent = 100;
 			hasDrink = hasFood = true;
         }
 
@@ -41,9 +38,6 @@ namespace ai
 
         virtual void Melee() { buffer.append(">melee"); }
         virtual void Attack(Unit* target);
-        virtual bool HasAggro() { return aggro; }
-        virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE) { return attackerCount; }
-        virtual int GetMyAttackerCount() {return myAttackerCount; }
         virtual bool CanLoot() { return lootAvailable; }
         virtual void Loot() { buffer.append(">loot"); }
         
@@ -73,8 +67,6 @@ namespace ai
         virtual float GetFollowAngle() { return 0; }
         virtual bool HasSpell(const char* spell) { return TRUE; }
 
-        virtual float GetBalancePercent() { return balancePercent; }
-
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0) { buffer.append(">").append(item); return true; }
 
         std::string buffer;
@@ -87,13 +79,9 @@ namespace ai
         //uint8 rage, mana;
         //uint8 targetMana;
 		//uint8 petHealth;
-        bool aggro;
-        int attackerCount;
-        int myAttackerCount;
         //int partyMinHealth;
         bool lootAvailable;
         //uint32 partyAurasToDispel, aurasToDispel, targetAurasToDispel;
-        float balancePercent;
         //bool targetIsMoving;
         //bool targetIsCastingNonMeleeSpell;
  		bool hasDrink, hasFood;

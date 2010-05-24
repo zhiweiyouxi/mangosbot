@@ -9,8 +9,9 @@ namespace ai
     class TotemTrigger : public BuffTrigger {
     public:
         TotemTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
-        virtual bool IsActive() {
-            return BuffTrigger::IsActive() && ai->GetAttackerCount() > 2;
+        virtual bool IsActive() 
+		{
+            return BuffTrigger::IsActive() && statsManager->GetAttackerCount() > 2;
         }
     };
 
