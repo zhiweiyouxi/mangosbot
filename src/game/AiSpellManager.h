@@ -22,7 +22,8 @@ namespace ai
 	public:
 		virtual uint32 GetSpellId(const char* args);
 		virtual void InterruptSpell();
-		virtual void SpellInterrupted();
+		virtual void SpellInterrupted(uint32 spellid);
+        virtual void FinishSpell();
 		virtual void RemoveAura(const char* name);
 
 		virtual bool CanCastSpell(const char* name, Unit* target)

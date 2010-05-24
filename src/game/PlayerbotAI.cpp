@@ -418,7 +418,25 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
         }
         case SMSG_SPELL_FAILURE:
         {
-			spellManager->SpellInterrupted();
+            WorldPacket p(packet);
+            uint64 casterGuid = extractGuid(p);
+            if (casterGuid != m_bot->GetGUID())
+                return;
+            uint8  castCount;
+            uint32 spellId;
+            p >> castCount;
+            p >> spellId;
+			spellManager->SpellInterrupted(spellId);
+            return;
+        }
+
+        case SMSG_SPELL_GO:
+        {
+            WorldPacket p(packet);
+            uint64 casterGuid = extractGuid(p);
+            if (casterGuid != m_bot->GetGUID())
+                return;
+            spellManager->FinishSpell();
             return;
         }
 
@@ -690,7 +708,6 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 			break;
 
         /* uncomment this and your bots will tell you all their outgoing packet opcode names 
-		case SMSG_SPELL_GO:
         case SMSG_MONSTER_MOVE:
         case SMSG_UPDATE_WORLD_STATE:
         case SMSG_COMPRESSED_UPDATE_OBJECT:

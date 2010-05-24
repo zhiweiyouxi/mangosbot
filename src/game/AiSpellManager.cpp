@@ -162,30 +162,30 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
 		bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
     }
 
-	const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(spellId);
+    lastSpellId = spellId;
+    lastSpellTarget = target->GetGUID();
+    lastCastTime = time(0);
+
+    const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(lastSpellId);
     bot->CastSpell(target, pSpellInfo, false);
 
-    Spell* const pSpell = bot->FindCurrentSpellBySpellId(spellId);
-    if (!pSpell)
-        return false;
+    uint32 castTime = GetSpellCastTime(pSpellInfo) / 1000;
+    uint32 globalCooldown = CalculateGlobalCooldown(spellId);
+    if (castTime < globalCooldown)
+        castTime = globalCooldown;
+    ai->SetNextCheckDelay(castTime);
 
-    lastSpellId = spellId;
-	lastSpellTarget = target->GetGUID();
-
-	int32 castTime = (int32)ceil((float)pSpell->GetCastTime()/1000.0f);
-
-	if (pSpell->IsChannelActive() || pSpell->IsAutoRepeat())
-		castTime += (GetSpellDuration(pSpell->m_spellInfo) / 1000);
-	else if (pSpell->IsAutoRepeat())
-		return castTime += 6;
-
-	int32 globalCooldown = CalculateGlobalCooldown(spellId);
-	if (castTime < globalCooldown) 
-		castTime = globalCooldown;
-
-	lastCastTime = time(0);
-	ai->SetNextCheckDelay(castTime);
     return true;
+}
+
+void AiSpellManager::FinishSpell()
+{
+    Spell* const pSpell = bot->FindCurrentSpellBySpellId(lastSpellId);
+    if (!pSpell)
+        return;
+
+    if (pSpell->IsChannelActive())
+		ai->SetNextCheckDelay(GetSpellDuration(pSpell->m_spellInfo) / 1000);
 }
 
 void AiSpellManager::InterruptSpell()
@@ -195,11 +195,14 @@ void AiSpellManager::InterruptSpell()
 	*packet << lastSpellTarget;
 	bot->GetSession()->QueuePacket(packet);
 
-	SpellInterrupted();
+	SpellInterrupted(lastSpellId);
 }
 
-void AiSpellManager::SpellInterrupted()
+void AiSpellManager::SpellInterrupted(uint32 spellid)
 {
+    if (lastSpellId != spellid)
+        return;
+
 	int castTimeSpent = time(0) - lastCastTime;
 	
 	int32 globalCooldown = CalculateGlobalCooldown(lastSpellId);
@@ -224,9 +227,12 @@ int32 AiSpellManager::CalculateGlobalCooldown(uint32 spellid)
 		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_1 || 
 		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_2 || 
 		spellInfo->Attributes & SPELL_ATTR_OUTDOORS_ONLY ||
-		spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE ||
-		spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
+		spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE)
 		return 0;
+
+    // TODO
+    if (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
+        return 2;
 	
 	return GLOBAL_COOLDOWN;
 }
