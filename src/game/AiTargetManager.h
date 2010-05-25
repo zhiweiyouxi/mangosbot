@@ -19,10 +19,8 @@ namespace ai
 	class AiTargetManager : public AiManagerBase
 	{
 	public:
-		AiTargetManager(PlayerbotAIBase* ai, AiSpellManager* spellManager, AiStatsManager* statsManager) : AiManagerBase(ai)
+		AiTargetManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
-			this->spellManager = spellManager;
-			this->statsManager = statsManager;
 		}
 
 	public:
@@ -55,9 +53,6 @@ namespace ai
 	private:
 		bool PlayerWithoutAuraPredicate(Unit* player, void *param /*const char* spell*/);
 
-	protected:
-		AiSpellManager* spellManager;
-		AiStatsManager* statsManager;
 	};
 
 };

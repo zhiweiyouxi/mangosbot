@@ -12,10 +12,8 @@ namespace ai
 	class AiMoveManager : public AiManagerBase
 	{
 	public:
-		AiMoveManager(PlayerbotAIBase* ai, AiTargetManager* targetManager, AiStatsManager* statsManager) : AiManagerBase(ai)
+		AiMoveManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
-			this->targetManager = targetManager;
-			this->statsManager = statsManager;
 		}
 
 	public:
@@ -27,9 +25,6 @@ namespace ai
 		virtual void Stay();
 		virtual bool IsMoving(Unit* target);
 
-	private:
-		AiTargetManager* targetManager;
-		AiStatsManager* statsManager;
 	};
 
 };

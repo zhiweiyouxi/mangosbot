@@ -8,11 +8,12 @@ using namespace std;
 
 namespace ai 
 {
+	class AiManagerRegistry;
 
 	class AiSpellManager : public AiManagerBase
 	{
 	public:
-		AiSpellManager(PlayerbotAIBase* ai) : AiManagerBase(ai)
+		AiSpellManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 			lastSpellId = 0;
 			lastSpellTarget = 0;

@@ -6,6 +6,7 @@
 #include "MockAiSpellManager.h"
 #include "MockAiTargetManager.h"
 #include "MockAiMoveManager.h"
+#include "MockAiManagerRegistry.h"
 
 namespace ai
 {
@@ -14,10 +15,7 @@ namespace ai
     public:
         MockPlayerbotAIFacade() : PlayerbotAIFacade(NULL), PlayerbotAIBase(NULL, NULL)
         { 
-			statsManager = new MockAiStatsManager(this);
-			spellManager = new MockAiSpellManager(this, &buffer);
-			targetManager = new MockAiTargetManager(this, spellManager, statsManager);
-			moveManager = new MockAiMoveManager(this, targetManager, statsManager, &buffer);
+			aiRegistry = new MockAiManagerRegistry(this, &buffer);
 
             lootAvailable = false;
 			hasDrink = hasFood = true;
@@ -25,16 +23,13 @@ namespace ai
 
 		virtual ~MockPlayerbotAIFacade() 
 		{
-			delete statsManager;
-			delete spellManager;
-			delete targetManager;
-			delete moveManager;
+			delete aiRegistry;
 		}
 
-		AiSpellManager* GetSpellManager() { return spellManager; }
-		AiTargetManager* GetTargetManager() { return targetManager; }
-		AiStatsManager* GetStatsManager() { return statsManager; }
-		AiMoveManager* GetMoveManager() { return moveManager; }
+		AiSpellManager* GetSpellManager() { return aiRegistry->GetSpellManager(); }
+		AiTargetManager* GetTargetManager() { return aiRegistry->GetTargetManager(); }
+		AiStatsManager* GetStatsManager() { return aiRegistry->GetStatsManager(); }
+		AiMoveManager* GetMoveManager() { return aiRegistry->GetMoveManager(); }
 
         virtual void Melee() { buffer.append(">melee"); }
         virtual void Attack(Unit* target);
@@ -89,10 +84,7 @@ namespace ai
 		//bool deadPartyMember;
 		//uint32 energy;
     
-		AiSpellManager* spellManager;
-		AiTargetManager* targetManager;
-		AiStatsManager* statsManager;
-		AiMoveManager* moveManager;
+		AiManagerRegistry* aiRegistry;
 	};
 
 }

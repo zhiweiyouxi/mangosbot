@@ -16,6 +16,7 @@
 #include "SharedDefines.h"
 #include "Log.h"
 #include "GossipDef.h"
+#include "AiManagerRegistry.h"
 
 using namespace std;
 
@@ -90,10 +91,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	m_targetAssist = 0;
 	m_targetProtect = 0;
 
-	spellManager = new AiSpellManager(this);
-	statsManager = new AiStatsManager(this);
-	targetManager = new AiTargetManager(this, spellManager, statsManager);
-	moveManager = new AiMoveManager(this, targetManager, statsManager);
+	aiRegistry = new AiManagerRegistry(this);
 
 	FollowCheckTeleport(*GetMaster());
     m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);
@@ -102,10 +100,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 PlayerbotAI::~PlayerbotAI()
 {
     if (m_classAI) delete m_classAI;
-	if (spellManager) delete spellManager;
-	if (statsManager) delete statsManager;
-	if (targetManager) delete targetManager;
-	if (moveManager) delete moveManager;
+	if (aiRegistry) delete aiRegistry;
 }
 
 Player* PlayerbotAI::GetMaster() const
@@ -426,7 +421,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
             uint32 spellId;
             p >> castCount;
             p >> spellId;
-			spellManager->SpellInterrupted(spellId);
+			GetSpellManager()->SpellInterrupted(spellId);
             return;
         }
 
@@ -436,7 +431,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
             uint64 casterGuid = extractGuid(p);
             if (casterGuid != m_bot->GetGUID())
                 return;
-            spellManager->FinishSpell();
+            GetSpellManager()->FinishSpell();
             return;
         }
 
@@ -1821,6 +1816,8 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
 		else
 			m_classAI->DoNonCombatAction();
     }
+
+	YieldThread();
 }
 
 Spell* PlayerbotAI::GetCurrentSpell() const

@@ -11,7 +11,7 @@ namespace ai
 	class AiStatsManager : public AiManagerBase
 	{
 	public:
-		AiStatsManager(PlayerbotAIBase* ai) : AiManagerBase(ai)
+		AiStatsManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 		}
 

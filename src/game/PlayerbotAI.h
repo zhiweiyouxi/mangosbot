@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "QuestDef.h"
 #include "PlayerbotAIBase.h"
+#include "AiManagerRegistry.h"
 #include "AiSpellManager.h"
 #include "AiTargetManager.h"
 #include "AiStatsManager.h"
@@ -256,10 +257,10 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
         void QuestLocalization(std::string& questTitle, const uint32 questID) const;
 
 	public:
-		AiSpellManager* GetSpellManager() { return spellManager; }
-		AiTargetManager* GetTargetManager() { return targetManager; }
-		AiStatsManager* GetStatsManager() { return statsManager; }
-		AiMoveManager* GetMoveManager() { return moveManager; }
+		AiSpellManager* GetSpellManager() { return aiRegistry->GetSpellManager(); }
+		AiTargetManager* GetTargetManager() { return aiRegistry->GetTargetManager(); }
+		AiStatsManager* GetStatsManager() { return aiRegistry->GetStatsManager(); }
+		AiMoveManager* GetMoveManager() { return aiRegistry->GetMoveManager(); }
 
 
     private:
@@ -279,10 +280,7 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
         Player* const m_bot;
         PlayerbotClassAI* m_classAI;
 
-		AiSpellManager* spellManager;
-		AiTargetManager* targetManager;
-		AiStatsManager* statsManager;
-		AiMoveManager* moveManager;
+		AiManagerRegistry* aiRegistry;
 
 		CombatStyle m_combatStyle;
         CombatOrderType m_combatOrder;

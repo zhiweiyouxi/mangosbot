@@ -13,7 +13,7 @@ namespace ai
     class MockAiMoveManager : public AiMoveManager
     {
     public:
-        MockAiMoveManager(PlayerbotAIBase* ai, AiTargetManager* targetManager, AiStatsManager* statsManager, string *buffer) : AiMoveManager(ai, targetManager, statsManager) 
+        MockAiMoveManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry, string *buffer) : AiMoveManager(ai, aiRegistry) 
         {
 			distanceTo[MockedTargets::GetCurrentTarget()] = 15.0f; 
 			moving[MockedTargets::GetCurrentTarget()] = false;

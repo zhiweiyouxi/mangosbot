@@ -12,7 +12,7 @@ namespace ai
     class MockAiStatsManager : public AiStatsManager
     {
     public:
-        MockAiStatsManager(PlayerbotAIBase* ai) : AiStatsManager(ai) 
+        MockAiStatsManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiStatsManager(ai, aiRegistry) 
         {
 			health[MockedTargets::GetCurrentTarget()] = 100.0f;
 			health[MockedTargets::GetPartyMember()] = 100.0f;

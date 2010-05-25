@@ -6,6 +6,7 @@
 using namespace std;
 
 #define GLOBAL_COOLDOWN 2
+#define BOT_REACT_DELAY 1
 
 #define BOTLOOT_DISTANCE 25.0f
 #define EAT_DRINK_PERCENT 40
@@ -49,6 +50,7 @@ namespace ai
 	public:
 		bool CanUpdateAI();
 		void SetNextCheckDelay(const uint32 delay);
+		void YieldThread();
 
 	public:
 		Player* GetBot() { return bot; }

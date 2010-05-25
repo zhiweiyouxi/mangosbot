@@ -25,3 +25,9 @@ bool PlayerbotAIBase::CanUpdateAI()
 
 	return true;
 }
+
+void PlayerbotAIBase::YieldThread()
+{
+	if (CanUpdateAI())
+		SetNextCheckDelay(BOT_REACT_DELAY);
+}

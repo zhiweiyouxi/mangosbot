@@ -3,6 +3,7 @@
 #include "Spell.h"
 #include "SpellAuras.h"
 #include "SpellMgr.h"
+#include "AiManagerRegistry.h"
 
 using namespace ai;
 using namespace std;
@@ -25,14 +26,14 @@ Unit* AiTargetManager::GetPartyMinHealthPlayer()
 		if (!CheckPredicate(player, NULL, NULL) || !player->isAlive())
 			continue;
 
-		uint8 health = statsManager->GetHealthPercent(player);
+		uint8 health = aiRegistry->GetStatsManager()->GetHealthPercent(player);
 		if (health < 25 || !IsTargetOfHealingSpell(player))
 			calc.probe(health, player);
 
 		Pet* pet = player->GetPet();
 		if (pet && CanHealPet(pet)) 
 		{
-			health = statsManager->GetHealthPercent(pet);
+			health = aiRegistry->GetStatsManager()->GetHealthPercent(pet);
 			if (health < 25 || !IsTargetOfHealingSpell(player))
 				calc.probe(health, player);
 		}
@@ -84,7 +85,7 @@ bool AiTargetManager::CheckPredicate(Unit* player, FindPlayerPredicate predicate
 
 bool AiTargetManager::PlayerWithoutAuraPredicate(Unit* player, void *param )
 {
-	return player->isAlive() && !spellManager->HasAura((const char*)param, player);
+	return player->isAlive() && !aiRegistry->GetSpellManager()->HasAura((const char*)param, player);
 }
 
 
@@ -204,7 +205,7 @@ bool AiTargetManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
 Unit* AiTargetManager::FindLeastThreat()
 {
 	std::list<ThreatManager*> attackers;
-	statsManager->findAllAttackers(attackers);
+	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
 
 	float minThreat = 1e8;
 	Unit* target = NULL;
@@ -224,7 +225,7 @@ Unit* AiTargetManager::FindLeastThreat()
 Unit* AiTargetManager::FindBiggerThreat()
 {
 	std::list<ThreatManager*> attackers;
-	statsManager->findAllAttackers(attackers);
+	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
 
 	float maxThreat = -1;
 	Unit* target = NULL;

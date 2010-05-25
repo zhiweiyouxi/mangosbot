@@ -7,19 +7,22 @@ using namespace std;
 
 namespace ai 
 {
+	class AiManagerRegistry;
 
-class AiManagerBase
-{
-public:
-	AiManagerBase(PlayerbotAIBase* ai) 
+	class AiManagerBase
 	{
-		this->ai = ai;
-		this->bot = ai->GetBot();
-	}
+	public:
+		AiManagerBase(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) 
+		{
+			this->ai = ai;
+			this->bot = ai->GetBot();
+			this->aiRegistry = aiRegistry;
+		}
 
-protected:
-	PlayerbotAIBase* ai;
-	Player* bot;
-};
+	protected:
+		PlayerbotAIBase* ai;
+		Player* bot;
+		AiManagerRegistry* aiRegistry;
+	};
 
 };

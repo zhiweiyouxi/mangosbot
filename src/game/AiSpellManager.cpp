@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "WorldSession.h"
 #include "WorldPacket.h"
+#include "AiMoveManager.h"
+#include "AiManagerRegistry.h"
 
 using namespace ai;
 using namespace std;
@@ -138,12 +140,12 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 	if (!spellInfo)
 		return false;
 
-	if (target->IsImmunedToSpell(spellInfo))
-		return false;
-
+	uint64 oldSel = bot->GetSelection();
+	bot->SetSelection(target->GetGUID());
 	Spell *spell = new Spell(bot, spellInfo, false );
-	bool res = (spell->CheckPower() == SPELL_CAST_OK);
+	bool res = (spell->CheckCast(false) == SPELL_CAST_OK);
 	delete spell;
+	bot->SetSelection(oldSel);
 
 	return res;
 }
@@ -197,15 +199,22 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
     lastSpellTarget = target->GetGUID();
     lastCastTime = time(0);
 
+	aiRegistry->GetMoveManager()->Stay();
+
     const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(lastSpellId);
     bot->CastSpell(target, pSpellInfo, false);
 
     uint32 castTime = GetSpellCastTime(pSpellInfo) / 1000;
+
+	if (pSpellInfo->AttributesEx & SPELL_ATTR_EX_CHANNELED_1 ||
+		pSpellInfo->AttributesEx & SPELL_ATTR_EX_CHANNELED_2)
+		castTime += GetSpellDuration(pSpellInfo) / 1000;
+
     uint32 globalCooldown = CalculateGlobalCooldown(spellId);
     if (castTime < globalCooldown)
         castTime = globalCooldown;
-    ai->SetNextCheckDelay(castTime);
 
+    ai->SetNextCheckDelay(castTime);
     return true;
 }
 
@@ -261,9 +270,8 @@ int32 AiSpellManager::CalculateGlobalCooldown(uint32 spellid)
 		spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE)
 		return 0;
 
-    // TODO
-    if (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
-        return 2;
+    if (spellInfo->AttributesEx3 & SPELL_ATTR_EX3_REQ_WAND)
+        return GLOBAL_COOLDOWN;
 	
 	return GLOBAL_COOLDOWN;
 }

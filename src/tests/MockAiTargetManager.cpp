@@ -2,6 +2,7 @@
 #include "MockAiTargetManager.h"
 #include "MockedTargets.h"
 #include "MockAiStatsManager.h"
+#include "AiManagerRegistry.h"
 
 using namespace std;
 using namespace ai;
@@ -9,13 +10,13 @@ using namespace ai;
 Unit* MockAiTargetManager::GetPartyMemberWithoutAura(const char* spell)
 {
 	Unit* target = MockedTargets::GetPartyMember();
-	return spellManager->HasAura(spell, target) ? NULL : target;
+	return aiRegistry->GetSpellManager()->HasAura(spell, target) ? NULL : target;
 }
 
 Unit* MockAiTargetManager::GetPartyMinHealthPlayer()
 {
 	Unit* target = MockedTargets::GetPartyMember();
-	return statsManager->GetHealthPercent(target) < 100.0f ? target : NULL;
+	return aiRegistry->GetStatsManager()->GetHealthPercent(target) < 100.0f ? target : NULL;
 }
 
 Unit* MockAiTargetManager::GetDeadPartyMember()
@@ -26,7 +27,7 @@ Unit* MockAiTargetManager::GetDeadPartyMember()
 Unit* MockAiTargetManager::GetPartyMemberToDispell(uint32 dispelType)
 {
 	Unit* target = MockedTargets::GetPartyMember();
-	return spellManager->HasAuraToDispel(target, dispelType) ? target : NULL;
+	return aiRegistry->GetSpellManager()->HasAuraToDispel(target, dispelType) ? target : NULL;
 }
 
 Unit* MockAiTargetManager::FindBiggerThreat()

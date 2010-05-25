@@ -2,6 +2,7 @@
 #include "AiMoveManager.h"
 #include "MotionMaster.h"
 #include "FleeManager.h"
+#include "AiManagerRegistry.h"
 
 using namespace ai;
 using namespace std;
@@ -45,7 +46,7 @@ void AiMoveManager::Follow(Unit* target, float distance)
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
 	std::list<ThreatManager*> attackers;
-	statsManager->findAllAttackers(attackers);
+	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
 
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
 
