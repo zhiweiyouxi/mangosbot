@@ -29,5 +29,10 @@ void PlayerbotAIFacade::Emote(uint32 emote)
     ai->GetPlayerBot()->HandleEmoteCommand(emote);
 }
 
+void PlayerbotAIFacade::Attack(Unit* target) 
+{
+	if (!target) 
+		return;
 
-
+	ai->Attack(target); 
+}

@@ -16,6 +16,7 @@ namespace ai
 	public:
 		AiInventoryManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
+			currentLoot = 0;
 		}
 
 	public:
@@ -34,6 +35,10 @@ namespace ai
 		{
 			return FindAndUse(isTheSameName, (const void*)item, ignore_time);
 		}
+		virtual void ClearLoot();
+		virtual void AddLoot(uint64 guid);
+		virtual bool CanLoot();
+		virtual void DoLoot();
 
 	private:
 		Item* FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, int *count=NULL);
@@ -46,6 +51,9 @@ namespace ai
 		virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
 		void UseItem(Item& item);
 
+	private:
+		list<uint64> availableLoot;
+		uint64 currentLoot;
 	};
 
 };

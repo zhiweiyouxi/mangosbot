@@ -95,7 +95,7 @@ bool SpellCanBeCastTrigger::IsActive()
 
 bool LootAvailableTrigger::IsActive()
 {   
-    return ai->CanLoot();
+    return ai->GetInventoryManager()->CanLoot();
 }
 
 bool RandomTrigger::IsActive()

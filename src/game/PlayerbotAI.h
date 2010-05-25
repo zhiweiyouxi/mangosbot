@@ -227,8 +227,6 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
         void SendQuestItemList( Player& player );
 		void SendOrders( Player& player );
         bool FollowCheckTeleport( WorldObject &obj );
-        void DoLoot();
-        bool CanLoot() { return !m_lootCreature.empty(); }
 
         void AcceptQuest( Quest const *qInfo, Player *pGiver );
         void TurnInQuests( WorldObject *questgiver );
@@ -296,8 +294,8 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
         BotNeedItem m_needItemList;
 
         // list of creatures we recently attacked and want to loot
-        BotLootCreature m_lootCreature;  // list of creatures
-        uint64 m_lootCurrent;            // current remains of interest
+        //BotLootCreature m_lootCreature;  // list of creatures
+        //uint64 m_lootCurrent;            // current remains of interest
 
         time_t m_TimeDoneEating;
         time_t m_TimeDoneDrinking;

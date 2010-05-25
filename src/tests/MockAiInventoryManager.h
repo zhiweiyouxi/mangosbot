@@ -17,6 +17,7 @@ namespace ai
         {
 			this->buffer = buffer;
 			hasDrink = hasFood = true;
+			lootAvailable = false;
 		}
 
 	public:
@@ -32,12 +33,15 @@ namespace ai
 		virtual bool HasPanicPotion() { return false; }
 		virtual int GetItemCount(const char* name)  { return itemCounts[std::string(name)]; }
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0) { buffer->append(">").append(item); return true; }
+		virtual bool CanLoot() { return lootAvailable; }
+		virtual void DoLoot() { buffer->append(">loot"); }
 
 	private:
 		string *buffer;
 
 	public:
 		bool hasDrink, hasFood;
+		bool lootAvailable;
 		std::map<string, int> itemCounts;
     };
 

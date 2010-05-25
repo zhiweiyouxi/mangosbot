@@ -18,7 +18,6 @@ namespace ai
         { 
 			aiRegistry = new MockAiManagerRegistry(this, &buffer);
 
-            lootAvailable = false;
         }
 
 		virtual ~MockPlayerbotAIFacade() 
@@ -34,14 +33,11 @@ namespace ai
 
         virtual void Melee() { buffer.append(">melee"); }
         virtual void Attack(Unit* target);
-        virtual bool CanLoot() { return lootAvailable; }
-        virtual void Loot() { buffer.append(">loot"); }
         virtual void TellMaster(const char* text) { buffer.append(text); }
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
 
 
         std::string buffer;
-        bool lootAvailable;
     
 		AiManagerRegistry* aiRegistry;
 	};

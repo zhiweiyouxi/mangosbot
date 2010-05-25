@@ -1048,8 +1048,7 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
     {
         SetState( BOTSTATE_COMBAT );
         SetQuestNeedItems();
-        m_lootCreature.clear();
-        m_lootCurrent = 0;
+		GetInventoryManager()->ClearLoot();
 		m_targetCombat = 0;
     }
 
@@ -1124,23 +1123,7 @@ void PlayerbotAI::GetCombatTarget( Unit* forcedTarget )
 
     m_bot->Attack(m_targetCombat, true);
 
-    // add thingToAttack to loot list
-    uint64 guid = m_targetCombat->GetGUID();
-    for (std::list<uint64>::iterator i = m_lootCreature.begin(); i != m_lootCreature.end(); i++)
-    {
-        if (*i == guid) 
-        {
-            guid = NULL;
-            break;
-        }
-    }
-    if (guid)
-    {
-        m_lootCreature.push_front( guid );
-		int lootSize = m_lootCreature.size();
-        for (; lootSize>50; lootSize--) 
-            m_lootCreature.pop_back();
-    }
+	GetInventoryManager()->AddLoot(m_targetCombat->GetGUID());
 	// set movement generators for combat movement
 	//MovementClear();
     return;
@@ -1195,9 +1178,8 @@ void PlayerbotAI::SetQuestNeedItems()
 {
     // reset values first
     m_needItemList.clear();
-    m_lootCreature.clear();
-    m_lootCurrent = 0;
-
+	GetInventoryManager()->ClearLoot();
+    
     // run through accepted quests, get quest infoand data
     for( QuestStatusMap::iterator iter=m_bot->getQuestStatusMap().begin(); iter!=m_bot->getQuestStatusMap().end(); ++iter )
     {
@@ -1224,111 +1206,6 @@ void PlayerbotAI::SetState( BotState state )
 {
     //sLog.outDebug( "[PlayerbotAI]: %s switch state %d to %d", m_bot->GetName(), m_botState, state );
     m_botState = state;
-}
-
-void PlayerbotAI::DoLoot()
-{
-    if( !m_lootCurrent && m_lootCreature.empty() )
-    {
-        //sLog.outDebug( "[PlayerbotAI]: %s reset loot list / go back to idle", m_bot->GetName() );
-        m_botState = BOTSTATE_NORMAL;
-        SetQuestNeedItems();
-        return;
-    }
-
-    if( !m_lootCurrent )
-    {
-        m_lootCurrent = m_lootCreature.front();
-        m_lootCreature.pop_front();
-        Creature *c = m_bot->GetMap()->GetCreature( m_lootCurrent );
-        // check if we got a creature and if it is still a corpse, otherwise bot runs to spawn point
-        if( !c || c->getDeathState()!=CORPSE || GetMaster()->GetDistance( c )>BOTLOOT_DISTANCE )
-        {
-            m_lootCurrent = 0;
-            return;
-        }
-        m_bot->GetMotionMaster()->MovePoint( c->GetMapId(), c->GetPositionX(), c->GetPositionY(), c->GetPositionZ() );
-        //sLog.outDebug( "[PlayerbotAI]: %s is going to loot '%s' deathState=%d", m_bot->GetName(), c->GetName(), c->getDeathState() );
-    }
-    else
-    {
-        Creature *c = m_bot->GetMap()->GetCreature( m_lootCurrent );
-        if( !c || c->getDeathState()!=CORPSE || GetMaster()->GetDistance( c )>BOTLOOT_DISTANCE )
-        {
-            m_lootCurrent = 0;
-            return;
-        }
-        if( m_bot->IsWithinDistInMap( c, INTERACTION_DISTANCE ) )
-        {
-            // check for needed items
-            m_bot->SendLoot( m_lootCurrent, LOOT_CORPSE );
-            Loot *loot = &c->loot;
-            uint32 lootNum = loot->GetMaxSlotInLootFor( m_bot );
-            //sLog.outDebug( "[PlayerbotAI]: %s looting: '%s' got %d items", m_bot->GetName(), c->GetName(), loot->GetMaxSlotInLootFor( m_bot ) );
-            for( uint32 l=0; l<lootNum; l++ )
-            {
-                QuestItem *qitem=0, *ffaitem=0, *conditem=0;
-                LootItem *item = loot->LootItemInSlot( l, m_bot, &qitem, &ffaitem, &conditem );
-                if( !item )
-                    continue;
-
-                if( !qitem && item->is_blocked )
-                {
-                    m_bot->SendLootRelease( m_bot->GetLootGUID() );
-                    continue;
-                }
-
-                if( m_needItemList[item->itemid]>0 )
-                {
-                    //sLog.outDebug( "[PlayerbotAI]: %s looting: needed item '%s'", m_bot->GetName(), sObjectMgr.GetItemLocale(item->itemid)->Name );
-                    ItemPosCountVec dest;
-                    if( m_bot->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item->itemid, item->count ) == EQUIP_ERR_OK )
-                    {
-                        Item * newitem = m_bot->StoreNewItem( dest, item->itemid, true, item->randomPropertyId);
-
-                        if( qitem )
-                        {
-                            qitem->is_looted = true;
-                            if( item->freeforall || loot->GetPlayerQuestItems().size() == 1 )
-                                m_bot->SendNotifyLootItemRemoved( l );
-                            else
-                                loot->NotifyQuestItemRemoved( qitem->index );
-                        }
-                        else
-                        {
-                            if( ffaitem )
-                            {
-                                ffaitem->is_looted=true;
-                                m_bot->SendNotifyLootItemRemoved( l );
-                            }
-                            else
-                            {
-                                if( conditem )
-                                    conditem->is_looted=true;
-                                loot->NotifyItemRemoved( l );
-                            }
-                        }
-                        if (!item->freeforall)
-                            item->is_looted = true;
-                        --loot->unlootedCount;
-                        m_bot->SendNewItem( newitem, uint32(item->count), false, false, true );
-                        m_bot->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count );
-                    }
-                }
-            }
-            // release loot
-            if( uint64 lguid = m_bot->GetLootGUID() && m_bot->GetSession() )
-                m_bot->GetSession()->DoLootRelease( lguid );
-            //else if( !m_bot->GetSession() )
-            //    sLog.outDebug( "[PlayerbotAI]: %s has no session. Cannot release loot!", m_bot->GetName() );
-
-            // clear movement target, take next target on next update
-            m_bot->GetMotionMaster()->Clear();
-            m_bot->GetMotionMaster()->MoveIdle();
-            //sLog.outDebug( "[PlayerbotAI]: %s looted target 0x%08X", m_bot->GetName(), m_lootCurrent );
-            m_lootCurrent = 0;
-        }
-    }
 }
 
 void PlayerbotAI::AcceptQuest( Quest const *qInfo, Player *pGiver )
@@ -1783,8 +1660,7 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     {
         if( m_botState != BOTSTATE_DEAD && m_botState != BOTSTATE_DEADRELEASED )
         {
-            m_lootCreature.clear();
-            m_lootCurrent = 0;
+			GetInventoryManager()->ClearLoot();
             m_bot->SetSelection(0);
             m_bot->GetMotionMaster()->Clear(true);
             SetState( BOTSTATE_DEAD );
@@ -2419,8 +2295,7 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
 		MovementReset();
         SetQuestNeedItems();
 		UpdateAttackerInfo();
-        m_lootCreature.clear();
-        m_lootCurrent = 0;
+		GetInventoryManager()->ClearLoot();
 		m_targetCombat = 0;
 		// do we want to reset all states on this command?
 		m_combatOrder = ORDERS_NONE;
@@ -2683,7 +2558,7 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
 		{
 
 			//sLog.outDebug("find: guid : %u entry : %u x : (%f) y : (%f) z : (%f) mapid : %d",guid, entry, x, y, z, mapid);
-			m_lootCurrent = MAKE_NEW_GUID(guid, entry, HIGHGUID_GAMEOBJECT);
+			uint64 m_lootCurrent = MAKE_NEW_GUID(guid, entry, HIGHGUID_GAMEOBJECT);
 			GameObject *go = m_bot->GetMap()->GetGameObject(m_lootCurrent);
 			if (!go)
 			{

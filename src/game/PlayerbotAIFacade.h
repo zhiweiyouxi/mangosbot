@@ -33,9 +33,7 @@ namespace ai
 
     public:
         virtual void Melee();
-        virtual void Attack(Unit* target) { if (target) ai->Attack(target); }
-        virtual bool CanLoot() { return ai->CanLoot(); }
-        virtual void Loot() { ai->DoLoot(); }
+        virtual void Attack(Unit* target);
         virtual void TellMaster(const char* text) { ai->TellMaster(text); }        
         virtual void Emote(uint32 emote);
 

@@ -105,7 +105,7 @@ namespace ai
     public:
         LootAction(PlayerbotAIFacade* const ai) : Action(ai, "loot") {}
         virtual void Execute() {
-            ai->Loot();
+            ai->GetInventoryManager()->DoLoot();
         }
     };
 
