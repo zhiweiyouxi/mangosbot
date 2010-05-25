@@ -791,6 +791,14 @@
 			Name="Mocks"
 			>
 			<File
+				RelativePath="..\..\src\tests\MockAiInventoryManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiInventoryManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\MockAiManagerRegistry.cpp"
 				>
 			</File>

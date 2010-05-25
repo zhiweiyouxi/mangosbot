@@ -30,7 +30,7 @@ namespace ai
 		CastDrainSoulAction(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "drain soul") {}
 		virtual bool isUseful() 
 		{
-			return ai->GetItemCount("soulstone") < 2;
+			return ai->GetInventoryManager()->GetItemCount("soul shard") < 2;
 		}
 	};
 

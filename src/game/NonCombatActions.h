@@ -9,10 +9,10 @@ namespace ai
     public:
         DrinkAction(PlayerbotAIFacade* const ai) : Action(ai, "drink") {}
         virtual void Execute() {
-            ai->UseDrink();
+            ai->GetInventoryManager()->UseDrink();
         }
         virtual bool isUseful() {
-            return ai->GetStatsManager()->GetManaPercent(ai->GetTargetManager()->GetSelf()) < EAT_DRINK_PERCENT && ai->HasDrink();
+            return ai->GetStatsManager()->GetManaPercent(ai->GetTargetManager()->GetSelf()) < EAT_DRINK_PERCENT && ai->GetInventoryManager()->HasDrink();
         }
     };
 
@@ -20,11 +20,11 @@ namespace ai
     public:
         EatAction(PlayerbotAIFacade* const ai) : Action(ai, "eat") {}
         virtual void Execute() {
-            ai->UseFood();
+            ai->GetInventoryManager()->UseFood();
         }
         virtual bool isUseful() {
             return ai->GetStatsManager()->GetHealthPercent(ai->GetTargetManager()->GetSelf()) < EAT_DRINK_PERCENT && 
-				ai->HasFood();
+				ai->GetInventoryManager()->HasFood();
         }
     };
 

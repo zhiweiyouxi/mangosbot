@@ -34,7 +34,7 @@ protected:
 
 		tickWithTargetLowHealth(19);
 		
-		ai->itemCounts["soulstone"] = 2;
+		inventoryManager->itemCounts["soul shard"] = 2;
 		spellAvailable("drain soul");
 		tickWithTargetLowHealth(19);
 

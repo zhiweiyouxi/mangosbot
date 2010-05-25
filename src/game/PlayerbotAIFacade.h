@@ -29,6 +29,7 @@ namespace ai
 		virtual AiTargetManager* GetTargetManager() { return ai->GetTargetManager(); }
 		virtual AiStatsManager* GetStatsManager() { return ai->GetStatsManager(); }
 		virtual AiMoveManager* GetMoveManager() { return ai->GetMoveManager(); }
+		virtual AiInventoryManager* GetInventoryManager() { return ai->GetInventoryManager(); }
 
     public:
         virtual void Melee();
@@ -37,33 +38,33 @@ namespace ai
         virtual bool CanLoot() { return ai->CanLoot(); }
         virtual void Loot() { ai->DoLoot(); }
         virtual void TellMaster(const char* text) { ai->TellMaster(text); }        
-        virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
-        virtual void UseManaPotion() { FindAndUse(isManaPotion); }
-        virtual void UsePanicPotion()  { FindAndUse(isPanicPotion); }
-        virtual void UseFood();
-        virtual void UseDrink();
-        virtual bool HasFood() { return ai->FindUsableItem(isFood) != NULL; }
-        virtual bool HasDrink() { return ai->FindUsableItem(isDrink) != NULL; }
-        virtual bool HasHealingPotion() { return ai->FindUsableItem(isHealingPotion) != NULL; }
-        virtual bool HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
-        virtual bool HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
-		virtual int GetItemCount(const char* name) { return ai->FindUsableItem(isTheSameName, (const void*)name) != NULL; }
+  //      virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
+  //      virtual void UseManaPotion() { FindAndUse(isManaPotion); }
+  //      virtual void UsePanicPotion()  { FindAndUse(isPanicPotion); }
+  //      virtual void UseFood();
+  //      virtual void UseDrink();
+  //      virtual bool HasFood() { return ai->FindUsableItem(isFood) != NULL; }
+  //      virtual bool HasDrink() { return ai->FindUsableItem(isDrink) != NULL; }
+  //      virtual bool HasHealingPotion() { return ai->FindUsableItem(isHealingPotion) != NULL; }
+  //      virtual bool HasManaPotion() { return ai->FindUsableItem(isManaPotion) != NULL; }
+  //      virtual bool HasPanicPotion() { return ai->FindUsableItem(isPanicPotion) != NULL; }
+		//virtual int GetItemCount(const char* name) { return ai->FindUsableItem(isTheSameName, (const void*)name) != NULL; }
 
         virtual void Emote(uint32 emote);
 
-		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
-		{
-			return PlayerbotAIFacade::FindAndUse(isTheSameName, (const void*)item, ignore_time);
-		}
+		//virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
+		//{
+		//	return PlayerbotAIFacade::FindAndUse(isTheSameName, (const void*)item, ignore_time);
+		//}
 
     protected:
-        static bool isHealingPotion(const ItemPrototype* pItemProto, const void* param);
-        static bool isManaPotion(const ItemPrototype* pItemProto, const void* param);
-        static bool isPanicPotion(const ItemPrototype* pItemProto, const void* param);
-        static bool isFood(const ItemPrototype* pItemProto, const void* param);
-        static bool isDrink(const ItemPrototype* pItemProto, const void* param);
-		static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
-        virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
+  //      static bool isHealingPotion(const ItemPrototype* pItemProto, const void* param);
+  //      static bool isManaPotion(const ItemPrototype* pItemProto, const void* param);
+  //      static bool isPanicPotion(const ItemPrototype* pItemProto, const void* param);
+  //      static bool isFood(const ItemPrototype* pItemProto, const void* param);
+  //      static bool isDrink(const ItemPrototype* pItemProto, const void* param);
+		//static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
+  //      virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
 
     protected:
         PlayerbotAI *ai;

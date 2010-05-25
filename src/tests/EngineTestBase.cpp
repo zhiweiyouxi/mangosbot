@@ -9,6 +9,7 @@ void EngineTestBase::setUp()
 	targetManager = (MockAiTargetManager*)ai->GetTargetManager();
 	statsManager = (MockAiStatsManager*)ai->GetStatsManager();
 	moveManager = (MockAiMoveManager*)ai->GetMoveManager();
+	inventoryManager = (MockAiInventoryManager*)ai->GetInventoryManager();
 }
 
 void EngineTestBase::tearDown()
@@ -301,21 +302,21 @@ void EngineTestBase::tickWithLootAvailable()
 
 void EngineTestBase::tickWithNoDrink()
 {
-	ai->hasDrink = false;
+	inventoryManager->hasDrink = false;
 	tick();
-	ai->hasDrink = true;
+	inventoryManager->hasDrink = true;
 }
 
 void EngineTestBase::tickWithNoFood()
 {
-	ai->hasFood = false;
+	inventoryManager->hasFood = false;
 	tick();
-	ai->hasFood = true;
+	inventoryManager->hasFood = true;
 }
 
 void EngineTestBase::itemAvailable(const char* item, int amount)
 {
-	ai->itemCounts[std::string(item)] = amount;
+	inventoryManager->itemCounts[std::string(item)] = amount;
 }
 
 void EngineTestBase::tickWithDeadPartyMember() 

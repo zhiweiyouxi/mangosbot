@@ -12,6 +12,7 @@ namespace ai
 	class AiTargetManager;
 	class AiStatsManager;
 	class AiMoveManager;
+	class AiInventoryManager;
 
 	class AiManagerRegistry
 	{
@@ -24,12 +25,14 @@ namespace ai
 		AiTargetManager* GetTargetManager() { return targetManager; }
 		AiStatsManager* GetStatsManager() { return statsManager; }
 		AiMoveManager* GetMoveManager() { return moveManager; }
+		AiInventoryManager* GetInventoryManager() { return inventoryManager; }
 
 	protected:
 		AiSpellManager* spellManager;
 		AiTargetManager* targetManager;
 		AiStatsManager* statsManager;
 		AiMoveManager* moveManager;
+		AiInventoryManager* inventoryManager;
 	};
 
 };

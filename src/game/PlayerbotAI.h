@@ -9,6 +9,7 @@
 #include "AiTargetManager.h"
 #include "AiStatsManager.h"
 #include "AiMoveManager.h"
+#include "AiInventoryManager.h"
 
 using namespace std;
 using namespace ai;
@@ -261,7 +262,7 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
 		AiTargetManager* GetTargetManager() { return aiRegistry->GetTargetManager(); }
 		AiStatsManager* GetStatsManager() { return aiRegistry->GetStatsManager(); }
 		AiMoveManager* GetMoveManager() { return aiRegistry->GetMoveManager(); }
-
+		AiInventoryManager* GetInventoryManager() { return aiRegistry->GetInventoryManager(); }
 
     private:
 		bool CastSpell(uint32 spellId, Unit* target = NULL, bool checkAura = true);

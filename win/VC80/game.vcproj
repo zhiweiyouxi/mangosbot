@@ -1622,6 +1622,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\AiInventoryManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\AiInventoryManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\AiManagerBase.cpp"
 				>
 			</File>

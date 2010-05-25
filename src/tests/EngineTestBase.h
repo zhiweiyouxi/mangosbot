@@ -72,5 +72,6 @@ protected:
 	MockAiTargetManager* targetManager;
 	MockAiStatsManager* statsManager;
 	MockAiMoveManager* moveManager;
+	MockAiInventoryManager* inventoryManager;
     Engine *engine;
 };

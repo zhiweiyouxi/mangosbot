@@ -131,7 +131,7 @@ bool SnareTargetTrigger::IsActive()
 
 bool ItemCountTrigger::IsActive()
 {
-	return ai->GetItemCount(item) < count;
+	return ai->GetInventoryManager()->GetItemCount(item) < count;
 }
 
 Unit* InterruptSpellTrigger::GetTarget()

@@ -6,6 +6,7 @@
 #include "MockAiSpellManager.h"
 #include "MockAiTargetManager.h"
 #include "MockAiMoveManager.h"
+#include "MockAiInventoryManager.h"
 #include "MockAiManagerRegistry.h"
 
 namespace ai
@@ -18,7 +19,6 @@ namespace ai
 			aiRegistry = new MockAiManagerRegistry(this, &buffer);
 
             lootAvailable = false;
-			hasDrink = hasFood = true;
         }
 
 		virtual ~MockPlayerbotAIFacade() 
@@ -30,21 +30,12 @@ namespace ai
 		AiTargetManager* GetTargetManager() { return aiRegistry->GetTargetManager(); }
 		AiStatsManager* GetStatsManager() { return aiRegistry->GetStatsManager(); }
 		AiMoveManager* GetMoveManager() { return aiRegistry->GetMoveManager(); }
+		AiInventoryManager* GetInventoryManager() { return aiRegistry->GetInventoryManager(); }
 
         virtual void Melee() { buffer.append(">melee"); }
         virtual void Attack(Unit* target);
         virtual bool CanLoot() { return lootAvailable; }
         virtual void Loot() { buffer.append(">loot"); }
-        
-        virtual void UseHealingPotion() { buffer.append(">hp"); }
-        virtual void UseManaPotion() { buffer.append(">mp"); }
-        virtual void UsePanicPotion() { buffer.append(">pp"); }
-        virtual void UseFood() { buffer.append(">eat"); }
-        virtual void UseDrink() { buffer.append(">drink"); }
-        virtual bool HasFood() { return hasFood; }
-        virtual bool HasDrink() { return hasDrink; }
-		virtual int GetItemCount(const char* name)  { return itemCounts[std::string(name)]; }
-
 
 
         virtual bool IsMounted() { return FALSE; }
@@ -62,7 +53,6 @@ namespace ai
         virtual float GetFollowAngle() { return 0; }
         virtual bool HasSpell(const char* spell) { return TRUE; }
 
-		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0) { buffer.append(">").append(item); return true; }
 
         std::string buffer;
         //std::list<std::string> spellCooldowns;
@@ -79,8 +69,8 @@ namespace ai
         //uint32 partyAurasToDispel, aurasToDispel, targetAurasToDispel;
         //bool targetIsMoving;
         //bool targetIsCastingNonMeleeSpell;
- 		bool hasDrink, hasFood;
-		std::map<string, int> itemCounts;
+ 	//	bool hasDrink, hasFood;
+		//std::map<string, int> itemCounts;
 		//bool deadPartyMember;
 		//uint32 energy;
     

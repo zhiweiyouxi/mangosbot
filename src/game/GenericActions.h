@@ -61,10 +61,10 @@ namespace ai
     public:
         UseHealingPotion(PlayerbotAIFacade* const ai) : Action(ai, "healing potion") {}
         virtual void Execute() {
-            ai->UseHealingPotion(); 
+            ai->GetInventoryManager()->UseHealingPotion(); 
         }
         virtual bool isPossible() {
-            return ai->HasHealingPotion();
+            return ai->GetInventoryManager()->HasHealingPotion();
         }
     };
 
@@ -72,10 +72,10 @@ namespace ai
     public:
         UseManaPotion(PlayerbotAIFacade* const ai) : Action(ai, "mana potion") {}
         virtual void Execute() {
-            ai->UseManaPotion(); 
+            ai->GetInventoryManager()->UseManaPotion(); 
         }
         virtual bool isPossible() {
-            return ai->HasManaPotion();
+            return ai->GetInventoryManager()->HasManaPotion();
         }
     };
 
@@ -83,10 +83,10 @@ namespace ai
     public:
         UsePanicPotion(PlayerbotAIFacade* const ai) : Action(ai, "panic potion") {}
         virtual void Execute() {
-            ai->UsePanicPotion(); 
+            ai->GetInventoryManager()->UsePanicPotion(); 
         }
         virtual bool isPossible() {
-            return ai->HasPanicPotion();
+            return ai->GetInventoryManager()->HasPanicPotion();
         }
     };
 
@@ -94,10 +94,10 @@ namespace ai
 	public:
 		UseHealthstone(PlayerbotAIFacade* const ai) : Action(ai, "healthstone") {}
 		virtual void Execute() {
-			ai->FindAndUse("healthstone"); 
+			ai->GetInventoryManager()->FindAndUse("healthstone"); 
 		}
 		virtual bool isPossible() {
-			return ai->GetItemCount("healthstone") > 0;
+			return ai->GetInventoryManager()->GetItemCount("healthstone") > 0;
 		}
 	};
 
