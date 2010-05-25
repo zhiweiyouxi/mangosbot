@@ -143,11 +143,38 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 	uint64 oldSel = bot->GetSelection();
 	bot->SetSelection(target->GetGUID());
 	Spell *spell = new Spell(bot, spellInfo, false );
-	bool res = (spell->CheckCast(false) == SPELL_CAST_OK);
+	SpellCastResult result = spell->CheckCast(false);
 	delete spell;
 	bot->SetSelection(oldSel);
 
-	return res;
+	switch (result)
+	{
+	case SPELL_FAILED_TOO_CLOSE:
+	case SPELL_FAILED_NOT_BEHIND:
+	case SPELL_FAILED_NOT_INFRONT:
+	case SPELL_FAILED_NOT_STANDING:
+	case SPELL_FAILED_UNIT_NOT_BEHIND:
+	case SPELL_FAILED_UNIT_NOT_INFRONT:
+	case SPELL_FAILED_OUT_OF_RANGE:
+	case SPELL_FAILED_SUCCESS:
+	case SPELL_FAILED_LINE_OF_SIGHT:
+	case SPELL_FAILED_MOVING:
+	case SPELL_FAILED_ONLY_STEALTHED:
+	case SPELL_FAILED_ONLY_SHAPESHIFT:
+	case SPELL_FAILED_SPELL_IN_PROGRESS:
+	case SPELL_FAILED_TRY_AGAIN:
+	case SPELL_FAILED_NOT_ON_STEALTHED:
+	case SPELL_FAILED_NOT_ON_SHAPESHIFT:
+	case SPELL_FAILED_NOT_IDLE:
+	case SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW:
+	case SPELL_FAILED_SUMMON_PENDING:
+	case SPELL_FAILED_BAD_IMPLICIT_TARGETS:
+	case SPELL_FAILED_BAD_TARGETS:
+	case SPELL_CAST_OK:
+		return true;
+	default:
+		return false;
+	}
 }
 
 bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
@@ -166,16 +193,16 @@ bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
 	if (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
 	{
 		Spell* spell = bot->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL);
-		if (!spell || spell->m_spellInfo->Id != spellid || !spell->IsAutoRepeat())
-			return true;
+		if (spell && spell->m_spellInfo->Id == spellid && spell->IsAutoRepeat())
+			return false;
 	}
 	
 	if (spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_1 || 
 		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_2)
 	{
 		Spell* spell = bot->GetCurrentSpell(CURRENT_MELEE_SPELL);
-		if (!spell || spell->m_spellInfo->Id != spellid || !spell->IsNextMeleeSwingSpell())
-			return true;
+		if (spell && spell->m_spellInfo->Id == spellid && spell->IsNextMeleeSwingSpell())
+			return false;
 	}
 
 	return true;
