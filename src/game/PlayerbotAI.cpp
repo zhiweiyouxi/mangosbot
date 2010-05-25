@@ -82,7 +82,6 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 
     // set bot state and needed item list
     m_botState = BOTSTATE_NORMAL;
-    SetQuestNeedItems();
 
 	// reset some pointers
     m_targetChanged = false;
@@ -95,6 +94,8 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 
 	FollowCheckTeleport(*GetMaster());
     m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);
+
+    SetQuestNeedItems();
 }
 
 PlayerbotAI::~PlayerbotAI()

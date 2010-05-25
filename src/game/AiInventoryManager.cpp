@@ -10,6 +10,7 @@ using namespace std;
 
 Item* AiInventoryManager::FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param, int *count/*=NULL*/)
 {
+    if (count) (*count) = 0;
 	Item* found = NULL;
 
 	// list out items in main backpack
@@ -303,4 +304,13 @@ void AiInventoryManager::DoLoot()
 
 	bot->GetMotionMaster()->Clear();
 	currentLoot = 0;
+}
+
+
+int AiInventoryManager::GetItemCount(const char* name) 
+{
+    int count; 
+    if (!FindUsableItem(isTheSameName, (const void*)name, &count))
+        return 0;
+    return count; 
 }

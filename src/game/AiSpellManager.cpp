@@ -205,6 +205,13 @@ bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
 			return false;
 	}
 
+    if (spellid == lastSpellId) 
+    {
+        Spell* const pSpell = bot->FindCurrentSpellBySpellId(lastSpellId);
+        if (pSpell)
+            return false;
+    }
+
 	return true;
 }
 

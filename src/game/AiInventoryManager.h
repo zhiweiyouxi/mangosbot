@@ -30,7 +30,7 @@ namespace ai
 		virtual bool HasHealingPotion() { return FindUsableItem(isHealingPotion) != NULL; }
 		virtual bool HasManaPotion() { return FindUsableItem(isManaPotion) != NULL; }
 		virtual bool HasPanicPotion() { return FindUsableItem(isPanicPotion) != NULL; }
-		virtual int GetItemCount(const char* name) { return FindUsableItem(isTheSameName, (const void*)name) != NULL; }
+		virtual int GetItemCount(const char* name);
 		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
 		{
 			return FindAndUse(isTheSameName, (const void*)item, ignore_time);
