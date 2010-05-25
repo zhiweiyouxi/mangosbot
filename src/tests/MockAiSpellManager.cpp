@@ -30,6 +30,11 @@ bool MockAiSpellManager::CanCastSpell(const char* name, Unit* target)
 	return true;
 }
 
+bool MockAiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
+{
+	return true;
+}
+
 bool MockAiSpellManager::CastSpell(const char* name, Unit* target)
 {
 	buffer->append(">");

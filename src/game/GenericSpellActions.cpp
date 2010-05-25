@@ -22,7 +22,8 @@ bool CastSpellAction::isPossible()
 
 bool CastSpellAction::isUseful() 
 {
-	return GetTarget();
+	Unit* target = GetTarget();
+	return target && spellManager->IsSpellCastUseful(spell, target);
 }
 
 

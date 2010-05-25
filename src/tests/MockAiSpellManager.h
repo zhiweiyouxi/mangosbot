@@ -26,6 +26,7 @@ namespace ai
 		virtual bool HasAura(const char* spellName, Unit* player);
 		virtual bool IsSpellCasting(Unit* player);
 		virtual bool HasAuraToDispel(Unit* player, uint32 dispelType);
+		virtual bool IsSpellCastUseful(const char* name, Unit* target);
 
     public:
         void resetSpells() {spellCooldowns.clear(); }

@@ -148,6 +148,37 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 	return res;
 }
 
+bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
+{
+	uint32 spellid = GetSpellId(name);
+	if (!spellid)
+		return false;
+
+	if (!target)
+		target = bot;
+
+	SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellid );
+	if (!spellInfo)
+		return false;
+
+	if (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
+	{
+		Spell* spell = bot->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL);
+		if (!spell || spell->m_spellInfo->Id != spellid || !spell->IsAutoRepeat())
+			return true;
+	}
+	
+	if (spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_1 || 
+		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_2)
+	{
+		Spell* spell = bot->GetCurrentSpell(CURRENT_MELEE_SPELL);
+		if (!spell || spell->m_spellInfo->Id != spellid || !spell->IsNextMeleeSwingSpell())
+			return true;
+	}
+
+	return true;
+}
+
 bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
 {
 	if (!target)
