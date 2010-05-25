@@ -15,11 +15,11 @@ bool HunterNoStingsActiveTrigger::IsActive()
 
 bool HuntersPetDeadTrigger::IsActive()
 {
-    return targetManager->GetPet() && statsManager->IsDead(targetManager->GetPet()) && !ai->IsMounted();
+    return targetManager->GetPet() && statsManager->IsDead(targetManager->GetPet()) && !ai->GetStatsManager()->IsMounted();
 }
 
 
 bool HuntersPetLowHealthTrigger::IsActive()
 {
-    return targetManager->GetPet() && statsManager->GetHealthPercent(targetManager->GetPet()) < EAT_DRINK_PERCENT && !ai->IsMounted();
+    return targetManager->GetPet() && statsManager->GetHealthPercent(targetManager->GetPet()) < EAT_DRINK_PERCENT && !ai->GetStatsManager()->IsMounted();
 }

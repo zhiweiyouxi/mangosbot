@@ -24,14 +24,6 @@ void PlayerbotAIFacade::Melee()
     Attack(target); 
 }
 
-
-
-
-bool PlayerbotAIFacade::IsMounted()
-{
-    return ai->GetPlayerBot()->IsMounted();
-}
-
 void PlayerbotAIFacade::Emote(uint32 emote)
 {
     ai->GetPlayerBot()->HandleEmoteCommand(emote);

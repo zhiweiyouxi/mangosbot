@@ -27,6 +27,7 @@ namespace ai
 		virtual int GetMyAttackerCount();
 		virtual float GetBalancePercent();
 		virtual bool HasAggro(Unit* target);	
+		virtual bool IsMounted();
 
 	public:
 		void findAllAttackers(std::list<ThreatManager*> &out);

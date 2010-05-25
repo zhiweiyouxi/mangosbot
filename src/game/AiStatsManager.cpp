@@ -204,3 +204,9 @@ bool AiStatsManager::HasAggro(Unit* target)
 	}
 	return false;
 }
+
+
+bool AiStatsManager::IsMounted()
+{
+	return bot->IsMounted();
+}

@@ -36,43 +36,12 @@ namespace ai
         virtual void Attack(Unit* target);
         virtual bool CanLoot() { return lootAvailable; }
         virtual void Loot() { buffer.append(">loot"); }
-
-
-        virtual bool IsMounted() { return FALSE; }
-
-        virtual bool HasHealingPotion() { return FALSE; }
-        virtual bool HasManaPotion() { return FALSE; }
-        virtual bool HasPanicPotion() { return FALSE; }
-
-        virtual void AttackLeastThreat() {buffer.append(">attack least threat"); }
-        virtual void AttackBiggerThreat() {buffer.append(">attack bigger threat"); }
-
         virtual void TellMaster(const char* text) { buffer.append(text); }
-
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
-        virtual float GetFollowAngle() { return 0; }
-        virtual bool HasSpell(const char* spell) { return TRUE; }
 
 
         std::string buffer;
-        //std::list<std::string> spellCooldowns;
-        //std::list<std::string> auras;
-        //std::list<std::string> partyAuras;
-        //std::list<std::string> targetAuras;
-        //std::list<std::string> petAuras;
-        //float distanceToEnemy;
-        //uint8 rage, mana;
-        //uint8 targetMana;
-		//uint8 petHealth;
-        //int partyMinHealth;
         bool lootAvailable;
-        //uint32 partyAurasToDispel, aurasToDispel, targetAurasToDispel;
-        //bool targetIsMoving;
-        //bool targetIsCastingNonMeleeSpell;
- 	//	bool hasDrink, hasFood;
-		//std::map<string, int> itemCounts;
-		//bool deadPartyMember;
-		//uint32 energy;
     
 		AiManagerRegistry* aiRegistry;
 	};

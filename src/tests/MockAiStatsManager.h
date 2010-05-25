@@ -41,6 +41,7 @@ namespace ai
 		virtual int GetMyAttackerCount() {return myAttackerCount; }
 		virtual float GetBalancePercent() { return balancePercent; }
 		virtual bool HasAggro(Unit* target) { return aggro; }
+		virtual bool IsMounted() { return false; }
 
 		map<Unit*, uint8> health;
 		map<Unit*, uint8> rage;
