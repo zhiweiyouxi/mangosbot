@@ -35,20 +35,19 @@ PlayerbotClassAI::~PlayerbotClassAI()
 void PlayerbotClassAI::DoNextAction() 
 {
 	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
-	if (target && (
-		(target->isAlive() && target->IsHostileTo(bot)) || 
-		(target->isDead() && target->IsFriendlyTo(bot))))
+	if (target && target->isAlive() && target->IsHostileTo(bot))
 	{
 		currentEngine = combatEngine;
 	}
-	else if (!bot->isInCombat())
-	{
-		if (currentEngine != nonCombatEngine)
-		{
-			aiRegistry->GetSpellManager()->InterruptSpell();
-			currentEngine = nonCombatEngine;
-		}
-	}
+	else 
+    {
+        bot->SetSelection(0);
+        if (!bot->isInCombat() && currentEngine != nonCombatEngine)
+	    {
+		    aiRegistry->GetSpellManager()->InterruptSpell();
+		    currentEngine = nonCombatEngine;
+	    }
+    }
 
 	currentEngine->DoNextAction(NULL);
 }

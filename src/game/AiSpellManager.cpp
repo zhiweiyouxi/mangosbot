@@ -236,7 +236,10 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
 	aiRegistry->GetMoveManager()->Stay();
 
     const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(lastSpellId);
+    uint64 oldSel = bot->GetSelection();
+    bot->SetSelection(lastSpellTarget);
     bot->CastSpell(target, pSpellInfo, false);
+    bot->SetSelection(oldSel);
 
     uint32 castTime = GetSpellCastTime(pSpellInfo) / 1000;
 
@@ -268,6 +271,9 @@ void AiSpellManager::InterruptSpell()
 	*packet << lastSpellId;
 	*packet << lastSpellTarget;
 	bot->GetSession()->QueuePacket(packet);
+
+    for (int type = CURRENT_MELEE_SPELL; type < CURRENT_MAX_SPELL; type++)
+        bot->InterruptSpell((CurrentSpellTypes)type);
 
 	SpellInterrupted(lastSpellId);
 }

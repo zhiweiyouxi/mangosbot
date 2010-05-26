@@ -1649,6 +1649,7 @@ void PlayerbotAI::Revive()
 		ch.sysmessage(".. could not be revived ..");
 		return;
 	}
+    m_bot->SetSelection(0);
 	// set back to normal
 	SetState( BOTSTATE_NORMAL );
 }
@@ -1672,14 +1673,17 @@ void PlayerbotAI::UpdateAI(const uint32 p_time)
     {
 		GetMoveManager()->Stay();
 		Corpse* corpse = m_bot->GetCorpse();
-		time_t reclaimTime = corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
-		if (reclaimTime > time(0))
-		{
-			TellMaster("Will resurrect in %d secs", reclaimTime - time(0));
-			SetNextCheckDelay(reclaimTime - time(0));
-		}
-		else
-			Revive();
+        if (corpse)
+        {
+		    time_t reclaimTime = corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
+		    if (reclaimTime > time(0))
+		    {
+			    TellMaster("Will resurrect in %d secs", reclaimTime - time(0));
+			    SetNextCheckDelay(reclaimTime - time(0));
+		    }
+		    else
+			    Revive();
+        }
     }
 
 	YieldThread();
