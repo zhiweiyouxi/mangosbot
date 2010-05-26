@@ -10,6 +10,7 @@ void EngineTestBase::setUp()
 	statsManager = (MockAiStatsManager*)ai->GetStatsManager();
 	moveManager = (MockAiMoveManager*)ai->GetMoveManager();
 	inventoryManager = (MockAiInventoryManager*)ai->GetInventoryManager();
+	socialManager = (MockAiSocialManager*)ai->GetSocialManager();
 }
 
 void EngineTestBase::tearDown()

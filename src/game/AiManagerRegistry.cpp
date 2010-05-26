@@ -18,6 +18,7 @@ AiManagerRegistry::AiManagerRegistry(PlayerbotAIBase* ai)
 	targetManager = new AiTargetManager(ai, this);
 	moveManager = new AiMoveManager(ai, this);
 	inventoryManager = new AiInventoryManager(ai, this);
+	socialManager = new AiSocialManager(ai, this);
 }
 
 AiManagerRegistry::~AiManagerRegistry()
@@ -27,4 +28,5 @@ AiManagerRegistry::~AiManagerRegistry()
 	if (targetManager) delete targetManager;
 	if (moveManager) delete moveManager;
 	if (inventoryManager) delete inventoryManager;
+	if (socialManager) delete socialManager;
 }

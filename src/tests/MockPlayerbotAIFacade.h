@@ -8,6 +8,7 @@
 #include "MockAiMoveManager.h"
 #include "MockAiInventoryManager.h"
 #include "MockAiManagerRegistry.h"
+#include "MockAiSocialManager.h"
 
 namespace ai
 {
@@ -30,8 +31,8 @@ namespace ai
 		AiStatsManager* GetStatsManager() { return aiRegistry->GetStatsManager(); }
 		AiMoveManager* GetMoveManager() { return aiRegistry->GetMoveManager(); }
 		AiInventoryManager* GetInventoryManager() { return aiRegistry->GetInventoryManager(); }
-
-        virtual void Emote(uint32 emote) { buffer.append(">emote"); }
+		AiSocialManager* GetSocialManager() { return aiRegistry->GetSocialManager(); }
+        
 
 
         std::string buffer;

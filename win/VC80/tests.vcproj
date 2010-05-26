@@ -815,6 +815,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\tests\MockAiSocialManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiSocialManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\MockAiSpellManager.cpp"
 				>
 			</File>

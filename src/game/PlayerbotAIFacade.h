@@ -30,9 +30,7 @@ namespace ai
 		virtual AiStatsManager* GetStatsManager() { return ai->GetStatsManager(); }
 		virtual AiMoveManager* GetMoveManager() { return ai->GetMoveManager(); }
 		virtual AiInventoryManager* GetInventoryManager() { return ai->GetInventoryManager(); }
-
-    public:
-        virtual void Emote(uint32 emote);
+		virtual AiSocialManager* GetSocialManager() { return ai->GetSocialManager(); }
 
     protected:
         PlayerbotAI *ai;

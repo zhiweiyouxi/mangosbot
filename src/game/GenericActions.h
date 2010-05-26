@@ -117,7 +117,7 @@ namespace ai
         }
 
         virtual void Execute() {
-            ai->Emote(type ? type : rand() % 450);
+            ai->GetSocialManager()->Emote(type ? type : rand() % 450);
         }
 
     protected:

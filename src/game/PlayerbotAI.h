@@ -10,6 +10,7 @@
 #include "AiStatsManager.h"
 #include "AiMoveManager.h"
 #include "AiInventoryManager.h"
+#include "AiSocialManager.h"
 
 using namespace std;
 using namespace ai;
@@ -261,6 +262,7 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
 		AiStatsManager* GetStatsManager() { return aiRegistry->GetStatsManager(); }
 		AiMoveManager* GetMoveManager() { return aiRegistry->GetMoveManager(); }
 		AiInventoryManager* GetInventoryManager() { return aiRegistry->GetInventoryManager(); }
+		AiSocialManager* GetSocialManager() { return aiRegistry->GetSocialManager(); }
 
     private:
 		bool CastSpell(uint32 spellId, Unit* target = NULL, bool checkAura = true);

@@ -15,6 +15,7 @@
 #include "MockAiTargetManager.h"
 #include "MockAiMoveManager.h"
 #include "MockAiInventoryManager.h"
+#include "MockAiSocialManager.h"
 
 using namespace std;
 using namespace ai;
@@ -26,12 +27,14 @@ MockAiManagerRegistry::MockAiManagerRegistry(PlayerbotAIBase* ai, string *buffer
 	if (targetManager) delete targetManager;
 	if (moveManager) delete moveManager;
 	if (inventoryManager) delete inventoryManager;
+	if (socialManager) delete socialManager;
 
 	statsManager = new MockAiStatsManager(ai, this);
 	spellManager = new MockAiSpellManager(ai, this, buffer);
 	targetManager = new MockAiTargetManager(ai, this);
 	moveManager = new MockAiMoveManager(ai, this, buffer);
 	inventoryManager = new MockAiInventoryManager(ai, this, buffer);
+	socialManager = new MockAiSocialManager(ai, this, buffer);
 }
 
 MockAiManagerRegistry::~MockAiManagerRegistry()

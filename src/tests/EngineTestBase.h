@@ -73,5 +73,6 @@ protected:
 	MockAiStatsManager* statsManager;
 	MockAiMoveManager* moveManager;
 	MockAiInventoryManager* inventoryManager;
+	MockAiSocialManager* socialManager;
     Engine *engine;
 };

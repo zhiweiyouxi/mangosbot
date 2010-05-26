@@ -10,8 +10,3 @@
 #include "PlayerbotAIBase.h"
 
 using namespace ai;
-
-void PlayerbotAIFacade::Emote(uint32 emote)
-{
-    ai->GetPlayerBot()->HandleEmoteCommand(emote);
-}
