@@ -8,14 +8,14 @@ namespace ai
     class GenericNonCombatStrategy : public Strategy
     {
     public:
-        GenericNonCombatStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        GenericNonCombatStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     };
 
     class FollowMasterNonCombatStrategy : public GenericNonCombatStrategy
     {
     public:
-        FollowMasterNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        FollowMasterNonCombatStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "follow"; }
         virtual ActionNode* createAction(const char* name);
         virtual NextAction** getDefaultActions();
@@ -25,7 +25,7 @@ namespace ai
     class GoAwayNonCombatStrategy : public GenericNonCombatStrategy
     {
     public:
-        GoAwayNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        GoAwayNonCombatStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "goaway"; }
         virtual ActionNode* createAction(const char* name);
         virtual NextAction** getDefaultActions();
@@ -35,7 +35,7 @@ namespace ai
     class StayNonCombatStrategy : public GenericNonCombatStrategy
     {
     public:
-        StayNonCombatStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        StayNonCombatStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "stay"; }
         virtual ActionNode* createAction(const char* name);
         virtual NextAction** getDefaultActions();
@@ -45,7 +45,7 @@ namespace ai
     class DpsAssistStrategy : public GenericNonCombatStrategy
     {
     public:
-        DpsAssistStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        DpsAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "dps assist"; }
 
     public:
@@ -55,7 +55,7 @@ namespace ai
     class TankAssistStrategy : public GenericNonCombatStrategy
     {
     public:
-        TankAssistStrategy(PlayerbotAIFacade* const ai) : GenericNonCombatStrategy(ai) {}
+        TankAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "tank non combat"; }
 
     public:
@@ -65,7 +65,7 @@ namespace ai
     class LootNonCombatStrategy : public Strategy
     {
     public:
-        LootNonCombatStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        LootNonCombatStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -75,7 +75,7 @@ namespace ai
     class RandomEmoteStrategy : public Strategy
     {
     public:
-        RandomEmoteStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        RandomEmoteStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -86,7 +86,7 @@ namespace ai
     class PassiveStrategy : public Strategy
     {
     public:
-        PassiveStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        PassiveStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
@@ -96,7 +96,7 @@ namespace ai
     class LowManaStrategy : public Strategy
     {
     public:
-        LowManaStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        LowManaStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
@@ -106,7 +106,7 @@ namespace ai
     class UseFoodStrategy : public Strategy
     {
     public:
-        UseFoodStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        UseFoodStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

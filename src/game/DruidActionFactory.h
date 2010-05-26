@@ -7,7 +7,7 @@ namespace ai
     class DruidActionFactory : public ActionFactory
     {
     public:
-        DruidActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}
+        DruidActionFactory(AiManagerRegistry* const ai) : ActionFactory(ai) {}
 
     public:
         virtual Strategy* createStrategy(const char* name);

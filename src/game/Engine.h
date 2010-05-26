@@ -42,10 +42,10 @@ namespace ai
 
     // -----------------------------------------------------------------------------------------------------------------------
 
-    class Engine : public PlayerbotAIFacadeAware
+    class Engine : public AiManagerRegistryAware
     {
     public:
-        Engine(PlayerbotAIFacade* const ai, ActionFactory *factory) : PlayerbotAIFacadeAware(ai) 
+        Engine(AiManagerRegistry* const ai, ActionFactory *factory) : AiManagerRegistryAware(ai) 
         {
             actionFactory = factory;
             lastRelevance = 0.0f;

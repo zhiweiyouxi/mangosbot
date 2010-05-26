@@ -6,7 +6,13 @@
 #include "../game/Trigger.h"
 #include "../game/Engine.h"
 
-#include "MockPlayerbotAIFacade.h"
+#include "MockAiStatsManager.h"
+#include "MockAiSpellManager.h"
+#include "MockAiTargetManager.h"
+#include "MockAiMoveManager.h"
+#include "MockAiInventoryManager.h"
+#include "MockAiSocialManager.h" 
+#include "MockAiManagerRegistry.h"
 
 using namespace ai;
 
@@ -67,7 +73,7 @@ protected:
 	void tickWithDeadPartyMember();
 
 protected:
-    MockPlayerbotAIFacade *ai;
+    MockAiManagerRegistry *ai;
 	MockAiSpellManager* spellManager;
 	MockAiTargetManager* targetManager;
 	MockAiStatsManager* statsManager;

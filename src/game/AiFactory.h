@@ -2,13 +2,13 @@
 
 #include "Player.h"
 #include "Engine.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 
 using namespace ai;
 
 class AiFactory
 {
 public:
-	static Engine* createCombatEngine(Player* player, PlayerbotAIFacade* const facade);
-	static Engine* createNonCombatEngine(Player* player, PlayerbotAIFacade* const facade);
+	static Engine* createCombatEngine(Player* player, AiManagerRegistry* const facade);
+	static Engine* createNonCombatEngine(Player* player, AiManagerRegistry* const facade);
 };

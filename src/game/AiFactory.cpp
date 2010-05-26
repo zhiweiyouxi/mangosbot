@@ -11,7 +11,7 @@
 #include "HunterActionFactory.h"
 #include "RogueActionFactory.h"
 
-Engine* AiFactory::createCombatEngine(Player* player, PlayerbotAIFacade* const facade) {
+Engine* AiFactory::createCombatEngine(Player* player, AiManagerRegistry* const facade) {
 	Engine* engine = NULL;
 
 	switch (player->getClass())
@@ -56,7 +56,7 @@ Engine* AiFactory::createCombatEngine(Player* player, PlayerbotAIFacade* const f
 	return engine;
 }
 
-Engine* AiFactory::createNonCombatEngine(Player* player, PlayerbotAIFacade* const facade) {
+Engine* AiFactory::createNonCombatEngine(Player* player, AiManagerRegistry* const facade) {
 	Engine* nonCombatEngine = NULL;
 	switch (player->getClass())
     {

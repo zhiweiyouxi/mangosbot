@@ -7,31 +7,31 @@ namespace ai
 	class CastEviscerateAction : public CastMeleeSpellAction 
 	{ 
 	public: 
-		CastEviscerateAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "eviscerate") {} 
+		CastEviscerateAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "eviscerate") {} 
 	};
 
 	class CastSliceAndDiceAction : public CastMeleeSpellAction 
 	{ 
 	public: 
-		CastSliceAndDiceAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "slice and dice") {} 
+		CastSliceAndDiceAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "slice and dice") {} 
 	};
 
 	class CastExposeArmorAction : public CastMeleeSpellAction 
 	{ 
 	public: 
-		CastExposeArmorAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "expose armor") {} 
+		CastExposeArmorAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "expose armor") {} 
 	};
 
 	class CastRuptureAction : public CastMeleeSpellAction 
 	{ 
 	public: 
-		CastRuptureAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "rupture") {} 
+		CastRuptureAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "rupture") {} 
 	};
 	
 	class CastKidneyShotAction : public CastMeleeSpellAction 
 	{ 
 	public: 
-		CastKidneyShotAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "kidney shot") {} 
+		CastKidneyShotAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "kidney shot") {} 
 	};
 	
 }

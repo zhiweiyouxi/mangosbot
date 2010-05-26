@@ -8,7 +8,7 @@ namespace ai
     class DpsPriestStrategy : public HealPriestStrategy
     {
     public:
-        DpsPriestStrategy(PlayerbotAIFacade* const ai) : HealPriestStrategy(ai) {}
+        DpsPriestStrategy(AiManagerRegistry* const ai) : HealPriestStrategy(ai) {}
 
     public:
         virtual NextAction** getDefaultActions();
@@ -22,7 +22,7 @@ namespace ai
     class PriestBoostStrategy : public Strategy
     {
     public:
-        PriestBoostStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        PriestBoostStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

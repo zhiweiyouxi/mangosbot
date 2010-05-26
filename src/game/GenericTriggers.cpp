@@ -1,7 +1,7 @@
 #include "pchdef.h"
 #include "GenericTriggers.h"
 #include "Unit.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 #include <math.h>
 
 using namespace ai;

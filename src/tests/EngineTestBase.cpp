@@ -4,7 +4,7 @@
 
 void EngineTestBase::setUp()
 {
-	ai = new MockPlayerbotAIFacade();
+	ai = new MockAiManagerRegistry();
 	spellManager = (MockAiSpellManager*)ai->GetSpellManager();
 	targetManager = (MockAiTargetManager*)ai->GetTargetManager();
 	statsManager = (MockAiStatsManager*)ai->GetStatsManager();

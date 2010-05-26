@@ -5,7 +5,7 @@ namespace ai
 {
     class ValueInRangeTrigger : public Trigger {
     public:
-        ValueInRangeTrigger(PlayerbotAIFacade* const ai, const char* name, float maxValue, float minValue) : Trigger(ai, name) {
+        ValueInRangeTrigger(AiManagerRegistry* const ai, const char* name, float maxValue, float minValue) : Trigger(ai, name) {
             this->maxValue = maxValue;
             this->minValue = minValue;
         }
@@ -22,7 +22,7 @@ namespace ai
 
 	class HealthInRangeTrigger : public ValueInRangeTrigger {
 	public:
-		HealthInRangeTrigger(PlayerbotAIFacade* const ai, const char* name, float maxValue, float minValue = 0) :
+		HealthInRangeTrigger(AiManagerRegistry* const ai, const char* name, float maxValue, float minValue = 0) :
 		  ValueInRangeTrigger(ai, name, maxValue, minValue) {}
 
 		  virtual Unit* GetTarget() = NULL;
@@ -31,7 +31,7 @@ namespace ai
 
     class LowHealthTrigger : public HealthInRangeTrigger {
     public:
-        LowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) :
+        LowHealthTrigger(AiManagerRegistry* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) :
             HealthInRangeTrigger(ai, "low health", value, minValue) {}
 
 		virtual Unit* GetTarget();
@@ -39,21 +39,21 @@ namespace ai
 
     class PartyMemberLowHealthTrigger : public HealthInRangeTrigger {
     public:
-        PartyMemberLowHealthTrigger(PlayerbotAIFacade* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) :
+        PartyMemberLowHealthTrigger(AiManagerRegistry* const ai, float value = EAT_DRINK_PERCENT, float minValue = 0) :
             HealthInRangeTrigger(ai, "party member low health", value, minValue) {}
         virtual Unit* GetTarget();
     };
 
     class TargetLowHealthTrigger : public HealthInRangeTrigger {
     public:
-        TargetLowHealthTrigger(PlayerbotAIFacade* const ai, float value, float minValue = 0) : 
+        TargetLowHealthTrigger(AiManagerRegistry* const ai, float value, float minValue = 0) : 
             HealthInRangeTrigger(ai, "target low health", value, minValue) {}
         virtual Unit* GetTarget();
     };
 
 	class PartyMemberDeadTrigger : public Trigger {
 	public:
-		PartyMemberDeadTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "resurrect", 10) {}
+		PartyMemberDeadTrigger(AiManagerRegistry* const ai) : Trigger(ai, "resurrect", 10) {}
 		virtual bool IsActive();
 	};
 

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Action.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 
 namespace ai
 {
     class DrinkAction : public Action {
     public:
-        DrinkAction(PlayerbotAIFacade* const ai) : Action(ai, "drink") {}
+        DrinkAction(AiManagerRegistry* const ai) : Action(ai, "drink") {}
         virtual void Execute() {
             ai->GetInventoryManager()->UseDrink();
         }
@@ -18,7 +18,7 @@ namespace ai
 
     class EatAction : public Action {
     public:
-        EatAction(PlayerbotAIFacade* const ai) : Action(ai, "eat") {}
+        EatAction(AiManagerRegistry* const ai) : Action(ai, "eat") {}
         virtual void Execute() {
             ai->GetInventoryManager()->UseFood();
         }

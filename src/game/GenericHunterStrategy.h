@@ -8,7 +8,7 @@ namespace ai
     class GenericHunterStrategy : public CombatStrategy
     {
     public:
-        GenericHunterStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
+        GenericHunterStrategy(AiManagerRegistry* const ai) : CombatStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -20,7 +20,7 @@ namespace ai
     class HunterBoostStrategy : public Strategy
     {
     public:
-        HunterBoostStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        HunterBoostStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

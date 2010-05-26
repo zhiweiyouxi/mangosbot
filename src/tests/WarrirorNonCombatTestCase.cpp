@@ -7,7 +7,7 @@
 #include "../game/Engine.h"
 #include "../game/GenericWarriorStrategy.h"
 
-#include "MockPlayerbotAIFacade.h"
+#include "MockAiManagerRegistry.h"
 
 using namespace ai;
 
@@ -19,7 +19,7 @@ class WarriorNonCombatTestCase : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE_END();
 
 protected:
-    MockPlayerbotAIFacade *ai;
+    MockAiManagerRegistry *ai;
 
 public:
     void setUp()
@@ -29,7 +29,7 @@ public:
 protected:
     void buff()
     {
-        ai = new MockPlayerbotAIFacade();
+        ai = new MockAiManagerRegistry();
 
         Engine engine(ai, new WarriorActionFactory(ai));
         engine.addStrategy("nc");

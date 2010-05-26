@@ -4,7 +4,7 @@
 #include "../game/WarriorActionFactory.h"
 #include "../game/GenericWarriorStrategy.h"
 
-#include "MockPlayerbotAIFacade.h"
+#include "MockAiManagerRegistry.h"
 
 using namespace ai;
 

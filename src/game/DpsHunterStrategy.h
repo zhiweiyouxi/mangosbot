@@ -7,7 +7,7 @@ namespace ai
     class DpsHunterStrategy : public GenericHunterStrategy
     {
     public:
-        DpsHunterStrategy(PlayerbotAIFacade* const ai) : GenericHunterStrategy(ai) {}
+        DpsHunterStrategy(AiManagerRegistry* const ai) : GenericHunterStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

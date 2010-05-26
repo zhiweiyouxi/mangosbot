@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Action.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 
 namespace ai
 {
     class AttackAction : public Action {
     public:
-        AttackAction(PlayerbotAIFacade* const ai, const char* name) : Action(ai, name) {}
+        AttackAction(AiManagerRegistry* const ai, const char* name) : Action(ai, name) {}
         
         virtual Unit* GetTarget() = NULL;
 
@@ -20,7 +20,7 @@ namespace ai
 
     class AttackLeastThreatAction : public AttackAction {
     public:
-        AttackLeastThreatAction(PlayerbotAIFacade* const ai) : AttackAction(ai, "attack least threat") {}
+        AttackLeastThreatAction(AiManagerRegistry* const ai) : AttackAction(ai, "attack least threat") {}
         virtual Unit* GetTarget() 
         {
             return ai->GetTargetManager()->FindLeastThreat();
@@ -29,7 +29,7 @@ namespace ai
     
     class AttackBiggerThreatAction : public AttackAction {
     public:
-        AttackBiggerThreatAction(PlayerbotAIFacade* const ai) : AttackAction(ai, "attack bigger threat") {}
+        AttackBiggerThreatAction(AiManagerRegistry* const ai) : AttackAction(ai, "attack bigger threat") {}
         virtual Unit* GetTarget() 
         {
             return ai->GetTargetManager()->FindBiggerThreat();

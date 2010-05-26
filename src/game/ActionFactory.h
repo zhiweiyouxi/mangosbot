@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PlayerbotAIFacadeAware.h"
+#include "AiManagerRegistryAware.h"
 #include "Action.h"
 #include "Strategy.h"
 
@@ -11,10 +11,10 @@
 
 namespace ai
 {
-    class ActionFactory : public PlayerbotAIFacadeAware
+    class ActionFactory : public AiManagerRegistryAware
     {
     public:
-        ActionFactory(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
+        ActionFactory(AiManagerRegistry* const ai) : AiManagerRegistryAware(ai) {}
         virtual ~ActionFactory() {}
 
     public:

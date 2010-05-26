@@ -7,7 +7,7 @@ namespace ai
     class ShamanNonCombatStrategy : public CombatStrategy
     {
     public:
-        ShamanNonCombatStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
+        ShamanNonCombatStrategy(AiManagerRegistry* const ai) : CombatStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

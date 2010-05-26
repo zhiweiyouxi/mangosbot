@@ -5,16 +5,25 @@
 using namespace std;
 
 #include "MockedTargets.h"
-#include "AiStatsManager.h"
 #include "AiManagerRegistry.h"
 
 namespace ai
 {
+	class MockPlayerbotAIBase : public PlayerbotAIBase
+	{
+	public:
+		MockPlayerbotAIBase() : PlayerbotAIBase(NULL, NULL) {}
+	};
+
     class MockAiManagerRegistry : public AiManagerRegistry
     {
     public:
-		MockAiManagerRegistry(PlayerbotAIBase* ai, std::string *buffer);
+		MockAiManagerRegistry();
 		virtual ~MockAiManagerRegistry();
+
+	public:
+		std::string buffer;
+		MockPlayerbotAIBase ai;
 	};
 
 }

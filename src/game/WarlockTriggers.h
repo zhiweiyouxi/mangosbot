@@ -6,7 +6,7 @@ namespace ai
 	class DemonArmorTrigger : public BuffTrigger
 	{
 	public:
-		DemonArmorTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "demon armor") {}
+		DemonArmorTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "demon armor") {}
 		virtual bool IsActive();
 	};
 

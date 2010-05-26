@@ -93,7 +93,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	aiRegistry = new AiManagerRegistry(this);
 
 	FollowCheckTeleport(*GetMaster());
-    m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(GetMaster(), m_bot, this);
+    m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(m_bot, aiRegistry);
 
     SetQuestNeedItems();
 }

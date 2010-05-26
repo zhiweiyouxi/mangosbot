@@ -40,7 +40,7 @@ namespace ai
 	class PlayerbotAIBase 
 	{
 	public:
-		PlayerbotAIBase(PlayerbotMgr* const mgr, Player* const bot) 
+		PlayerbotAIBase(PlayerbotMgr* mgr, Player* bot) 
 		{
 			this->mgr = mgr;
 			this->bot = bot;

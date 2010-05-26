@@ -7,7 +7,7 @@ namespace ai
     class DpsWarriorStrategy : public GenericWarriorStrategy
     {
     public:
-        DpsWarriorStrategy(PlayerbotAIFacade* const ai) : GenericWarriorStrategy(ai) {}
+        DpsWarriorStrategy(AiManagerRegistry* const ai) : GenericWarriorStrategy(ai) {}
     
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -21,7 +21,7 @@ namespace ai
     class WarriorBoostStrategy : public Strategy
     {
     public:
-        WarriorBoostStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        WarriorBoostStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

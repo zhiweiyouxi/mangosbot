@@ -12,7 +12,7 @@
 #include "PlayerbotAI.h"
 
 #include "Engine.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 
 class Player;
 class PlayerbotAI;
@@ -22,7 +22,7 @@ class PlayerbotAI;
 class MANGOS_DLL_SPEC PlayerbotClassAI
 {
 public:
-    PlayerbotClassAI(Player* const master, Player* const bot, PlayerbotAI* const ai);
+    PlayerbotClassAI(Player* const bot, AiManagerRegistry* aiRegistry);
     virtual ~PlayerbotClassAI();
 
     virtual void DoCombatAction(Unit*);
@@ -33,13 +33,8 @@ public:
     void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, engine); }
     void ChangeNonCombatStrategy(const char* name) { ChangeStrategy(name, nonCombatEngine); }
 
-private:
-    Player* m_master;
-    Player* m_bot;
-    PlayerbotAI* m_ai;
-
 protected:
-    ai::PlayerbotAIFacade *facade;
+    ai::AiManagerRegistry *aiRegistry;
 
 protected:
     ai::Engine* engine;

@@ -4,7 +4,7 @@
 #include "../game/HealShamanStrategy.h"
 #include "../game/ShamanActionFactory.h"
 
-#include "MockPlayerbotAIFacade.h"
+#include "MockAiManagerRegistry.h"
 
 using namespace ai;
 

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Action.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 
 namespace ai
 {
     class ReachTargetAction : public Action {
     public:
-        ReachTargetAction(PlayerbotAIFacade* const ai, const char* name, float distance) : Action(ai, name) 
+        ReachTargetAction(AiManagerRegistry* const ai, const char* name, float distance) : Action(ai, name) 
 		{
             this->distance = distance;
         }
@@ -26,7 +26,7 @@ namespace ai
 
     class CastReachTargetSpellAction : public CastSpellAction {
     public:
-        CastReachTargetSpellAction(PlayerbotAIFacade* const ai, const char* spell, float distance) : CastSpellAction(ai, spell) 
+        CastReachTargetSpellAction(AiManagerRegistry* const ai, const char* spell, float distance) : CastSpellAction(ai, spell) 
 		{
             this->distance = distance;
         }
@@ -42,12 +42,12 @@ namespace ai
     class ReachMeleeAction : public ReachTargetAction 
 	{
     public:
-        ReachMeleeAction(PlayerbotAIFacade* const ai) : ReachTargetAction(ai, "reach melee", 1.5f) {}
+        ReachMeleeAction(AiManagerRegistry* const ai) : ReachTargetAction(ai, "reach melee", 1.5f) {}
     };
 
     class ReachSpellAction : public ReachTargetAction 
 	{
     public:
-        ReachSpellAction(PlayerbotAIFacade* const ai, float distance = SPELL_DISTANCE) : ReachTargetAction(ai, "reach spell", distance) {}
+        ReachSpellAction(AiManagerRegistry* const ai, float distance = SPELL_DISTANCE) : ReachTargetAction(ai, "reach spell", distance) {}
     };
 }

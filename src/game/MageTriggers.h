@@ -8,13 +8,13 @@ namespace ai
 
 	class NoFoodTrigger : public Trigger {
 	public:
-		NoFoodTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "no food trigger") {}
+		NoFoodTrigger(AiManagerRegistry* const ai) : Trigger(ai, "no food trigger") {}
 		virtual bool IsActive() { return !ai->GetInventoryManager()->HasFood(); }
 	};
 	
 	class NoDrinkTrigger : public Trigger {
 	public:
-		NoDrinkTrigger(PlayerbotAIFacade* const ai) : Trigger(ai, "no drink trigger") {}
+		NoDrinkTrigger(AiManagerRegistry* const ai) : Trigger(ai, "no drink trigger") {}
 		virtual bool IsActive() { return !ai->GetInventoryManager()->HasDrink(); }
 	};
 }

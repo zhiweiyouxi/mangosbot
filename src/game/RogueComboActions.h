@@ -7,19 +7,19 @@ namespace ai
 	class CastSinisterStrikeAction : public CastMeleeSpellAction 
 	{ 
 	public: 
-		CastSinisterStrikeAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "sinister strike") {} 
+		CastSinisterStrikeAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "sinister strike") {} 
 	};
 
     class CastMutilateAction : public CastMeleeSpellAction 
     { 
     public: 
-        CastMutilateAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "mutilate") {} 
+        CastMutilateAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "mutilate") {} 
     };
 
 	class CastGougeAction : public CastMeleeSpellAction 
 	{ 
 	public: 
-		CastGougeAction(PlayerbotAIFacade* const ai) : CastMeleeSpellAction(ai, "gouge") {} 
+		CastGougeAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "gouge") {} 
 	};
 
 }

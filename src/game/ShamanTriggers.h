@@ -8,7 +8,7 @@ namespace ai
 
     class TotemTrigger : public BuffTrigger {
     public:
-        TotemTrigger(PlayerbotAIFacade* const ai, const char* spell) : BuffTrigger(ai, spell) {}
+        TotemTrigger(AiManagerRegistry* const ai, const char* spell) : BuffTrigger(ai, spell) {}
         virtual bool IsActive() 
 		{
             return BuffTrigger::IsActive() && statsManager->GetAttackerCount() > 2;
@@ -17,21 +17,21 @@ namespace ai
 
     class WindfuryTotemTrigger : public TotemTrigger {
     public:
-        WindfuryTotemTrigger(PlayerbotAIFacade* const ai) : TotemTrigger(ai, "windfury totem") {}
+        WindfuryTotemTrigger(AiManagerRegistry* const ai) : TotemTrigger(ai, "windfury totem") {}
     };
 
     class ManaSpringTotemTrigger : public TotemTrigger {
     public:
-        ManaSpringTotemTrigger(PlayerbotAIFacade* const ai) : TotemTrigger(ai, "mana spring totem") {}
+        ManaSpringTotemTrigger(AiManagerRegistry* const ai) : TotemTrigger(ai, "mana spring totem") {}
     };
 
     class FlametongueTotemTrigger : public TotemTrigger {
     public:
-        FlametongueTotemTrigger(PlayerbotAIFacade* const ai) : TotemTrigger(ai, "flametongue totem") {}
+        FlametongueTotemTrigger(AiManagerRegistry* const ai) : TotemTrigger(ai, "flametongue totem") {}
     };
 
     class StrengthOfEarthTotemTrigger : public TotemTrigger {
     public:
-        StrengthOfEarthTotemTrigger(PlayerbotAIFacade* const ai) : TotemTrigger(ai, "strength of earth totem") {}
+        StrengthOfEarthTotemTrigger(AiManagerRegistry* const ai) : TotemTrigger(ai, "strength of earth totem") {}
     };
 }

@@ -8,7 +8,7 @@
 #include "WorldPacket.h"
 #include "Unit.h"
 #include "SharedDefines.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 
 #include "Engine.h"
 

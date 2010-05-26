@@ -1739,6 +1739,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\AiManagerRegistryAware.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\Engine.cpp"
 				>
 			</File>
@@ -1752,18 +1756,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\Multiplier.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotAIFacade.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotAIFacade.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerBotAIFacadeAware.h"
 				>
 			</File>
 			<File

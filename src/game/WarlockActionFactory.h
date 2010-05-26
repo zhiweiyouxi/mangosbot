@@ -7,7 +7,7 @@ namespace ai
     class WarlockActionFactory : public ActionFactory
     {
     public:
-        WarlockActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}
+        WarlockActionFactory(AiManagerRegistry* const ai) : ActionFactory(ai) {}
 
     public:
         virtual Strategy* createStrategy(const char* name);

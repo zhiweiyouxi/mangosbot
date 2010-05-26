@@ -1,5 +1,5 @@
 #include "pchdef.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 #include "Action.h"
 
 using namespace ai;

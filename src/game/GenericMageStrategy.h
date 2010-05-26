@@ -7,7 +7,7 @@ namespace ai
     class GenericMageStrategy : public CombatStrategy
     {
     public:
-        GenericMageStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
+        GenericMageStrategy(AiManagerRegistry* const ai) : CombatStrategy(ai) {}
         virtual const char* getName() { return "mage"; }
     
     public:
@@ -18,7 +18,7 @@ namespace ai
     class MageBoostStrategy : public Strategy
     {
     public:
-        MageBoostStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        MageBoostStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

@@ -20,6 +20,7 @@ namespace ai
 
 	public:
 		virtual void Emote(uint32 emote);
+		virtual void TellMaster(const char* text);
 
 	};
 

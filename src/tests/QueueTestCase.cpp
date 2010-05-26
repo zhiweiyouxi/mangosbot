@@ -5,7 +5,7 @@
 #include "../game/Queue.h"
 #include "../game/Engine.h"
 #include "../game/GenericActions.h"
-#include "MockPlayerbotAIFacade.h"
+#include "MockAiManagerRegistry.h"
 
 using namespace ai;
 
@@ -25,7 +25,7 @@ public:
 protected:
 	void queueMustHaveOrder()
 	{
-		MockPlayerbotAIFacade mock;
+		MockAiManagerRegistry mock;
 		CastSpellAction action1(&mock, "1");
         CastSpellAction action2(&mock, "2");
         CastSpellAction action3(&mock, "3");

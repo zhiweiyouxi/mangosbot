@@ -9,3 +9,8 @@ void MockAiSocialManager::Emote(uint32 emote)
 {
 	buffer->append(">emote");
 }
+
+void MockAiSocialManager::TellMaster(const char* text)
+{
+	buffer->append(text);
+}

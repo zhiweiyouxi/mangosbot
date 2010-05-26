@@ -4,7 +4,7 @@
 #include "../game/DpsPriestStrategy.h"
 #include "../game/PriestActionFactory.h"
 
-#include "MockPlayerbotAIFacade.h"
+#include "MockAiManagerRegistry.h"
 
 using namespace ai;
 

@@ -759,7 +759,7 @@
 			Name="Performance"
 			>
 			<File
-				RelativePath="..\..\src\tests\EverythingUnavailablePlayerbotAIFacade.h"
+				RelativePath="..\..\src\tests\EverythingUnavailableAiManagerRegistry.h"
 				>
 			</File>
 			<File
@@ -848,14 +848,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\tests\MockedTargets.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tests\MockPlayerbotAIFacade.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tests\MockPlayerbotAIFacade.h"
 				>
 			</File>
 		</Filter>

@@ -9,7 +9,7 @@ namespace ai
     class HunterAspectOfTheHawkTrigger : public BuffTrigger
     { 
     public: 
-        HunterAspectOfTheHawkTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the hawk") {
+        HunterAspectOfTheHawkTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "aspect of the hawk") {
 			checkInterval = 1;
 		}
         virtual bool IsActive() {
@@ -20,7 +20,7 @@ namespace ai
     class HunterAspectOfTheViperTrigger : public BuffTrigger
     { 
     public: 
-        HunterAspectOfTheViperTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the viper") {}
+        HunterAspectOfTheViperTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "aspect of the viper") {}
         virtual bool IsActive() 
 		{
 			Unit* target = GetTarget();
@@ -33,7 +33,7 @@ namespace ai
     class HunterAspectOfThePackTrigger : public BuffTrigger
     { 
     public: 
-        HunterAspectOfThePackTrigger(PlayerbotAIFacade* const ai) : BuffTrigger(ai, "aspect of the pack") {}
+        HunterAspectOfThePackTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "aspect of the pack") {}
         virtual bool IsActive() {
 			return BuffTrigger::IsActive() && !spellManager->HasAura("aspect of the cheetah", GetTarget());
         };

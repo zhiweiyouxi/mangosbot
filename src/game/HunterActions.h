@@ -48,55 +48,55 @@ namespace ai
 
 	class CastAspectOfTheHawkAction : public CastBuffSpellAction {
 	public:
-		CastAspectOfTheHawkAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the hawk") {}
+		CastAspectOfTheHawkAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "aspect of the hawk") {}
 	};
 
 	class CastAspectOfTheCheetahAction : public CastBuffSpellAction {
 	public:
-		CastAspectOfTheCheetahAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the cheetah") {}
+		CastAspectOfTheCheetahAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "aspect of the cheetah") {}
 		virtual bool isUseful();
 	};
 
 	class CastAspectOfThePackAction : public CastBuffSpellAction {
 	public:
-		CastAspectOfThePackAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the pack") {}
+		CastAspectOfThePackAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "aspect of the pack") {}
 	};
 
 	class CastAspectOfTheViperAction : public CastBuffSpellAction {
 	public:
-		CastAspectOfTheViperAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "aspect of the viper") {}
+		CastAspectOfTheViperAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "aspect of the viper") {}
 		virtual bool isUseful();
 	};
 
 	class CastCallPetAction : public CastBuffSpellAction {
 	public:
-		CastCallPetAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "call pet") {}
+		CastCallPetAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "call pet") {}
 	};
 
 	class CastMendPetAction : public CastAuraSpellAction {
 	public:
-		CastMendPetAction(PlayerbotAIFacade* const ai) : CastAuraSpellAction(ai, "mend pet") {}
+		CastMendPetAction(AiManagerRegistry* const ai) : CastAuraSpellAction(ai, "mend pet") {}
 		virtual Unit* GetTarget();
 	};
 
 	class CastRevivePetAction : public CastBuffSpellAction {
 	public:
-		CastRevivePetAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "revive pet") {}
+		CastRevivePetAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "revive pet") {}
 	};
 
 	class CastRapidFireAction : public CastBuffSpellAction {
 	public:
-		CastRapidFireAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "rapid fire") {}
+		CastRapidFireAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "rapid fire") {}
 	};
 
 	class CastReadynessAction : public CastBuffSpellAction {
 	public:
-		CastReadynessAction(PlayerbotAIFacade* const ai) : CastBuffSpellAction(ai, "readyness") {}
+		CastReadynessAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "readyness") {}
 	};
 
 	class CastBlackArrow : public CastDebuffSpellAction {
 	public:
-		CastBlackArrow(PlayerbotAIFacade* const ai) : CastDebuffSpellAction(ai, "black arrow") {}
+		CastBlackArrow(AiManagerRegistry* const ai) : CastDebuffSpellAction(ai, "black arrow") {}
 	};
    
 }

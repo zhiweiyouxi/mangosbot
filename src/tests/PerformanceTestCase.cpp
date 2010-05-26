@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "EngineTestBase.h"
-#include "EverythingUnavailablePlayerbotAIFacade.h"
+#include "EverythingUnavailableAiManagerRegistry.h"
 #include <time.inl>
 #include "../game/PaladinActionFactory.h"
 #include "../game/DruidActionFactory.h"
@@ -32,7 +32,7 @@ class PerformanceTestCase : public EngineTestBase
 public:
     void setUp()
     {
-        ai = new EverythingUnavailablePlayerbotAIFacade();
+        ai = new EverythingUnavailableAiManagerRegistry();
     }
 
 protected:

@@ -7,7 +7,7 @@ namespace ai
     class DpsRogueStrategy : public CombatStrategy
     {
     public:
-        DpsRogueStrategy(PlayerbotAIFacade* const ai) : CombatStrategy(ai) {}
+        DpsRogueStrategy(AiManagerRegistry* const ai) : CombatStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

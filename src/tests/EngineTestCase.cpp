@@ -5,14 +5,14 @@
 #include "../game/Queue.h"
 #include "../game/Trigger.h"
 #include "../game/Engine.h"
-#include "MockPlayerbotAIFacade.h"
+#include "MockAiManagerRegistry.h"
 
 using namespace ai;
 
 class PrerequisiteAction : public Action
 {
 public:
-    PrerequisiteAction(PlayerbotAIFacade* const ai) : Action(ai) {}
+    PrerequisiteAction(AiManagerRegistry* const ai) : Action(ai) {}
     virtual ~PrerequisiteAction() { destroyed = TRUE; }
 
     bool ExecuteResult() { executed++; return TRUE; }
@@ -28,7 +28,7 @@ int PrerequisiteAction::destroyed = 0;
 class AlternativeAction : public Action
 {
 public:
-    AlternativeAction(PlayerbotAIFacade* const ai) : Action(ai) {}
+    AlternativeAction(AiManagerRegistry* const ai) : Action(ai) {}
     virtual ~AlternativeAction() {destroyed = TRUE;}
 
     bool ExecuteResult() { executed++; return TRUE; }
@@ -44,7 +44,7 @@ int AlternativeAction::destroyed = 0;
 class RepeatingAction : public Action
 {
 public:
-	RepeatingAction(PlayerbotAIFacade* const ai) : Action(ai) {}
+	RepeatingAction(AiManagerRegistry* const ai) : Action(ai) {}
 
 	virtual ~RepeatingAction()
 	{
@@ -67,7 +67,7 @@ int RepeatingAction::executed = 0;
 class TriggeredAction : public Action
 {
 public:
-	TriggeredAction(PlayerbotAIFacade* const ai) : Action(ai) { fired = false; }
+	TriggeredAction(AiManagerRegistry* const ai) : Action(ai) { fired = false; }
 	virtual ~TriggeredAction() {}
 
 	bool ExecuteResult() { fired = TRUE; return TRUE; }
@@ -81,7 +81,7 @@ int TriggeredAction::fired = 0;
 class TestTrigger : public Trigger
 {
 public:
-	TestTrigger(PlayerbotAIFacade* const ai) : Trigger(ai) {count = 0;}
+	TestTrigger(AiManagerRegistry* const ai) : Trigger(ai) {count = 0;}
 	virtual bool IsActive() 
 	{
 		return ++count==3;
@@ -105,7 +105,7 @@ int TestMultiplier::asked;
 class TestStrategy : public Strategy
 {
 public:
-    TestStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+    TestStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
 
     virtual const char* getName() { return "TestStrategy"; }
 
@@ -160,7 +160,7 @@ public:
 class AnotherTestStrategy : public Strategy
 {
 public:
-    AnotherTestStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+    AnotherTestStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
     
     virtual const char* getName() { return "AnotherTestStrategy"; }
 };
@@ -168,7 +168,7 @@ public:
 class TestActionFactory : public ActionFactory
 {
 public:
-    TestActionFactory(PlayerbotAIFacade* const ai) : ActionFactory(ai) {}
+    TestActionFactory(AiManagerRegistry* const ai) : ActionFactory(ai) {}
     virtual Strategy* createStrategy(const char* name)
     {
         if (!strcmp("TestStrategy", name))
@@ -199,7 +199,7 @@ public:
 protected:
 	void engineMustRepeatActions()
 	{
-		MockPlayerbotAIFacade mock;
+		MockAiManagerRegistry mock;
 		Engine engine(&mock, new TestActionFactory(&mock));
         engine.addStrategy("TestStrategy");
         engine.Init();
@@ -223,7 +223,7 @@ protected:
 
     void addRemoveStrategies()
     {
-		MockPlayerbotAIFacade mock;
+		MockAiManagerRegistry mock;
         Engine engine(&mock, new TestActionFactory(&mock));
         engine.addStrategy("AnotherTestStrategy");
         engine.removeStrategy("AnotherTestStrategy");
@@ -238,7 +238,7 @@ protected:
 
     void listStrategies()
     {
-		MockPlayerbotAIFacade mock;
+		MockAiManagerRegistry mock;
         Engine engine(&mock, new TestActionFactory(&mock));
         engine.addStrategy("AnotherTestStrategy");
         engine.addStrategy("TestStrategy");

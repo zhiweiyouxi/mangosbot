@@ -8,7 +8,7 @@ namespace ai
     class HealPriestStrategy : public GenericPriestStrategy
     {
     public:
-        HealPriestStrategy(PlayerbotAIFacade* const ai) : GenericPriestStrategy(ai) {}
+        HealPriestStrategy(AiManagerRegistry* const ai) : GenericPriestStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

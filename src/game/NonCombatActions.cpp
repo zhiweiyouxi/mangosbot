@@ -1,6 +1,6 @@
 #include "pchdef.h"
 #include "NonCombatActions.h"
-#include "PlayerbotAIFacade.h"
+#include "AiManagerRegistry.h"
 
 using namespace ai;
 

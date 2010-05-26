@@ -7,7 +7,7 @@ namespace ai
     class CatDpsDruidStrategy : public FeralDruidStrategy
     {
     public:
-        CatDpsDruidStrategy(PlayerbotAIFacade* const ai) : FeralDruidStrategy(ai) {}
+        CatDpsDruidStrategy(AiManagerRegistry* const ai) : FeralDruidStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

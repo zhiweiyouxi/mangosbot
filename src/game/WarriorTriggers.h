@@ -12,12 +12,12 @@ namespace ai
 	class RevengeAvailableTrigger : public SpellCanBeCastTrigger
 	{
 	public:
-		RevengeAvailableTrigger(PlayerbotAIFacade* const ai) : SpellCanBeCastTrigger(ai, "revenge") {}
+		RevengeAvailableTrigger(AiManagerRegistry* const ai) : SpellCanBeCastTrigger(ai, "revenge") {}
 	};
 
     class BloodrageDebuffTrigger : public DebuffTrigger {
     public:
-        BloodrageDebuffTrigger(PlayerbotAIFacade* const ai) : DebuffTrigger(ai, "bloodrage") {}
+        BloodrageDebuffTrigger(AiManagerRegistry* const ai) : DebuffTrigger(ai, "bloodrage") {}
         virtual bool IsActive() {
             return DebuffTrigger::IsActive() && 
 				statsManager->GetHealthPercent(targetManager->GetSelf()) >= 75 && 

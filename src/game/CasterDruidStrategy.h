@@ -7,7 +7,7 @@ namespace ai
     class CasterDruidStrategy : public GenericDruidStrategy
     {
     public:
-        CasterDruidStrategy(PlayerbotAIFacade* const ai) : GenericDruidStrategy(ai) {}
+        CasterDruidStrategy(AiManagerRegistry* const ai) : GenericDruidStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

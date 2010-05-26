@@ -1,5 +1,5 @@
 #pragma once
-#include "PlayerbotAIFacadeAware.h"
+#include "AiManagerRegistryAware.h"
 
 namespace ai
 {
@@ -37,10 +37,10 @@ namespace ai
     
     class ActionBasket;
 
-    class Action : public PlayerbotAIFacadeAware
+    class Action : public AiManagerRegistryAware
 	{
 	public:
-        Action(PlayerbotAIFacade* const ai, const char* name = NULL) : PlayerbotAIFacadeAware(ai) {
+        Action(AiManagerRegistry* const ai, const char* name = NULL) : AiManagerRegistryAware(ai) {
             this->name = name;
         }
         virtual ~Action(void) {}

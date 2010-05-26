@@ -2,11 +2,14 @@
 #include "Common.h"
 #include "AiFactory.h"
 
-PlayerbotClassAI::PlayerbotClassAI(Player* const master, Player* const bot, PlayerbotAI* const ai) : 
-		m_master(master), m_bot(bot), m_ai(ai)  {
-    facade = new ai::PlayerbotAIFacade(ai);
-	engine = AiFactory::createCombatEngine(bot, facade);
-	nonCombatEngine = AiFactory::createNonCombatEngine(bot, facade);
+using namespace std;
+using namespace ai;
+
+PlayerbotClassAI::PlayerbotClassAI(Player* const bot, AiManagerRegistry* aiRegistry)
+{
+	this->aiRegistry = aiRegistry;
+	engine = AiFactory::createCombatEngine(bot, aiRegistry);
+	nonCombatEngine = AiFactory::createNonCombatEngine(bot, aiRegistry);
 }
 
 PlayerbotClassAI::~PlayerbotClassAI() {
@@ -18,10 +21,6 @@ PlayerbotClassAI::~PlayerbotClassAI() {
         delete nonCombatEngine;
         nonCombatEngine = NULL;
     }
-    if (facade) {
-        delete facade;
-        facade = NULL;
-    }
 }
 
 void PlayerbotClassAI::DoCombatAction(Unit *target) {
@@ -32,7 +31,7 @@ void PlayerbotClassAI::DoNonCombatAction() {
 	nonCombatEngine->DoNextAction(NULL);
 }
 
-void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e ) {
+void PlayerbotClassAI::ChangeStrategy( const char* name, Engine* e ) {
     if (!e)
         return;
     
@@ -44,7 +43,7 @@ void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e ) {
         e->removeStrategy(name+1);
         break;
     case '?':
-        m_ai->TellMaster(e->ListStrategies());
+        aiRegistry->GetSocialManager()->TellMaster(e->ListStrategies().c_str());
         break;
     }
 }
@@ -56,7 +55,7 @@ void PlayerbotClassAI::DoSpecificAction(const char* name)
 	
 	if (!engine->ExecuteAction(name))
 	{
-		m_ai->TellMaster("Action failed: ");
-		m_ai->TellMaster(name);
+		aiRegistry->GetSocialManager()->TellMaster("Action failed: ");
+		aiRegistry->GetSocialManager()->TellMaster(name);
 	}
 }

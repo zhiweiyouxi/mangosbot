@@ -5,10 +5,10 @@
 
 namespace ai
 {
-    class Strategy : public PlayerbotAIFacadeAware
+    class Strategy : public AiManagerRegistryAware
     {
     public:
-        Strategy(PlayerbotAIFacade* const ai) : PlayerbotAIFacadeAware(ai) {}
+        Strategy(AiManagerRegistry* const ai) : AiManagerRegistryAware(ai) {}
         virtual ~Strategy() {}
 
     public:
@@ -22,7 +22,7 @@ namespace ai
     class CombatStrategy : public Strategy
     {
     public:
-        CombatStrategy(PlayerbotAIFacade* const ai) : Strategy(ai) {}
+        CombatStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
     };
 }
