@@ -28,7 +28,7 @@ public:
     virtual void DoCombatAction(Unit*);
     virtual void DoNonCombatAction();
 
-    void DoSpecificAction(const char* name) { if (engine) engine->ExecuteAction(name); }
+    void DoSpecificAction(const char* name);
     void ChangeStrategy( const char* name, ai::Engine* e );
     void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, engine); }
     void ChangeNonCombatStrategy(const char* name) { ChangeStrategy(name, nonCombatEngine); }

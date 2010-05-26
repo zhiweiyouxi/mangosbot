@@ -48,3 +48,15 @@ void PlayerbotClassAI::ChangeStrategy( const char* name, ai::Engine* e ) {
         break;
     }
 }
+
+void PlayerbotClassAI::DoSpecificAction(const char* name) 
+{ 
+	if (!engine) 
+		return;
+	
+	if (!engine->ExecuteAction(name))
+	{
+		m_ai->TellMaster("Action failed: ");
+		m_ai->TellMaster(name);
+	}
+}

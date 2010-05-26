@@ -62,7 +62,7 @@ namespace ai
 
     public:
 	    virtual bool DoNextAction(Unit*, int depth = 0);
-        void ExecuteAction(const char* name);
+        bool ExecuteAction(const char* name);
 
     public:
         void AddActionExecutionListener(ActionExecutionListener* listener)

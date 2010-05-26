@@ -33,7 +33,6 @@ namespace ai
 
     public:
         virtual void Attack(Unit* target);
-        virtual void TellMaster(const char* text) { ai->TellMaster(text); }        
         virtual void Emote(uint32 emote);
 
     protected:

@@ -169,13 +169,7 @@ ActionNode* Engine::createAction(const char* name)
         if (node)
             return node;
     }
-    ActionNode* node = actionFactory->createAction(name);
-    if (!node)
-    {
-        ai->TellMaster("no one creates this action: ");
-        ai->TellMaster(name);
-    }
-    return node;
+    return actionFactory->createAction(name);
 }
 
 bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool skipPrerequisites)
@@ -215,17 +209,22 @@ bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool sk
     return pushed;
 }
 
-void Engine::ExecuteAction(const char* name)
+bool Engine::ExecuteAction(const char* name)
 {
+	bool result = false;
+
     ActionNode *action = createAction(name);
     if (action)
     {
         if (actionExecutionListeners.ActionExecuted(action->getAction()))
-            action->Execute();
+		{
+            result = action->Execute();
+		}
 
         MultiplyAndPush(action->getContinuers());
         delete action;
     }
+	return result;
 }
 
 void Engine::addStrategy(const char* name)
