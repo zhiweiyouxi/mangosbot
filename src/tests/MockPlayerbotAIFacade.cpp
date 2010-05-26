@@ -7,6 +7,9 @@ using namespace ai;
 
 void MockPlayerbotAIFacade::Attack(Unit* target)
 {
+	if (target == MockedTargets::GetCurrentTarget())
+		buffer.append(">melee");
+
     if (target == MockedTargets::GetLeastThreat())
         buffer.append(">attack least threat");
 

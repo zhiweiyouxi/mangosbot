@@ -53,7 +53,7 @@ namespace ai
     public:
         MeleeAction(PlayerbotAIFacade* const ai) : Action(ai, "melee") {}
         virtual void Execute() {
-            ai->Melee();
+            ai->Attack(ai->GetTargetManager()->GetCurrentTarget());
         }
     };
 

@@ -31,7 +31,6 @@ namespace ai
 		AiMoveManager* GetMoveManager() { return aiRegistry->GetMoveManager(); }
 		AiInventoryManager* GetInventoryManager() { return aiRegistry->GetInventoryManager(); }
 
-        virtual void Melee() { buffer.append(">melee"); }
         virtual void Attack(Unit* target);
         virtual void TellMaster(const char* text) { buffer.append(text); }
         virtual void Emote(uint32 emote) { buffer.append(">emote"); }
