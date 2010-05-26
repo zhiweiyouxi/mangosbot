@@ -15,15 +15,3 @@ void PlayerbotAIFacade::Emote(uint32 emote)
 {
     ai->GetPlayerBot()->HandleEmoteCommand(emote);
 }
-
-void PlayerbotAIFacade::Attack(Unit* target) 
-{
-	if (!target) 
-		return;
-	
-	Player* bot = ai->GetPlayerBot();
-	if (!bot->isInFrontInMap(target, 5.0f))
-		bot->SetInFront(target);
-
-	ai->Attack(target); 
-}

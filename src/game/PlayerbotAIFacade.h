@@ -32,7 +32,6 @@ namespace ai
 		virtual AiInventoryManager* GetInventoryManager() { return ai->GetInventoryManager(); }
 
     public:
-        virtual void Attack(Unit* target);
         virtual void Emote(uint32 emote);
 
     protected:

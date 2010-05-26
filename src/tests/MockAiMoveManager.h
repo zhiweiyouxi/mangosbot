@@ -28,6 +28,7 @@ namespace ai
 		virtual bool Flee(Unit* target, float distance = SPELL_DISTANCE);
 		virtual void Stay();
 		virtual bool IsMoving(Unit* target);
+		virtual void Attack(Unit* target);
 
 	private:
 		string *buffer;

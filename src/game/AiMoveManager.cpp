@@ -74,3 +74,20 @@ bool AiMoveManager::IsMoving(Unit* target)
 	return target && target->GetMotionMaster()->GetCurrentMovementGeneratorType() != IDLE_MOTION_TYPE;
 }
 
+void AiMoveManager::Attack(Unit* target)
+{
+	if (!target) 
+		return;
+
+	if (!bot->isInFrontInMap(target, 5.0f))
+		bot->SetInFront(target);
+
+	if (bot->getStandState() != UNIT_STAND_STATE_STAND)
+		bot->SetStandState(UNIT_STAND_STATE_STAND);
+
+	uint64 guid = target->GetGUID();
+	bot->SetSelection(guid);
+	bot->Attack(target, true);
+
+	aiRegistry->GetInventoryManager()->AddLoot(guid);
+}

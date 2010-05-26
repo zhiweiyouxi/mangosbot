@@ -14,7 +14,7 @@ namespace ai
         virtual void Execute() {
             Unit* target = GetTarget();
             if (target)
-                ai->Attack(target);
+                ai->GetMoveManager()->Attack(target);
         }
     };   
 

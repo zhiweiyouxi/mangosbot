@@ -53,3 +53,15 @@ bool MockAiMoveManager::IsMoving(Unit* target)
 {
 	return moving[target];
 }
+
+void MockAiMoveManager::Attack(Unit* target)
+{
+	if (target == MockedTargets::GetCurrentTarget())
+	buffer->append(">melee");
+
+	if (target == MockedTargets::GetLeastThreat())
+	buffer->append(">attack least threat");
+
+	if (target == MockedTargets::GetBiggerThreat())
+	buffer->append(">attack bigger threat");
+}
