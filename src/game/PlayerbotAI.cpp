@@ -703,7 +703,16 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 			Revive();
 			break;
 
+		case CMSG_SEND_COMBAT_TRIGGER:
+			break;
+
         /* uncomment this and your bots will tell you all their outgoing packet opcode names 
+		case SMSG_CANCEL_COMBAT:
+		case CMSG_ATTACKSTOP:
+		case SMSG_ATTACKSTOP:
+		case SMSG_BREAK_TARGET:
+			break;
+
         case SMSG_MONSTER_MOVE:
         case SMSG_UPDATE_WORLD_STATE:
         case SMSG_COMPRESSED_UPDATE_OBJECT:
@@ -1146,11 +1155,11 @@ void PlayerbotAI::DoNextCombatManeuver()
         m_targetChanged = false;
         m_targetType = TARGET_NORMAL;
 
-		m_classAI->DoNonCombatAction();
+		//m_classAI->DoNonCombatAction();
         return;
     }
 
-	m_classAI->DoCombatAction(m_targetCombat);
+	//m_classAI->DoCombatAction(m_targetCombat);
 }
 
 void PlayerbotAI::DoCombatMovement() {
@@ -1646,52 +1655,31 @@ void PlayerbotAI::Revive()
 
 void PlayerbotAI::UpdateAI(const uint32 p_time)
 {
-    if (m_bot->IsBeingTeleported() || m_bot->GetTrader())
-        return;
-
 	if (!CanUpdateAI())
 		return;
 
+	if (m_bot->IsBeingTeleported() || m_bot->GetTrader())
+		return;
+
+	MovementUpdate();
 	SetNextCheckDelay(1);
 
-	// send heartbeat
-	MovementUpdate();
-
-    if( !m_bot->isAlive() )
+    if (m_bot->isAlive())
     {
-        if( m_botState != BOTSTATE_DEAD && m_botState != BOTSTATE_DEADRELEASED )
-        {
-			GetInventoryManager()->ClearLoot();
-            m_bot->SetSelection(0);
-            m_bot->GetMotionMaster()->Clear(true);
-            SetState( BOTSTATE_DEAD );
-        }
-		else if (m_botState == BOTSTATE_DEADRELEASED)
-		{
-			Corpse* corpse = m_bot->GetCorpse();
-			time_t reclaimTime = corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
-			if (reclaimTime > time(0))
-			{
-				TellMaster("Will resurrect in %d secs", reclaimTime - time(0));
-				SetNextCheckDelay(reclaimTime - time(0));
-			}
-			else
-				Revive();
-		}
+		m_classAI->DoNextAction();
     }
     else
     {
-        Spell* const pSpell = GetCurrentSpell();
-        if (pSpell && !(pSpell->IsChannelActive() || pSpell->IsAutoRepeat()))
-            InterruptCurrentCastingSpell();
-
-        // handle combat (either self/master/group in combat, or combat state and valid target)
-        else if ( IsInCombat() || (m_botState == BOTSTATE_COMBAT && m_targetCombat) )
-            DoNextCombatManeuver();
-
-        // do class specific non combat actions
+		GetMoveManager()->Stay();
+		Corpse* corpse = m_bot->GetCorpse();
+		time_t reclaimTime = corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
+		if (reclaimTime > time(0))
+		{
+			TellMaster("Will resurrect in %d secs", reclaimTime - time(0));
+			SetNextCheckDelay(reclaimTime - time(0));
+		}
 		else
-			m_classAI->DoNonCombatAction();
+			Revive();
     }
 
 	YieldThread();

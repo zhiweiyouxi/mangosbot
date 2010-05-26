@@ -19,26 +19,31 @@ class PlayerbotAI;
 
 #include "Engine.h"
 
+using namespace ai;
+using namespace std;
+
+
 class MANGOS_DLL_SPEC PlayerbotClassAI
 {
 public:
-    PlayerbotClassAI(Player* const bot, AiManagerRegistry* aiRegistry);
+    PlayerbotClassAI(Player* bot, AiManagerRegistry* aiRegistry);
     virtual ~PlayerbotClassAI();
 
-    virtual void DoCombatAction(Unit*);
-    virtual void DoNonCombatAction();
+    virtual void DoNextAction();
 
     void DoSpecificAction(const char* name);
-    void ChangeStrategy( const char* name, ai::Engine* e );
-    void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, engine); }
+    void ChangeStrategy( const char* name, Engine* e );
+    void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, combatEngine); }
     void ChangeNonCombatStrategy(const char* name) { ChangeStrategy(name, nonCombatEngine); }
 
 protected:
-    ai::AiManagerRegistry *aiRegistry;
+    AiManagerRegistry *aiRegistry;
+	Player* bot;
 
 protected:
-    ai::Engine* engine;
-    ai::Engine* nonCombatEngine;
+	Engine* currentEngine;
+    Engine* combatEngine;
+    Engine* nonCombatEngine;
 };
 
 #endif

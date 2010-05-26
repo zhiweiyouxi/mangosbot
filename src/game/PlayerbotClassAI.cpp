@@ -5,37 +5,61 @@
 using namespace std;
 using namespace ai;
 
-PlayerbotClassAI::PlayerbotClassAI(Player* const bot, AiManagerRegistry* aiRegistry)
+PlayerbotClassAI::PlayerbotClassAI(Player* bot, AiManagerRegistry* aiRegistry)
 {
+	this->bot = bot;
 	this->aiRegistry = aiRegistry;
-	engine = AiFactory::createCombatEngine(bot, aiRegistry);
+
+	combatEngine = AiFactory::createCombatEngine(bot, aiRegistry);
 	nonCombatEngine = AiFactory::createNonCombatEngine(bot, aiRegistry);
+
+	currentEngine = nonCombatEngine;
 }
 
-PlayerbotClassAI::~PlayerbotClassAI() {
-    if (engine) {
-        delete engine;
-        engine = NULL;
+PlayerbotClassAI::~PlayerbotClassAI() 
+{
+	currentEngine = NULL;
+
+    if (combatEngine) 
+	{
+        delete combatEngine;
+        combatEngine = NULL;
     }
-    if (nonCombatEngine) {
+    if (nonCombatEngine) 
+	{
         delete nonCombatEngine;
         nonCombatEngine = NULL;
     }
 }
 
-void PlayerbotClassAI::DoCombatAction(Unit *target) {
-	engine->DoNextAction(target);
+void PlayerbotClassAI::DoNextAction() 
+{
+	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
+	if (target && (
+		(target->isAlive() && target->IsHostileTo(bot)) || 
+		(target->isDead() && target->IsFriendlyTo(bot))))
+	{
+		currentEngine = combatEngine;
+	}
+	else if (!bot->isInCombat())
+	{
+		if (currentEngine != nonCombatEngine)
+		{
+			aiRegistry->GetSpellManager()->InterruptSpell();
+			currentEngine = nonCombatEngine;
+		}
+	}
+
+	currentEngine->DoNextAction(NULL);
 }
 
-void PlayerbotClassAI::DoNonCombatAction() {
-	nonCombatEngine->DoNextAction(NULL);
-}
-
-void PlayerbotClassAI::ChangeStrategy( const char* name, Engine* e ) {
+void PlayerbotClassAI::ChangeStrategy( const char* name, Engine* e ) 
+{
     if (!e)
         return;
     
-    switch (name[0]) {
+    switch (name[0]) 
+	{
     case '+':
         e->addStrategy(name+1);
         break;
@@ -50,10 +74,10 @@ void PlayerbotClassAI::ChangeStrategy( const char* name, Engine* e ) {
 
 void PlayerbotClassAI::DoSpecificAction(const char* name) 
 { 
-	if (!engine) 
+	if (!currentEngine) 
 		return;
 	
-	if (!engine->ExecuteAction(name))
+	if (!currentEngine->ExecuteAction(name))
 	{
 		aiRegistry->GetSocialManager()->TellMaster("Action failed: ");
 		aiRegistry->GetSocialManager()->TellMaster(name);
