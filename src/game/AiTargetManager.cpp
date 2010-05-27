@@ -1,9 +1,12 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include "AiTargetManager.h"
 #include "Spell.h"
 #include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "AiManagerRegistry.h"
+#include "WorldPacket.h"
 
 using namespace ai;
 using namespace std;
@@ -267,4 +270,14 @@ bool AiTargetManager::CanHealPet(Pet* pet)
 {
 	PetType type = pet->getPetType();
 	return type != SUMMON_PET && type != MINI_PET;
+}
+
+void AiTargetManager::HandleCommand(const string& text, Player& fromPlayer)
+{
+
+}
+
+void AiTargetManager::HandleBotOutgoingPacket(const WorldPacket& packet)
+{
+
 }

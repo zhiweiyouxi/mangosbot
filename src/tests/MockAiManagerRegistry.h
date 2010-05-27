@@ -9,10 +9,10 @@ using namespace std;
 
 namespace ai
 {
-	class MockPlayerbotAIBase : public PlayerbotAIBase
+	class MockPlayerbotAIBase : public PlayerbotAI
 	{
 	public:
-		MockPlayerbotAIBase() : PlayerbotAIBase(NULL, NULL) {}
+		MockPlayerbotAIBase() : PlayerbotAI() {}
 	};
 
     class MockAiManagerRegistry : public AiManagerRegistry

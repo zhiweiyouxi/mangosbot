@@ -1,7 +1,7 @@
 #include "Config/ConfigEnv.h"
 #include "Player.h"
-#include "PlayerbotAI.h"
 #include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include "WorldPacket.h"
 #include "Chat.h"
 #include "ObjectMgr.h"
@@ -10,6 +10,9 @@
 #include "Language.h"
 #include "Group.h"
 #include "Guild.h"
+#include "AiManagerRegistry.h"
+#include "AiSocialManager.h"
+#include "AiQuestManager.h"
 
 class LoginQueryHolder;
 class CharacterHandler;
@@ -51,7 +54,7 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
             uint64 guid;
             p >> guid;
             Player* const bot = GetPlayerBot(guid);
-            if (bot) bot->GetPlayerbotAI()->SendNotEquipList(*bot);
+            //if (bot) bot->GetPlayerbotAI()->SendNotEquipList(*bot);
             return;
         }
 
@@ -72,7 +75,7 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 
                     if( obj->GetGoType() == GAMEOBJECT_TYPE_QUESTGIVER )
                     {
-                        bot->GetPlayerbotAI()->TurnInQuests( obj );
+                        bot->GetPlayerbotAI()->GetAiRegistry()->GetQuestManager()->TurnInQuests( obj );
                     }
                     // add other go types here, i.e.:
                     // GAMEOBJECT_TYPE_CHEST - loot quest items of chest
@@ -97,7 +100,7 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
         	for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
         	{
         		Player* const bot = it->second;
-                bot->GetPlayerbotAI()->TurnInQuests( pNpc );
+                bot->GetPlayerbotAI()->GetAiRegistry()->GetQuestManager()->TurnInQuests( pNpc );
         	}
         	        
         	return;
@@ -119,24 +122,24 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
                     Player* const bot = it->second;
                     
                     if (bot->GetQuestStatus(quest) == QUEST_STATUS_COMPLETE)
-                        bot->GetPlayerbotAI()->TellMaster("I already completed that quest.");
+						bot->GetPlayerbotAI()->GetAiRegistry()->GetSocialManager()->TellMaster("I already completed that quest.");
                     else if (! bot->CanTakeQuest(qInfo, false))
                     {                    	
         				if (! bot->SatisfyQuestStatus(qInfo, false))
-                            bot->GetPlayerbotAI()->TellMaster("I already have that quest.");
+                            bot->GetPlayerbotAI()->GetAiRegistry()->GetSocialManager()->TellMaster("I already have that quest.");
                         else
-                            bot->GetPlayerbotAI()->TellMaster("I can't take that quest.");
+                            bot->GetPlayerbotAI()->GetAiRegistry()->GetSocialManager()->TellMaster("I can't take that quest.");
                     }
                     else if (! bot->SatisfyQuestLog(false))
-                        bot->GetPlayerbotAI()->TellMaster("My quest log is full.");
+                        bot->GetPlayerbotAI()->GetAiRegistry()->GetSocialManager()->TellMaster("My quest log is full.");
                     else if (! bot->CanAddQuest(qInfo, false))
-                        bot->GetPlayerbotAI()->TellMaster("I can't take that quest because it requires that I take items, but my bags are full!");
+                        bot->GetPlayerbotAI()->GetAiRegistry()->GetSocialManager()->TellMaster("I can't take that quest because it requires that I take items, but my bags are full!");
 
                     else
                     {
                         p.rpos(0); // reset reader
                         bot->GetSession()->HandleQuestgiverAcceptQuestOpcode(p);
-                        bot->GetPlayerbotAI()->TellMaster("Got the quest.");
+                        bot->GetPlayerbotAI()->GetAiRegistry()->GetSocialManager()->TellMaster("Got the quest.");
                     }
                 }
             }

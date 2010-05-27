@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Player.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "AiManagerBase.h"
 
 using namespace std;
@@ -13,12 +13,7 @@ namespace ai
 	class AiSpellManager : public AiManagerBase
 	{
 	public:
-		AiSpellManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
-		{
-			lastSpellId = 0;
-			lastSpellTarget = 0;
-			lastCastTime = 0;
-		}
+		AiSpellManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry);
 
 	public:
 		virtual uint32 GetSpellId(const char* args);
@@ -61,6 +56,10 @@ namespace ai
 		uint32 GetLastSpellId() { return lastSpellId; }
 		uint64 GetLastSpellTarget() { return lastSpellTarget; }
 		int32 CalculateGlobalCooldown(uint32 spellid);
+	
+	public:
+		virtual void HandleCommand(const string& text, Player& fromPlayer);
+		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
 		std::map<std::string, uint32> spellMap;

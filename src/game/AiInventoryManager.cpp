@@ -1,4 +1,6 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include "AiInventoryManager.h"
 #include "AiQuestManager.h"
 #include "AiSocialManager.h"
@@ -522,4 +524,38 @@ void AiInventoryManager::ListQuestItems()
 
 	aiRegistry->GetSocialManager()->TellMaster( "Here's a list of all items I need for quests:" );
 	aiRegistry->GetSocialManager()->TellMaster( out.str().c_str() );
+}
+
+void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
+{
+	if (text == "report")
+	{
+		ListQuestItems();
+	}
+	else if (text.size() > 2 && text.substr(0, 2) == "u " || text.size() > 4 && text.substr(0, 4) == "use ")
+	{
+		UseItem(text.c_str());
+	}
+
+	else if (text.size() > 2 && text.substr(0, 2) == "e " || text.size() > 6 && text.substr(0, 6) == "equip ")
+	{
+		EquipItem(text.c_str());
+	}
+	else if (text.size() > 2 && text.substr(0, 2) == "r " || text.size() > 7 && text.substr(0, 7) == "reward ")
+	{
+		Reward(text.c_str());
+	}
+}
+
+void AiInventoryManager::HandleBotOutgoingPacket(const WorldPacket& packet)
+{
+	switch (packet.GetOpcode())
+	{
+	case SMSG_INVENTORY_CHANGE_FAILURE:
+		{
+			aiRegistry->GetSocialManager()->TellMaster("I can't use that.");
+			return;
+		}
+	}
+
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Player.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "AiManagerBase.h"
 #include "Item.h"
 
@@ -14,7 +14,7 @@ namespace ai
 	class AiQuestManager : public AiManagerBase
 	{
 	public:
-		AiQuestManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+		AiQuestManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 		}
 
@@ -24,6 +24,12 @@ namespace ai
 		void DropQuest(const char* link);
 		void QuestLocalization(std::string& questTitle, const uint32 questID);
 		map<uint32, uint32> GetQuestItems() { return questNeedItems; }
+		void TurnInQuests( WorldObject *questgiver );
+		void AcceptQuest( Quest const *qInfo, Player *pGiver );
+
+	public:
+		virtual void HandleCommand(const string& text, Player& fromPlayer);
+		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
 		map<uint32, uint32> questNeedItems;

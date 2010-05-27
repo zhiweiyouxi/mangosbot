@@ -1,22 +1,25 @@
-#include "PlayerbotClassAI.h"
+#include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
+#include "AiTargetManager.h"
+#include "AiSocialManager.h"
+#include "AiStrategyManager.h"
 #include "Common.h"
 #include "AiFactory.h"
 
 using namespace std;
 using namespace ai;
 
-PlayerbotClassAI::PlayerbotClassAI(Player* bot, AiManagerRegistry* aiRegistry)
+AiStrategyManager::AiStrategyManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : 
+	AiManagerBase(ai, aiRegistry)
 {
-	this->bot = bot;
-	this->aiRegistry = aiRegistry;
-
 	combatEngine = AiFactory::createCombatEngine(bot, aiRegistry);
 	nonCombatEngine = AiFactory::createNonCombatEngine(bot, aiRegistry);
 
 	currentEngine = nonCombatEngine;
 }
 
-PlayerbotClassAI::~PlayerbotClassAI() 
+AiStrategyManager::~AiStrategyManager() 
 {
 	currentEngine = NULL;
 
@@ -32,7 +35,7 @@ PlayerbotClassAI::~PlayerbotClassAI()
     }
 }
 
-void PlayerbotClassAI::DoNextAction() 
+void AiStrategyManager::DoNextAction() 
 {
 	WorldPacket data;
 	bot->BuildHeartBeatMsg( &data );
@@ -57,7 +60,7 @@ void PlayerbotClassAI::DoNextAction()
 	currentEngine->DoNextAction(NULL);
 }
 
-void PlayerbotClassAI::ChangeStrategy( const char* name, Engine* e ) 
+void AiStrategyManager::ChangeStrategy( const char* name, Engine* e ) 
 {
     if (!e)
         return;
@@ -76,7 +79,7 @@ void PlayerbotClassAI::ChangeStrategy( const char* name, Engine* e )
     }
 }
 
-void PlayerbotClassAI::DoSpecificAction(const char* name) 
+void AiStrategyManager::DoSpecificAction(const char* name) 
 { 
 	if (!currentEngine) 
 		return;
@@ -86,4 +89,29 @@ void PlayerbotClassAI::DoSpecificAction(const char* name)
 		aiRegistry->GetSocialManager()->TellMaster("Action failed: ");
 		aiRegistry->GetSocialManager()->TellMaster(name);
 	}
+}
+
+void AiStrategyManager::HandleCommand(const string& text, Player& fromPlayer)
+{
+	if (text.size() > 2 && text.substr(0, 2) == "d " || text.size() > 3 && text.substr(0, 3) == "do ")
+	{
+		std::string action = text.substr(text.find(" ") + 1);
+		DoSpecificAction(action.c_str());
+	}
+
+	else if (text.size() > 3 && text.substr(0, 3) == "co ")
+	{
+		std::string strategy = text.substr(text.find(" ") + 1);
+		ChangeCombatStrategy(strategy.c_str());
+	}
+
+	else if (text.size() > 3 && text.substr(0, 3) == "nc ")
+	{
+		std::string strategy = text.substr(text.find(" ") + 1);
+		ChangeNonCombatStrategy(strategy.c_str());
+	}
+}
+
+void AiStrategyManager::HandleBotOutgoingPacket(const WorldPacket& packet)
+{
 }

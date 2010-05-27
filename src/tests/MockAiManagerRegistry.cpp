@@ -9,7 +9,7 @@
 #include "AiTargetManager.h"
 #include "AiMoveManager.h"
 #include "AiInventoryManager.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "MockAiStatsManager.h"
 #include "MockAiSpellManager.h"
 #include "MockAiTargetManager.h"
@@ -20,21 +20,14 @@
 using namespace std;
 using namespace ai;
 
-MockAiManagerRegistry::MockAiManagerRegistry() : AiManagerRegistry(&ai)
+MockAiManagerRegistry::MockAiManagerRegistry() : AiManagerRegistry()
 {
-	if (spellManager) delete spellManager;
-	if (statsManager) delete statsManager;
-	if (targetManager) delete targetManager;
-	if (moveManager) delete moveManager;
-	if (inventoryManager) delete inventoryManager;
-	if (socialManager) delete socialManager;
-
-	statsManager = new MockAiStatsManager(&ai, this);
-	spellManager = new MockAiSpellManager(&ai, this, &buffer);
-	targetManager = new MockAiTargetManager(&ai, this);
-	moveManager = new MockAiMoveManager(&ai, this, &buffer);
-	inventoryManager = new MockAiInventoryManager(&ai, this, &buffer);
-	socialManager = new MockAiSocialManager(&ai, this, &buffer);
+	managers[AiStatsManagerType] = new MockAiStatsManager(&ai, this);
+	managers[AiSpellManagerType] = new MockAiSpellManager(&ai, this, &buffer);
+	managers[AiTargetManagerType] = new MockAiTargetManager(&ai, this);
+	managers[AiMoveManagerType] = new MockAiMoveManager(&ai, this, &buffer);
+	managers[AiInventoryManagerType] = new MockAiInventoryManager(&ai, this, &buffer);
+	managers[AiSocialManagerType] = new MockAiSocialManager(&ai, this, &buffer);
 }
 
 MockAiManagerRegistry::~MockAiManagerRegistry()

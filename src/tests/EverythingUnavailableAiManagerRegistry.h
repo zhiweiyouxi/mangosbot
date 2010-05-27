@@ -8,7 +8,7 @@ namespace ai
 	class EverythingUnavailableAiSpellManager : public MockAiSpellManager 
 	{
 	public:
-		EverythingUnavailableAiSpellManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry, string *buffer) :
+		EverythingUnavailableAiSpellManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry, string *buffer) :
 		  MockAiSpellManager(ai, aiRegistry, buffer) {}
 
 		  virtual bool CanCastSpell(const char* name, Unit* target) { return false; }
@@ -19,8 +19,7 @@ namespace ai
     public:
         EverythingUnavailableAiManagerRegistry() : MockAiManagerRegistry()
 		{
-			if (spellManager) delete spellManager;
-			spellManager = new EverythingUnavailableAiSpellManager(&ai, this, &buffer);
+			managers[AiSpellManagerType] = new EverythingUnavailableAiSpellManager(&ai, this, &buffer);
 		}
     };
 

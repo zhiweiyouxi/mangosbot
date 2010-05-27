@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Player.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "AiManagerBase.h"
 #include "AiSpellManager.h"
 #include "DBCStructure.h"
@@ -11,6 +11,7 @@ using namespace std;
 
 namespace ai 
 {
+	class AiManagerRegistry;
 	class AiTargetManager;
 
 	typedef bool (AiTargetManager::*FindPlayerPredicate)(Unit*, void*);
@@ -19,7 +20,7 @@ namespace ai
 	class AiTargetManager : public AiManagerBase
 	{
 	public:
-		AiTargetManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+		AiTargetManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 		}
 
@@ -34,6 +35,10 @@ namespace ai
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();
 		virtual Player* GetMaster();
+
+	public:
+		virtual void HandleCommand(const string& text, Player& fromPlayer);
+		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
 		Unit* FindPartyMember(FindPlayerPredicate predicate, void *param);

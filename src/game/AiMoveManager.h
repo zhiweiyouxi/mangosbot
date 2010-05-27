@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Player.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "AiManagerBase.h"
 #include "AiTargetManager.h"
 
@@ -12,7 +12,7 @@ namespace ai
 	class AiMoveManager : public AiManagerBase
 	{
 	public:
-		AiMoveManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+		AiMoveManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 		}
 
@@ -28,6 +28,10 @@ namespace ai
 		virtual void ReleaseSpirit();
 		virtual void Resurrect();
 		virtual void Revive();
+	
+	public:
+		virtual void HandleCommand(const string& text, Player& fromPlayer);
+		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 	};
 
 };

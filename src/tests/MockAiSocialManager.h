@@ -12,7 +12,7 @@ namespace ai
     class MockAiSocialManager : public AiSocialManager
     {
     public:
-        MockAiSocialManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry, string *buffer) : AiSocialManager(ai, aiRegistry) 
+        MockAiSocialManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry, string *buffer) : AiSocialManager(ai, aiRegistry) 
         {
 			this->buffer = buffer;
 		}

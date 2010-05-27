@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Player.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "AiManagerBase.h"
 #include "Item.h"
 
@@ -14,7 +14,7 @@ namespace ai
 	class AiInventoryManager : public AiManagerBase
 	{
 	public:
-		AiInventoryManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+		AiInventoryManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 			currentLoot = 0;
 		}
@@ -47,6 +47,10 @@ namespace ai
 		virtual void findItemsInInv(list<uint32>& itemIdSearchList, list<Item*>& foundItemList);
 		virtual void findItemsInEquip(std::list<uint32>& itemIdSearchList, std::list<Item*>& foundItemList);
 		virtual void ListQuestItems();
+
+	public:
+		virtual void HandleCommand(const string& text, Player& fromPlayer);
+		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
 		Item* FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, int *count=NULL);

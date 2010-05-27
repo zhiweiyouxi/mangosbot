@@ -14,7 +14,7 @@ namespace ai
     class MockAiTargetManager : public AiTargetManager
     {
     public:
-		MockAiTargetManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : 
+		MockAiTargetManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : 
 		  AiTargetManager(ai, aiRegistry) 
 		  {
 			  deadPartyMember = false;

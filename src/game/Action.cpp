@@ -1,4 +1,5 @@
 #include "pchdef.h"
+#include "AiManagerRegistryAware.h"
 #include "AiManagerRegistry.h"
 #include "Action.h"
 

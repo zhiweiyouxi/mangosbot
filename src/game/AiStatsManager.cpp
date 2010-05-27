@@ -1,8 +1,11 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include "AiStatsManager.h"
 #include "AiSocialManager.h"
 #include "AiManagerRegistry.h"
 #include "Spell.h"
+#include "WorldPacket.h"
 
 using namespace ai;
 using namespace std;
@@ -327,4 +330,18 @@ uint32 AiStatsManager::EstRepair(uint16 pos)
 		TotalCost = costs;
 	}
 	return TotalCost;
+}
+
+void AiStatsManager::HandleCommand(const string& text, Player& fromPlayer)
+{
+	if (text == "stats")
+	{
+		ListStats();
+	}    
+
+}
+
+void AiStatsManager::HandleBotOutgoingPacket(const WorldPacket& packet)
+{
+
 }

@@ -1,4 +1,6 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include "AiManagerRegistry.h"
 #include "MotionMaster.h"
 #include "FleeManager.h"
@@ -8,28 +10,37 @@
 #include "AiInventoryManager.h"
 #include "AiMoveManager.h"
 #include "AiQuestManager.h"
+#include "AiStrategyManager.h"
 
 using namespace ai;
 using namespace std;
 
-AiManagerRegistry::AiManagerRegistry(PlayerbotAIBase* ai) 
+AiManagerRegistry::AiManagerRegistry()
 {
-	spellManager = new AiSpellManager(ai, this);
-	statsManager = new AiStatsManager(ai, this);
-	targetManager = new AiTargetManager(ai, this);
-	moveManager = new AiMoveManager(ai, this);
-	inventoryManager = new AiInventoryManager(ai, this);
-	socialManager = new AiSocialManager(ai, this);
-	questManager = new AiQuestManager(ai, this);
+	for (int i=0; i<MAX_AI_MANAGER_TYPE; i++)
+		managers[i] = NULL;
+}
+
+AiManagerRegistry::AiManagerRegistry(PlayerbotAI* ai) 
+{
+	managers[AiSpellManagerType] = new AiSpellManager(ai, this);
+	managers[AiStatsManagerType] = new AiStatsManager(ai, this);
+	managers[AiTargetManagerType] = new AiTargetManager(ai, this);
+	managers[AiMoveManagerType] = new AiMoveManager(ai, this);
+	managers[AiInventoryManagerType] = new AiInventoryManager(ai, this);
+	managers[AiSocialManagerType] = new AiSocialManager(ai, this);
+	managers[AiQuestManagerType] = new AiQuestManager(ai, this);
+	managers[AiStrategyManagerType] = new AiStrategyManager(ai, this);
 }
 
 AiManagerRegistry::~AiManagerRegistry()
 {
-	if (spellManager) delete spellManager;
-	if (statsManager) delete statsManager;
-	if (targetManager) delete targetManager;
-	if (moveManager) delete moveManager;
-	if (inventoryManager) delete inventoryManager;
-	if (socialManager) delete socialManager;
-	if (questManager) delete questManager;
+	for (int i=0; i<MAX_AI_MANAGER_TYPE; i++)
+	{
+		if (managers[i]) 
+		{
+			delete managers[i];
+			managers[i] = NULL;
+		}
+	}
 }

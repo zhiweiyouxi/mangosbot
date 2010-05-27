@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Player.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "AiManagerBase.h"
 #include "Item.h"
 
@@ -14,7 +14,7 @@ namespace ai
 	class AiSocialManager : public AiManagerBase
 	{
 	public:
-		AiSocialManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+		AiSocialManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 		}
 
@@ -26,6 +26,10 @@ namespace ai
 		virtual void AcceptInvitation();
 		virtual void AcceptTrade();
 		virtual void BeginTrade();
+	
+	public:
+		virtual void HandleCommand(const string& text, Player& fromPlayer);
+		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
 		bool TradeItem(const Item& item, int8 slot = -1);

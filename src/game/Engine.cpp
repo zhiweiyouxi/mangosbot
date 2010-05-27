@@ -1,4 +1,6 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include <list>
 #include "Common.h"
 #include "World.h"

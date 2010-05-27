@@ -1,4 +1,6 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include "AiSpellManager.h"
 #include "Spell.h"
 #include "SpellMgr.h"
@@ -16,6 +18,14 @@ using namespace std;
 
 typedef pair<uint32, uint8> spellEffectPair;
 typedef multimap<spellEffectPair, Aura*> AuraMap;
+
+AiSpellManager::AiSpellManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+{
+	lastSpellId = 0;
+	lastSpellTarget = 0;
+	lastCastTime = 0;
+}
+
 
 uint32 AiSpellManager::GetSpellId(const char* args) 
 {
@@ -457,4 +467,42 @@ void AiSpellManager::Unmount()
 {
 	WorldPacket emptyPacket;
 	bot->GetSession()->HandleCancelMountAuraOpcode(emptyPacket);
+}
+
+void AiSpellManager::HandleCommand(const string& text, Player& fromPlayer)
+{
+	if (text == "spells")
+	{
+		ListSpells();
+	}
+}
+
+void AiSpellManager::HandleBotOutgoingPacket(const WorldPacket& packet)
+{
+	switch (packet.GetOpcode())
+	{
+	case SMSG_SPELL_FAILURE:
+		{
+			WorldPacket p(packet);
+			uint64 casterGuid = extractGuid(p);
+			if (casterGuid != bot->GetGUID())
+				return;
+			uint8  castCount;
+			uint32 spellId;
+			p >> castCount;
+			p >> spellId;
+			SpellInterrupted(spellId);
+			return;
+		}
+
+	case SMSG_SPELL_GO:
+		{
+			WorldPacket p(packet);
+			uint64 casterGuid = extractGuid(p);
+			if (casterGuid != bot->GetGUID())
+				return;
+			FinishSpell();
+			return;
+		}
+	}
 }

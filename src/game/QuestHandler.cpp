@@ -31,7 +31,10 @@
 #include "Group.h"
 
 // Playerbot mod:
+#include "PlayerbotMgr.h"
 #include "PlayerbotAI.h"
+#include "AiManagerRegistry.h"
+#include "AiQuestManager.h"
 
 void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 {
@@ -518,7 +521,7 @@ void WorldSession::HandlePushQuestToParty(WorldPacket& recvPacket)
                 pPlayer->SetDivider(_player->GetGUID());
 
                 if (pPlayer->GetPlayerbotAI())
-                    pPlayer->GetPlayerbotAI()->AcceptQuest( pQuest, _player );
+                    pPlayer->GetPlayerbotAI()->GetAiRegistry()->GetQuestManager()->AcceptQuest( pQuest, _player );
                 else
                     pPlayer->PlayerTalkClass->SendQuestGiverQuestDetails( pQuest, _player->GetGUID(), true );
             }

@@ -11,7 +11,7 @@ namespace ai
     class MockAiSpellManager : public AiSpellManager
     {
     public:
-        MockAiSpellManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry, string *buffer) : AiSpellManager(ai, aiRegistry) 
+        MockAiSpellManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry, string *buffer) : AiSpellManager(ai, aiRegistry) 
         { 
             targetIsCastingNonMeleeSpell = false;
 			this->buffer = buffer;

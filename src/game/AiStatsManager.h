@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Player.h"
-#include "PlayerbotAIBase.h"
+#include "PlayerbotAI.h"
 #include "AiManagerBase.h"
 
 using namespace std;
@@ -11,7 +11,7 @@ namespace ai
 	class AiStatsManager : public AiManagerBase
 	{
 	public:
-		AiStatsManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+		AiStatsManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
 		}
 
@@ -32,6 +32,10 @@ namespace ai
 
 	public:
 		void findAllAttackers(std::list<ThreatManager*> &out);
+
+	public:
+		virtual void HandleCommand(const string& text, Player& fromPlayer);
+		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
 		void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);

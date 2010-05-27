@@ -13,7 +13,7 @@ namespace ai
     class MockAiInventoryManager : public AiInventoryManager
     {
     public:
-        MockAiInventoryManager(PlayerbotAIBase* ai, AiManagerRegistry* aiRegistry, string *buffer) : AiInventoryManager(ai, aiRegistry) 
+        MockAiInventoryManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry, string *buffer) : AiInventoryManager(ai, aiRegistry) 
         {
 			this->buffer = buffer;
 			hasDrink = hasFood = true;

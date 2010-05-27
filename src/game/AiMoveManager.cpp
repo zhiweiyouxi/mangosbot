@@ -1,8 +1,13 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
+#include "AiSocialManager.h"
+#include "AiInventoryManager.h"
 #include "AiMoveManager.h"
 #include "MotionMaster.h"
 #include "FleeManager.h"
 #include "AiManagerRegistry.h"
+#include "SpellAuras.h"
 
 using namespace ai;
 using namespace std;
@@ -148,4 +153,81 @@ void AiMoveManager::Revive()
 		return;
 	}
 	bot->SetSelection(0);
+}
+
+void AiMoveManager::HandleCommand(const string& text, Player& fromPlayer)
+{
+	if (text == "attack")
+	{
+		Attack(ObjectAccessor::GetUnit(*bot, fromPlayer.GetSelection()));
+	}
+	else if(text == "release" && !bot->isAlive())
+	{
+		ReleaseSpirit();
+	}
+}
+
+void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
+{
+	switch (packet.GetOpcode())
+	{
+		// if a change in speed was detected for the master
+		// make sure we have the same mount status
+	case SMSG_FORCE_RUN_SPEED_CHANGE:
+		{
+			WorldPacket p(packet);
+			uint64 guid = extractGuid(p);
+			Player* master = ai->GetMaster();
+			if (guid != master->GetGUID())
+				return;
+			if (master->IsMounted() && !bot->IsMounted())
+			{
+				if (!master->GetAurasByType(SPELL_AURA_MOUNTED).empty())
+				{
+					int32 master_speed1 = 0;
+					int32 master_speed2 = 0;
+					master_speed1 = ai->GetMaster()->GetAurasByType(SPELL_AURA_MOUNTED).front()->GetSpellProto()->EffectBasePoints[1];
+					master_speed2 = ai->GetMaster()->GetAurasByType(SPELL_AURA_MOUNTED).front()->GetSpellProto()->EffectBasePoints[2];
+
+					aiRegistry->GetSpellManager()->Mount(master_speed1, master_speed2);
+				}
+			}
+			else if (!master->IsMounted() && bot->IsMounted())
+			{
+				aiRegistry->GetSpellManager()->Unmount();
+			}
+			return;
+		}
+
+		// handle flying acknowledgement
+	case SMSG_MOVE_SET_CAN_FLY:
+		{
+			WorldPacket p(packet);
+			uint64 guid = extractGuid(p);
+			if (guid != bot->GetGUID())
+				return;
+			bot->m_movementInfo.AddMovementFlag(MOVEMENTFLAG_FLYING2);
+			//bot->SetSpeed(MOVE_RUN, GetMaster()->GetSpeed(MOVE_FLIGHT) +0.1f, true);
+			return;
+		}
+
+		// handle dismount flying acknowledgement
+	case SMSG_MOVE_UNSET_CAN_FLY:
+		{
+			WorldPacket p(packet);
+			uint64 guid = extractGuid(p);
+			if (guid != bot->GetGUID())
+				return;
+			bot->m_movementInfo.RemoveMovementFlag(MOVEMENTFLAG_FLYING2);
+			//bot->SetSpeed(MOVE_RUN,GetMaster()->GetSpeedRate(MOVE_RUN),true);
+			return;
+		}
+
+	case SMSG_RESURRECT_REQUEST:
+		{
+			aiRegistry->GetMoveManager()->Revive();
+			return;
+		}
+	}
+
 }

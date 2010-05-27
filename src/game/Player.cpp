@@ -62,8 +62,8 @@
 #include "AchievementMgr.h"
 
 // Playerbot mod:
-#include "PlayerbotAI.h"
 #include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 
 #include <cmath>
 

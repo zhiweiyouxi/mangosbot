@@ -1,4 +1,6 @@
 #include "pchdef.h"
+#include "PlayerbotMgr.h"
+#include "PlayerbotAI.h"
 #include "AiSocialManager.h"
 #include "AiInventoryManager.h"
 #include "AiManagerRegistry.h"
@@ -215,6 +217,71 @@ void AiSocialManager::BeginTrade()
 					TellMaster(out.str().c_str());
 				}
 			}
+		}
+	}
+}
+
+void AiSocialManager::HandleCommand(const string& text, Player& fromPlayer)
+{
+	if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
+	{
+		Trade(text.c_str());
+	}
+	else if (text == "leave")
+	{
+		LeaveGroup();
+	}
+}
+
+void AiSocialManager::HandleBotOutgoingPacket(const WorldPacket& packet)
+{
+	switch (packet.GetOpcode())
+	{
+		// If the leader role was given to the bot automatically give it to the master
+		// if the master is in the group, otherwise leave group
+	case SMSG_GROUP_SET_LEADER:
+		{
+			WorldPacket p(packet);
+			std::string name;
+			p >> name;
+			if (bot->GetGroup() && name == bot->GetName())
+			{
+				if (bot->GetGroup()->IsMember(ai->GetMaster()->GetGUID()))
+				{
+					p.resize(8);
+					p << ai->GetMaster()->GetGUID();
+					bot->GetSession()->HandleGroupSetLeaderOpcode(p);
+				}
+			}
+			return;
+		}
+	case SMSG_GROUP_INVITE:
+		{
+			AcceptInvitation();
+			return;
+		}
+
+		// Handle when another player opens the trade window with the bot
+		// also sends list of tradable items bot can trade if bot is allowed to obey commands from
+	case SMSG_TRADE_STATUS:
+		{
+			if (bot->GetTrader() == NULL)
+				break;
+
+			WorldPacket p(packet);
+			uint32 status;
+			p >> status;
+			p.clear();
+
+			//4 == TRADE_STATUS_TRADE_ACCEPT
+			if (status == 4)
+				AcceptTrade();
+
+			//1 == TRADE_STATUS_BEGIN_TRADE
+			else if (status == 1)
+				BeginTrade();
+
+			return;
 		}
 	}
 }
