@@ -117,3 +117,35 @@ void AiMoveManager::ReleaseSpirit()
 	corpse->GetPosition( loc );
 	bot->TeleportTo( loc.mapid, loc.coord_x, loc.coord_y, loc.coord_z, bot->GetOrientation() );
 }
+
+void AiMoveManager::Resurrect()
+{
+	aiRegistry->GetMoveManager()->Stay();
+	Corpse* corpse = bot->GetCorpse();
+	if (corpse)
+	{
+		time_t reclaimTime = corpse->GetGhostTime() + bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
+		if (reclaimTime > time(0))
+		{
+			ostringstream os;
+			os << "Will resurrect in ";
+			os << (reclaimTime - time(0));
+			os << " secs";
+			aiRegistry->GetSocialManager()->TellMaster(os.str().c_str());
+			ai->SetNextCheckDelay(reclaimTime - time(0));
+		}
+		else
+			Revive();
+	}
+}
+
+void AiMoveManager::Revive()
+{
+	PlayerbotChatHandler ch(ai->GetMaster());
+	if (! ch.revive(*bot))
+	{
+		aiRegistry->GetSocialManager()->TellMaster(".. could not be revived ..");
+		return;
+	}
+	bot->SetSelection(0);
+}

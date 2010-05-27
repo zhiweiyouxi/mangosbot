@@ -66,7 +66,7 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
     m_combatOrder(ORDERS_NONE), m_ScenarioType(SCENARIO_PVEEASY),
     m_TimeDoneEating(0), m_TimeDoneDrinking(0),
     m_CurrentlyCastingSpellId(0), m_CurrentlyCastingSpellTarget(0), m_spellIdCommand(0), 
-	m_targetGuidCommand(0), m_classAI(0) {
+	m_targetGuidCommand(0) {
 
     // set bot state and needed item list
     m_botState = BOTSTATE_NORMAL;
@@ -78,18 +78,13 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* const mgr, Player* const bot) :
 	m_targetAssist = 0;
 	m_targetProtect = 0;
 
-	aiRegistry = new AiManagerRegistry(this);
-
 	FollowCheckTeleport(*GetMaster());
-    m_classAI = (PlayerbotClassAI*) new PlayerbotClassAI(m_bot, aiRegistry);
 
     SetQuestNeedItems();
 }
 
 PlayerbotAI::~PlayerbotAI()
 {
-    if (m_classAI) delete m_classAI;
-	if (aiRegistry) delete aiRegistry;
 }
 
 Player* PlayerbotAI::GetMaster() const
@@ -545,7 +540,7 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
         }
 
 		case SMSG_RESURRECT_REQUEST:
-			Revive();
+			aiRegistry->GetMoveManager()->Revive();
 			break;
 
 		case CMSG_SEND_COMBAT_TRIGGER:
@@ -1497,41 +1492,6 @@ void PlayerbotAI::Revive()
     m_bot->SetSelection(0);
 	// set back to normal
 	SetState( BOTSTATE_NORMAL );
-}
-
-void PlayerbotAI::UpdateAI(const uint32 p_time)
-{
-	if (!CanUpdateAI())
-		return;
-
-	if (m_bot->IsBeingTeleported() || m_bot->GetTrader())
-		return;
-
-	MovementUpdate();
-	SetNextCheckDelay(1);
-
-    if (m_bot->isAlive())
-    {
-		m_classAI->DoNextAction();
-    }
-    else
-    {
-		GetMoveManager()->Stay();
-		Corpse* corpse = m_bot->GetCorpse();
-        if (corpse)
-        {
-		    time_t reclaimTime = corpse->GetGhostTime() + m_bot->GetCorpseReclaimDelay( corpse->GetType()==CORPSE_RESURRECTABLE_PVP );
-		    if (reclaimTime > time(0))
-		    {
-			    TellMaster("Will resurrect in %d secs", reclaimTime - time(0));
-			    SetNextCheckDelay(reclaimTime - time(0));
-		    }
-		    else
-			    Revive();
-        }
-    }
-
-	YieldThread();
 }
 
 Spell* PlayerbotAI::GetCurrentSpell() const

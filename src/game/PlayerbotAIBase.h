@@ -26,6 +26,7 @@ public:
 
 namespace ai
 {
+	class AiManagerRegistry;
 
 	class MinValueCalculator {
 	public:
@@ -50,14 +51,13 @@ namespace ai
 	class PlayerbotAIBase 
 	{
 	public:
-		PlayerbotAIBase(PlayerbotMgr* mgr, Player* bot) 
-		{
-			this->mgr = mgr;
-			this->bot = bot;
-			nextAICheckTime = 0;
-		}
+		PlayerbotAIBase(PlayerbotMgr* mgr, Player* bot);
+		virtual ~PlayerbotAIBase();
 
 	public:
+		// This is called from Unit.cpp and is called every second (I think)
+		void UpdateAI(uint32 elapsed);
+
 		bool CanUpdateAI();
 		void SetNextCheckDelay(const uint32 delay);
 		void YieldThread();
@@ -70,6 +70,8 @@ namespace ai
 		Player* bot;
 		PlayerbotMgr* mgr;
 		time_t nextAICheckTime;
+		AiManagerRegistry* aiRegistry;
+		PlayerbotClassAI* m_classAI;
 	};
 
 };

@@ -110,9 +110,6 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
         PlayerbotAI() : PlayerbotAIBase(NULL, NULL), m_mgr(NULL), m_bot(NULL) {} // for mocking purpose
         virtual ~PlayerbotAI();
 
-        // This is called from Unit.cpp and is called every second (I think)
-        void UpdateAI(const uint32 p_time);
-
         // This is called from ChatHandler.cpp when there is an incoming message to the bot
         // from a whisper or from the party channel
         void HandleCommand(const std::string& text, Player& fromPlayer);
@@ -283,9 +280,6 @@ class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
         // owns the "this" object and m_master owns m_bot. The owner always cleans up.
         PlayerbotMgr* const m_mgr;
         Player* const m_bot;
-        PlayerbotClassAI* m_classAI;
-
-		AiManagerRegistry* aiRegistry;
 
 		CombatStyle m_combatStyle;
         CombatOrderType m_combatOrder;

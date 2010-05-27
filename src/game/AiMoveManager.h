@@ -26,6 +26,8 @@ namespace ai
 		virtual bool IsMoving(Unit* target);
 		virtual void Attack(Unit* target);
 		virtual void ReleaseSpirit();
+		virtual void Resurrect();
+		virtual void Revive();
 	};
 
 };

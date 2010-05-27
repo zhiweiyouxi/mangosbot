@@ -34,6 +34,11 @@ PlayerbotClassAI::~PlayerbotClassAI()
 
 void PlayerbotClassAI::DoNextAction() 
 {
+	WorldPacket data;
+	bot->BuildHeartBeatMsg( &data );
+	bot->SendMessageToSet( &data, false );
+	bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
+
 	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
 	if (target && target->isAlive() && target->IsHostileTo(bot))
 	{
