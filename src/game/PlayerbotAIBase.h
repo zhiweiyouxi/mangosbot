@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "PlayerbotMgr.h"
+#include "Chat.h"
 
 using namespace std;
 
@@ -13,6 +14,15 @@ using namespace std;
 #define SPELL_DISTANCE 25.0f
 #define BOT_REACT_DISTANCE 50.0f
 
+class PlayerbotChatHandler: protected ChatHandler
+{
+public:
+	explicit PlayerbotChatHandler(Player* pMasterPlayer) : ChatHandler(pMasterPlayer) {}
+	bool revive(const Player& botPlayer) { return HandleReviveCommand(botPlayer.GetName()); }
+	bool teleport(const Player& botPlayer) { return HandleNamegoCommand(botPlayer.GetName()); }
+	void sysmessage(const char *str) { SendSysMessage(str); }
+	bool dropQuest(const char *str) { return HandleQuestRemove(str); }
+};
 
 namespace ai
 {

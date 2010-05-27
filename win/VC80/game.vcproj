@@ -1654,6 +1654,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\AiQuestManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\AiQuestManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\AiSocialManager.cpp"
 				>
 			</File>

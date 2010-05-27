@@ -39,6 +39,14 @@ namespace ai
 		virtual void AddLoot(uint64 guid);
 		virtual bool CanLoot();
 		virtual void DoLoot();
+		virtual void EquipItem(const char* link);
+		virtual void UseItem(const char* link);
+		virtual void Reward(const char* link);
+		virtual void ItemLocalization(std::string& itemName, const uint32 itemID);
+		virtual void extractItemIds(const string& text, list<uint32>& itemIds);
+		virtual void findItemsInInv(list<uint32>& itemIdSearchList, list<Item*>& foundItemList);
+		virtual void findItemsInEquip(std::list<uint32>& itemIdSearchList, std::list<Item*>& foundItemList);
+		virtual void ListQuestItems();
 
 	private:
 		Item* FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, int *count=NULL);
@@ -50,6 +58,7 @@ namespace ai
 		static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
 		virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
 		void UseItem(Item& item);
+		void EquipItem(Item& item);
 
 	private:
 		list<uint64> availableLoot;

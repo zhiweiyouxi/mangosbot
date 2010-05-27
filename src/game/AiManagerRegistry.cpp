@@ -7,6 +7,7 @@
 #include "AiTargetManager.h"
 #include "AiInventoryManager.h"
 #include "AiMoveManager.h"
+#include "AiQuestManager.h"
 
 using namespace ai;
 using namespace std;
@@ -19,6 +20,7 @@ AiManagerRegistry::AiManagerRegistry(PlayerbotAIBase* ai)
 	moveManager = new AiMoveManager(ai, this);
 	inventoryManager = new AiInventoryManager(ai, this);
 	socialManager = new AiSocialManager(ai, this);
+	questManager = new AiQuestManager(ai, this);
 }
 
 AiManagerRegistry::~AiManagerRegistry()
@@ -29,4 +31,5 @@ AiManagerRegistry::~AiManagerRegistry()
 	if (moveManager) delete moveManager;
 	if (inventoryManager) delete inventoryManager;
 	if (socialManager) delete socialManager;
+	if (questManager) delete questManager;
 }

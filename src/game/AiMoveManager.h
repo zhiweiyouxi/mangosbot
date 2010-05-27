@@ -25,6 +25,7 @@ namespace ai
 		virtual void Stay();
 		virtual bool IsMoving(Unit* target);
 		virtual void Attack(Unit* target);
+		virtual void ReleaseSpirit();
 	};
 
 };

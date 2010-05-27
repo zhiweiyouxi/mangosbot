@@ -46,6 +46,9 @@ namespace ai
 
 		virtual bool IsSpellCasting(Unit* player);
 		virtual bool HasAuraToDispel(Unit* player, uint32 dispelType);
+		virtual void ListSpells();
+		virtual void Mount(int32 master_speed1, int32 master_speed2);
+		virtual void Unmount();
 
 	private:
 		uint32 FindSpellId(const char* args);

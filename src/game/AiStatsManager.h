@@ -28,12 +28,15 @@ namespace ai
 		virtual float GetBalancePercent();
 		virtual bool HasAggro(Unit* target);	
 		virtual bool IsMounted();
+		virtual void ListStats();
 
 	public:
 		void findAllAttackers(std::list<ThreatManager*> &out);
 
 	private:
 		void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
+		uint32 EstRepair(uint16 pos);
+		uint32 EstRepairAll();
 
 	};
 

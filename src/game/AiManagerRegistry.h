@@ -14,6 +14,7 @@ namespace ai
 	class AiMoveManager;
 	class AiInventoryManager;
 	class AiSocialManager;
+	class AiQuestManager;
 
 	class AiManagerRegistry
 	{
@@ -28,6 +29,7 @@ namespace ai
 		AiMoveManager* GetMoveManager() { return moveManager; }
 		AiInventoryManager* GetInventoryManager() { return inventoryManager; }
 		AiSocialManager* GetSocialManager() { return socialManager; }
+		AiQuestManager* GetQuestManager() { return questManager; }
 
 	protected:
 		AiSpellManager* spellManager;
@@ -36,6 +38,7 @@ namespace ai
 		AiMoveManager* moveManager;
 		AiInventoryManager* inventoryManager;
 		AiSocialManager* socialManager;
+		AiQuestManager* questManager;
 	};
 
 };

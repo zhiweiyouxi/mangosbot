@@ -85,9 +85,35 @@ void AiMoveManager::Attack(Unit* target)
 	if (bot->getStandState() != UNIT_STAND_STATE_STAND)
 		bot->SetStandState(UNIT_STAND_STATE_STAND);
 
+
+	if (bot->IsFriendlyTo(target))
+	{
+		aiRegistry->GetSocialManager()->TellMaster("Target is friendly");
+		return;
+	}
+	if (!bot->IsWithinLOSInMap(target))
+	{
+		aiRegistry->GetSocialManager()->TellMaster("Target is not in my sight, maybe later?");
+		return;
+	}
+
 	uint64 guid = target->GetGUID();
 	bot->SetSelection(guid);
 	bot->Attack(target, true);
 
 	aiRegistry->GetInventoryManager()->AddLoot(guid);
+}
+
+void AiMoveManager::ReleaseSpirit()
+{
+	if (bot->isAlive() || bot->GetCorpse())
+		return;
+
+	bot->SetBotDeathTimer();
+	bot->BuildPlayerRepop();
+
+	WorldLocation loc;
+	Corpse *corpse = bot->GetCorpse();
+	corpse->GetPosition( loc );
+	bot->TeleportTo( loc.mapid, loc.coord_x, loc.coord_y, loc.coord_z, bot->GetOrientation() );
 }

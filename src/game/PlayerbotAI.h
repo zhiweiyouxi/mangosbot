@@ -24,6 +24,10 @@ class Item;
 class PlayerbotClassAI;
 class PlayerbotMgr;
 
+// ChatHandler already implements some useful commands the master can call on bots
+// These commands are protected inside the ChatHandler class so this class provides access to the commands
+// we'd like to call on our bots
+
 
 class MANGOS_DLL_SPEC PlayerbotAI : public PlayerbotAIBase
 {

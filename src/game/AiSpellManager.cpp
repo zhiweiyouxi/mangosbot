@@ -8,6 +8,7 @@
 #include "WorldSession.h"
 #include "WorldPacket.h"
 #include "AiMoveManager.h"
+#include "AiSocialManager.h"
 #include "AiManagerRegistry.h"
 
 using namespace ai;
@@ -345,7 +346,8 @@ bool AiSpellManager::HasAuraToDispel(Unit* player, uint32 dispelType)
 }
 
 
-bool AiSpellManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
+bool AiSpellManager::canDispel(const SpellEntry* entry, uint32 dispelType) 
+{
 	if (entry->Dispel == dispelType) {
 		return !entry->SpellName[0] ||
 			(strcmpi((const char*)entry->SpellName[0], "demon skin") &&
@@ -354,4 +356,105 @@ bool AiSpellManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
 			strcmpi((const char*)entry->SpellName[0], "ice armor"));
 	}
 	return false;
+}
+
+void AiSpellManager::ListSpells()
+{
+	int loc = ai->GetMaster()->GetSession()->GetSessionDbcLocale();
+
+	std::ostringstream posOut;
+	std::ostringstream negOut;
+
+	const std::string ignoreList = ",Opening,Closing,Stuck,Remove Insignia,Opening - No Text,Grovel,Duel,Honorless Target,";
+	std::string alreadySeenList = ",";
+
+	for (PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr) {
+		const uint32 spellId = itr->first;
+
+		if (itr->second->state == PLAYERSPELL_REMOVED || itr->second->disabled || IsPassiveSpell(spellId))
+			continue;
+
+		const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(spellId);
+		if (!pSpellInfo)
+			continue;
+
+		//|| name.find("Teleport") != -1
+
+		std::string comp = ",";
+		comp.append(pSpellInfo->SpellName[loc]);
+		comp.append(",");
+
+		if (!(ignoreList.find(comp) == std::string::npos && alreadySeenList.find(comp) == std::string::npos))
+			continue;
+
+		alreadySeenList += pSpellInfo->SpellName[loc];
+		alreadySeenList += ",";
+
+		if (IsPositiveSpell(spellId))
+			posOut << " |cffffffff|Hspell:" << spellId << "|h["
+			<< pSpellInfo->SpellName[loc] << "]|h|r";
+		else
+			negOut << " |cffffffff|Hspell:" << spellId << "|h["
+			<< pSpellInfo->SpellName[loc] << "]|h|r";
+	}
+
+	aiRegistry->GetSocialManager()->TellMaster("here's my non-attack spells:");
+	aiRegistry->GetSocialManager()->TellMaster(posOut.str().c_str());
+	
+	aiRegistry->GetSocialManager()->TellMaster("here's my attack spells:");
+	aiRegistry->GetSocialManager()->TellMaster(negOut.str().c_str());
+}
+
+void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
+{
+	uint32 spellMount = 0;
+	for(PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr)
+	{
+		uint32 spellId = itr->first;
+		if(itr->second->state == PLAYERSPELL_REMOVED || itr->second->disabled || IsPassiveSpell(spellId))
+			continue;
+		const SpellEntry* pSpellInfo = sSpellStore.LookupEntry(spellId);
+		if (!pSpellInfo)
+			continue;
+
+		if(pSpellInfo->EffectApplyAuraName[0] == SPELL_AURA_MOUNTED)
+		{
+			if(pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
+			{
+				if(pSpellInfo->EffectBasePoints[1] == master_speed1)
+				{
+					spellMount = spellId;
+					break;
+				}
+			}
+			else if((pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
+				&& (pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED))
+			{
+				if((pSpellInfo->EffectBasePoints[1] == master_speed1)
+					&& (pSpellInfo->EffectBasePoints[2] == master_speed2))
+				{
+					spellMount = spellId;
+					break;
+				}
+			}
+			else if((pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
+				&& (pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED))
+			{
+				if((pSpellInfo->EffectBasePoints[2] == master_speed2) 
+					&& (pSpellInfo->EffectBasePoints[1] == master_speed1))
+				{
+					spellMount = spellId;
+					break;
+				}
+			}
+		}
+	}
+
+	if(spellMount > 0) CastSpell(spellMount, bot);
+}
+
+void AiSpellManager::Unmount()
+{
+	WorldPacket emptyPacket;
+	bot->GetSession()->HandleCancelMountAuraOpcode(emptyPacket);
 }

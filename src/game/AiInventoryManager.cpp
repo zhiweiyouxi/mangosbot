@@ -1,9 +1,12 @@
 #include "pchdef.h"
 #include "AiInventoryManager.h"
+#include "AiQuestManager.h"
+#include "AiSocialManager.h"
 #include "AiManagerRegistry.h"
 #include "Spell.h"
 #include "WorldPacket.h"
 #include "LootMgr.h"
+#include "GossipDef.h"
 
 using namespace ai;
 using namespace std;
@@ -313,4 +316,210 @@ int AiInventoryManager::GetItemCount(const char* name)
     if (!FindUsableItem(isTheSameName, (const void*)name, &count))
         return 0;
     return count; 
+}
+
+void AiInventoryManager::extractItemIds(const std::string& text, std::list<uint32>& itemIds)
+{
+	uint8 pos = 0;
+	while (true)
+	{
+		int i = text.find("Hitem:", pos);
+		if (i == -1)
+			break;
+		pos = i + 6;
+		int endPos = text.find(':', pos);
+		if (endPos == -1)
+			break;
+		std::string idC = text.substr(pos, endPos - pos);
+		uint32 id = atol(idC.c_str());
+		pos = endPos;
+		if (id)
+			itemIds.push_back(id);
+	}
+}
+
+// TODO: rewrite
+void AiInventoryManager::findItemsInInv(list<uint32>& itemIdSearchList, list<Item*>& foundItemList)
+{
+
+	// look for items in main bag
+	for (uint8 slot = INVENTORY_SLOT_ITEM_START; itemIdSearchList.size() > 0 && slot < INVENTORY_SLOT_ITEM_END; ++slot)
+	{
+		Item* const pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+		if (!pItem)
+			continue;
+
+		for (std::list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
+		{
+			if (pItem->GetProto()->ItemId != *it)
+				continue;
+
+			foundItemList.push_back(pItem);
+			itemIdSearchList.erase(it);
+			break;
+		}
+	}
+
+	// for all for items in other bags
+	for (uint8 bag = INVENTORY_SLOT_BAG_START; itemIdSearchList.size() > 0 && bag < INVENTORY_SLOT_BAG_END; ++bag)
+	{
+		Bag* const pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
+		if (!pBag)
+			continue;
+
+		for (uint8 slot = 0; itemIdSearchList.size() > 0 && slot < pBag->GetBagSize(); ++slot)
+		{
+			Item* const pItem = bot->GetItemByPos(bag, slot);
+			if (!pItem)
+				continue;
+
+			for (std::list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
+			{
+				if (pItem->GetProto()->ItemId != *it)
+					continue;
+
+				foundItemList.push_back(pItem);
+				itemIdSearchList.erase(it);
+				break;
+			}
+		}
+	}
+}
+
+void AiInventoryManager::findItemsInEquip(std::list<uint32>& itemIdSearchList, std::list<Item*>& foundItemList)
+{
+	for( uint8 slot=EQUIPMENT_SLOT_START; itemIdSearchList.size()>0 && slot<EQUIPMENT_SLOT_END; slot++ ) {
+		Item* const pItem = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
+		if( !pItem )
+			continue;
+
+		for (std::list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
+		{
+			if (pItem->GetProto()->ItemId != *it)
+				continue;
+
+			foundItemList.push_back(pItem);
+			itemIdSearchList.erase(it);
+			break;
+		}
+	}
+}
+
+void AiInventoryManager::EquipItem(const char* link)
+{
+	std::list<uint32> itemIds;
+	std::list<Item*> itemList;
+	extractItemIds(string(link), itemIds);
+	findItemsInInv(itemIds, itemList);
+	for (std::list<Item*>::iterator it = itemList.begin(); it != itemList.end(); ++it)
+		EquipItem(**it);
+}
+
+void AiInventoryManager::EquipItem(Item& item)
+{
+	uint8 bagIndex = item.GetBagSlot();
+	uint8 slot = item.GetSlot();
+
+	WorldPacket* const packet = new WorldPacket(CMSG_AUTOEQUIP_ITEM, 2);
+	*packet << bagIndex << slot;
+	bot->GetSession()->QueuePacket(packet);
+}
+
+void AiInventoryManager::UseItem(const char* link)
+{
+	std::list<uint32> itemIds;
+	std::list<Item*> itemList;
+	extractItemIds(string(link), itemIds);
+	findItemsInInv(itemIds, itemList);
+	for (std::list<Item*>::iterator it = itemList.begin(); it != itemList.end(); ++it)
+		UseItem(**it);
+}
+
+void AiInventoryManager::ItemLocalization(std::string& itemName, const uint32 itemID)
+{
+	int loc = ai->GetMaster()->GetSession()->GetSessionDbLocaleIndex();
+	std::wstring wnamepart;
+
+	ItemLocale const *pItemInfo = sObjectMgr.GetItemLocale(itemID);
+	if (pItemInfo)
+	{
+		if (pItemInfo->Name.size() > loc && !pItemInfo->Name[loc].empty())
+		{
+			const std::string name = pItemInfo->Name[loc];
+			if (Utf8FitTo(name, wnamepart))
+				itemName = name.c_str();
+		}
+	}
+}
+
+void AiInventoryManager::Reward(const char* link)
+{
+	std::list<uint32> itemIds;
+	extractItemIds(link, itemIds);
+	if (itemIds.empty()) 
+		return;
+
+	uint32 itemId = itemIds.front();
+	bool wasRewarded = false;
+	uint64 questRewarderGUID = bot->GetSelection();
+	Object* const pNpc = ObjectAccessor::GetObjectByTypeMask(*bot, questRewarderGUID, TYPEMASK_UNIT|TYPEMASK_GAMEOBJECT);
+	if (!pNpc)
+		return;
+
+	QuestMenu& questMenu = bot->PlayerTalkClass->GetQuestMenu();
+	for (uint32 iI = 0; !wasRewarded && iI < questMenu.MenuItemCount(); ++iI)
+	{
+		QuestMenuItem const& qItem = questMenu.GetItem(iI);
+
+		uint32 questID = qItem.m_qId;
+		Quest const* pQuest = sObjectMgr.GetQuestTemplate(questID);
+		QuestStatus status = bot->GetQuestStatus(questID);
+
+		// if quest is complete, turn it in
+		if (status == QUEST_STATUS_COMPLETE && 
+			! bot->GetQuestRewardStatus(questID) && 
+			pQuest->GetRewChoiceItemsCount() > 1 &&
+			bot->CanRewardQuest(pQuest, false))
+		{
+			for (uint8 rewardIdx=0; !wasRewarded && rewardIdx < pQuest->GetRewChoiceItemsCount(); ++rewardIdx)
+			{
+				ItemPrototype const * const pRewardItem = sObjectMgr.GetItemPrototype(pQuest->RewChoiceItemId[rewardIdx]);
+				if (itemId == pRewardItem->ItemId)
+				{
+					bot->RewardQuest(pQuest, rewardIdx, pNpc, false);
+
+					std::string questTitle  = pQuest->GetTitle();
+					aiRegistry->GetQuestManager()->QuestLocalization(questTitle, questID);
+					std::string itemName = pRewardItem->Name1;
+					ItemLocalization(itemName, pRewardItem->ItemId);
+
+					std::ostringstream out;
+					out << "|cffffffff|Hitem:" << pRewardItem->ItemId << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r rewarded";
+					aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
+					wasRewarded = true;
+				}
+			}
+		}
+	}
+}
+
+void AiInventoryManager::ListQuestItems()
+{
+	map<uint32, uint32> questItems = aiRegistry->GetQuestManager()->GetQuestItems();
+	std::ostringstream out;
+
+	for( map<uint32, uint32>::iterator itr=questItems.begin(); itr!=questItems.end(); ++itr )
+	{
+		const ItemPrototype * pItemProto = sObjectMgr.GetItemPrototype( itr->first );
+
+		std::string itemName = pItemProto->Name1;
+		ItemLocalization(itemName, pItemProto->ItemId);
+
+		out << " " << itr->second << "x|cffffffff|Hitem:" << pItemProto->ItemId
+			<< ":0:0:0:0:0:0:0" << "|h[" << itemName
+			<< "]|h|r";
+	}
+
+	aiRegistry->GetSocialManager()->TellMaster( "Here's a list of all items I need for quests:" );
+	aiRegistry->GetSocialManager()->TellMaster( out.str().c_str() );
 }
