@@ -28,6 +28,7 @@ namespace ai
 		virtual void ReleaseSpirit();
 		virtual void Resurrect();
 		virtual void Revive();
+        virtual void Summon();
 	
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);

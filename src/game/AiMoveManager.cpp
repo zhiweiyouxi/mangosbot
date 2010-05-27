@@ -155,6 +155,19 @@ void AiMoveManager::Revive()
 	bot->SetSelection(0);
 }
 
+void AiMoveManager::Summon()
+{
+    Player* master = ai->GetMaster();
+    if (!bot->IsWithinDistInMap( master, 50, true ))
+    {
+        PlayerbotChatHandler ch(master);
+        if (! ch.teleport(*bot))
+        {
+            ch.sysmessage(".. could not be teleported ..");
+        }
+    }
+}
+
 void AiMoveManager::HandleCommand(const string& text, Player& fromPlayer)
 {
 	if (text == "attack")
@@ -231,3 +244,4 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 	}
 
 }
+
