@@ -1702,6 +1702,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\FindTargetStrategy.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\FindTargetStrategy.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\PlayerbotAI.cpp"
 				>
 			</File>

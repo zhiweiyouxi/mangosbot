@@ -36,6 +36,7 @@ namespace ai
 		virtual void ChangeStrategy( const char* name, Engine* e );
 		virtual void ChangeCombatStrategy(const char* name) { ChangeStrategy(name, combatEngine); }
 		virtual void ChangeNonCombatStrategy(const char* name) { ChangeStrategy(name, nonCombatEngine); }
+		virtual bool ContainsStrategy(StrategyType type);
 
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);

@@ -115,3 +115,8 @@ void AiStrategyManager::HandleCommand(const string& text, Player& fromPlayer)
 void AiStrategyManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 {
 }
+
+bool AiStrategyManager::ContainsStrategy(StrategyType type)
+{
+	return combatEngine->ContainsStrategy(type) || nonCombatEngine->ContainsStrategy(type);
+}

@@ -29,6 +29,8 @@ namespace ai
 		virtual bool HasAggro(Unit* target);	
 		virtual bool IsMounted();
 		virtual void ListStats();
+		virtual bool IsTank(Player* player);
+		virtual bool IsDps(Player* player);
 
 	public:
 		void findAllAttackers(std::list<ThreatManager*> &out);

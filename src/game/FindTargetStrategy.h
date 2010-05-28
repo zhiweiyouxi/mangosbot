@@ -1,0 +1,76 @@
+#pragma once
+
+#include "Player.h"
+#include "PlayerbotAI.h"
+#include "AiManagerBase.h"
+#include "AiSpellManager.h"
+#include "DBCStructure.h"
+#include "AiStatsManager.h"
+
+using namespace std;
+
+namespace ai 
+{
+	class AiManagerRegistry;
+
+	class FindTargetStrategy
+	{
+	public:
+		FindTargetStrategy(AiManagerRegistry* aiRegistry)
+		{
+			result = NULL;
+			this->ai = ai;
+		}
+
+	public:
+		void CheckAttackers(Player* player);
+		Unit* GetResult() { return result; }
+
+	protected:
+		virtual void CheckAttacker(Player* player, ThreatManager* threatManager) = NULL;
+		void GetPlayerCount(Player* player, Unit* creature, int* tankCount, int* dpsCount);
+
+	protected:
+		Unit* result;
+		AiManagerRegistry* ai;
+	};
+
+	class FindTargetForTankStrategy : public FindTargetStrategy
+	{
+	public:
+		FindTargetForTankStrategy(AiManagerRegistry* aiRegistry) : FindTargetStrategy(ai)
+		{
+			minThreat = 0;
+			minTankCount = 0;
+			maxDpsCount = 0;
+		}
+
+	protected:
+		virtual void CheckAttacker(Player* player, ThreatManager* threatManager);
+
+	protected:
+		float minThreat;
+		int minTankCount;
+		int maxDpsCount;
+	};
+
+	class FindTargetForDpsStrategy : public FindTargetStrategy
+	{
+	public:
+		FindTargetForDpsStrategy(AiManagerRegistry* aiRegistry) : FindTargetStrategy(ai)
+		{
+			minThreat = 0;
+			maxTankCount = 0;
+			minDpsCount = 0;
+		}
+
+	protected:
+		virtual void CheckAttacker(Player* player, ThreatManager* threatManager);
+
+	protected:
+		float minThreat;
+		int maxTankCount;
+		int minDpsCount;
+	};
+
+};

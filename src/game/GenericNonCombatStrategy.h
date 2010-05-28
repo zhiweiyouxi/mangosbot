@@ -9,7 +9,7 @@ namespace ai
     {
     public:
         GenericNonCombatStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
-
+		virtual StrategyType GetType() { return STRATEGY_TYPE_NONCOMBAT; }
     };
 
     class FollowMasterNonCombatStrategy : public GenericNonCombatStrategy
@@ -47,6 +47,7 @@ namespace ai
     public:
         DpsAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "dps assist"; }
+		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -57,6 +58,7 @@ namespace ai
     public:
         TankAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "tank non combat"; }
+		virtual StrategyType GetType() { return STRATEGY_TYPE_TANK; }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

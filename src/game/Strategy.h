@@ -5,6 +5,16 @@
 
 namespace ai
 {
+	enum StrategyType
+	{
+		STRATEGY_TYPE_GENERIC = 0,
+		STRATEGY_TYPE_COMBAT = 1,
+		STRATEGY_TYPE_NONCOMBAT = 2,
+		STRATEGY_TYPE_TANK = 4,
+		STRATEGY_TYPE_DPS = 8,
+		STRATEGY_TYPE_HEAL = 16,
+	};
+
     class Strategy : public AiManagerRegistryAware
     {
     public:
@@ -16,6 +26,7 @@ namespace ai
         virtual void InitTriggers(std::list<TriggerNode*> &triggers) {}
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers) {}
         virtual const char* getName() = NULL;
+		virtual StrategyType GetType() { return STRATEGY_TYPE_GENERIC; }
         virtual ActionNode* createAction(const char* name)  { return NULL; }
     };
 
@@ -24,5 +35,6 @@ namespace ai
     public:
         CombatStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+		virtual StrategyType GetType() { return STRATEGY_TYPE_COMBAT; }
     };
 }

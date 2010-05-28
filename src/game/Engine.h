@@ -59,6 +59,7 @@ namespace ai
         void removeStrategy(const char* name);
         void clearStrategies();
         std::string ListStrategies();
+		bool ContainsStrategy(StrategyType type);
 
     public:
 	    virtual bool DoNextAction(Unit*, int depth = 0);

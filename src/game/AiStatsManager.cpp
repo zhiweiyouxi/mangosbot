@@ -3,6 +3,7 @@
 #include "PlayerbotAI.h"
 #include "AiStatsManager.h"
 #include "AiSocialManager.h"
+#include "AiStrategyManager.h"
 #include "AiManagerRegistry.h"
 #include "Spell.h"
 #include "WorldPacket.h"
@@ -344,4 +345,25 @@ void AiStatsManager::HandleCommand(const string& text, Player& fromPlayer)
 void AiStatsManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 {
 
+}
+
+bool AiStatsManager::IsTank(Player* player)
+{
+	PlayerbotAI* botAi = player->GetPlayerbotAI();
+	if (botAi)
+		return botAi->GetAiRegistry()->GetStrategyManager()->ContainsStrategy(STRATEGY_TYPE_TANK);
+
+	switch (player->getClass()) 
+	{
+		case CLASS_DEATH_KNIGHT:
+		case CLASS_PALADIN:
+		case CLASS_WARRIOR:
+			return true;
+	}
+	return false;
+}
+
+bool AiStatsManager::IsDps(Player* player)
+{
+	return !IsTank(player);
 }

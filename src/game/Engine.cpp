@@ -92,7 +92,8 @@ void Engine::Init()
 }
 
 
-bool Engine::DoNextAction(Unit* unit, int depth) {
+bool Engine::DoNextAction(Unit* unit, int depth) 
+{
     bool actionExecuted = FALSE;
     ActionBasket* basket = NULL;
 
@@ -313,14 +314,24 @@ string Engine::ListStrategies()
         s.append(", ");
     }
     return s.substr(0, s.length() - 2);
-
-    void PushAgain( ActionNode* actionNode, float relevance );
 }
 
-void Engine::PushAgain( ActionNode* actionNode, float relevance ) {
+void Engine::PushAgain( ActionNode* actionNode, float relevance ) 
+{
     NextAction** nextAction = new NextAction*[2];
     nextAction[0] = new NextAction(actionNode->getName(), relevance);
     nextAction[1] = NULL;
     MultiplyAndPush(nextAction, relevance, TRUE);
     delete actionNode;
+}
+
+bool Engine::ContainsStrategy(StrategyType type)
+{
+	for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
+	{
+		Strategy* strategy = *i;
+		if (strategy->GetType() & type)
+			return true;
+	}
+	return false;
 }
