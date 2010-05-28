@@ -53,6 +53,17 @@ namespace ai
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
     };
 
+	class DpsAoeStrategy : public GenericNonCombatStrategy
+	{
+	public:
+		DpsAoeStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
+		virtual const char* getName() { return "aoe dps non combat"; }
+		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
+
+	public:
+		virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+	};
+
     class TankAssistStrategy : public GenericNonCombatStrategy
     {
     public:

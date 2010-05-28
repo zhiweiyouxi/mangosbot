@@ -117,6 +117,9 @@ Strategy* ActionFactory::createStrategy(const char* name)
     if (!strcmp("dps assist", name))
         return new DpsAssistStrategy(ai);
 
+	if (!strcmp("dps aoe", name))
+		return new DpsAoeStrategy(ai);
+
     if (!strcmp("tank assist", name))
         return new TankAssistStrategy(ai);
 

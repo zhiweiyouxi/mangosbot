@@ -50,6 +50,14 @@ void DpsAssistStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("dps assist", 50.0f), NULL)));
 }
 
+void DpsAoeStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+	triggers.push_back(new TriggerNode(
+		new TimerTrigger(ai, 5), 
+		NextAction::array(0, new NextAction("dps assist", 50.0f), NULL)));
+}
+
+
 NextAction** StayNonCombatStrategy::getDefaultActions()
 {
     return NextAction::array(0, new NextAction("stay", 1.0f), NULL);
