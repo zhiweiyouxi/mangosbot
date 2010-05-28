@@ -17,6 +17,65 @@ namespace ai
 	typedef bool (AiTargetManager::*FindPlayerPredicate)(Unit*, void*);
 	typedef bool (AiTargetManager::*SpellEntryPredicate)(SpellEntry const*);
 
+
+	class FindTargetStrategy
+	{
+	public:
+		FindTargetStrategy() 
+		{
+			result = NULL;
+		}
+
+	public:
+		void CheckAttackers(Player* player);
+		Unit* GetResult() { return result; }
+
+	protected:
+		virtual void CheckAttacker(Player* player, ThreatManager* threatManager) = NULL;
+		void GetPlayerCount(Player* player, Unit* creature, int* tankCount, int* dpsCount);
+
+	protected:
+		Unit* result;
+	};
+
+	class FindTargetForTankStrategy : public FindTargetStrategy
+	{
+	public:
+		FindTargetForTankStrategy() : FindTargetStrategy()
+		{
+			minThreat = 0;
+			minTankCount = 0;
+			maxDpsCount = 0;
+		}
+
+	protected:
+		virtual void CheckAttacker(Player* player, ThreatManager* threatManager);
+
+	protected:
+		float minThreat;
+		int minTankCount;
+		int maxDpsCount;
+	};
+
+	class FindTargetForDpsStrategy : public FindTargetStrategy
+	{
+	public:
+		FindTargetForDpsStrategy() : FindTargetStrategy()
+		{
+			minThreat = 0;
+			maxTankCount = 0;
+			minDpsCount = 0;
+		}
+
+	protected:
+		virtual void CheckAttacker(Player* player, ThreatManager* threatManager);
+
+	protected:
+		float minThreat;
+		int maxTankCount;
+		int minDpsCount;
+	};
+
 	class AiTargetManager : public AiManagerBase
 	{
 	public:
@@ -29,8 +88,8 @@ namespace ai
 		virtual Unit* GetPartyMinHealthPlayer();
 		virtual Unit* GetDeadPartyMember();
 		virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
-		virtual Unit* FindBiggerThreat();
-		virtual Unit* FindLeastThreat();
+		virtual Unit* FindTargetForTank();
+		virtual Unit* FindTargetForDps();
 		virtual Unit* GetCurrentTarget();
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();
@@ -54,6 +113,9 @@ namespace ai
 		bool IsHealingSpell(SpellEntry const* spell);
 		bool IsResurrectSpell(SpellEntry const* spell);
 		bool CanHealPet(Pet* pet);
+
+	private:
+		Unit* FindTarget(FindTargetStrategy* strategy);
 
 	private:
 		bool PlayerWithoutAuraPredicate(Unit* player, void *param /*const char* spell*/);

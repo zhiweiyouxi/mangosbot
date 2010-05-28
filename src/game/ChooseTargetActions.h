@@ -18,21 +18,21 @@ namespace ai
         }
     };   
 
-    class AttackLeastThreatAction : public AttackAction {
+    class DpsAssistAction : public AttackAction {
     public:
-        AttackLeastThreatAction(AiManagerRegistry* const ai) : AttackAction(ai, "attack least threat") {}
+        DpsAssistAction(AiManagerRegistry* const ai) : AttackAction(ai, "dps assist") {}
         virtual Unit* GetTarget() 
         {
-            return ai->GetTargetManager()->FindLeastThreat();
+            return ai->GetTargetManager()->FindTargetForDps();
         }
     };   
     
-    class AttackBiggerThreatAction : public AttackAction {
+    class TankAssistAction : public AttackAction {
     public:
-        AttackBiggerThreatAction(AiManagerRegistry* const ai) : AttackAction(ai, "attack bigger threat") {}
+        TankAssistAction(AiManagerRegistry* const ai) : AttackAction(ai, "tank assist") {}
         virtual Unit* GetTarget() 
         {
-            return ai->GetTargetManager()->FindBiggerThreat();
+            return ai->GetTargetManager()->FindTargetForTank();
         }
     };   
   

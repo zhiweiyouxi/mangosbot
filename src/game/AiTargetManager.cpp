@@ -205,45 +205,6 @@ bool AiTargetManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
 	return false;
 }
 
-Unit* AiTargetManager::FindLeastThreat()
-{
-	std::list<ThreatManager*> attackers;
-	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
-
-	float minThreat = 1e8;
-	Unit* target = NULL;
-	for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
-	{  
-		ThreatManager* attacker = *i;
-		float threat = attacker->getThreat(bot);
-		if (!target || threat < minThreat)
-		{
-			minThreat = threat;
-			target = attacker->getOwner();
-		}
-	}
-	return target;
-}
-
-Unit* AiTargetManager::FindBiggerThreat()
-{
-	std::list<ThreatManager*> attackers;
-	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
-
-	float maxThreat = -1;
-	Unit* target = NULL;
-	for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
-	{  
-		ThreatManager* attacker = *i;
-		float threat = attacker->getThreat(bot);
-		if (!target || threat > maxThreat)
-		{
-			maxThreat = threat;
-			target = attacker->getOwner();
-		}
-	}
-	return target;
-}
 
 Unit* AiTargetManager::GetCurrentTarget()
 {
@@ -280,4 +241,107 @@ void AiTargetManager::HandleCommand(const string& text, Player& fromPlayer)
 void AiTargetManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 {
 
+}
+
+void FindTargetStrategy::CheckAttackers(Player* player)
+{
+	for (HostileReference* ref = player->getHostileRefManager().getFirst(); ref; ref = ref->next())
+	{
+		CheckAttacker(player, ref->getSource());
+	}
+}
+
+void FindTargetStrategy::GetPlayerCount(Player* player, Unit* creature, int* tankCount, int* dpsCount)
+{
+	tankCount = 0;
+	dpsCount = 0;
+
+	Group* group = player->GetGroup();
+	if (!group)
+		return;
+
+	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
+	{
+		Player* member = gref->getSource();
+		if (!member || !member->isAlive() || !member->IsWithinLOSInMap(member) || member == player)
+			continue;
+
+		switch (member->getClass())
+		{
+		case CLASS_PALADIN:
+		case CLASS_WARRIOR:
+			tankCount++;
+			break;
+		default:
+			dpsCount++;
+		}
+	}
+}
+
+void FindTargetForTankStrategy::CheckAttacker(Player* player, ThreatManager* threatManager)
+{
+	float threat = threatManager->getThreat(player);
+	Unit* creature = threatManager->getOwner();
+	int tankCount, dpsCount;
+	GetPlayerCount(player, creature, &tankCount, &dpsCount);
+
+	if (!result || 
+		minThreat >= threat && (minTankCount >= tankCount || maxDpsCount <= dpsCount))
+	{
+		minThreat = threat;
+		minTankCount = tankCount;
+		maxDpsCount = dpsCount;
+		result = creature;
+	}
+}
+
+void FindTargetForDpsStrategy::CheckAttacker(Player* player, ThreatManager* threatManager)
+{
+	float threat = threatManager->getThreat(player);
+	Unit* creature = threatManager->getOwner();
+	int tankCount, dpsCount;
+	GetPlayerCount(player, creature, &tankCount, &dpsCount);
+
+	if (!result || 
+		minThreat >= threat && (maxTankCount <= tankCount || minDpsCount >= dpsCount))
+	{
+		minThreat = threat;
+		maxTankCount = tankCount;
+		minDpsCount = dpsCount;
+		result = creature;
+	}
+}
+
+
+Unit* AiTargetManager::FindTarget(FindTargetStrategy* strategy)
+{
+	Group* group = bot->GetGroup();
+	if (!group)
+	{
+		strategy->CheckAttackers(bot);
+		return strategy->GetResult();
+	}
+
+	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
+	{
+		Player* member = gref->getSource();
+		if (!member || !member->isAlive() || !member->IsWithinLOSInMap(member))
+			continue;
+
+		strategy->CheckAttackers(member);
+	}
+
+	return strategy->GetResult();
+}
+
+Unit* AiTargetManager::FindTargetForTank()
+{
+	FindTargetForTankStrategy strategy;
+	return FindTarget(&strategy);
+}
+
+Unit* AiTargetManager::FindTargetForDps()
+{
+	FindTargetForDpsStrategy strategy;
+	return FindTarget(&strategy);
 }

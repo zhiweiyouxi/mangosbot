@@ -58,7 +58,7 @@ protected:
 		tick();
 		tickWithNoTarget();
 
-		assertActions(">stay>attack least threat");
+		assertActions(">stay>dps assist");
     }
 
 
@@ -70,7 +70,7 @@ protected:
 		tick();
 		tickWithNoTarget();
 
-		assertActions(">stay>attack bigger threat");
+		assertActions(">stay>tank assist");
 	}
 	
     void loot()

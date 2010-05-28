@@ -30,13 +30,13 @@ Unit* MockAiTargetManager::GetPartyMemberToDispell(uint32 dispelType)
 	return aiRegistry->GetSpellManager()->HasAuraToDispel(target, dispelType) ? target : NULL;
 }
 
-Unit* MockAiTargetManager::FindBiggerThreat()
+Unit* MockAiTargetManager::FindTargetForTank()
 {
-    return MockedTargets::GetBiggerThreat();
+    return MockedTargets::GetTargetForTank();
 }
-Unit* MockAiTargetManager::FindLeastThreat()
+Unit* MockAiTargetManager::FindTargetForDps()
 {
-    return MockedTargets::GetLeastThreat();
+    return MockedTargets::GetTargetForDps();
 }
 
 Unit* MockAiTargetManager::GetCurrentTarget()

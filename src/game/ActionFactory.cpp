@@ -81,14 +81,14 @@ ActionNode* ActionFactory::createAction(const char* name)
     }
     else if (!strcmp("attack bigger threat", name)) 
     {
-        return new ActionNode (new AttackBiggerThreatAction(ai),  
+        return new ActionNode (new TankAssistAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("attack least threat", name)) 
     {
-        return new ActionNode (new AttackLeastThreatAction(ai),  
+        return new ActionNode (new DpsAssistAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

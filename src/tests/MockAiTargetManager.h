@@ -28,9 +28,9 @@ namespace ai
 		virtual Unit* GetPartyMinHealthPlayer();
 		virtual Unit* GetDeadPartyMember();
 		virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
-		virtual Unit* FindBiggerThreat();
-		virtual Unit* FindLeastThreat();
 		virtual Unit* GetCurrentTarget();
+		virtual Unit* FindTargetForTank();
+		virtual Unit* FindTargetForDps();
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();
 		virtual Player* GetMaster();
