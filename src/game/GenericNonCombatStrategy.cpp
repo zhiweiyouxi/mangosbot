@@ -33,14 +33,21 @@ void TankAssistStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack bigger threat", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("tank assist", 50.0f), NULL)));
+}
+
+void TankAoeStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
+{
+	triggers.push_back(new TriggerNode(
+		new TimerTrigger(ai, 5), 
+		NextAction::array(0, new NextAction("tank assist", 50.0f), NULL)));
 }
 
 void DpsAssistStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     triggers.push_back(new TriggerNode(
         new NoAttackersTrigger(ai), 
-        NextAction::array(0, new NextAction("attack least threat", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("dps assist", 50.0f), NULL)));
 }
 
 NextAction** StayNonCombatStrategy::getDefaultActions()

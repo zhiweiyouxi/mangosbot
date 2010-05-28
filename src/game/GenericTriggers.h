@@ -270,6 +270,18 @@ namespace ai
 	protected:
 		const char* spell;
 	};
+
+	class TimerTrigger : public Trigger
+	{
+	public:
+		TimerTrigger(AiManagerRegistry* const ai, int interval) : Trigger(ai, "timer", interval) 
+		{
+		}
+
+	public: 
+		virtual bool IsActive();
+
+	};
 }
 
 #include "RangeTriggers.h"

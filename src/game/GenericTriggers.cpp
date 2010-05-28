@@ -153,3 +153,8 @@ bool HasAuraTrigger::IsActive()
 {
 	return spellManager->HasAura(spell, GetTarget());
 }
+
+bool TimerTrigger::IsActive()
+{
+	return true;
+}

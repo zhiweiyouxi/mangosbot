@@ -79,14 +79,14 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("attack bigger threat", name)) 
+    else if (!strcmp("tank assist", name)) 
     {
         return new ActionNode (new TankAssistAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("attack least threat", name)) 
+    else if (!strcmp("dps assist", name)) 
     {
         return new ActionNode (new DpsAssistAction(ai),  
             /*P*/ NULL,
@@ -119,6 +119,9 @@ Strategy* ActionFactory::createStrategy(const char* name)
 
     if (!strcmp("tank assist", name))
         return new TankAssistStrategy(ai);
+
+	if (!strcmp("tank aoe", name))
+		return new TankAoeStrategy(ai);
 
     if (!strcmp("loot", name))
         return new LootNonCombatStrategy(ai);
