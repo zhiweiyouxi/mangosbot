@@ -431,7 +431,7 @@ void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 		{
 			if(pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
 			{
-				if(pSpellInfo->EffectBasePoints[1] == master_speed1)
+				if(pSpellInfo->EffectBasePoints[1] == master_speed1 && CanCastSpell(spellId, bot))
 				{
 					spellMount = spellId;
 					break;
@@ -441,7 +441,7 @@ void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 				&& (pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED))
 			{
 				if((pSpellInfo->EffectBasePoints[1] == master_speed1)
-					&& (pSpellInfo->EffectBasePoints[2] == master_speed2))
+					&& (pSpellInfo->EffectBasePoints[2] == master_speed2) && CanCastSpell(spellId, bot))
 				{
 					spellMount = spellId;
 					break;
@@ -451,7 +451,7 @@ void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 				&& (pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED))
 			{
 				if((pSpellInfo->EffectBasePoints[2] == master_speed2) 
-					&& (pSpellInfo->EffectBasePoints[1] == master_speed1))
+					&& (pSpellInfo->EffectBasePoints[1] == master_speed1) && CanCastSpell(spellId, bot))
 				{
 					spellMount = spellId;
 					break;
