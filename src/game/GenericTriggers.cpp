@@ -154,7 +154,9 @@ bool HasAuraTrigger::IsActive()
 	return spellManager->HasAura(spell, GetTarget());
 }
 
-bool TimerTrigger::IsActive()
+bool TankAoeTrigger::IsActive()
 {
-	return true;
+    Unit* target = targetManager->GetCurrentTarget();
+    return statsManager->GetAttackerCount() > 0 && 
+        (!target || target->getVictim() == targetManager->GetSelf());
 }

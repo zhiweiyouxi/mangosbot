@@ -13,46 +13,47 @@
 using namespace ai;
 using namespace std;
 
-void FindTargetStrategy::CheckAttackers(Player* player)
+void FindTargetStrategy::CheckAttackers(Player* bot, Player* player)
 {
 	for (HostileReference* ref = player->getHostileRefManager().getFirst(); ref; ref = ref->next())
 	{
-		CheckAttacker(player, ref->getSource());
+		CheckAttacker(bot, player, ref->getSource());
 	}
 }
 
-void FindTargetStrategy::GetPlayerCount(Player* player, Unit* creature, int* tankCount, int* dpsCount)
+void FindTargetStrategy::GetPlayerCount(Player* bot, Unit* creature, int* tankCount, int* dpsCount)
 {
 	tankCount = 0;
 	dpsCount = 0;
 
-	Group* group = player->GetGroup();
-	if (!group)
-		return;
-
-	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
-	{
-		Player* member = gref->getSource();
-		if (!member || !member->isAlive() || !member->IsWithinLOSInMap(member) || member == player)
+    for (set<Unit*>::const_iterator i = creature->getAttackers().begin(); i != creature->getAttackers().end(); i++)
+    {
+		Unit* attacker = *i;
+		if (!attacker || !attacker->isAlive() || !bot->IsWithinLOSInMap(attacker) || attacker == bot)
 			continue;
 
-		if (aiRegistry->GetStatsManager()->IsTank(member))
+        Player* player = dynamic_cast<Player*>(attacker);
+        if (!player)
+            continue;
+
+		if (aiRegistry->GetStatsManager()->IsTank(player))
 			tankCount++;
 		
-		if (aiRegistry->GetStatsManager()->IsDps(member))
+		if (aiRegistry->GetStatsManager()->IsDps(player))
 			dpsCount++;
 	}
 }
 
-void FindTargetForTankStrategy::CheckAttacker(Player* player, ThreatManager* threatManager)
+void FindTargetForTankStrategy::CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager)
 {
-	float threat = threatManager->getThreat(player);
+	float threat = threatManager->getThreat(bot);
 	Unit* creature = threatManager->getOwner();
 	int tankCount, dpsCount;
-	GetPlayerCount(player, creature, &tankCount, &dpsCount);
+	GetPlayerCount(bot, creature, &tankCount, &dpsCount);
 
 	if (!result || 
-		minThreat >= threat && (minTankCount >= tankCount || maxDpsCount <= dpsCount))
+        (bot->GetSelection() != creature->GetGUID() && minThreat >= threat && 
+            (minTankCount >= tankCount || maxDpsCount <= dpsCount)))
 	{
 		minThreat = threat;
 		minTankCount = tankCount;
@@ -61,12 +62,12 @@ void FindTargetForTankStrategy::CheckAttacker(Player* player, ThreatManager* thr
 	}
 }
 
-void FindTargetForDpsStrategy::CheckAttacker(Player* player, ThreatManager* threatManager)
+void FindTargetForDpsStrategy::CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager)
 {
-	float threat = threatManager->getThreat(player);
+	float threat = threatManager->getThreat(bot);
 	Unit* creature = threatManager->getOwner();
 	int tankCount, dpsCount;
-	GetPlayerCount(player, creature, &tankCount, &dpsCount);
+	GetPlayerCount(bot, creature, &tankCount, &dpsCount);
 
 	if (!result || 
 		minThreat >= threat && (maxTankCount <= tankCount || minDpsCount >= dpsCount))

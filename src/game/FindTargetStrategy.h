@@ -23,12 +23,12 @@ namespace ai
 		}
 
 	public:
-		void CheckAttackers(Player* player);
+		void CheckAttackers(Player* bot, Player* player);
 		Unit* GetResult() { return result; }
 
 	protected:
-		virtual void CheckAttacker(Player* player, ThreatManager* threatManager) = NULL;
-		void GetPlayerCount(Player* player, Unit* creature, int* tankCount, int* dpsCount);
+		virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager) = NULL;
+		void GetPlayerCount(Player* bot, Unit* creature, int* tankCount, int* dpsCount);
 
 	protected:
 		Unit* result;
@@ -46,7 +46,7 @@ namespace ai
 		}
 
 	protected:
-		virtual void CheckAttacker(Player* player, ThreatManager* threatManager);
+		virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager);
 
 	protected:
 		float minThreat;
@@ -65,7 +65,7 @@ namespace ai
 		}
 
 	protected:
-		virtual void CheckAttacker(Player* player, ThreatManager* threatManager);
+		virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager);
 
 	protected:
 		float minThreat;

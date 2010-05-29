@@ -6,6 +6,7 @@
 [ ] remove shapeshift before mount
 [ ] report formatting
 [ ] who has item [link] command 
+[ ] strategy names must be consistent between getName() and createStrategy()
 
 [ ] use threat level
 [ ] do not interrupt channels

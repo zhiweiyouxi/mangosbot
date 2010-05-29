@@ -271,12 +271,19 @@ namespace ai
 		const char* spell;
 	};
 
-	class TimerTrigger : public Trigger
+    class TimerTrigger : public Trigger
+    {
+    public:
+        TimerTrigger(AiManagerRegistry* const ai, int checkInterval) : Trigger(ai, "timer", checkInterval) {}
+
+    public: 
+        virtual bool IsActive() { return true; }
+    };
+
+	class TankAoeTrigger : public NoAttackersTrigger
 	{
 	public:
-		TimerTrigger(AiManagerRegistry* const ai, int interval) : Trigger(ai, "timer", interval) 
-		{
-		}
+		TankAoeTrigger(AiManagerRegistry* const ai) : NoAttackersTrigger(ai) {}
 
 	public: 
 		virtual bool IsActive();

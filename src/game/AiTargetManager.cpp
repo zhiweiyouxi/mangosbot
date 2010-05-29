@@ -250,7 +250,7 @@ Unit* AiTargetManager::FindTarget(FindTargetStrategy* strategy)
 	Group* group = bot->GetGroup();
 	if (!group)
 	{
-		strategy->CheckAttackers(bot);
+		strategy->CheckAttackers(bot, bot);
 		return strategy->GetResult();
 	}
 
@@ -260,7 +260,7 @@ Unit* AiTargetManager::FindTarget(FindTargetStrategy* strategy)
 		if (!member || !member->isAlive() || !member->IsWithinLOSInMap(member))
 			continue;
 
-		strategy->CheckAttackers(member);
+		strategy->CheckAttackers(bot, member);
 	}
 
 	return strategy->GetResult();
