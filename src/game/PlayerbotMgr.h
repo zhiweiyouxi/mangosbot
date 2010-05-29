@@ -29,7 +29,7 @@ class MANGOS_DLL_SPEC PlayerbotMgr
         void HandleMasterIncomingPacket(const WorldPacket& packet);
         void HandleMasterOutgoingPacket(const WorldPacket& packet);
 
-        void AddPlayerBot(uint64 guid);
+        void AddPlayerBot(uint64 guid, WorldSession* session);
         void LogoutPlayerBot(uint64 guid);
         Player* GetPlayerBot (uint64 guid) const;
         Player* GetMaster() const { return m_master; };

@@ -387,13 +387,6 @@ bool processBotCommand(WorldSession* session, string cmdStr, uint64 guid)
     if (guid == 0 || (guid == session->GetPlayer()->GetGUID()))
         return false;
 
-    /*uint32 accountId = sObjectMgr.GetPlayerAccountIdByGUID(guid);
-    if (accountId != session->GetAccountId()) {
-        handler->PSendSysMessage("You may only add bots from the same account.");
-        handler->SetSentErrorMessage(true);
-        return false;
-    }*/
-
     PlayerbotMgr* mgr = session->GetPlayer()->GetPlayerbotMgr();
 
     if (cmdStr == "add" || cmdStr == "login")
@@ -401,7 +394,7 @@ bool processBotCommand(WorldSession* session, string cmdStr, uint64 guid)
         if (mgr->GetPlayerBot(guid)) 
             return false;
         
-        mgr->AddPlayerBot(guid);
+        mgr->AddPlayerBot(guid, session);
     }
     else if (cmdStr == "remove" || cmdStr == "logout")
     {

@@ -334,7 +334,7 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
         }
         else if(_player->GetPlayerbotMgr()->GetPlayerBot(guidlo) == NULL)
         {
-            _player->GetPlayerbotMgr()->AddPlayerBot(guidlo);
+            _player->GetPlayerbotMgr()->AddPlayerBot(guidlo, m_session);
         }
         _player->PlayerTalkClass->CloseGossip();
     }

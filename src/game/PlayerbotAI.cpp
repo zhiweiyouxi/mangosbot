@@ -105,8 +105,8 @@ void PlayerbotAI::HandleCommand(const string& text, Player& fromPlayer)
 		text.find("CTRA") != std::wstring::npos)
 		return;
 
-	if (fromPlayer.GetSession()->GetAccountId() != bot->GetSession()->GetAccountId())
-		return;
+	if (fromPlayer.GetGuildId() != bot->GetGuildId())
+	    return;
 
 	AiManagerBase** managers = aiRegistry->GetManagers();
 	for (int i=0; i<aiRegistry->GetManagerCount(); i++)
