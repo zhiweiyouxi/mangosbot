@@ -36,10 +36,10 @@ void FindTargetStrategy::GetPlayerCount(Player* player, Unit* creature, int* tan
 		if (!member || !member->isAlive() || !member->IsWithinLOSInMap(member) || member == player)
 			continue;
 
-		if (ai->GetStatsManager()->IsTank(member))
+		if (aiRegistry->GetStatsManager()->IsTank(member))
 			tankCount++;
 		
-		if (ai->GetStatsManager()->IsDps(member))
+		if (aiRegistry->GetStatsManager()->IsDps(member))
 			dpsCount++;
 	}
 }

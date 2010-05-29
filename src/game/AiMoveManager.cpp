@@ -50,7 +50,7 @@ void AiMoveManager::Follow(Unit* target, float distance)
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
-	std::list<ThreatManager*> attackers;
+	list<ThreatManager*> attackers;
 	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
 
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
@@ -61,6 +61,7 @@ bool AiMoveManager::Flee(Unit* target, float distance)
 		bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
 		return true;
 	}
+    ai->SetNextCheckDelay(3);
 	return false;
 }
 

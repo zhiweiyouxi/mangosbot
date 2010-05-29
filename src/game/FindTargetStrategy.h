@@ -19,7 +19,7 @@ namespace ai
 		FindTargetStrategy(AiManagerRegistry* aiRegistry)
 		{
 			result = NULL;
-			this->ai = ai;
+			this->aiRegistry = aiRegistry;
 		}
 
 	public:
@@ -32,13 +32,13 @@ namespace ai
 
 	protected:
 		Unit* result;
-		AiManagerRegistry* ai;
+		AiManagerRegistry* aiRegistry;
 	};
 
 	class FindTargetForTankStrategy : public FindTargetStrategy
 	{
 	public:
-		FindTargetForTankStrategy(AiManagerRegistry* aiRegistry) : FindTargetStrategy(ai)
+		FindTargetForTankStrategy(AiManagerRegistry* aiRegistry) : FindTargetStrategy(aiRegistry)
 		{
 			minThreat = 0;
 			minTankCount = 0;
@@ -57,7 +57,7 @@ namespace ai
 	class FindTargetForDpsStrategy : public FindTargetStrategy
 	{
 	public:
-		FindTargetForDpsStrategy(AiManagerRegistry* aiRegistry) : FindTargetStrategy(ai)
+		FindTargetForDpsStrategy(AiManagerRegistry* aiRegistry) : FindTargetStrategy(aiRegistry)
 		{
 			minThreat = 0;
 			maxTankCount = 0;
