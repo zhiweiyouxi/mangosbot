@@ -5,8 +5,7 @@
 [ ] interrupt spell on target death
 [ ] remove shapeshift before mount
 [ ] report formatting
-
-[v] soul shard
+[ ] who has item [link] command 
 
 [ ] use threat level
 [ ] do not interrupt channels
@@ -15,4 +14,4 @@
 
 [ ] warlock: heal demon
 
-[ ] SPELL_FAILED_ITEM_NOT_FOUND
+[ ] SPELL_FAILED_ITEM_NOT_FOUND (item enchants)
