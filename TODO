@@ -1,3 +1,4 @@
+[ ] .invite all bots
 [ ] resistance auras, spells etc on (from enemy spells)
 [ ] aoe
 [ ] flee out of damaging aoe
@@ -6,7 +7,6 @@
 [ ] remove shapeshift before mount
 [ ] report formatting
 [ ] who has item [link] command 
-[ ] strategy names must be consistent between getName() and createStrategy()
 [ ] magic shield
 
 [ ] use threat level

@@ -3,6 +3,7 @@
 #include "MageActionFactory.h"
 #include "FrostMageStrategy.h"
 #include "GenericMageNonCombatStrategy.h"
+#include "FireMageStrategy.h"
 
 using namespace ai;
 
@@ -10,6 +11,9 @@ Strategy* MageActionFactory::createStrategy(const char* name)
 {
     if (!strcmp("frost", name))
         return new FrostMageStrategy(ai);
+
+    if (!strcmp("fire", name))
+        return new FireMageStrategy(ai);
 
     if (!strcmp("nc", name))
         return new GenericMageNonCombatStrategy(ai);

@@ -8,7 +8,7 @@ namespace ai
     {
     public:
         GenericMageNonCombatStrategy(AiManagerRegistry* const ai) : GenericMageStrategy(ai) {}
-        virtual const char* getName() { return "mage non combat"; }
+        virtual const char* getName() { return "nc"; }
     
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

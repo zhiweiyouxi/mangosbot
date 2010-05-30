@@ -4,6 +4,12 @@
 
 namespace ai
 {
+    class CastFireballAction : public CastSpellAction
+    {
+    public:
+        CastFireballAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "fireball") {}
+    };
+
     BEGIN_SPELL_ACTION(CastFrostNovaAction, "frost nova")
     END_SPELL_ACTION()
 

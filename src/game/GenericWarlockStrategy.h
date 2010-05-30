@@ -1,15 +1,14 @@
 #pragma once
 
 #include "Strategy.h"
-#include "GenericWarlockStrategy.h"
 
 namespace ai
 {
-    class DpsWarlockStrategy : public GenericWarlockStrategy
+    class GenericWarlockStrategy : public CombatStrategy
     {
     public:
-        DpsWarlockStrategy(AiManagerRegistry* const ai) : GenericWarlockStrategy(ai) {}
-        virtual const char* getName() { return "dps"; }
+        GenericWarlockStrategy(AiManagerRegistry* const ai) : CombatStrategy(ai) {}
+        virtual const char* getName() { return "warlock"; }
     
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

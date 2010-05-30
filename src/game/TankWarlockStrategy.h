@@ -5,11 +5,11 @@
 
 namespace ai
 {
-    class DpsWarlockStrategy : public GenericWarlockStrategy
+    class TankWarlockStrategy : public GenericWarlockStrategy
     {
     public:
-        DpsWarlockStrategy(AiManagerRegistry* const ai) : GenericWarlockStrategy(ai) {}
-        virtual const char* getName() { return "dps"; }
+        TankWarlockStrategy(AiManagerRegistry* const ai) : GenericWarlockStrategy(ai) {}
+        virtual const char* getName() { return "tank"; }
     
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
