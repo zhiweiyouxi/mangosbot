@@ -17,19 +17,36 @@ void FindTargetStrategy::CheckAttackers(Player* bot, Player* player)
 {
 	for (HostileReference* ref = player->getHostileRefManager().getFirst(); ref; ref = ref->next())
 	{
-		CheckAttacker(bot, player, ref->getSource());
+        ThreatManager* threatManager = ref->getSource();
+        Unit *attacker = threatManager->getOwner();
+        if (attacker && 
+            !attacker->isDead() && 
+            !attacker->IsPolymorphed() && 
+            !attacker->isFrozen() && 
+            !attacker->IsFriendlyTo(bot) && 
+            bot->IsWithinLOSInMap(attacker))
+        {
+		    CheckAttacker(bot, player, threatManager);
+        }
 	}
 }
 
 void FindTargetStrategy::GetPlayerCount(Player* bot, Unit* creature, int* tankCount, int* dpsCount)
 {
-	tankCount = 0;
-	dpsCount = 0;
+    if (tankCountCache.find(creature) != tankCountCache.end())
+    {
+        *tankCount = tankCountCache[creature];
+        *dpsCount = dpsCountCache[creature];
+        return;
+    }
+
+	*tankCount = 0;
+	*dpsCount = 0;
 
     for (set<Unit*>::const_iterator i = creature->getAttackers().begin(); i != creature->getAttackers().end(); i++)
     {
 		Unit* attacker = *i;
-		if (!attacker || !attacker->isAlive() || !bot->IsWithinLOSInMap(attacker) || attacker == bot)
+		if (!attacker || !attacker->isAlive() || attacker == bot)
 			continue;
 
         Player* player = dynamic_cast<Player*>(attacker);
@@ -37,11 +54,14 @@ void FindTargetStrategy::GetPlayerCount(Player* bot, Unit* creature, int* tankCo
             continue;
 
 		if (aiRegistry->GetStatsManager()->IsTank(player))
-			tankCount++;
+			(*tankCount)++;
 		
 		if (aiRegistry->GetStatsManager()->IsDps(player))
-			dpsCount++;
+			(*dpsCount)++;
 	}
+
+    tankCountCache[creature] = *tankCount;
+    dpsCountCache[creature] = *dpsCount;
 }
 
 void FindTargetForTankStrategy::CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager)

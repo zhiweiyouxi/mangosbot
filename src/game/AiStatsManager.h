@@ -33,14 +33,14 @@ namespace ai
 		virtual bool IsDps(Player* player);
 
 	public:
-		void findAllAttackers(std::list<ThreatManager*> &out);
+		void findAllAttackers(map<Unit*, ThreatManager*> &out);
 
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
-		void findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out);
+		void findAllAttackers(HostileReference *ref, map<Unit*, ThreatManager*> &out);
 		uint32 EstRepair(uint16 pos);
 		uint32 EstRepairAll();
 

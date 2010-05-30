@@ -11,7 +11,7 @@
 using namespace ai;
 using namespace std;
 
-void AiStatsManager::findAllAttackers(HostileReference *ref, std::list<ThreatManager*> &out)
+void AiStatsManager::findAllAttackers(HostileReference *ref, map<Unit*, ThreatManager*> &out)
 {
 	while( ref )
 	{
@@ -22,26 +22,16 @@ void AiStatsManager::findAllAttackers(HostileReference *ref, std::list<ThreatMan
 			!attacker->IsPolymorphed() && 
 			!attacker->isFrozen() && 
 			!attacker->IsFriendlyTo(bot) && 
+            bot->GetDistance(attacker) <= BOT_REACT_DISTANCE &&
 			bot->IsWithinLOSInMap(attacker))
 		{
-			bool found = FALSE;
-			for (std::list<ThreatManager*>::iterator i = out.begin(); i != out.end(); i++)
-			{
-				ThreatManager *cur = *i;
-				if (cur->getOwner() == attacker)
-				{
-					found = TRUE;
-					break;
-				}
-			}
-			if (!found)
-				out.push_back(source);
+            out[attacker] = source;
 		}
 		ref = ref->next();
 	}
 }
 
-void AiStatsManager::findAllAttackers(std::list<ThreatManager*> &out)
+void AiStatsManager::findAllAttackers(map<Unit*, ThreatManager*> &out)
 {
 	if (bot->GetGroup())
 	{
@@ -108,16 +98,9 @@ bool AiStatsManager::IsDead(Unit* target)
 
 int AiStatsManager::GetAttackerCount(float distance)
 {
-	std::list<ThreatManager*> attackers;
+	map<Unit*, ThreatManager*> attackers;
 	findAllAttackers(attackers);
-
-	int count = 0;
-	for (std::list<ThreatManager*>::iterator i = attackers.begin(); i != attackers.end(); i++) {
-		ThreatManager *cur = *i;
-		if (bot->GetDistance(cur->getOwner()) <= distance) 
-			count++;
-	}
-	return count;
+    return attackers.size();
 }
 
 int AiStatsManager::GetMyAttackerCount()
@@ -155,11 +138,11 @@ float AiStatsManager::GetBalancePercent()
 		}
 	}
 
-	std::list<ThreatManager*> attackers;
+	map<Unit*, ThreatManager*> attackers;
 	findAllAttackers(attackers);
-	for (std::list<ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
+	for (map<Unit*, ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
 	{  
-		Unit* unit = (*i)->getOwner();
+		Unit* unit = i->first;
 		if (unit || !unit->isAlive())
 			continue;
 

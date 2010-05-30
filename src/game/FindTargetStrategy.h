@@ -33,6 +33,10 @@ namespace ai
 	protected:
 		Unit* result;
 		AiManagerRegistry* aiRegistry;
+
+    protected:
+        map<Unit*, int> tankCountCache;
+        map<Unit*, int> dpsCountCache;
 	};
 
 	class FindTargetForTankStrategy : public FindTargetStrategy

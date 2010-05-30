@@ -36,8 +36,8 @@ void FleeManager::calculateDistanceToCreatures(FleePoint *point) {
 	RangePair &distance = point->toCreatures;
 
 	float botAngle = bot->GetOrientation();
-	for (std::list<ThreatManager*>::iterator i = attackers->begin(); i!=attackers->end(); i++) {  
-		Unit* unit = (*i)->getOwner();
+	for (map<Unit*, ThreatManager*>::iterator i = attackers->begin(); i!=attackers->end(); i++) {  
+		Unit* unit = i->first;
 
 		float d = unit->GetDistance(point->x, point->y, point->z);
 		distance.probe(d);
@@ -49,7 +49,7 @@ void FleeManager::calculatePoints(list<FleePoint*> &points) {
 	float botPosY = bot->GetPositionY();
 	float botPosZ = bot->GetPositionZ();
 
-	for (float r = maxAllowedDistance; r>=15.0f; r -= 5.0f) {
+	for (float r = maxAllowedDistance; r>=15.0f; r -= 10.0f) {
 		for (float angle = -M_PI + followAngle; angle < M_PI + followAngle; angle += M_PI / 8) {
 			float x = botPosX + cos(angle) * r;
 			float y = botPosY + sin(angle) * r;

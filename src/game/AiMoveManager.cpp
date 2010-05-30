@@ -50,7 +50,7 @@ void AiMoveManager::Follow(Unit* target, float distance)
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
-	list<ThreatManager*> attackers;
+	map<Unit*, ThreatManager*> attackers;
 	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
 
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
