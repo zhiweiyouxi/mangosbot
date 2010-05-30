@@ -50,8 +50,7 @@ void AiMoveManager::Follow(Unit* target, float distance)
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
-	map<Unit*, ThreatManager*> attackers;
-	aiRegistry->GetStatsManager()->findAllAttackers(attackers);
+	map<Unit*, ThreatManager*> &attackers = aiRegistry->GetStatsManager()->GetAttackers();
 
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
 
@@ -107,6 +106,7 @@ void AiMoveManager::Attack(Unit* target)
 	bot->SetSelection(guid);
 	bot->Attack(target, true);
 
+    aiRegistry->GetTargetManager()->SetCurrentTarget(target);
 	aiRegistry->GetInventoryManager()->AddLoot(guid);
 }
 
@@ -153,6 +153,7 @@ void AiMoveManager::Revive()
 		aiRegistry->GetSocialManager()->TellMaster(".. could not be revived ..");
 		return;
 	}
+    aiRegistry->GetTargetManager()->SetCurrentTarget(NULL);
 	bot->SetSelection(0);
 }
 

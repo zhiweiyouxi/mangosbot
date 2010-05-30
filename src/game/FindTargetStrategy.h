@@ -37,6 +37,7 @@ namespace ai
     protected:
         map<Unit*, int> tankCountCache;
         map<Unit*, int> dpsCountCache;
+        set<Unit*> alreadyChecked;
 	};
 
 	class FindTargetForTankStrategy : public FindTargetStrategy

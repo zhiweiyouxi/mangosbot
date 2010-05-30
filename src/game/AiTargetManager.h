@@ -23,6 +23,7 @@ namespace ai
 	public:
 		AiTargetManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
+            selection = NULL;
 		}
 
 	public:
@@ -32,7 +33,8 @@ namespace ai
 		virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
 		virtual Unit* FindTargetForTank();
 		virtual Unit* FindTargetForDps();
-		virtual Unit* GetCurrentTarget();
+        virtual Unit* GetCurrentTarget() { return selection; }
+        virtual void SetCurrentTarget(Unit* target) { selection = target; }
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();
 		virtual Player* GetMaster();
@@ -61,6 +63,9 @@ namespace ai
 
 	private:
 		bool PlayerWithoutAuraPredicate(Unit* player, void *param /*const char* spell*/);
+
+    private:
+        Unit* selection;
 
 	};
 

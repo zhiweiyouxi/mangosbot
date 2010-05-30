@@ -49,6 +49,7 @@ void AiStrategyManager::DoNextAction()
 	}
 	else 
     {
+        aiRegistry->GetTargetManager()->SetCurrentTarget(NULL);
         bot->SetSelection(0);
         if (!bot->isInCombat() && currentEngine != nonCombatEngine)
 	    {
@@ -56,6 +57,10 @@ void AiStrategyManager::DoNextAction()
 		    currentEngine = nonCombatEngine;
 	    }
     }
+
+    AiManagerBase** managers = aiRegistry->GetManagers();
+    for (int i=0; i<aiRegistry->GetManagerCount(); i++)
+        managers[i]->Update();
 
 	currentEngine->DoNextAction(NULL);
 }

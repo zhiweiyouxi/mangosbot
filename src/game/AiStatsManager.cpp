@@ -98,8 +98,6 @@ bool AiStatsManager::IsDead(Unit* target)
 
 int AiStatsManager::GetAttackerCount(float distance)
 {
-	map<Unit*, ThreatManager*> attackers;
-	findAllAttackers(attackers);
     return attackers.size();
 }
 
@@ -119,7 +117,7 @@ int AiStatsManager::GetMyAttackerCount()
 	return count;
 }
 
-float AiStatsManager::GetBalancePercent()
+float AiStatsManager::CalculateBalancePercent()
 {
 	uint32 playerLevel = 0,
 		attackerLevel = 0;
@@ -138,8 +136,6 @@ float AiStatsManager::GetBalancePercent()
 		}
 	}
 
-	map<Unit*, ThreatManager*> attackers;
-	findAllAttackers(attackers);
 	for (map<Unit*, ThreatManager*>::iterator i = attackers.begin(); i!=attackers.end(); i++)
 	{  
 		Unit* unit = i->first;
@@ -350,3 +346,12 @@ bool AiStatsManager::IsDps(Player* player)
 {
 	return !IsTank(player);
 }
+
+void AiStatsManager::Update()
+{
+    attackers.clear();
+    findAllAttackers(attackers);
+
+    balancePercent = CalculateBalancePercent();
+}
+

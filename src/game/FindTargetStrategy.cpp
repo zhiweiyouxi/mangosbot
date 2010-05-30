@@ -19,7 +19,7 @@ void FindTargetStrategy::CheckAttackers(Player* bot, Player* player)
 	{
         ThreatManager* threatManager = ref->getSource();
         Unit *attacker = threatManager->getOwner();
-        if (attacker && 
+        if (attacker && alreadyChecked.find(attacker) == alreadyChecked.end() &&
             !attacker->isDead() && 
             !attacker->IsPolymorphed() && 
             !attacker->isFrozen() && 
@@ -27,6 +27,9 @@ void FindTargetStrategy::CheckAttackers(Player* bot, Player* player)
             bot->IsWithinLOSInMap(attacker))
         {
 		    CheckAttacker(bot, player, threatManager);
+            alreadyChecked.insert(attacker);
+            if (alreadyChecked.size() > 5)
+                break;
         }
 	}
 }

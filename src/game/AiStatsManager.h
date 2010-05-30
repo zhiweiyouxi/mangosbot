@@ -15,6 +15,9 @@ namespace ai
 		{
 		}
 
+    public:
+        virtual void Update();
+
 	public:
 		virtual uint8 GetHealthPercent(Unit* target);
 		virtual uint8 GetRage(Unit* target);
@@ -25,7 +28,7 @@ namespace ai
 		virtual bool IsDead(Unit* target);
 		virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
 		virtual int GetMyAttackerCount();
-		virtual float GetBalancePercent();
+        virtual float GetBalancePercent() { return balancePercent; }
 		virtual bool HasAggro(Unit* target);	
 		virtual bool IsMounted();
 		virtual void ListStats();
@@ -33,16 +36,22 @@ namespace ai
 		virtual bool IsDps(Player* player);
 
 	public:
-		void findAllAttackers(map<Unit*, ThreatManager*> &out);
+        virtual map<Unit*, ThreatManager*>& GetAttackers() { return attackers; }
 
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
 	private:
+        void findAllAttackers(map<Unit*, ThreatManager*> &out);
 		void findAllAttackers(HostileReference *ref, map<Unit*, ThreatManager*> &out);
 		uint32 EstRepair(uint16 pos);
 		uint32 EstRepairAll();
+        float CalculateBalancePercent();
+
+    private:
+        map<Unit*, ThreatManager*> attackers;
+        float balancePercent;
 
 	};
 

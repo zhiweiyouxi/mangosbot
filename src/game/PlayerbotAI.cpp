@@ -43,6 +43,14 @@ void PlayerbotAI::UpdateAI(uint32 elapsed)
 		return;
 
 	SetNextCheckDelay(1);
+    Group* group = bot->GetGroup();
+    if (group)
+    {
+        if (group->GetMembersCount() > 10)
+            SetNextCheckDelay(2);
+        else if (group->GetMembersCount() > 20)
+            SetNextCheckDelay(3);
+    }
 
 	if (bot->isAlive())
 	{

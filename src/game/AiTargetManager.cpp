@@ -207,13 +207,6 @@ bool AiTargetManager::canDispel(const SpellEntry* entry, uint32 dispelType) {
 	return false;
 }
 
-
-Unit* AiTargetManager::GetCurrentTarget()
-{
-	uint64 guid = bot->GetSelection();
-	return guid ? ObjectAccessor::GetUnit(*bot, guid) : NULL;
-}
-
 Player* AiTargetManager::GetSelf()
 {
 	return bot;

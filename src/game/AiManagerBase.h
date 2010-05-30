@@ -28,6 +28,7 @@ namespace ai
 		AiManagerBase(PlayerbotAI* ai, AiManagerRegistry* aiRegistry);
 
 	public:
+        virtual void Update() {}
 		virtual void HandleCommand(const string& text, Player& fromPlayer) {}
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet) {}
 
