@@ -11,21 +11,22 @@
 #include "AiManagerRegistry.h"
 #include "AiStrategyManager.h"
 #include "AiMoveManager.h"
+#include "Item.h"
+#include "Spell.h"
 
 
 using namespace ai;
 using namespace std;
 
-PlayerbotAI::PlayerbotAI()
+PlayerbotAI::PlayerbotAI() : PlayerbotAIBase()
 {
 	aiRegistry = NULL;
 }
 
-PlayerbotAI::PlayerbotAI(PlayerbotMgr* mgr, Player* bot) 
+PlayerbotAI::PlayerbotAI(PlayerbotMgr* mgr, Player* bot) : PlayerbotAIBase()
 {
 	this->mgr = mgr;
 	this->bot = bot;
-	nextAICheckTime = 0;
 	aiRegistry = new AiManagerRegistry(this);
 
     aiRegistry->GetMoveManager()->Summon();
@@ -41,6 +42,9 @@ void PlayerbotAI::UpdateAI(uint32 elapsed)
 {
 	if (!CanUpdateAI())
 		return;
+
+    if (bot->IsBeingTeleported() || bot->GetTrader())
+        return;
 
 	SetNextCheckDelay(1);
     Group* group = bot->GetGroup();
@@ -62,30 +66,6 @@ void PlayerbotAI::UpdateAI(uint32 elapsed)
 	}
 
 	YieldThread();
-}
-
-void PlayerbotAI::SetNextCheckDelay(const uint32 delay) 
-{
-	nextAICheckTime = time(0) + delay;
-}
-
-bool PlayerbotAI::CanUpdateAI() 
-{
-	time_t now = time(0);
-
-	if (now < nextAICheckTime)
-		return false;
-
-	if (bot->IsBeingTeleported() || bot->GetTrader())
-		return false;
-
-	return true;
-}
-
-void PlayerbotAI::YieldThread()
-{
-	if (CanUpdateAI())
-		SetNextCheckDelay(BOT_REACT_DELAY);
 }
 
 void PlayerbotAI::HandleTeleportAck()
@@ -127,3 +107,5 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 	for (int i=0; i<aiRegistry->GetManagerCount(); i++)
 		managers[i]->HandleBotOutgoingPacket(packet);
 }
+
+

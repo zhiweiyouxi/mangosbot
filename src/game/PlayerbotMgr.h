@@ -2,6 +2,8 @@
 #define _PLAYERBOTMGR_H
 
 #include "Common.h"
+#include "AiGroupStatsManager.h"
+#include "PlayerbotAIBase.h"
 
 class WorldPacket;
 class Player;
@@ -12,20 +14,13 @@ class PlayerbotClassAI;
 
 typedef UNORDERED_MAP<uint64, Player*> PlayerBotMap;
 
-class MANGOS_DLL_SPEC PlayerbotMgr
+class MANGOS_DLL_SPEC PlayerbotMgr : public PlayerbotAIBase
 {
     public:
         PlayerbotMgr(Player* const master);
         virtual ~PlayerbotMgr();
 
-        // This is called from Unit.cpp and is called every second (I think)
-        void UpdateAI(const uint32 p_time);
-
-        // This is called whenever the master sends a packet to the server.
-        // These packets can be viewed, but not edited.
-        // It allows bot creators to craft AI in response to a master's actions.
-        // For a list of opcodes that can be caught see Opcodes.cpp (CMSG_* opcodes only)
-        // Notice: that this is static which means it is called once for all bots of the master.
+        void UpdateAI(uint32 elapsed);
         void HandleMasterIncomingPacket(const WorldPacket& packet);
         void HandleMasterOutgoingPacket(const WorldPacket& packet);
 
@@ -39,6 +34,8 @@ class MANGOS_DLL_SPEC PlayerbotMgr
         void LogoutAllBots();
         void OnBotLogin(Player * const bot);
 
+        ai::AiGroupStatsManager* GetGroupStatsManager() { return groupStatsManager; }
+
     public:
         // config variables
 		bool m_confDisableBots;
@@ -48,6 +45,7 @@ class MANGOS_DLL_SPEC PlayerbotMgr
     private:
         Player* const m_master;
         PlayerBotMap m_playerBots;     
+        ai::AiGroupStatsManager *groupStatsManager;
 };
 
 #endif

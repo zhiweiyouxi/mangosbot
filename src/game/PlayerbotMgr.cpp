@@ -18,21 +18,33 @@ class LoginQueryHolder;
 class CharacterHandler;
 
 
-PlayerbotMgr::PlayerbotMgr(Player* const master) : m_master(master) 
+PlayerbotMgr::PlayerbotMgr(Player* const master) : PlayerbotAIBase(),  m_master(master) 
 {
     // load config variables
 	m_confDisableBots = sConfig.GetBoolDefault( "PlayerbotAI.DisableBots", false );
     m_confDebugWhisper = sConfig.GetBoolDefault( "PlayerbotAI.DebugWhisper", false );
     m_confFollowDistance[0] = sConfig.GetFloatDefault( "PlayerbotAI.FollowDistanceMin", 0.5f );
     m_confFollowDistance[1] = sConfig.GetFloatDefault( "PlayerbotAI.FollowDistanceMin", 1.0f );
+
+    groupStatsManager = new ai::AiGroupStatsManager(master);
 }
 
 PlayerbotMgr::~PlayerbotMgr() 
 {
-  LogoutAllBots();
+    LogoutAllBots();
+    if (groupStatsManager)
+        delete groupStatsManager;
 }
 
-void PlayerbotMgr::UpdateAI(const uint32 p_time) {}
+void PlayerbotMgr::UpdateAI(const uint32 p_time) 
+{
+    if (!CanUpdateAI())
+        return;
+
+    SetNextCheckDelay(GLOBAL_COOLDOWN);
+
+    groupStatsManager->Update();
+}
 
 void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 {

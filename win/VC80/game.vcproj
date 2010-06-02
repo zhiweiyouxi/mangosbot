@@ -1622,6 +1622,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\AiGroupStatsManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\AiGroupStatsManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\AiInventoryManager.cpp"
 				>
 			</File>
@@ -1715,6 +1723,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\PlayerbotAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PlayerbotAIBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PlayerbotAIBase.h"
 				>
 			</File>
 			<File

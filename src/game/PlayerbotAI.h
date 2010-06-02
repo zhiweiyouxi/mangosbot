@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PlayerbotAIBase.h"
+
 #define GLOBAL_COOLDOWN 2
 #define BOT_REACT_DELAY 1
 
@@ -39,7 +41,7 @@ namespace ai
 	};
 };
 
-class PlayerbotAI 
+class PlayerbotAI : public PlayerbotAIBase
 {
 public:
 	// only for testing
@@ -66,10 +68,6 @@ public:
 	// teleportation
 	void HandleTeleportAck();
 
-	bool CanUpdateAI();
-	void SetNextCheckDelay(const uint32 delay);
-	void YieldThread();
-
 public:
 	Player* GetBot() { return bot; }
 	Player* GetMaster() { return mgr->GetMaster(); }
@@ -78,7 +76,6 @@ public:
 protected:
 	Player* bot;
 	PlayerbotMgr* mgr;
-	time_t nextAICheckTime;
 	ai::AiManagerRegistry* aiRegistry;
 };
 
