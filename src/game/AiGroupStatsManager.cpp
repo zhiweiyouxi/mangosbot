@@ -11,8 +11,9 @@
 using namespace ai;
 using namespace std;
 
-void AiGroupStatsManager::findAllAttackers(HostileReference *ref, map<Unit*, ThreatManager*> &out)
+void AiGroupStatsManager::findAllAttackers(Player *player, map<Unit*, ThreatManager*> &out)
 {
+    HostileReference *ref = player->getHostileRefManager().getFirst();
 	while( ref )
 	{
 		ThreatManager *source = ref->getSource();
@@ -21,9 +22,7 @@ void AiGroupStatsManager::findAllAttackers(HostileReference *ref, map<Unit*, Thr
 			!attacker->isDead() && 
 			!attacker->IsPolymorphed() && 
 			!attacker->isFrozen() && 
-			!attacker->IsFriendlyTo(master) && 
-            master->GetDistance(attacker) <= 50 &&
-			master->IsWithinLOSInMap(attacker))
+			!attacker->IsFriendlyTo(master))
 		{
             out[attacker] = source;
 		}
@@ -33,15 +32,14 @@ void AiGroupStatsManager::findAllAttackers(HostileReference *ref, map<Unit*, Thr
 
 void AiGroupStatsManager::findAllAttackers(map<Unit*, ThreatManager*> &out)
 {
-	if (master->GetGroup())
-	{
-		GroupReference *gref = master->GetGroup()->GetFirstMember();
-		while( gref )
-		{
-			HostileReference *ref = gref->getSource()->getHostileRefManager().getFirst();
-			findAllAttackers(ref, out);
-			gref = gref->next();
-		}
+    Group* group = master->GetGroup();
+    if (!group)
+        return;
+    
+    for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
+    {
+        Player* player = gref->getSource();
+		findAllAttackers(player, out);
 	}
 }
 

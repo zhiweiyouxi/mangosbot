@@ -25,7 +25,7 @@ namespace ai
 
 	private:
         void findAllAttackers(map<Unit*, ThreatManager*> &out);
-		void findAllAttackers(HostileReference *ref, map<Unit*, ThreatManager*> &out);
+		void findAllAttackers(Player *player, map<Unit*, ThreatManager*> &out);
         float CalculateBalancePercent();
 
     private:
