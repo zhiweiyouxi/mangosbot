@@ -4,12 +4,14 @@
 using namespace ai;
 using namespace std;
 
-void FleeManager::calculateDistanceToPlayers(FleePoint *point) {
+void FleeManager::calculateDistanceToPlayers(FleePoint *point) 
+{
 	Group* group = bot->GetGroup();
 	if (!group)
 		return;
 
-	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) {
+	for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
+    {
 		Player* player = gref->getSource();
 		if(player == bot)
 			continue;
@@ -32,11 +34,12 @@ void FleeManager::calculateDistanceToPlayers(FleePoint *point) {
 	}
 }
 
-void FleeManager::calculateDistanceToCreatures(FleePoint *point) {
+void FleeManager::calculateDistanceToCreatures(FleePoint *point) 
+{
 	RangePair &distance = point->toCreatures;
 
-	float botAngle = bot->GetOrientation();
-	for (map<Unit*, ThreatManager*>::iterator i = attackers->begin(); i!=attackers->end(); i++) {  
+	for (map<Unit*, ThreatManager*>::iterator i = attackers->begin(); i!=attackers->end(); i++) 
+    {  
 		Unit* unit = i->first;
 
 		float d = unit->GetDistance(point->x, point->y, point->z);
@@ -44,13 +47,16 @@ void FleeManager::calculateDistanceToCreatures(FleePoint *point) {
 	}
 }
 
-void FleeManager::calculatePoints(list<FleePoint*> &points) {
+void FleeManager::calculatePoints(list<FleePoint*> &points) 
+{
 	float botPosX = bot->GetPositionX();
 	float botPosY = bot->GetPositionY();
 	float botPosZ = bot->GetPositionZ();
 
-	for (float r = maxAllowedDistance; r>=15.0f; r -= 10.0f) {
-		for (float angle = -M_PI + followAngle; angle < M_PI + followAngle; angle += M_PI / 8) {
+	for (float r = maxAllowedDistance; r>=20.0f; r -= 10.0f) 
+    {
+		for (float angle = -M_PI + followAngle; angle < M_PI + followAngle; angle += M_PI / 8) 
+        {
 			float x = botPosX + cos(angle) * r;
 			float y = botPosY + sin(angle) * r;
 
@@ -65,28 +71,33 @@ void FleeManager::calculatePoints(list<FleePoint*> &points) {
 	}
 }
 
-void FleeManager::deletePoints(list<FleePoint*> &points) {
-	for (list<FleePoint*>::iterator i = points.begin(); i != points.end(); i++) {
+void FleeManager::deletePoints(list<FleePoint*> &points) 
+{
+	for (list<FleePoint*>::iterator i = points.begin(); i != points.end(); i++) 
+    {
 		FleePoint* point = *i;
 		delete point;
 	}
 	points.clear();
 }
 
-bool FleeManager::isAllowed(FleePoint* point) {
-	return point->toAllPlayers.max <= 30.0f && point->toAllPlayers.min >= 5.0f &&
-		point->toCreatures.min >= 15.0f;
+bool FleeManager::isAllowed(FleePoint* point) 
+{
+	return point->toAllPlayers.max <= 30.0f && point->toCreatures.min >= 15.0f;
 }
 
-bool FleeManager::isBetterThan(FleePoint* point, FleePoint* compareTo) {
-	return (point->toCreatures.min - compareTo->toCreatures.min) > 1.0f &&
-		(point->toMeleePlayers.min - compareTo->toMeleePlayers.min) < 1.0f &&
+bool FleeManager::isBetterThan(FleePoint* point, FleePoint* compareTo) 
+{
+	return (point->toCreatures.min - compareTo->toCreatures.min) > 1.0f ||
+		(point->toMeleePlayers.min - compareTo->toMeleePlayers.min) < 1.0f ||
 		(point->toRangedPlayers.min - compareTo->toRangedPlayers.min) > 1.0f;
 }
 
-FleePoint* FleeManager::selectOptimalPoint(list<FleePoint*> &points) {
+FleePoint* FleeManager::selectOptimalPoint(list<FleePoint*> &points) 
+{
 	FleePoint* selected = NULL;
-	for (list<FleePoint*>::iterator i = points.begin(); i != points.end(); i++) {
+	for (list<FleePoint*>::iterator i = points.begin(); i != points.end(); i++) 
+    {
 		FleePoint* point = *i;
 		if (isAllowed(point) && (!selected || isBetterThan(selected, point)))
 			selected = point;
@@ -94,13 +105,15 @@ FleePoint* FleeManager::selectOptimalPoint(list<FleePoint*> &points) {
 	return selected;
 }
 
-bool FleeManager::flee(float* rx, float* ry, float* rz) {
+bool FleeManager::flee(float* rx, float* ry, float* rz) 
+{
 	list<FleePoint*> points;
 	bool result = false;
 	calculatePoints(points);
 
 	FleePoint* point = selectOptimalPoint(points);
-	if (point) {
+	if (point) 
+    {
 		*rx = point->x;
 		*ry = point->y;
 		*rz = bot->GetPositionZ();

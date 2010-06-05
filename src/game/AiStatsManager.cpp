@@ -250,16 +250,11 @@ void AiStatsManager::Update()
 
 int AiStatsManager::GetAttackerCount(float distance)
 {
-    return ai->GetMaster()->GetPlayerbotMgr()->GetGroupStatsManager()->GetAttackerCount();
+    return ai->GetGroupStatsManager()->GetAttackerCount();
 }
 
 float AiStatsManager::GetBalancePercent()
 {
-    return ai->GetMaster()->GetPlayerbotMgr()->GetGroupStatsManager()->GetBalancePercent();
-}
-
-map<Unit*, ThreatManager*>& AiStatsManager::GetAttackers() 
-{
-    return ai->GetMaster()->GetPlayerbotMgr()->GetGroupStatsManager()->GetAttackers();
+    return ai->GetGroupStatsManager()->GetBalancePercent();
 }
 

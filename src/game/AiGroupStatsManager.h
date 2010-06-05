@@ -1,6 +1,7 @@
 #pragma once
 
 class Player;
+#include "LazyCalculatedValue.h"
 
 using namespace std;
 
@@ -9,30 +10,28 @@ namespace ai
 	class AiGroupStatsManager 
 	{
 	public:
-		AiGroupStatsManager(Player* master)
-		{
-            this->master = master;
-            balancePercent = 100;
-		}
+		AiGroupStatsManager(Player* master);
+        virtual ~AiGroupStatsManager();
 
     public:
         virtual void Update();
 		virtual int GetAttackerCount(float distance = 50);
-        virtual float GetBalancePercent() { return balancePercent; }
+        virtual float GetBalancePercent() { return balancePercent->GetValue(); }
 
 	public:
-        virtual map<Unit*, ThreatManager*>& GetAttackers() { return attackers; }
+        virtual map<Unit*, ThreatManager*> GetAttackers() { return attackers->GetValue(); }
 
 	private:
-        void findAllAttackers(map<Unit*, ThreatManager*> &out);
+        map<Unit*, ThreatManager*> findAllAttackers();
 		void findAllAttackers(Player *player, map<Unit*, ThreatManager*> &out);
         float CalculateBalancePercent();
 
     private:
         Player* master;
-        map<Unit*, ThreatManager*> attackers;
-        float balancePercent;
+        
+        LazyCalculatedValue<map<Unit*, ThreatManager*>, AiGroupStatsManager> *attackers;
 
+        LazyCalculatedValue<float, AiGroupStatsManager> *balancePercent;
 	};
 
 };

@@ -72,6 +72,7 @@ public:
 	Player* GetBot() { return bot; }
 	Player* GetMaster() { return mgr->GetMaster(); }
 	ai::AiManagerRegistry* GetAiRegistry() { return aiRegistry; }
+    ai::AiGroupStatsManager* GetGroupStatsManager() { return mgr->GetGroupStatsManager(); }
 
 protected:
 	Player* bot;

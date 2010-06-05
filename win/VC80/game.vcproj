@@ -1718,6 +1718,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\LazyCalculatedValue.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\PlayerbotAI.cpp"
 				>
 			</File>
