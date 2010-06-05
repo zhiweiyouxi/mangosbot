@@ -565,9 +565,33 @@ void AiInventoryManager::QueryItemUsage(ItemPrototype const *item)
         return;
 
     Item* existingItem = bot->GetItemByPos(eDest);
-    if (!existingItem || existingItem->GetProto()->ItemLevel < item->ItemLevel)
+    if (!existingItem)
     {
         aiRegistry->GetSocialManager()->TellMaster("Equip");
+        return;
+    }
+
+    bool equip = false;
+    const ItemPrototype* oldItem = existingItem->GetProto();
+    if (oldItem->ItemLevel < item->ItemLevel && oldItem->ItemId != item->ItemId)
+    {
+        switch (item->Class)
+        {
+        case ITEM_CLASS_ARMOR:
+            equip = (oldItem->SubClass <= item->SubClass);
+            break;
+        default:
+            equip = true;
+        }
+    }
+
+    if (equip)
+    {
+        std::ostringstream out;
+        out << "Replace +";
+        out << (item->ItemLevel - oldItem->ItemLevel);
+        out << " lvl";
+        aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
     }
 }
 
