@@ -48,6 +48,7 @@ namespace ai
 		bool CanCastSpell(uint32 spellid, Unit* target);
 		bool CastSpell(uint32 spellId, Unit* target);
 		bool canDispel(const SpellEntry* entry, uint32 dispelType);
+        Item* FindItemForSpell(const SpellEntry* const pSpellInfo);
 
 	public:
 		uint32 GetLastSpellId() { return lastSpellId; }

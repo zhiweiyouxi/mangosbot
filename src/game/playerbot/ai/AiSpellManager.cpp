@@ -142,6 +142,10 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 	uint64 oldSel = bot->GetSelection();
 	bot->SetSelection(target->GetGUID());
 	Spell *spell = new Spell(bot, spellInfo, false );
+    SpellCastTargets targets;
+    targets.setUnitTarget(target);
+    targets.setItemTarget(FindItemForSpell(spellInfo));
+    spell->m_CastItem = FindItemForSpell(spellInfo);
 	SpellCastResult result = spell->CheckCast(false);
 	delete spell;
 	bot->SetSelection(oldSel);
@@ -170,6 +174,7 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 	case SPELL_FAILED_BAD_IMPLICIT_TARGETS:
 	case SPELL_FAILED_BAD_TARGETS:
 	case SPELL_CAST_OK:
+    case SPELL_FAILED_ITEM_NOT_FOUND:
 		return true;
 	default:
 		return false;
@@ -211,7 +216,24 @@ bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
             return false;
     }
 
+    Item *item = FindItemForSpell(spellInfo);
+    if (item && item->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
+        return false;
+
 	return true;
+}
+
+Item* AiSpellManager::FindItemForSpell(const SpellEntry* const pSpellInfo) 
+{
+    for( uint8 slot=EQUIPMENT_SLOT_START; slot<EQUIPMENT_SLOT_END; slot++ ) {
+        Item* const pItem = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
+        if( !pItem )
+            continue;
+
+        if (pItem->IsFitToSpellRequirements(pSpellInfo))
+            return pItem;
+    }
+    return NULL;
 }
 
 bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
@@ -237,7 +259,13 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
     const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(lastSpellId);
     uint64 oldSel = bot->GetSelection();
     bot->SetSelection(lastSpellTarget);
-    bot->CastSpell(target, pSpellInfo, false);
+    
+    Spell *spell = new Spell(bot, pSpellInfo, false);
+    SpellCastTargets targets;
+    targets.setUnitTarget(target);
+    targets.setItemTarget(FindItemForSpell(pSpellInfo));
+    spell->prepare(&targets, false);
+    
     bot->SetSelection(oldSel);
 
     uint32 castTime = GetSpellCastTime(pSpellInfo) / 1000;

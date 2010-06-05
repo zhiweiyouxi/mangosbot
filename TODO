@@ -1,4 +1,3 @@
-[ ] .invite all bots
 [ ] resistance auras, spells etc on (from enemy spells)
 [ ] aoe
 [ ] flee out of damaging aoe
@@ -8,12 +7,8 @@
 [ ] report formatting
 [ ] who has item [link] command 
 [ ] magic shield
+[ ] quests: split completed/uncompleted
 
 [ ] use threat level
-[ ] do not interrupt channels
-[ ] combat with different targets
-[ ] attack priest's target
-
 [ ] warlock: heal demon
 
-[ ] SPELL_FAILED_ITEM_NOT_FOUND (item enchants)

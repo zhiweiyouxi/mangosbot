@@ -72,3 +72,5 @@ bin/*
 # Special exceptions
 #
 !dep/ACE_wrappers/ace/ace_message_table.bin
+
+/win/revision.h
