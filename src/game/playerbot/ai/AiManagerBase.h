@@ -30,6 +30,7 @@ namespace ai
         virtual void Update() {}
 		virtual void HandleCommand(const string& text, Player& fromPlayer) {}
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet) {}
+        virtual void Query(const string& text) {}
 
 	protected:
 		uint64 extractGuid(WorldPacket& packet);

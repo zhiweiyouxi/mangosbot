@@ -26,6 +26,7 @@ namespace ai
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
+        virtual void Query(const string& text);
 
 	private:
 		map<uint32, uint32> questNeedItems;

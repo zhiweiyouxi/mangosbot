@@ -47,6 +47,7 @@ namespace ai
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
+        virtual void Query(const string& text);
 
 	private:
 		Item* FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, int *count=NULL);
@@ -59,6 +60,8 @@ namespace ai
 		virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
 		void UseItem(Item& item);
 		void EquipItem(Item& item);
+        void QueryItemUsage(ItemPrototype const *item);
+        void QueryItemsUsage(list<uint32> items);
 
 	private:
 		list<uint64> availableLoot;

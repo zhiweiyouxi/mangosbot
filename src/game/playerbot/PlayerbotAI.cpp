@@ -85,6 +85,15 @@ void PlayerbotAI::HandleCommand(const string& text, Player& fromPlayer)
 	    return;
 
 	AiManagerBase** managers = aiRegistry->GetManagers();
+
+    if (text.size() > 2 && text.substr(0, 2) == "q ")
+    {
+        std::string query = text.substr(text.find(" ") + 1);
+        for (int i=0; i<aiRegistry->GetManagerCount(); i++)
+            managers[i]->Query(query);
+        return;
+    }
+
 	for (int i=0; i<aiRegistry->GetManagerCount(); i++)
 		managers[i]->HandleCommand(text, fromPlayer);
 }

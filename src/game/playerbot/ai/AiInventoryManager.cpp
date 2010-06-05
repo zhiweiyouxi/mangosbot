@@ -550,3 +550,38 @@ void AiInventoryManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 	}
 
 }
+
+void AiInventoryManager::QueryItemUsage(ItemPrototype const *item)
+{
+    if (!bot->CanUseItem(item))
+        return;
+
+    if (item->InventoryType == INVTYPE_NON_EQUIP)
+        return;
+
+    uint16 eDest;
+    uint8 msg = bot->CanEquipNewItem(NULL_SLOT, eDest, item->ItemId, true);
+    if( msg != EQUIP_ERR_OK )
+        return;
+
+    Item* existingItem = bot->GetItemByPos(eDest);
+    if (!existingItem || existingItem->GetProto()->ItemLevel < item->ItemLevel)
+    {
+        aiRegistry->GetSocialManager()->TellMaster("Equip");
+    }
+}
+
+void AiInventoryManager::QueryItemsUsage(list<uint32> items) 
+{
+    for (list<uint32>::iterator i = items.begin(); i != items.end(); i++)
+    {
+        ItemPrototype const *item = sItemStorage.LookupEntry<ItemPrototype>(*i);
+        QueryItemUsage(item);
+    }
+}
+
+void AiInventoryManager::Query(const string& text)
+{
+    list<uint32> items; /* = */ extractItemIds(text, items);
+    QueryItemsUsage(items);
+}

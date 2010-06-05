@@ -255,3 +255,19 @@ void AiQuestManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 {
 
 }
+
+void AiQuestManager::Query(const string& text)
+{
+    list<uint32> items;
+    aiRegistry->GetInventoryManager()->extractItemIds(text, items);
+
+    UpdateQuestNeedItems();
+    for (list<uint32>::iterator i = items.begin(); i != items.end(); i++)
+    {
+        uint32 itemId = *i;
+        if (questNeedItems.find(itemId) != questNeedItems.end())
+        {
+            aiRegistry->GetSocialManager()->TellMaster("Quest");
+        }
+    }
+}
