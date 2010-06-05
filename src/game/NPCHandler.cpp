@@ -33,7 +33,9 @@
 #include "Creature.h"
 #include "Pet.h"
 #include "Guild.h"
-#include "PlayerbotMgr.h"
+
+// Playerbot mod
+#include "playerbot/playerbot.h"
 
 void WorldSession::HandleTabardVendorActivateOpcode( WorldPacket & recv_data )
 {

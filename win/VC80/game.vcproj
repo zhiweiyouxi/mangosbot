@@ -1614,950 +1614,1685 @@
 			Name="PlayerBot"
 			>
 			<File
-				RelativePath="..\..\src\game\AiFactory.cpp"
+				RelativePath="..\..\src\game\playerbot\playerbot.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiFactory.h"
+				RelativePath="..\..\src\game\playerbot\PlayerbotAI.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiGroupStatsManager.cpp"
+				RelativePath="..\..\src\game\playerbot\PlayerbotAI.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiGroupStatsManager.h"
+				RelativePath="..\..\src\game\playerbot\PlayerbotAIBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiInventoryManager.cpp"
+				RelativePath="..\..\src\game\playerbot\PlayerbotAIBase.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiInventoryManager.h"
+				RelativePath="..\..\src\game\playerbot\PlayerbotMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AiManagerBase.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiManagerBase.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiManagerRegistry.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiManagerRegistry.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiMoveManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiMoveManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiQuestManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiQuestManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiSocialManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiSocialManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiSpellManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiSpellManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiStatsManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiStatsManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiStrategyManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiStrategyManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiTargetManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiTargetManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\FindTargetStrategy.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\FindTargetStrategy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\LazyCalculatedValue.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotAI.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotAI.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotAIBase.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotAIBase.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PlayerbotMgr.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Ai"
-			Filter="Ai*"
-			>
-			<File
-				RelativePath="..\..\src\game\Action.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Action.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ActionFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ActionFactory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AiManagerRegistryAware.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Engine.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Multiplier.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Multiplier.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Queue.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Queue.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Strategy.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Strategy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Trigger.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Trigger.h"
+				RelativePath="..\..\src\game\playerbot\PlayerbotMgr.h"
 				>
 			</File>
 			<Filter
-				Name="Mage"
+				Name="ai"
 				>
 				<File
-					RelativePath="..\..\src\game\MageActionFactory.cpp"
+					RelativePath="..\..\src\game\playerbot\ai\AiFactory.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageActionFactory.h"
+					RelativePath="..\..\src\game\playerbot\ai\AiFactory.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageActions.cpp"
+					RelativePath="..\..\src\game\playerbot\ai\AiGroupStatsManager.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageActions.h"
+					RelativePath="..\..\src\game\playerbot\ai\AiGroupStatsManager.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageMultipliers.cpp"
+					RelativePath="..\..\src\game\playerbot\ai\AiInventoryManager.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageMultipliers.h"
+					RelativePath="..\..\src\game\playerbot\ai\AiInventoryManager.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageTriggers.cpp"
+					RelativePath="..\..\src\game\playerbot\ai\AiManagerBase.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\game\MageTriggers.h"
+					RelativePath="..\..\src\game\playerbot\ai\AiManagerBase.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiManagerRegistry.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiManagerRegistry.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiManagerRegistryAware.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiManagers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiMoveManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiMoveManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiQuestManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiQuestManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiSocialManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiSocialManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiSpellManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiSpellManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiStatsManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiStatsManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiStrategyManager.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiStrategyManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiTargetManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AiTargetManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\FindTargetStrategy.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\FindTargetStrategy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\FleeManager.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\FleeManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\LazyCalculatedValue.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="strategy"
+				>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Action.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Action.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\ActionBasket.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\ActionBasket.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\ActionFactory.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\ActionFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\ChooseTargetActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\CureTriggers.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\CureTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Engine.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Engine.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericActions.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericNonCombatStrategy.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericNonCombatStrategy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericSpellActions.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericSpellActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericTriggers.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\GenericTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\HealthTriggers.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\HealthTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\LowManaMultiplier.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\LowManaMultiplier.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Multiplier.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Multiplier.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\NonCombatActions.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\NonCombatActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\PassiveMultiplier.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\PassiveMultiplier.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Queue.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Queue.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\RacialsStrategy.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\RacialsStrategy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\RangeTriggers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\ReachTargetActions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Strategy.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Strategy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Trigger.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_NoPCH|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\Trigger.h"
 					>
 				</File>
 				<Filter
-					Name="Strategies"
+					Name="druid"
 					>
 					<File
-						RelativePath="..\..\src\game\FireMageStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\BearTankDruidStrategy.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\BearTankDruidStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\FireMageStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\CasterDruidStrategy.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\CasterDruidStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\FrostMageStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\CatDpsDruidStrategy.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\CatDpsDruidStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\FrostMageStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActionFactory.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActionFactory.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericMageNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActions.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActions.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericMageNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidBearActions.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericMageStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidCatActions.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericMageStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidMultipliers.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidShapeshiftActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidTriggers.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidTriggers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\FeralDruidStrategy.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\FeralDruidStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidNonCombatStrategy.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidNonCombatStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidStrategy.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_NoPCH|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidStrategy.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Generic"
-				>
-				<File
-					RelativePath="..\..\src\game\ChooseTargetActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\CureTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\CureTriggers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\FleeManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\FleeManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericNonCombatStrategy.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericNonCombatStrategy.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericSpellActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericSpellActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\GenericTriggers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HealthTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HealthTriggers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\LowManaMultiplier.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\LowManaMultiplier.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\NonCombatActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\NonCombatActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PassiveMultiplier.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PassiveMultiplier.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RacialsStrategy.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RacialsStrategy.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RangeTriggers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ReachTargetActions.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Hunter"
-				>
-				<File
-					RelativePath="..\..\src\game\HunterActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HunterActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HunterActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HunterActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HunterMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HunterMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HunterTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\HunterTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="hunter"
 					>
 					<File
-						RelativePath="..\..\src\game\DpsHunterStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\DpsHunterStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\DpsHunterStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\DpsHunterStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericHunterNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\GenericHunterNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericHunterNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\GenericHunterNonCombatStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericHunterStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\GenericHunterStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericHunterStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\GenericHunterStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterActionFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterActionFactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterActions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterTriggers.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Druid"
-				>
-				<File
-					RelativePath="..\..\src\game\DruidActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidBearActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidCatActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidShapeshiftActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\DruidTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="mage"
 					>
 					<File
-						RelativePath="..\..\src\game\BearTankDruidStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\FireMageStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\BearTankDruidStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\FireMageStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\CasterDruidStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\FrostMageStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\CasterDruidStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\FrostMageStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\CatDpsDruidStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\GenericMageNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\CatDpsDruidStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\GenericMageNonCombatStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\FeralDruidStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\GenericMageStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\FeralDruidStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\GenericMageStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericDruidNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageActionFactory.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericDruidNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageActionFactory.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericDruidStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageActions.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericDruidStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MageTriggers.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Warrior"
-				>
-				<File
-					RelativePath="..\..\src\game\WarriorActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarriorActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarriorActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarriorActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarriorMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarriorMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarriorTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarriorTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="paladin"
 					>
 					<File
-						RelativePath="..\..\src\game\DpsWarriorStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\GenericPaladinNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\DpsWarriorStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\GenericPaladinNonCombatStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarriorNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\GenericPaladinStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarriorNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\GenericPaladinStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarriorStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinActionFactory.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarriorStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinActionFactory.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\TankWarriorStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinActions.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\TankWarriorStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\PaladinTriggers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\TankPaladinStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\TankPaladinStrategy.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Priest"
-				>
-				<File
-					RelativePath="..\..\src\game\PriestActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PriestActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PriestActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PriestActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PriestMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PriestMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PriestTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PriestTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="priest"
 					>
 					<File
-						RelativePath="..\..\src\game\DpsPriestStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\DpsPriestStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\DpsPriestStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\DpsPriestStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericPriestStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\GenericPriestStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericPriestStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\GenericPriestStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\HealPriestNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\HealPriestNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\HealPriestNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\HealPriestNonCombatStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\HealPriestStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\HealPriestStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\HealPriestStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\priest\HealPriestStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestActionFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestActionFactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestActions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\priest\PriestTriggers.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Paladin"
-				>
-				<File
-					RelativePath="..\..\src\game\PaladinActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PaladinActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PaladinActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PaladinActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PaladinMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PaladinMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PaladinTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\PaladinTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="rogue"
 					>
 					<File
-						RelativePath="..\..\src\game\GenericPaladinNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\DpsRogueStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericPaladinNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\DpsRogueStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericPaladinStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\GenericRogueNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericPaladinStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\GenericRogueNonCombatStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\TankPaladinStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueActionFactory.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\TankPaladinStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueActionFactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueActions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueComboActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueFinishingActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueOpeningActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\rogue\RogueTriggers.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Warlock"
-				>
-				<File
-					RelativePath="..\..\src\game\WarlockActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarlockActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarlockActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarlockActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarlockMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarlockMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarlockTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\WarlockTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="shaman"
 					>
 					<File
-						RelativePath="..\..\src\game\DpsWarlockStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\GenericShamanStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\DpsWarlockStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\GenericShamanStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarlockNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\HealShamanStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarlockNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\HealShamanStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarlockStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanActionFactory.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericWarlockStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanActionFactory.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\TankWarlockStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanActions.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\TankWarlockStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanNonCombatStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanNonCombatStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\shaman\ShamanTriggers.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Shaman"
-				>
-				<File
-					RelativePath="..\..\src\game\ShamanActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ShamanActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ShamanActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ShamanActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ShamanMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ShamanMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ShamanTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\ShamanTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="warlock"
 					>
 					<File
-						RelativePath="..\..\src\game\GenericShamanStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\DpsWarlockStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericShamanStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\DpsWarlockStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\HealShamanStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\GenericWarlockNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\HealShamanStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\GenericWarlockNonCombatStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\ShamanNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\GenericWarlockStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\ShamanNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\GenericWarlockStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\TankWarlockStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\TankWarlockStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockActionFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockActionFactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockActions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warlock\WarlockTriggers.h"
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Rogue"
-				>
-				<File
-					RelativePath="..\..\src\game\RogueActionFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueActionFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueActions.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueComboActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueFinishingActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueMultipliers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueMultipliers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueOpeningActions.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueTriggers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\game\RogueTriggers.h"
-					>
-				</File>
 				<Filter
-					Name="Strategies"
+					Name="warrior"
 					>
 					<File
-						RelativePath="..\..\src\game\DpsRogueStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\DpsWarriorStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\DpsRogueStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\DpsWarriorStrategy.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericRogueNonCombatStrategy.cpp"
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\GenericWarriorNonCombatStrategy.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\game\GenericRogueNonCombatStrategy.h"
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\GenericWarriorNonCombatStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\GenericWarriorStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\GenericWarriorStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\TankWarriorStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\TankWarriorStrategy.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorActionFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorActionFactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorActions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorActions.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorMultipliers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorMultipliers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\warrior\WarriorTriggers.h"
 						>
 					</File>
 				</Filter>

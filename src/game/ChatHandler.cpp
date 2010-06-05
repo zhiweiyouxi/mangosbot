@@ -38,8 +38,7 @@
 #include "CellImpl.h"
 
 // Playerbot mod
-#include "PlayerbotMgr.h"
-#include "PlayerbotAI.h"
+#include "playerbot/playerbot.h"
 
 bool WorldSession::processChatmessageFurtherAfterSecurityChecks(std::string& msg, uint32 lang)
 {

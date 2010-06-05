@@ -32,7 +32,10 @@
 #include "InstanceSaveMgr.h"
 #include "MapInstanced.h"
 #include "Util.h"
-#include "PlayerbotMgr.h"
+
+// Playerbot mod
+#include "playerbot/playerbot.h"
+
 
 Group::Group()
 {

@@ -40,7 +40,7 @@
 #include "Language.h"
 
 // Playerbot mod:
-#include "PlayerbotMgr.h"
+#include "playerbot/playerbot.h"
 
 class LoginQueryHolder : public SqlQueryHolder
 {
