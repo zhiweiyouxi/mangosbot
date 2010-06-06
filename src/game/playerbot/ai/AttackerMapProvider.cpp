@@ -43,6 +43,7 @@ bool AttackerMapProvider::hasRealThreat(Unit *attacker)
         !attacker->isDead() && 
         !attacker->IsPolymorphed() && 
         !attacker->isFrozen() && 
+        !attacker->isInRoots() &&
         !attacker->IsFriendlyTo(master);
 }
 

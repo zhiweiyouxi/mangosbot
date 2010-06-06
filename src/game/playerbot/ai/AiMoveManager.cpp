@@ -44,18 +44,21 @@ void AiMoveManager::Follow(Unit* target, float distance)
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
-	AttackerMap attackers = bot->GetPlayerbotAI()->GetGroupStatsManager()->GetAttackers();
+    Stay();
+    ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 
+    if (bot->isFrozen() || bot->IsPolymorphed() || !bot->CanFreeMove())
+        return false;
+    
+    AttackerMap attackers = bot->GetPlayerbotAI()->GetGroupStatsManager()->GetAttackers();
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
+        
+    float rx, ry, rz;
+	if (!manager.CalculateDestination(&rx, &ry, &rz)) 
+        return false;
 
-	float rx, ry, rz;
-	if (manager.flee(&rx, &ry, &rz)) {
-		Stay();
-		bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
-		return true;
-	}
-    ai->SetNextCheckDelay(3);
-	return false;
+	bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
+	return true;
 }
 
 void AiMoveManager::Stay()

@@ -48,18 +48,18 @@ void FleeManager::calculateDistanceToCreatures(FleePoint *point)
 	}
 }
 
-void FleeManager::calculatePoints(list<FleePoint*> &points) 
+void FleeManager::calculatePossibleDestinations(list<FleePoint*> &points) 
 {
 	float botPosX = bot->GetPositionX();
 	float botPosY = bot->GetPositionY();
 	float botPosZ = bot->GetPositionZ();
 
-	for (float r = maxAllowedDistance; r>=20.0f; r -= 10.0f) 
+	for (float radius = maxAllowedDistance; radius>=20.0f; radius -= 10.0f) 
     {
 		for (float angle = -M_PI + followAngle; angle < M_PI + followAngle; angle += M_PI / 8) 
         {
-			float x = botPosX + cos(angle) * r;
-			float y = botPosY + sin(angle) * r;
+			float x = botPosX + cos(angle) * radius;
+			float y = botPosY + sin(angle) * radius;
 
 			if (!bot->IsWithinLOS(x, y, botPosZ))
 				continue;
@@ -72,7 +72,7 @@ void FleeManager::calculatePoints(list<FleePoint*> &points)
 	}
 }
 
-void FleeManager::deletePoints(list<FleePoint*> &points) 
+void FleeManager::cleanup(list<FleePoint*> &points) 
 {
 	for (list<FleePoint*>::iterator i = points.begin(); i != points.end(); i++) 
     {
@@ -82,45 +82,48 @@ void FleeManager::deletePoints(list<FleePoint*> &points)
 	points.clear();
 }
 
-bool FleeManager::isAllowed(FleePoint* point) 
+bool FleePoint::isReasonable() 
 {
-	return point->toAllPlayers.max <= 30.0f && point->toCreatures.min >= 15.0f;
+	return toAllPlayers.max <= 30.0f && toCreatures.min >= 15.0f;
 }
 
-bool FleeManager::isBetterThan(FleePoint* point, FleePoint* compareTo) 
+bool FleePoint::isBetterThan(FleePoint* other) 
 {
-	return (point->toCreatures.min - compareTo->toCreatures.min) > 1.0f ||
-		(point->toMeleePlayers.min - compareTo->toMeleePlayers.min) < 1.0f ||
-		(point->toRangedPlayers.min - compareTo->toRangedPlayers.min) > 1.0f;
+    bool isFartherFromCreatures = (toCreatures.min - other->toCreatures.min) >= 1.0f;
+    bool isNearerToMeleePlayers = (toMeleePlayers.max - other->toMeleePlayers.max) <= 1.0f;
+    bool isFartherFromRangedPlayers = (toRangedPlayers.min - other->toRangedPlayers.min) >= 1.0f;
+	
+    return isFartherFromCreatures && (isNearerToMeleePlayers || isFartherFromRangedPlayers);
 }
 
-FleePoint* FleeManager::selectOptimalPoint(list<FleePoint*> &points) 
+FleePoint* FleeManager::selectOptimalDestination(list<FleePoint*> &points) 
 {
 	FleePoint* selected = NULL;
 	for (list<FleePoint*>::iterator i = points.begin(); i != points.end(); i++) 
     {
 		FleePoint* point = *i;
-		if (isAllowed(point) && (!selected || isBetterThan(selected, point)))
+		if (point->isReasonable() && (!selected || point->isBetterThan(selected)))
 			selected = point;
 	}
 	return selected;
 }
 
-bool FleeManager::flee(float* rx, float* ry, float* rz) 
+bool FleeManager::CalculateDestination(float* rx, float* ry, float* rz) 
 {
 	list<FleePoint*> points;
-	bool result = false;
-	calculatePoints(points);
+	calculatePossibleDestinations(points);
 
-	FleePoint* point = selectOptimalPoint(points);
-	if (point) 
+    FleePoint* point = selectOptimalDestination(points);
+    if (!point)
     {
-		*rx = point->x;
-		*ry = point->y;
-		*rz = bot->GetPositionZ();
-		result = true;
-	}
-	
-	deletePoints(points);
-	return result;
+        cleanup(points);
+        return false;
+    }
+    
+	*rx = point->x;
+	*ry = point->y;
+	*rz = bot->GetPositionZ();
+    
+    cleanup(points);
+	return true;
 }

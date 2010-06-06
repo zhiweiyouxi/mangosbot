@@ -38,6 +38,10 @@ namespace ai
 			this->z = z;
 		}
 
+    public:
+        bool isReasonable();
+        bool isBetterThan(FleePoint* other);
+
 	public:
 		float x;
 		float y;
@@ -60,15 +64,15 @@ namespace ai
 		}
 
 	public:
-		bool flee(float* rx, float* ry, float* rz);
+		bool CalculateDestination(float* rx, float* ry, float* rz);
 
 	private:
-		void calculatePoints(list<FleePoint*> &points);
+		void calculatePossibleDestinations(list<FleePoint*> &points);
 		void calculateDistanceToPlayers(FleePoint *point);
 		void calculateDistanceToCreatures(FleePoint *point);
-		void deletePoints(list<FleePoint*> &points);
-		FleePoint* selectOptimalPoint(list<FleePoint*> &points);
-		bool isAllowed(FleePoint* point);
+		void cleanup(list<FleePoint*> &points);
+		FleePoint* selectOptimalDestination(list<FleePoint*> &points);
+		bool isReasonable(FleePoint* point);
 		bool isBetterThan(FleePoint* point, FleePoint* other);
 
 	private:
