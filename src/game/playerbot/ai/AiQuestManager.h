@@ -28,6 +28,10 @@ namespace ai
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
         virtual void Query(const string& text);
 
+    private:
+        void QueryQuestItem(uint32 itemId);
+        void QueryQuestItem(uint32 itemId, const Quest *questTemplate, QuestStatusData *questStatus);
+
 	private:
 		map<uint32, uint32> questNeedItems;
 	};
