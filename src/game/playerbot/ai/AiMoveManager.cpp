@@ -44,7 +44,7 @@ void AiMoveManager::Follow(Unit* target, float distance)
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
-	map<Unit*, ThreatManager*> attackers = bot->GetPlayerbotAI()->GetGroupStatsManager()->GetAttackers();
+	AttackerMap attackers = bot->GetPlayerbotAI()->GetGroupStatsManager()->GetAttackers();
 
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
 

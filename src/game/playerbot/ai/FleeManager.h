@@ -52,7 +52,7 @@ namespace ai
 	class FleeManager
 	{
 	public:
-		FleeManager(Player* bot, map<Unit*, ThreatManager*> *attackers, float maxAllowedDistance, float followAngle) {
+		FleeManager(Player* bot, AttackerMap *attackers, float maxAllowedDistance, float followAngle) {
 			this->bot = bot;
 			this->attackers = attackers;
 			this->maxAllowedDistance = maxAllowedDistance;
@@ -73,7 +73,7 @@ namespace ai
 
 	private:
 		Player* bot;
-		map<Unit*, ThreatManager*> *attackers;
+		AttackerMap *attackers;
 		float maxAllowedDistance;
 		float followAngle;
 	};

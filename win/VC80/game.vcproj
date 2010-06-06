@@ -1776,6 +1776,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\playerbot\ai\AttackerMapProvider.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\AttackerMapProvider.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\playerbot\ai\FindTargetStrategy.cpp"
 					>
 				</File>

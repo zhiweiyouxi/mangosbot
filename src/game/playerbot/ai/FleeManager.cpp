@@ -39,7 +39,7 @@ void FleeManager::calculateDistanceToCreatures(FleePoint *point)
 {
 	RangePair &distance = point->toCreatures;
 
-	for (map<Unit*, ThreatManager*>::iterator i = attackers->begin(); i!=attackers->end(); i++) 
+	for (AttackerMapIterator i = attackers->begin(); i!=attackers->end(); i++) 
     {  
 		Unit* unit = i->first;
 

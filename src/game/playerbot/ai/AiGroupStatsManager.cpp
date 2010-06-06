@@ -8,56 +8,16 @@ using namespace std;
 AiGroupStatsManager::AiGroupStatsManager(Player* master)
 {
     this->master = master;
-    attackers = new LazyCalculatedValue<map<Unit*, ThreatManager*>, AiGroupStatsManager>(this, &AiGroupStatsManager::findAllAttackers);
+    attackerMapProvider = new AttackerMapProvider(master);
     balancePercent = new LazyCalculatedValue<float, AiGroupStatsManager>(this, &AiGroupStatsManager::CalculateBalancePercent);
 }
 
 AiGroupStatsManager::~AiGroupStatsManager()
 {
+    if (attackerMapProvider)
+        delete attackerMapProvider;
     if (balancePercent)
         delete balancePercent;
-}
-
-map<Unit*, ThreatManager*> AiGroupStatsManager::findAllAttackers()
-{
-    map<Unit*, ThreatManager*> out;
-
-    Group* group = master->GetGroup();
-    if (!group)
-        return out;
-
-    for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
-    {
-        Player* player = gref->getSource();
-        findAllAttackers(player, out);
-    }
-    
-    return out;
-}
-
-void AiGroupStatsManager::findAllAttackers(Player *player, map<Unit*, ThreatManager*> &out)
-{
-    HostileReference *ref = player->getHostileRefManager().getFirst();
-	while( ref )
-	{
-		ThreatManager *source = ref->getSource();
-		Unit *attacker = source->getOwner();
-		if (attacker && 
-			!attacker->isDead() && 
-			!attacker->IsPolymorphed() && 
-			!attacker->isFrozen() && 
-			!attacker->IsFriendlyTo(master))
-		{
-            out[attacker] = source;
-		}
-		ref = ref->next();
-	}
-}
-
-int AiGroupStatsManager::GetAttackerCount(float distance)
-{
-    map<Unit*, ThreatManager*> &v = attackers->GetValue();
-    return v.size();
 }
 
 float AiGroupStatsManager::CalculateBalancePercent()
@@ -79,9 +39,9 @@ float AiGroupStatsManager::CalculateBalancePercent()
 		}
 	}
 
-    map<Unit*, ThreatManager*> &v = attackers->GetValue();
+    AttackerMap &v = attackerMapProvider->GetAttackers();
 
-	for (map<Unit*, ThreatManager*>::iterator i = v.begin(); i!=v.end(); i++)
+	for (AttackerMapIterator i = v.begin(); i!=v.end(); i++)
 	{  
 		Unit* unit = i->first;
 		if (unit || !unit->isAlive())
@@ -116,7 +76,7 @@ float AiGroupStatsManager::CalculateBalancePercent()
 
 void AiGroupStatsManager::Update()
 {
-    attackers->Reset();
+    attackerMapProvider->Reset();
     balancePercent->Reset();
 }
 
