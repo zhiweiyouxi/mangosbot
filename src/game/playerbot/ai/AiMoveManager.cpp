@@ -57,6 +57,7 @@ bool AiMoveManager::Flee(Unit* target, float distance)
 	if (!manager.CalculateDestination(&rx, &ry, &rz)) 
         return false;
 
+    bot->UpdateGroundPositionZ(rx, ry, rz);
 	bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
 	return true;
 }

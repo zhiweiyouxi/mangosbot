@@ -1830,6 +1830,14 @@
 					RelativePath="..\..\src\game\playerbot\ai\LazyCalculatedValue.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\LootManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\LootManager.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="strategy"

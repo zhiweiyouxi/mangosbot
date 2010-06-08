@@ -36,6 +36,12 @@ void PlayerbotMgr::UpdateAI(const uint32 p_time)
 
 void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 {
+    for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
+    {
+        Player* const bot = it->second;
+        bot->GetPlayerbotAI()->HandleMasterIncomingPacket(packet);
+    }
+
     switch (packet.GetOpcode())
     {
         // if master is logging out, log out all bots

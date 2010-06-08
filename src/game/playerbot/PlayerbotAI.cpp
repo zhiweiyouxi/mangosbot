@@ -105,4 +105,9 @@ void PlayerbotAI::HandleBotOutgoingPacket(const WorldPacket& packet)
 		managers[i]->HandleBotOutgoingPacket(packet);
 }
 
-
+void PlayerbotAI::HandleMasterIncomingPacket(const WorldPacket& packet)
+{
+    AiManagerBase** managers = aiRegistry->GetManagers();
+    for (int i=0; i<aiRegistry->GetManagerCount(); i++)
+        managers[i]->HandleMasterIncomingPacket(packet);
+}

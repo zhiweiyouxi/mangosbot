@@ -4,6 +4,17 @@
 using namespace ai;
 using namespace std;
 
+AiInventoryManager::AiInventoryManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+{
+    lootManager = new LootManager(bot);
+}
+
+AiInventoryManager::~AiInventoryManager()
+{
+    delete lootManager;
+}
+
+
 Item* AiInventoryManager::FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param, int *count/*=NULL*/)
 {
     if (count) (*count) = 0;
@@ -182,126 +193,6 @@ void AiInventoryManager::UseItem(Item& item)
 	//if (! bot->IsStandState())
 	//    bot->GetMotionMaster()->Clear();
 }
-
-void AiInventoryManager::ClearLoot()
-{
-	availableLoot.clear();
-	currentLoot = 0;
-}
-
-void AiInventoryManager::AddLoot(uint64 guid)
-{
-	for (list<uint64>::iterator i = availableLoot.begin(); i != availableLoot.end(); i++)
-	{
-		if (*i == guid) 
-			return;
-	}
-
-	availableLoot.push_front( guid );
-	int lootSize = availableLoot.size();
-	for (; lootSize>50; lootSize--) 
-		availableLoot.pop_back();
-}
-
-bool AiInventoryManager::CanLoot()
-{
-	return !availableLoot.empty();
-}
-
-void AiInventoryManager::DoLoot()
-{
-	if (availableLoot.empty())
-		return;
-
-	if (!currentLoot)
-	{
-		currentLoot = availableLoot.front();
-		availableLoot.pop_front();
-		Creature *c = bot->GetMap()->GetCreature( currentLoot );
-		if( !c || c->getDeathState()!=CORPSE || bot->GetDistance( c )>BOTLOOT_DISTANCE )
-		{
-			currentLoot = 0;
-			return;
-		}
-		bot->GetMotionMaster()->MovePoint( c->GetMapId(), c->GetPositionX(), c->GetPositionY(), c->GetPositionZ() );
-		return;
-	}
-
-	Creature *c = bot->GetMap()->GetCreature( currentLoot );
-	if( !c || c->getDeathState()!=CORPSE || bot->GetDistance( c )>BOTLOOT_DISTANCE )
-	{
-		currentLoot = 0;
-		return;
-	}
-
-	if( !bot->IsWithinDistInMap( c, INTERACTION_DISTANCE ) )
-		return;
-
-	// check for needed items
-	bot->SendLoot( currentLoot, LOOT_CORPSE );
-	Loot* loot = &c->loot;
-	uint32 lootNum = loot->GetMaxSlotInLootFor( bot );
-	for( uint32 l=0; l<lootNum; l++ )
-	{
-		QuestItem *qitem=0, *ffaitem=0, *conditem=0;
-		LootItem *item = loot->LootItemInSlot( l, bot, &qitem, &ffaitem, &conditem );
-		if( !item )
-			continue;
-
-		if( !qitem && item->is_blocked )
-		{
-			bot->SendLootRelease( bot->GetLootGUID() );
-			continue;
-		}
-
-		// TODO change to AiQuestManager
-		if (item->AllowedForPlayer(bot) && item->needs_quest)
-		{
-			ItemPosCountVec dest;
-			if( bot->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item->itemid, item->count ) == EQUIP_ERR_OK )
-			{
-				Item * newitem = bot->StoreNewItem( dest, item->itemid, true, item->randomPropertyId);
-
-				if( qitem )
-				{
-					qitem->is_looted = true;
-					if( item->freeforall || loot->GetPlayerQuestItems().size() == 1 )
-						bot->SendNotifyLootItemRemoved( l );
-					else
-						loot->NotifyQuestItemRemoved( qitem->index );
-				}
-				else
-				{
-					if( ffaitem )
-					{
-						ffaitem->is_looted=true;
-						bot->SendNotifyLootItemRemoved( l );
-					}
-					else
-					{
-						if( conditem )
-							conditem->is_looted=true;
-						loot->NotifyItemRemoved( l );
-					}
-				}
-				if (!item->freeforall)
-					item->is_looted = true;
-				--loot->unlootedCount;
-				bot->SendNewItem( newitem, uint32(item->count), false, false, true );
-				bot->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count );
-			}
-		}
-	}
-	// release loot
-	if( uint64 lguid = bot->GetLootGUID() && bot->GetSession() )
-		bot->GetSession()->DoLootRelease( lguid );
-	//else if( !bot->GetSession() )
-	//    sLog.outDebug( "[PlayerbotAI]: %s has no session. Cannot release loot!", bot->GetName() );
-
-	bot->GetMotionMaster()->Clear();
-	currentLoot = 0;
-}
-
 
 int AiInventoryManager::GetItemCount(const char* name) 
 {
@@ -538,17 +429,41 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 	}
 }
 
+void AiInventoryManager::UseGameObject(uint64 guid) 
+{
+    GameObject* go = bot->GetMap()->GetGameObject(guid);
+    if(!go)
+        return;
+
+    if ( !go->isSpawned() )
+        return;
+
+    AddLoot(MAKE_NEW_GUID(guid, 0, HIGHGUID_GAMEOBJECT));
+    DoLoot();
+}
+
 void AiInventoryManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 {
 	switch (packet.GetOpcode())
 	{
 	case SMSG_INVENTORY_CHANGE_FAILURE:
-		{
-			aiRegistry->GetSocialManager()->TellMaster("I can't use that.");
-			return;
-		}
-	}
+		aiRegistry->GetSocialManager()->TellMaster("I can't use that.");
+		break;
+    }
+}
 
+void AiInventoryManager::HandleMasterIncomingPacket(const WorldPacket& packet)
+{
+    switch (packet.GetOpcode())
+    {
+    case CMSG_GAMEOBJ_REPORT_USE:
+        WorldPacket p(packet);
+        p.rpos(0); // reset reader
+        uint64 guid;
+        p >> guid;
+        UseGameObject(guid);
+        break;
+    }
 }
 
 void AiInventoryManager::QueryItemUsage(ItemPrototype const *item)

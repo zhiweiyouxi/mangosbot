@@ -1,4 +1,5 @@
 #pragma once
+#include "LootManager.h"
 
 using namespace std;
 
@@ -10,10 +11,8 @@ namespace ai
 	class AiInventoryManager : public AiManagerBase
 	{
 	public:
-		AiInventoryManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
-		{
-			currentLoot = 0;
-		}
+		AiInventoryManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry);
+        virtual ~AiInventoryManager();
 
 	public:
 		virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
@@ -31,11 +30,13 @@ namespace ai
 		{
 			return FindAndUse(isTheSameName, (const void*)item, ignore_time);
 		}
-		virtual void ClearLoot();
-		virtual void AddLoot(uint64 guid);
-		virtual bool CanLoot();
-		virtual void DoLoot();
-		virtual void EquipItem(const char* link);
+		
+        virtual void ClearLoot() { lootManager->ClearLoot(); }
+        virtual void AddLoot(uint64 guid) { lootManager->AddLoot(guid); }
+        virtual bool CanLoot() { return lootManager->CanLoot(); }
+        virtual void DoLoot() { lootManager->DoLoot(); }
+		
+        virtual void EquipItem(const char* link);
 		virtual void UseItem(const char* link);
 		virtual void Reward(const char* link);
 		virtual void ItemLocalization(std::string& itemName, const uint32 itemID);
@@ -47,6 +48,7 @@ namespace ai
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
+        virtual void HandleMasterIncomingPacket(const WorldPacket& packet);
         virtual void Query(const string& text);
 
 	private:
@@ -62,10 +64,10 @@ namespace ai
 		void EquipItem(Item& item);
         void QueryItemUsage(ItemPrototype const *item);
         void QueryItemsUsage(list<uint32> items);
+        void UseGameObject(uint64 guid);
 
 	private:
-		list<uint64> availableLoot;
-		uint64 currentLoot;
+        LootManager *lootManager;
 	};
 
 };

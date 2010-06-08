@@ -1,10 +1,11 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Engine.h"
-#include "../game/GenericActions.h"
+#include "../game/playerbot/strategy/Action.h"
+#include "../game/playerbot/strategy/ActionBasket.h"
+#include "../game/playerbot/strategy/Queue.h"
+#include "../game/playerbot/strategy/Trigger.h"
+#include "../game/playerbot/strategy/Engine.h"
+#include "../game/playerbot/strategy/GenericActions.h"
 
 using namespace ai;
 
