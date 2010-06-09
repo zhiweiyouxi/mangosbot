@@ -171,6 +171,9 @@ void LootManager::StoreLootItem(Loot* loot, uint32 lootIndex)
 
 void LootManager::StoreGameObjectLootItem( GameObject* go, LootItem * item, Loot* loot )
 {
+    if ( !go->isSpawned() )
+        return;
+
     uint32 lockId = go->GetGOInfo()->GetLockId();
     LockEntry const *lockInfo = sLockStore.LookupEntry(lockId);
     if(!lockInfo)

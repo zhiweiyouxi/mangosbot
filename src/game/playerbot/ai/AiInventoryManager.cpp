@@ -429,19 +429,6 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 	}
 }
 
-void AiInventoryManager::UseGameObject(uint64 guid) 
-{
-    GameObject* go = bot->GetMap()->GetGameObject(guid);
-    if(!go)
-        return;
-
-    if ( !go->isSpawned() )
-        return;
-
-    AddLoot(MAKE_NEW_GUID(guid, 0, HIGHGUID_GAMEOBJECT));
-    DoLoot();
-}
-
 void AiInventoryManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 {
 	switch (packet.GetOpcode())
@@ -461,7 +448,7 @@ void AiInventoryManager::HandleMasterIncomingPacket(const WorldPacket& packet)
         p.rpos(0); // reset reader
         uint64 guid;
         p >> guid;
-        UseGameObject(guid);
+        AddLoot(MAKE_NEW_GUID(guid, 0, HIGHGUID_GAMEOBJECT));
         break;
     }
 }

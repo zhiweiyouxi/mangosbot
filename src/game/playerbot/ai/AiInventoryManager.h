@@ -64,7 +64,6 @@ namespace ai
 		void EquipItem(Item& item);
         void QueryItemUsage(ItemPrototype const *item);
         void QueryItemsUsage(list<uint32> items);
-        void UseGameObject(uint64 guid);
 
 	private:
         LootManager *lootManager;
