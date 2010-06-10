@@ -37,6 +37,12 @@ uint64 LootManager::FindNewLoot()
     uint64 guid = availableLoot.front();
     availableLoot.pop_front();
 
+    if (!guid)
+    {
+        Player* master = bot->GetPlayerbotAI()->GetMaster();
+        guid = master->GetSelection();
+    }
+
     return guid;
 }
 
@@ -100,7 +106,7 @@ void LootManager::DoLoot()
     float distance = bot->GetDistance(wo);
     if (distance > INTERACTION_DISTANCE && distance < BOTLOOT_DISTANCE)
     {
-        bot->GetMotionMaster()->MovePoint(wo->GetMapId(), wo->GetPositionX(), wo->GetPositionY(), wo->GetPositionZ());
+        bot->GetPlayerbotAI()->GetAiRegistry()->GetMoveManager()->MoveTo(wo->GetMapId(), wo->GetPositionX(), wo->GetPositionY(), wo->GetPositionZ());
         return;
     }
 

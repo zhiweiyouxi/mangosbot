@@ -39,7 +39,15 @@ float AiMoveManager::GetFollowAngle()
 void AiMoveManager::Follow(Unit* target, float distance)
 {
 	Stay();
-	bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle()); 	
+	bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle());
+    ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
+}
+
+void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
+{
+    Stay();
+    bot->GetMotionMaster()->MovePoint(mapId, x, y, z);
+    ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 bool AiMoveManager::Flee(Unit* target, float distance)

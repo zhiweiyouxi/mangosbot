@@ -16,6 +16,7 @@ namespace ai
 
 	public:
 		virtual float GetDistanceTo(Unit* target);
+        virtual void MoveTo(uint32 mapId, float x, float y, float z);
 		virtual void MoveTo(Unit* target, float distance = 0.0f);
 		virtual float GetFollowAngle();
 		virtual void Follow(Unit* target, float distance = 2.0f);
