@@ -345,7 +345,8 @@ void AiInventoryManager::Reward(const char* link)
 
 	uint32 itemId = itemIds.front();
 	bool wasRewarded = false;
-	uint64 questRewarderGUID = bot->GetSelection();
+	uint64 questRewarderGUID = bot->GetPlayerbotAI()->GetMaster()->GetSelection();
+    bot->SetSelection(questRewarderGUID);
 	Object* const pNpc = ObjectAccessor::GetObjectByTypeMask(*bot, questRewarderGUID, TYPEMASK_UNIT|TYPEMASK_GAMEOBJECT);
 	if (!pNpc)
 		return;

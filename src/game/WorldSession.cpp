@@ -462,12 +462,12 @@ void WorldSession::LogoutPlayer(bool Save)
         _player->CleanupChannels();
 
         ///- If the player is in a group (or invited), remove him. If the group if then only 1 person, disband the group.
-        _player->UninviteFromGroup();
+        //_player->UninviteFromGroup();
 
         // remove player from the group if he is:
         // a) in group; b) not in raid group; c) logging out normally (not being kicked or disconnected)
-        if(_player->GetGroup() && !_player->GetGroup()->isRaidGroup() && m_Socket)
-            _player->RemoveFromGroup();
+        //if(_player->GetGroup() && !_player->GetGroup()->isRaidGroup() && m_Socket)
+        //    _player->RemoveFromGroup();
 
         ///- Send update to group
         if(_player->GetGroup())
