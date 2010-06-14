@@ -31,16 +31,12 @@ bool LootManager::CanLoot()
 
 uint64 LootManager::FindNewLoot() 
 {
-    if (availableLoot.empty())
-        return 0;
+    uint64 guid = 0;
 
-    uint64 guid = availableLoot.front();
-    availableLoot.pop_front();
-
-    if (!guid)
+    if (!availableLoot.empty())
     {
-        Player* master = bot->GetPlayerbotAI()->GetMaster();
-        guid = master->GetSelection();
+        guid = availableLoot.front();
+        availableLoot.pop_front();
     }
 
     return guid;
@@ -93,28 +89,42 @@ void LootManager::ReleaseLoot()
 void LootManager::DoLoot()
 {
     if (!currentLoot)
-        currentLoot = FindNewLoot();
-
-    if (!currentLoot)
-        return;
-
-    Loot* loot;
-    WorldObject *wo = GetLootObject(&loot);
-    if (!wo)
-        return;
-
-    float distance = bot->GetDistance(wo);
-    if (distance > INTERACTION_DISTANCE && distance < BOTLOOT_DISTANCE)
     {
-        bot->GetPlayerbotAI()->GetAiRegistry()->GetMoveManager()->MoveTo(wo->GetMapId(), wo->GetPositionX(), wo->GetPositionY(), wo->GetPositionZ());
-        return;
+        Player* master = bot->GetPlayerbotAI()->GetMaster();
+        uint64 guid = master->GetSelection();
+        if (guid) AddLoot(guid);
     }
 
-    bot->GetMotionMaster()->Clear();
-	bot->SendLoot(currentLoot, LOOT_CORPSE);
+    while (CanLoot())
+    {
+        if (!currentLoot)
+            currentLoot = FindNewLoot();
 
-    StoreLootItems(loot);
-    ReleaseLoot();
+        if (!currentLoot)
+            break;
+
+        Loot* loot;
+        WorldObject *wo = GetLootObject(&loot);
+        if (!wo)
+        {
+            currentLoot = 0;
+            continue;
+        }
+
+        float distance = bot->GetDistance(wo);
+        if (distance > INTERACTION_DISTANCE && distance < BOTLOOT_DISTANCE)
+        {
+            bot->GetPlayerbotAI()->GetAiRegistry()->GetMoveManager()->MoveTo(wo->GetMapId(), wo->GetPositionX(), wo->GetPositionY(), wo->GetPositionZ());
+            break;
+        }
+
+        bot->GetMotionMaster()->Clear();
+	    bot->SendLoot(currentLoot, LOOT_CORPSE);
+
+        StoreLootItems(loot);
+        ReleaseLoot();
+    }
+    currentLoot = 0;
 }
 
 void LootManager::StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem )
