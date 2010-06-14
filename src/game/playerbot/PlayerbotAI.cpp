@@ -16,8 +16,6 @@ PlayerbotAI::PlayerbotAI(PlayerbotMgr* mgr, Player* bot) : PlayerbotAIBase()
 	this->mgr = mgr;
 	this->bot = bot;
 	aiRegistry = new AiManagerRegistry(this);
-
-    aiRegistry->GetMoveManager()->Summon();
 }
 
 PlayerbotAI::~PlayerbotAI()

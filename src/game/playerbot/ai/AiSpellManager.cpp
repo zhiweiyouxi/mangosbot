@@ -185,14 +185,14 @@ bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
 {
 	uint32 spellid = GetSpellId(name);
 	if (!spellid)
-		return false;
+		return true; // there can be known alternatives
 
 	if (!target)
 		target = bot;
 
 	SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellid );
 	if (!spellInfo)
-		return false;
+		return true; // there can be known alternatives
 
 	if (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
 	{

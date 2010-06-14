@@ -206,7 +206,7 @@ bool Engine::ExecuteAction(const char* name)
 	bool result = false;
 
     ActionNode *action = createAction(name);
-    if (action)
+    if (action && action->isPossible() && action->isUseful())
     {
         if (actionExecutionListeners.ActionExecuted(action->getAction()))
 		{

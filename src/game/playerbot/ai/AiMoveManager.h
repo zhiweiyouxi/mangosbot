@@ -32,6 +32,7 @@ namespace ai
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
+        virtual void HandleMasterIncomingPacket(const WorldPacket& packet);
 	};
 
 };

@@ -83,10 +83,7 @@ void AiStrategyManager::ChangeStrategy( const char* name, Engine* e )
 
 void AiStrategyManager::DoSpecificAction(const char* name) 
 { 
-	if (!currentEngine) 
-		return;
-	
-	if (!currentEngine->ExecuteAction(name))
+	if (!combatEngine->ExecuteAction(name) && !nonCombatEngine->ExecuteAction(name))
 	{
 		aiRegistry->GetSocialManager()->TellMaster("Action failed: ");
 		aiRegistry->GetSocialManager()->TellMaster(name);

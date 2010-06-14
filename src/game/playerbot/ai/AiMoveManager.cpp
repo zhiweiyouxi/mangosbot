@@ -38,21 +38,36 @@ float AiMoveManager::GetFollowAngle()
 
 void AiMoveManager::Follow(Unit* target, float distance)
 {
-	Stay();
+    if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
+    {
+        Stay();
+        return;
+    }
+
 	bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle());
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
 {
-    Stay();
+    if (bot->GetMapId() != mapId || bot->GetDistance(x, y, z) > BOT_REACT_DISTANCE)
+    {
+        Stay();
+        return;
+    }
+
     bot->GetMotionMaster()->MovePoint(mapId, x, y, z);
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
-    Stay();
+    if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
+    {
+        Stay();
+        return false;
+    }
+
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 
     if (bot->isFrozen() || bot->IsPolymorphed() || !bot->CanFreeMove())
@@ -166,7 +181,7 @@ void AiMoveManager::Revive()
 void AiMoveManager::Summon()
 {
     Player* master = ai->GetMaster();
-    if (!bot->IsWithinDistInMap( master, 50, true ))
+    if (!bot->IsWithinDistInMap( master, BOT_REACT_DISTANCE, true ))
     {
         PlayerbotChatHandler ch(master);
         if (! ch.teleport(*bot))
@@ -253,3 +268,23 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 
 }
 
+void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
+{
+    switch (packet.GetOpcode())
+    {
+    case CMSG_ACTIVATETAXI:
+        WorldPacket p(packet);
+        
+        uint64 guid;
+        std::vector<uint32> nodes;
+        nodes.resize(2);
+
+        p >> guid >> nodes[0] >> nodes[1];
+        Creature *npc = bot->GetNPCIfCanInteractWith(guid, UNIT_NPC_FLAG_FLIGHTMASTER);
+        if (!npc)
+            return;
+
+        bot->ActivateTaxiPathTo(nodes, npc);
+        return;
+    }   
+}

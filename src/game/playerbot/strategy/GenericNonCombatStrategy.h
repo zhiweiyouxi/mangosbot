@@ -57,7 +57,7 @@ namespace ai
 	{
 	public:
 		DpsAoeStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
-		virtual const char* getName() { return "aoe dps non combat"; }
+		virtual const char* getName() { return "dps aoe"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
 
 	public:
@@ -68,7 +68,7 @@ namespace ai
     {
     public:
         TankAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
-        virtual const char* getName() { return "tank non combat"; }
+        virtual const char* getName() { return "tank assist"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_TANK; }
 
     public:
@@ -79,7 +79,7 @@ namespace ai
 	{
 	public:
 		TankAoeStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
-		virtual const char* getName() { return "aoe tank non combat"; }
+		virtual const char* getName() { return "tank aoe"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_TANK; }
 
 	public:
