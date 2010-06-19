@@ -128,8 +128,8 @@ void LootManager::DoLoot()
 
         if (!loot->unlootedCount)
             DeactivateLootGameObject();
+        currentLoot = 0;
     }
-    currentLoot = 0;
 }
 
 void LootManager::StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem )

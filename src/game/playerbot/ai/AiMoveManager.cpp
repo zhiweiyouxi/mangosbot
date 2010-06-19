@@ -274,6 +274,7 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
     {
     case CMSG_ACTIVATETAXI:
         WorldPacket p(packet);
+        p.rpos(0);
         
         uint64 guid;
         std::vector<uint32> nodes;
