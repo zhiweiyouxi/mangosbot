@@ -1,5 +1,7 @@
 #include "../../pchdef.h"
 #include "../playerbot.h"
+#include "../../MotionMaster.h"
+#include "../../MovementGenerator.h"
 
 #include "FleeManager.h"
 
@@ -38,30 +40,42 @@ float AiMoveManager::GetFollowAngle()
 
 void AiMoveManager::Follow(Unit* target, float distance)
 {
+    MotionMaster &mm = *bot->GetMotionMaster();
+    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+        return;
+
     if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
     {
         Stay();
         return;
     }
 
-	bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle());
+	mm.MoveFollow(target, distance, GetFollowAngle());
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
 {
+    MotionMaster &mm = *bot->GetMotionMaster();
+    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+        return;
+
     if (bot->GetMapId() != mapId || bot->GetDistance(x, y, z) > BOT_REACT_DISTANCE)
     {
         Stay();
         return;
     }
 
-    bot->GetMotionMaster()->MovePoint(mapId, x, y, z);
+    mm.MovePoint(mapId, x, y, z);
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
+    MotionMaster &mm = *bot->GetMotionMaster();
+    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+        return false;
+
     if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
     {
         Stay();
@@ -87,7 +101,11 @@ bool AiMoveManager::Flee(Unit* target, float distance)
 
 void AiMoveManager::Stay()
 {
-	bot->GetMotionMaster()->Clear( true );
+    MotionMaster &mm = *bot->GetMotionMaster();
+    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+        return;
+
+	mm.Clear( true );
 	bot->clearUnitState( UNIT_STAT_CHASE );
 	bot->clearUnitState( UNIT_STAT_FOLLOW );
 
@@ -104,6 +122,10 @@ void AiMoveManager::Attack(Unit* target)
 {
 	if (!target) 
 		return;
+
+    MotionMaster &mm = *bot->GetMotionMaster();
+    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+        return;
 
 	if (!bot->isInFrontInMap(target, 5.0f))
 		bot->SetInFront(target);
@@ -201,6 +223,20 @@ void AiMoveManager::HandleCommand(const string& text, Player& fromPlayer)
 	{
 		ReleaseSpirit();
 	}
+    else if(text == "fly" && taxiMaster)
+    {
+        bot->SetSelection(taxiMaster);
+
+        Creature *npc = bot->GetNPCIfCanInteractWith(taxiMaster, UNIT_NPC_FLAG_FLIGHTMASTER);
+        if (!npc)
+        {
+            aiRegistry->GetSocialManager()->TellMaster("Cannot talk to flightmaster");
+            return;
+        }
+
+        if (!bot->ActivateTaxiPathTo(taxiNodes, npc))
+            aiRegistry->GetSocialManager()->TellMaster("I can not fly with you");
+    }
 }
 
 void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
@@ -276,19 +312,10 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
         WorldPacket p(packet);
         p.rpos(0);
         
-        uint64 guid;
-        std::vector<uint32> nodes;
-        nodes.resize(2);
+        taxiNodes.clear();
+        taxiNodes.resize(2);
 
-        p >> guid >> nodes[0] >> nodes[1];
-
-        bot->SetSelection(guid);
-
-        Creature *npc = bot->GetNPCIfCanInteractWith(guid, UNIT_NPC_FLAG_FLIGHTMASTER);
-        if (!npc)
-            return;
-
-        bot->ActivateTaxiPathTo(nodes, npc);
+        p >> taxiMaster >> taxiNodes[0] >> taxiNodes[1];
         return;
     }   
 }

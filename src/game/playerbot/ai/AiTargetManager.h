@@ -30,6 +30,7 @@ namespace ai
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();
 		virtual Player* GetMaster();
+        virtual void ResetTarget() { selection = NULL; }
 
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);

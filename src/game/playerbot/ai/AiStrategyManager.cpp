@@ -109,6 +109,13 @@ void AiStrategyManager::HandleCommand(const string& text, Player& fromPlayer)
 		std::string strategy = text.substr(text.find(" ") + 1);
 		ChangeNonCombatStrategy(strategy.c_str());
 	}
+    else if (text == "reset")
+    {
+        combatEngine->Init();
+        nonCombatEngine->Init();
+        aiRegistry->GetTargetManager()->ResetTarget();
+        currentEngine = nonCombatEngine;
+    }
 }
 
 void AiStrategyManager::HandleBotOutgoingPacket(const WorldPacket& packet)

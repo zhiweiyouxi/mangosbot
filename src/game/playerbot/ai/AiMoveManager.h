@@ -12,6 +12,7 @@ namespace ai
 	public:
 		AiMoveManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 		{
+            taxiMaster = 0;
 		}
 
 	public:
@@ -33,6 +34,10 @@ namespace ai
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
         virtual void HandleMasterIncomingPacket(const WorldPacket& packet);
+
+    private:
+        vector<uint32> taxiNodes;
+        uint64 taxiMaster;
 	};
 
 };
