@@ -280,6 +280,9 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
         nodes.resize(2);
 
         p >> guid >> nodes[0] >> nodes[1];
+
+        bot->SetSelection(guid);
+
         Creature *npc = bot->GetNPCIfCanInteractWith(guid, UNIT_NPC_FLAG_FLIGHTMASTER);
         if (!npc)
             return;

@@ -12,6 +12,10 @@
 [ ] use threat level
 [ ] warlock: heal demon
 
-[ ] take taxi flight with master
+[?] take taxi flight with master (selection)
 [?] don't flee when ice block, stunned, etc.
-[ ] stop attack and follow/stay/flee
+[?] stop attack and follow/stay/flee
+[ ] c [link] query item count
+[ ] stats: show exp %
+[?] do not destroy item if not yet looted
+[ ] check quest status on movement

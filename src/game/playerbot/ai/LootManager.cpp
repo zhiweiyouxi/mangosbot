@@ -75,16 +75,18 @@ void LootManager::ReleaseLoot()
 {
     if( uint64 lguid = bot->GetLootGUID() && bot->GetSession() )
         bot->GetSession()->DoLootRelease( lguid );
+}
 
+void LootManager::DeactivateLootGameObject()
+{
     GameObject* go = bot->GetMap()->GetGameObject(currentLoot);
     if(go)
     {
         go->SetLootState(GO_JUST_DEACTIVATED);
         go->Update(0);
     }
-
-    currentLoot = 0;
 }
+
 
 void LootManager::DoLoot()
 {
@@ -123,6 +125,9 @@ void LootManager::DoLoot()
 
         StoreLootItems(loot);
         ReleaseLoot();
+
+        if (!loot->unlootedCount)
+            DeactivateLootGameObject();
     }
     currentLoot = 0;
 }

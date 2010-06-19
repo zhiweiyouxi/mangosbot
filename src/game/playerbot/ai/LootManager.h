@@ -30,6 +30,7 @@ namespace ai
         void StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem );
         void StoreLootItem(Loot* loot, uint32 lootIndex);
         void StoreGameObjectLootItem( GameObject* go, LootItem * item, Loot* loot );
+        void DeactivateLootGameObject();
 
 	private:
         Player* bot;
