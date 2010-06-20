@@ -82,6 +82,9 @@ bool AiMoveManager::Flee(Unit* target, float distance)
     if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
         return false;
 
+    if (!target)
+        return false;
+
     if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
     {
         Stay();

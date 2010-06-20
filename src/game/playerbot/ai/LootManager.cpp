@@ -128,7 +128,11 @@ void LootManager::DoLoot()
 
         if (!loot->unlootedCount)
             DeactivateLootGameObject();
+
         currentLoot = 0;
+        bot->GetPlayerbotAI()->SetNextCheckDelay(GLOBAL_COOLDOWN);
+
+        break;
     }
 }
 
