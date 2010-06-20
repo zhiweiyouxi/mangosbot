@@ -137,6 +137,13 @@ void AiStatsManager::ListStats()
 		<< "|r|cffcdcdcds|r|cff00ff00" << copper
 		<< "|r|cffffd333c";
 
+    uint32 curXP = bot->GetUInt32Value(PLAYER_XP);
+    uint32 nextLevelXP = bot->GetUInt32Value(PLAYER_NEXT_LEVEL_XP);
+    uint32 xpPercent = 100 * curXP / nextLevelXP;
+    
+    out << "|h|cffffffff & xp " << "|r|cff00ff00" << xpPercent
+        << "|r|cffffd333%";
+
 	aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
 }
 
