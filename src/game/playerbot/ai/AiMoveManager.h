@@ -10,10 +10,7 @@ namespace ai
 	class AiMoveManager : public AiManagerBase
 	{
 	public:
-		AiMoveManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
-		{
-            taxiMaster = 0;
-		}
+		AiMoveManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry);
 
 	public:
 		virtual float GetDistanceTo(Unit* target);

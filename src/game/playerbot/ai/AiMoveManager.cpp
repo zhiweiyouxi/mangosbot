@@ -8,6 +8,12 @@
 using namespace ai;
 using namespace std;
 
+AiMoveManager::AiMoveManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
+{
+    taxiMaster = 0;
+    bot->GetMotionMaster()->Clear();
+}
+
 float AiMoveManager::GetDistanceTo(Unit* target)
 {
 	return target ? bot->GetDistance(target) : 0.0f; 
