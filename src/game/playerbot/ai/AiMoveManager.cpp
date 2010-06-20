@@ -11,7 +11,6 @@ using namespace std;
 AiMoveManager::AiMoveManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 {
     taxiMaster = 0;
-    bot->GetMotionMaster()->Clear();
 }
 
 float AiMoveManager::GetDistanceTo(Unit* target)
@@ -245,6 +244,11 @@ void AiMoveManager::HandleCommand(const string& text, Player& fromPlayer)
 
         if (!bot->ActivateTaxiPathTo(taxiNodes, npc))
             aiRegistry->GetSocialManager()->TellMaster("I can not fly with you");
+    }
+    else if (text == "reset")
+    {
+        bot->GetMotionMaster()->Clear();
+        bot->m_taxi.ClearTaxiDestinations();
     }
 }
 

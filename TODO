@@ -15,3 +15,5 @@
 [ ] c [link] query item count
 [?] do not destroy item if not yet looted
 [ ] check quest status on movement
+[ ] buy/sell command
+[ ] arcane torrent

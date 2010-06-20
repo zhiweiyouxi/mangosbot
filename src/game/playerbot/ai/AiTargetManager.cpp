@@ -222,6 +222,10 @@ bool AiTargetManager::CanHealPet(Pet* pet)
 
 void AiTargetManager::HandleCommand(const string& text, Player& fromPlayer)
 {
+    if (text == "reset")
+    {
+        ResetTarget();
+    }
 }
 
 void AiTargetManager::HandleBotOutgoingPacket(const WorldPacket& packet)

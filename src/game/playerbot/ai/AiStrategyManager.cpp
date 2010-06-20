@@ -113,7 +113,6 @@ void AiStrategyManager::HandleCommand(const string& text, Player& fromPlayer)
     {
         combatEngine->Init();
         nonCombatEngine->Init();
-        aiRegistry->GetTargetManager()->ResetTarget();
         currentEngine = nonCombatEngine;
     }
 }
