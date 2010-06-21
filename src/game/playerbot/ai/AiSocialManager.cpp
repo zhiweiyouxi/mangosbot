@@ -276,5 +276,25 @@ void AiSocialManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 
 			return;
 		}
-	}
+    case BUY_ERR_NOT_ENOUGHT_MONEY:
+        {
+            TellMaster("Not enought money");
+            return;
+        }
+    case BUY_ERR_ITEM_ALREADY_SOLD:
+        {
+            TellMaster("Item is already sold out");
+            return;
+        }
+    case BUY_ERR_REPUTATION_REQUIRE:
+        {
+            TellMaster("Not enought reputation");
+            return;
+        }
+    case BUY_ERR_CANT_FIND_ITEM:
+        {
+            TellMaster("Item not found");
+            return;
+        }
+    }
 }

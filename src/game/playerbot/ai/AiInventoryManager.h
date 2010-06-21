@@ -39,6 +39,7 @@ namespace ai
         virtual void EquipItem(const char* link);
 		virtual void UseItem(const char* link);
 		virtual void Reward(const char* link);
+        virtual void Buy(const char* link);
 		virtual void ItemLocalization(std::string& itemName, const uint32 itemID);
 		virtual void extractItemIds(const string& text, list<uint32>& itemIds);
 		virtual void findItemsInInv(list<uint32>& itemIdSearchList, list<Item*>& foundItemList);

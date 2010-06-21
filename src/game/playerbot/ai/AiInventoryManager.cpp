@@ -336,6 +336,24 @@ void AiInventoryManager::ItemLocalization(std::string& itemName, const uint32 it
 	}
 }
 
+void AiInventoryManager::Buy(const char* link)
+{
+    list<uint32> itemIds;
+    extractItemIds(link, itemIds);
+    if (itemIds.empty()) 
+        return;
+
+    Player* master = bot->GetPlayerbotAI()->GetMaster();
+    uint64 vendorguid = master->GetSelection();
+    if (!vendorguid)
+        return;
+
+    for (list<uint32>::iterator i = itemIds.begin(); i != itemIds.end(); i++) 
+    {
+        bot->BuyItemFromVendor(vendorguid, *i, 1, NULL_BAG, NULL_SLOT);
+    }
+}
+
 void AiInventoryManager::Reward(const char* link)
 {
 	std::list<uint32> itemIds;
@@ -428,6 +446,10 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 	{
 		Reward(text.c_str());
 	}
+    else if (text.size() > 2 && text.substr(0, 2) == "b " || text.size() > 4 && text.substr(0, 7) == "buy ")
+    {
+        Buy(text.c_str());
+    }
 }
 
 void AiInventoryManager::HandleBotOutgoingPacket(const WorldPacket& packet)
