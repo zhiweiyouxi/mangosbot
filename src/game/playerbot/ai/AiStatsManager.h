@@ -41,6 +41,10 @@ namespace ai
 	private:
 		uint32 EstRepair(uint16 pos);
 		uint32 EstRepairAll();
+        void ListBagSlots(ostringstream &out);
+        void ListXP(ostringstream &out);
+        void ListRepairCost(ostringstream &out);
+        void ListGold(ostringstream &out);
 
 	};
 

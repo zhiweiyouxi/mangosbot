@@ -86,68 +86,6 @@ bool AiStatsManager::IsMounted()
 	return bot->IsMounted();
 }
 
-
-void AiStatsManager::ListStats()
-{
-	std::ostringstream out;
-
-	uint32 totalused = 0;
-	// list out items in main backpack
-	for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-	{
-		const Item* const pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-		if (pItem)
-			totalused++;
-	}
-	uint32 totalfree = 16 - totalused;
-	// list out items in other removable backpacks
-	for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-	{
-		const Bag* const pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-		if (pBag)
-		{
-			ItemPrototype const* pBagProto = pBag->GetProto();
-			if (pBagProto->Class == ITEM_CLASS_CONTAINER && pBagProto->SubClass == ITEM_SUBCLASS_CONTAINER)
-				totalfree =  totalfree + pBag->GetFreeSlots();
-		}
-
-	}
-
-	// calculate how much money bot has
-	uint32 copper = bot->GetMoney();
-	uint32 gold = uint32(copper / 10000);
-	copper -= (gold * 10000);
-	uint32 silver = uint32(copper / 100);
-	copper -= (silver * 100);
-
-	out << "|cffffffff[|h|cff00ffff" << bot->GetName() << "|h|cffffffff]" << " has |r|cff00ff00" << gold
-		<< "|r|cfffffc00g|r|cff00ff00" << silver
-		<< "|r|cffcdcdcds|r|cff00ff00" << copper
-		<< "|r|cffffd333c" << "|h|cffffffff bag slots |h|cff00ff00" << totalfree;
-
-	// estimate how much item damage the bot has
-	copper = EstRepairAll();
-	gold = uint32(copper / 10000);
-	copper -= (gold * 10000);
-	silver = uint32(copper / 100);
-	copper -= (silver * 100);
-
-	out << "|h|cffffffff & item damage cost " << "|r|cff00ff00" << gold
-		<< "|r|cfffffc00g|r|cff00ff00" << silver
-		<< "|r|cffcdcdcds|r|cff00ff00" << copper
-		<< "|r|cffffd333c";
-
-    uint32 curXP = bot->GetUInt32Value(PLAYER_XP);
-    uint32 nextLevelXP = bot->GetUInt32Value(PLAYER_NEXT_LEVEL_XP);
-    uint32 xpPercent = 100 * curXP / nextLevelXP;
-    
-    out << "|h|cffffffff & xp " << "|r|cff00ff00" << xpPercent
-        << "|r|cffffd333%";
-
-	aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
-}
-
-
 uint32 AiStatsManager::EstRepairAll()
 {
 	uint32 TotalCost = 0;
@@ -256,5 +194,79 @@ int AiStatsManager::GetAttackerCount(float distance)
 float AiStatsManager::GetBalancePercent()
 {
     return ai->GetGroupStatsManager()->GetBalancePercent();
+}
+
+void AiStatsManager::ListGold(ostringstream &out)
+{
+    uint32 copper = bot->GetMoney();
+    uint32 gold = uint32(copper / 10000);
+    copper -= (gold * 10000);
+    uint32 silver = uint32(copper / 100);
+    copper -= (silver * 100);
+
+    out << "|r|cff00ff00" << gold << "|r|cfffffc00g|r|cff00ff00" << silver << "|r|cffcdcdcds|r|cff00ff00" << copper << "|r|cffffd333c";
+}
+
+void AiStatsManager::ListBagSlots(ostringstream &out)
+{
+    uint32 totalused = 0;
+    // list out items in main backpack
+    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
+    {
+        const Item* const pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+        if (pItem)
+            totalused++;
+    }
+    uint32 totalfree = 16 - totalused;
+    // list out items in other removable backpacks
+    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
+    {
+        const Bag* const pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
+        if (pBag)
+        {
+            ItemPrototype const* pBagProto = pBag->GetProto();
+            if (pBagProto->Class == ITEM_CLASS_CONTAINER && pBagProto->SubClass == ITEM_SUBCLASS_CONTAINER)
+                totalfree =  totalfree + pBag->GetFreeSlots();
+        }
+
+    }
+
+    out << "|h|cff00ff00" << totalfree << "|h|cffffffff bag slots";
+}
+
+void AiStatsManager::ListXP( ostringstream &out )
+{
+    uint32 curXP = bot->GetUInt32Value(PLAYER_XP);
+    uint32 nextLevelXP = bot->GetUInt32Value(PLAYER_NEXT_LEVEL_XP);
+    uint32 xpPercent = 100 * curXP / nextLevelXP;
+
+    out << "|r|cff00ff00" << xpPercent << "|r|cffffd333%" << "|h|cffffffff XP";
+}
+
+void AiStatsManager::ListRepairCost(ostringstream &out)
+{
+    uint32 copper = EstRepairAll();
+    uint32 gold = uint32(copper / 10000);
+    copper -= (gold * 10000);
+    uint32 silver = uint32(copper / 100);
+    copper -= (silver * 100);
+
+    out << "|r|cff00ff00" << gold << "|r|cfffffc00g|r|cff00ff00" << silver << "|r|cffcdcdcds|r|cff00ff00" << copper << "|r|cffffd333c"
+        << "|h|cffffffff repair";
+}
+
+void AiStatsManager::ListStats()
+{
+    ostringstream out;
+
+    ListGold(out);
+    out << ", ";
+    ListBagSlots(out);
+    out << ", ";
+    ListXP(out);
+    out << ", ";
+    ListRepairCost(out);
+
+    aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
 }
 

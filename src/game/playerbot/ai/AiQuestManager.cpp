@@ -29,36 +29,27 @@ void AiQuestManager::UpdateQuestNeedItems()
 
 void AiQuestManager::ListQuests()
 {
-	std::ostringstream res;
-
-	bool hasIncompleteQuests = false;
-	std::ostringstream incomout;
-	incomout << "my incomplete quests are:";
-	
-	bool hasCompleteQuests = false;
+	std::ostringstream incomout;	
 	std::ostringstream comout;
-	comout << "my complete quests are:";
 	
 	for (uint16 slot = 0; slot < MAX_QUEST_LOG_SIZE; ++slot)
 	{
 		if(uint32 questId = bot->GetQuestSlotQuestId(slot))
 		{
 			Quest const* pQuest = sObjectMgr.GetQuestTemplate(questId);
-			if (bot->GetQuestStatus(questId) == QUEST_STATUS_COMPLETE) {
-				hasCompleteQuests = true;
-				comout << " |cFFFFFF00|Hquest:" << questId << ':' << pQuest->GetQuestLevel() << "|h[" << pQuest->GetTitle() << "]|h|r";
-			}
-			else {
-				hasIncompleteQuests = true;
-				incomout << " |cFFFFFF00|Hquest:" << questId << ':' << pQuest->GetQuestLevel() << "|h[" << pQuest->GetTitle() << "]|h|r";
-			}
+            std::ostringstream &stream = (bot->GetQuestStatus(questId) == QUEST_STATUS_COMPLETE ? comout : incomout);
+            stream << " |cFFFFFF00|Hquest:" << questId << ':' << pQuest->GetQuestLevel() << "|h[" << pQuest->GetTitle() << "]|h|r";
+            stream << ", ";
 		}
 	}
 
-	res << comout.str();
-	res << incomout.str();
-
-	aiRegistry->GetSocialManager()->TellMaster(res.str().c_str());
+    AiSocialManager* socialManager = aiRegistry->GetSocialManager();
+    
+    socialManager->TellMaster("--- incomplete quests ---");
+	socialManager->TellMaster(incomout.str().c_str());
+    
+    socialManager->TellMaster("--- complete quests ---");
+    socialManager->TellMaster(comout.str().c_str());
 }
 
 void AiQuestManager::DropQuest(const char* link)

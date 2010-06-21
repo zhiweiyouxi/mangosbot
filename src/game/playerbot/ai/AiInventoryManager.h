@@ -8,6 +8,14 @@ namespace ai
 	class AiManagerRegistry;
     class AiManagerBase;
 
+    class IterateItemsVisitor 
+    {
+    public:
+        IterateItemsVisitor() {}
+
+        virtual void Visit(Item* item) = NULL;
+    };
+
 	class AiInventoryManager : public AiManagerBase
 	{
 	public:
@@ -40,6 +48,7 @@ namespace ai
 		virtual void UseItem(const char* link);
 		virtual void Reward(const char* link);
         virtual void Buy(const char* link);
+        virtual void ListCount(const char* link);
 		virtual void ItemLocalization(std::string& itemName, const uint32 itemID);
 		virtual void extractItemIds(const string& text, list<uint32>& itemIds);
 		virtual void findItemsInInv(list<uint32>& itemIdSearchList, list<Item*>& foundItemList);
@@ -65,6 +74,8 @@ namespace ai
 		void EquipItem(Item& item);
         void QueryItemUsage(ItemPrototype const *item);
         void QueryItemsUsage(list<uint32> items);
+        void QueryItemCount(ItemPrototype const * item);
+        void IterateItems(IterateItemsVisitor* visitor);
 
 	private:
         LootManager *lootManager;

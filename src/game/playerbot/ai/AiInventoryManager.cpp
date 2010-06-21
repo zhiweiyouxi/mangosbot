@@ -446,9 +446,13 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 	{
 		Reward(text.c_str());
 	}
-    else if (text.size() > 2 && text.substr(0, 2) == "b " || text.size() > 4 && text.substr(0, 7) == "buy ")
+    else if (text.size() > 2 && text.substr(0, 2) == "b " || text.size() > 4 && text.substr(0, 4) == "buy ")
     {
         Buy(text.c_str());
+    }
+    else if (text.size() > 2 && text.substr(0, 2) == "c " || text.size() > 4 && text.substr(0, 6) == "count ")
+    {
+        ListCount(text.c_str());
     }
 }
 
@@ -533,4 +537,76 @@ void AiInventoryManager::Query(const string& text)
 {
     list<uint32> items; /* = */ extractItemIds(text, items);
     QueryItemsUsage(items);
+}
+
+void AiInventoryManager::IterateItems(IterateItemsVisitor* visitor)
+{
+    int count = 0;
+    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
+    {
+        Item* pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+        if (pItem)
+            visitor->Visit(pItem);
+    }    
+
+    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
+    {
+        const Bag* pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
+        if (pBag)
+        {
+            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
+            {
+                Item* pItem = bot->GetItemByPos(bag, slot);
+                if (pItem)
+                    visitor->Visit(pItem);
+            }
+        }
+    }
+}
+
+class QueryItemCountVisitor : public IterateItemsVisitor 
+{
+public:
+    QueryItemCountVisitor(uint32 itemId) 
+    {
+        count = 0;
+        this->itemId = itemId;
+    }
+
+    virtual void Visit(Item* item)
+    {
+        if (item->GetProto()->ItemId == itemId)
+            count++;
+    }
+
+    int GetCount() { return count; }
+
+private:
+    int count;
+    uint32 itemId;
+};
+
+void AiInventoryManager::QueryItemCount(ItemPrototype const * item) 
+{
+    QueryItemCountVisitor visitor(item->ItemId);
+    IterateItems(&visitor);
+
+    int count = visitor.GetCount();
+    if (count)
+    {
+        ostringstream out;
+        out << count << "x";
+        aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
+    }
+}
+
+void AiInventoryManager::ListCount(const char* link)
+{
+    list<uint32> items; /* = */ extractItemIds(link, items);
+    for (list<uint32>::iterator i = items.begin(); i != items.end(); i++)
+    {
+        ItemPrototype const *item = sItemStorage.LookupEntry<ItemPrototype>(*i);
+        QueryItemCount(item);
+    }
+
 }
