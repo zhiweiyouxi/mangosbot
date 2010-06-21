@@ -211,12 +211,24 @@ void AiMoveManager::Revive()
 void AiMoveManager::Summon()
 {
     Player* master = ai->GetMaster();
+    Map* masterMap = master->GetMap();
+    Map* botMap = bot->GetMap();
+
+    bool masterIsInInstance = (masterMap->IsDungeon() || masterMap->IsRaid() || masterMap->IsBattleGround());
+    bool botIsInInstance = (botMap->IsDungeon() || botMap->IsRaid() || botMap->IsBattleGround());
+
+    if ((masterIsInInstance && botIsInInstance) || (!masterIsInInstance && !botIsInInstance))
+    {
+        aiRegistry->GetSocialManager()->TellMaster("You can only summon me to your instance and back");
+        return;
+    }
+
     if (!bot->IsWithinDistInMap( master, BOT_REACT_DISTANCE, true ))
     {
         PlayerbotChatHandler ch(master);
         if (! ch.teleport(*bot))
         {
-            ch.sysmessage(".. could not be teleported ..");
+            aiRegistry->GetSocialManager()->TellMaster("You cannot summon me");
         }
     }
 }
@@ -249,6 +261,10 @@ void AiMoveManager::HandleCommand(const string& text, Player& fromPlayer)
     {
         bot->GetMotionMaster()->Clear();
         bot->m_taxi.ClearTaxiDestinations();
+    }
+    else if (text == "summon")
+    {
+        Summon();
     }
 }
 

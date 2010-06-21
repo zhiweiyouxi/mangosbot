@@ -91,6 +91,10 @@ void PlayerbotAI::HandleCommand(const string& text, Player& fromPlayer)
             managers[i]->Query(query);
         return;
     }
+    else if (text == "reset") 
+    {
+        nextAICheckTime = 0;
+    }
 
 	for (int i=0; i<aiRegistry->GetManagerCount(); i++)
 		managers[i]->HandleCommand(text, fromPlayer);
