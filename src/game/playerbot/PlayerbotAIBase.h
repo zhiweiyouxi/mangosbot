@@ -14,6 +14,7 @@ public:
 public:
 	bool CanUpdateAI();
 	void SetNextCheckDelay(const uint32 delay);
+    void IncreaseNextCheckDelay(uint32 delay);
 	void YieldThread();
 
 protected:

@@ -520,5 +520,13 @@ void AiSpellManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 			FinishSpell();
 			return;
 		}
-	}
+    case SMSG_SPELL_DELAYED:
+        {
+            WorldPacket p(packet);
+            uint64 casterGuid = extractGuid(p);
+            if (casterGuid != bot->GetGUID())
+                return;
+            bot->GetPlayerbotAI()->IncreaseNextCheckDelay(1);
+        }
+    }
 }

@@ -18,6 +18,11 @@ void PlayerbotAIBase::SetNextCheckDelay(const uint32 delay)
         nextAICheckTime = checkTime;
 }
 
+void PlayerbotAIBase::IncreaseNextCheckDelay(uint32 delay)
+{
+    nextAICheckTime += delay;
+}
+
 bool PlayerbotAIBase::CanUpdateAI() 
 {
     time_t now = time(0);
