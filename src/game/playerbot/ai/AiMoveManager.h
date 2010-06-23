@@ -33,6 +33,11 @@ namespace ai
         virtual void HandleMasterIncomingPacket(const WorldPacket& packet);
 
     private:
+        bool IsMovingAllowed(Unit* target);
+        bool IsMovingAllowed(uint32 mapId, float x, float y, float z);
+        bool IsMovingAllowed();
+
+    private:
         vector<uint32> taxiNodes;
         uint64 taxiMaster;
 	};

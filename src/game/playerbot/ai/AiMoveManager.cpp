@@ -43,57 +43,58 @@ float AiMoveManager::GetFollowAngle()
 	return 0;
 }
 
-void AiMoveManager::Follow(Unit* target, float distance)
+bool AiMoveManager::IsMovingAllowed(Unit* target) 
 {
-    MotionMaster &mm = *bot->GetMotionMaster();
-    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
-        return;
+    if (!target)
+        return false;
 
     if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
-    {
-        Stay();
-        return;
-    }
+        return false;
 
-	mm.MoveFollow(target, distance, GetFollowAngle());
+    return IsMovingAllowed();
+}
+
+bool AiMoveManager::IsMovingAllowed(uint32 mapId, float x, float y, float z)
+{
+    if (bot->GetMapId() != mapId || bot->GetDistance(x, y, z) > BOT_REACT_DISTANCE)
+        return false;
+
+    return IsMovingAllowed();
+}
+
+bool AiMoveManager::IsMovingAllowed() 
+{
+    if (bot->isFrozen() || bot->IsPolymorphed() || !bot->CanFreeMove() || bot->IsNonMeleeSpellCasted(true))
+        return false;
+
+    MotionMaster &mm = *bot->GetMotionMaster();
+    return mm->GetMovementGeneratorType() != FLIGHT_MOTION_TYPE;
+}
+
+void AiMoveManager::Follow(Unit* target, float distance)
+{
+    if (!IsMovingAllowed(target))
+        return;
+
+	bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle());
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
 {
-    MotionMaster &mm = *bot->GetMotionMaster();
-    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+    if (!IsMovingAllowed(mapId, x, y, z))
         return;
 
-    if (bot->GetMapId() != mapId || bot->GetDistance(x, y, z) > BOT_REACT_DISTANCE)
-    {
-        Stay();
-        return;
-    }
-
-    mm.MovePoint(mapId, x, y, z);
+    bot->GetMotionMaster()->MovePoint(mapId, x, y, z);
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
-    MotionMaster &mm = *bot->GetMotionMaster();
-    if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
-        return false;
-
-    if (!target)
-        return false;
-
-    if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
-    {
-        Stay();
-        return false;
-    }
+    if (!IsMovingAllowed(target))
+        return true;
 
     ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
-
-    if (bot->isFrozen() || bot->IsPolymorphed() || !bot->CanFreeMove())
-        return false;
     
     AttackerMap attackers = bot->GetPlayerbotAI()->GetGroupStatsManager()->GetAttackers();
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());
