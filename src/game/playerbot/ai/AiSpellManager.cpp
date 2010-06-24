@@ -268,11 +268,13 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
     
     bot->SetSelection(oldSel);
 
-    uint32 castTime = GetSpellCastTime(pSpellInfo) / 1000;
+    float castTime = GetSpellCastTime(pSpellInfo);
 
 	if (pSpellInfo->AttributesEx & SPELL_ATTR_EX_CHANNELED_1 ||
 		pSpellInfo->AttributesEx & SPELL_ATTR_EX_CHANNELED_2)
-		castTime += GetSpellDuration(pSpellInfo) / 1000;
+		castTime += GetSpellDuration(pSpellInfo);
+
+    castTime = ceil(castTime / 1000.0);
 
     uint32 globalCooldown = CalculateGlobalCooldown(spellId);
     if (castTime < globalCooldown)
@@ -316,7 +318,7 @@ void AiSpellManager::SpellInterrupted(uint32 spellid)
 	if (castTimeSpent < globalCooldown)
 		ai->SetNextCheckDelay(globalCooldown - castTimeSpent);
 	else
-		ai->SetNextCheckDelay(0);
+		ai->SetNextCheckDelay(1);
 
 	lastSpellId = 0;
 	lastSpellTarget = 0;

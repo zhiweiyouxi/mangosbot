@@ -12,10 +12,7 @@ PlayerbotAIBase::PlayerbotAIBase()
 
 void PlayerbotAIBase::SetNextCheckDelay(const uint32 delay) 
 {
-    time_t checkTime = time(0) + delay;
-
-    if (nextAICheckTime < checkTime)
-        nextAICheckTime = checkTime;
+    nextAICheckTime = time(0) + delay;
 }
 
 void PlayerbotAIBase::IncreaseNextCheckDelay(uint32 delay)
@@ -36,5 +33,9 @@ bool PlayerbotAIBase::CanUpdateAI()
 void PlayerbotAIBase::YieldThread()
 {
     if (CanUpdateAI())
-        SetNextCheckDelay(BOT_REACT_DELAY);
+    {
+        time_t yieldDelay = time(0) + BOT_REACT_DELAY;
+        if(nextAICheckTime < yieldDelay)
+            nextAICheckTime = yieldDelay;
+    }
 }

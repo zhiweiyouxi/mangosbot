@@ -77,7 +77,6 @@ void AiMoveManager::Follow(Unit* target, float distance)
         return;
 
 	bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle());
-    ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
@@ -86,15 +85,12 @@ void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
         return;
 
     bot->GetMotionMaster()->MovePoint(mapId, x, y, z);
-    ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 bool AiMoveManager::Flee(Unit* target, float distance)
 {
     if (!IsMovingAllowed(target))
         return true;
-
-    ai->SetNextCheckDelay(GLOBAL_COOLDOWN);
     
     AttackerMap attackers = bot->GetPlayerbotAI()->GetGroupStatsManager()->GetAttackers();
 	FleeManager manager(bot, &attackers, distance, GetFollowAngle());

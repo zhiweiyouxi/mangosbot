@@ -42,7 +42,9 @@ public:
 
 public:
 	void UpdateAI(uint32 elapsed);
-	void HandleCommand(const string& text, Player& fromPlayer);
+
+    void UpdateNextCheckDelay();
+    void HandleCommand(const string& text, Player& fromPlayer);
 	void HandleBotOutgoingPacket(const WorldPacket& packet);
     void HandleMasterIncomingPacket(const WorldPacket& packet);
 	void HandleTeleportAck();

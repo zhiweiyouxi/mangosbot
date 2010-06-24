@@ -130,8 +130,6 @@ void LootManager::DoLoot()
             DeactivateLootGameObject();
 
         currentLoot = 0;
-        bot->GetPlayerbotAI()->SetNextCheckDelay(GLOBAL_COOLDOWN);
-
         break;
     }
 }

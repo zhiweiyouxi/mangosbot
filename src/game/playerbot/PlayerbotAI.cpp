@@ -32,24 +32,12 @@ void PlayerbotAI::UpdateAI(uint32 elapsed)
     if (bot->IsBeingTeleported() || bot->GetTrader())
         return;
 
-	SetNextCheckDelay(1);
-    Group* group = bot->GetGroup();
-    if (group)
-    {
-        if (group->GetMembersCount() > 10)
-            SetNextCheckDelay(2);
-        else if (group->GetMembersCount() > 20)
-            SetNextCheckDelay(3);
-    }
+    UpdateNextCheckDelay();
 
 	if (bot->isAlive())
-	{
 		aiRegistry->GetStrategyManager()->DoNextAction();
-	}
 	else
-	{
 		aiRegistry->GetMoveManager()->Resurrect();
-	}
 
 	YieldThread();
 }
@@ -112,4 +100,15 @@ void PlayerbotAI::HandleMasterIncomingPacket(const WorldPacket& packet)
     AiManagerBase** managers = aiRegistry->GetManagers();
     for (int i=0; i<aiRegistry->GetManagerCount(); i++)
         managers[i]->HandleMasterIncomingPacket(packet);
+}
+
+void PlayerbotAI::UpdateNextCheckDelay()
+{
+    int delay = 1;
+    
+    Group* group = bot->GetGroup();
+    if (group) 
+        delay += group->GetMembersCount() / 10;
+    
+    SetNextCheckDelay(delay);
 }

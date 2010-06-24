@@ -87,7 +87,10 @@ void AiStrategyManager::DoSpecificAction(const char* name)
 	{
 		aiRegistry->GetSocialManager()->TellMaster("Action failed: ");
 		aiRegistry->GetSocialManager()->TellMaster(name);
+        return;
 	}
+
+    bot->GetPlayerbotAI()->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 void AiStrategyManager::HandleCommand(const string& text, Player& fromPlayer)
