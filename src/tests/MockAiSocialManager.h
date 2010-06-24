@@ -5,7 +5,6 @@
 using namespace std;
 
 #include "MockedTargets.h"
-#include "AiSocialManager.h"
 
 namespace ai
 {

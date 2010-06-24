@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "EngineTestBase.h"
-#include "../game/WarlockActionFactory.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/warlock/WarlockActionFactory.h"
 
 using namespace ai;
 

@@ -1,13 +1,7 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
-#include "../game/GenericWarriorStrategy.h"
-
-#include "MockAiManagerRegistry.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/warrior/WarriorActionFactory.h"
 
 using namespace ai;
 

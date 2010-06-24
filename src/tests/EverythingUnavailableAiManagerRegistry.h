@@ -1,8 +1,5 @@
 #pragma once
 
-#include "AiManagerRegistry.h"
-#include "string"
-
 namespace ai
 {
 	class EverythingUnavailableAiSpellManager : public MockAiSpellManager 

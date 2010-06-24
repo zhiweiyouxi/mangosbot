@@ -1,7 +1,8 @@
 #include "pch.h"
 
+#include "aitest.h"
 #include "EngineTestBase.h"
-#include "../game/WarriorActionFactory.h"
+#include "../game/playerbot/strategy/warrior/WarriorActionFactory.h"
 
 using namespace ai;
 

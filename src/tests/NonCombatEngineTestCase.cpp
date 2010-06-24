@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "aitest.h"
 
 #include "EngineTestBase.h"
 

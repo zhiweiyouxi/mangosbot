@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "MockAiInventoryManager.h"
-#include "MockedTargets.h"
+#include "aitest.h"
 
 using namespace std;
 using namespace ai;

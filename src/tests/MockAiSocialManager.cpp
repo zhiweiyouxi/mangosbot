@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "aitest.h"
 #include "MockAiSocialManager.h"
 #include "MockedTargets.h"
 

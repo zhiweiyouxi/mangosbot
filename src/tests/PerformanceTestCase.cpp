@@ -1,16 +1,17 @@
 #include "pch.h"
 
+#include "aitest.h"
 #include "EngineTestBase.h"
 #include "EverythingUnavailableAiManagerRegistry.h"
 #include <time.inl>
-#include "../game/PaladinActionFactory.h"
-#include "../game/DruidActionFactory.h"
-#include "../game/WarriorActionFactory.h"
-#include "../game/WarlockActionFactory.h"
-#include "../game/MageActionFactory.h"
-#include "../game/HunterActionFactory.h"
-#include "../game/PriestActionFactory.h"
-#include "../game/ShamanActionFactory.h"
+#include "../game/playerbot/strategy/druid/DruidActionFactory.h"
+#include "../game/playerbot/strategy/paladin/PaladinActionFactory.h"
+#include "../game/playerbot/strategy/warrior/WarriorActionFactory.h"
+#include "../game/playerbot/strategy/warlock/WarlockActionFactory.h"
+#include "../game/playerbot/strategy/mage/MageActionFactory.h"
+#include "../game/playerbot/strategy/hunter/HunterActionFactory.h"
+#include "../game/playerbot/strategy/priest/PriestActionFactory.h"
+#include "../game/playerbot/strategy/shaman/ShamanActionFactory.h"
 
 using namespace ai;
 

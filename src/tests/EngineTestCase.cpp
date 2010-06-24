@@ -1,10 +1,6 @@
 #include "pch.h"
 
-#include "../game/Action.h"
-#include "../game/ActionBasket.h"
-#include "../game/Queue.h"
-#include "../game/Trigger.h"
-#include "../game/Engine.h"
+#include "aitest.h"
 #include "MockAiManagerRegistry.h"
 
 using namespace ai;

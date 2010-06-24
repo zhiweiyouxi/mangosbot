@@ -1,8 +1,7 @@
 #include "pch.h"
 
-#include "EngineTestBase.h"
-#include "../game/RogueActionFactory.h"
-#include "../game/DpsRogueStrategy.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/rogue/RogueActionFactory.h"
 
 using namespace ai;
 

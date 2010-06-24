@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "PlayerbotMgr.h"
-#include "PlayerbotAI.h"
+#include "aitest.h"
 #include "MockAiSpellManager.h"
 #include "MockedTargets.h"
 

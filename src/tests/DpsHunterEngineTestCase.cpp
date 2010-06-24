@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "EngineTestBase.h"
-#include "../game/DpsHunterStrategy.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/hunter/HunterActionFactory.h"
 
 using namespace ai;
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "EngineTestBase.h"
-#include "../game/GenericPaladinStrategy.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/paladin/PaladinActionFactory.h"
 
 using namespace ai;
 

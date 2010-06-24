@@ -1,10 +1,7 @@
 #include "pch.h"
 
-#include "EngineTestBase.h"
-#include "../game/DpsPriestStrategy.h"
-#include "../game/PriestActionFactory.h"
-
-#include "MockAiManagerRegistry.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/priest/PriestActionFactory.h"
 
 using namespace ai;
 

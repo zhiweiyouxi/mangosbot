@@ -1,7 +1,8 @@
 #include "pch.h"
+#include "aitest.h"
 
 #include "EngineTestBase.h"
-#include "../game/DruidActionFactory.h"
+#include "../game/playerbot/strategy/druid/DruidActionFactory.h"
 
 using namespace ai;
 

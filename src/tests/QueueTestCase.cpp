@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "../game/playerbot/playerbot.h"
+#include "aitest.h"
 
 using namespace ai;
 

@@ -1,8 +1,7 @@
 #include "pch.h"
 
-#include "EngineTestBase.h"
-#include "../game/MageActionFactory.h"
-#include "../game/FrostMageStrategy.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/mage/MageActionFactory.h"
 
 using namespace ai;
 

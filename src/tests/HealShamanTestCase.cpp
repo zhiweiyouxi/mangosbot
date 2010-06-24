@@ -1,10 +1,7 @@
 #include "pch.h"
 
-#include "EngineTestBase.h"
-#include "../game/HealShamanStrategy.h"
-#include "../game/ShamanActionFactory.h"
-
-#include "MockAiManagerRegistry.h"
+#include "aitest.h"
+#include "../game/playerbot/strategy/shaman/ShamanActionFactory.h"
 
 using namespace ai;
 
