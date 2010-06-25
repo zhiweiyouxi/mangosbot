@@ -9,6 +9,8 @@ using namespace std;
 LootObject::LootObject(Player* bot, uint64 guid)
 {
     this->guid = guid;
+    worldObject = NULL;
+    loot = NULL;
 
     Creature *creature = bot->GetMap()->GetCreature(guid);
     if (creature && creature->getDeathState() == CORPSE)
