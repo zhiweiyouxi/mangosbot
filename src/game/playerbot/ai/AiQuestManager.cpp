@@ -190,18 +190,12 @@ void AiQuestManager::AcceptQuest( Quest const *qInfo, Player *pGiver )
 		return;
 
 	uint32 quest = qInfo->GetQuestId();
-
-	if( !pGiver->CanShareQuest( qInfo->GetQuestId() ) )
-	{
-		// giver can't share quest
-		bot->SetDivider( 0 );
-		return;
-	}
-
 	if( !bot->CanTakeQuest( qInfo, false ) )
 	{
 		// can't take quest
 		bot->SetDivider( 0 );
+        aiRegistry->GetSocialManager()->TellMaster("I can't take this quest");
+
 		return;
 	}
 
@@ -225,6 +219,8 @@ void AiQuestManager::AcceptQuest( Quest const *qInfo, Player *pGiver )
 
 		if( qInfo->GetSrcSpell() > 0 )
 			bot->CastSpell( bot, qInfo->GetSrcSpell(), true );
+
+        aiRegistry->GetSocialManager()->TellMaster("Quest accepted");
 	}
 }
 
