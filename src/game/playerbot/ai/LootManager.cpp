@@ -33,13 +33,16 @@ bool LootManager::CanLoot()
 
 void LootManager::StoreLootItems(LootObject &lootObject) 
 {
+    if (lootObject.loot->empty())
+        return;
+
     bot->SendLoot(lootObject.guid, LOOT_CORPSE);
 
     uint32 lootNum = lootObject.loot->GetMaxSlotInLootFor(bot);
     for( uint32 l=0; l<lootNum; l++ )
         StoreLootItem(lootObject, l);
 
-    if (!lootObject.loot->unlootedCount)
+    if (lootObject.loot->isLooted())
         DeactivateLootGameObject(lootObject);
 
     ReleaseLoot();
