@@ -1,74 +1,48 @@
 #include "../../pchdef.h"
+#include "LootObjectStack.h"
 #include "../playerbot.h"
 
 using namespace ai;
 using namespace std;
 
+LootManager::LootManager(Player* bot)
+{
+    availableLoot = new LootObjectStack(bot);
+    this->bot = bot;
+}
+
+LootManager::~LootManager()
+{
+    delete availableLoot;
+}
+
 void LootManager::ClearLoot()
 {
-	availableLoot.clear();
-	currentLoot = 0;
+	availableLoot->Clear();
 }
 
 void LootManager::AddLoot(uint64 guid)
 {
-	for (list<uint64>::iterator i = availableLoot.begin(); i != availableLoot.end(); i++)
-	{
-		if (*i == guid) 
-			return;
-	}
-
-	availableLoot.push_front( guid );
-	int lootSize = availableLoot.size();
-	for (; lootSize>50; lootSize--) 
-		availableLoot.pop_back();
+	availableLoot->Add(guid);
 }
 
 bool LootManager::CanLoot()
 {
-	return !availableLoot.empty();
+    return availableLoot->CanLoot(BOTLOOT_DISTANCE);
 }
 
-uint64 LootManager::FindNewLoot() 
+void LootManager::StoreLootItems(LootObject &lootObject) 
 {
-    uint64 guid = 0;
+    bot->SendLoot(lootObject.guid, LOOT_CORPSE);
 
-    if (!availableLoot.empty())
-    {
-        guid = availableLoot.front();
-        availableLoot.pop_front();
-    }
-
-    return guid;
-}
-
-WorldObject* LootManager::GetLootObject(Loot **loot)
-{
-    Creature *creature = bot->GetMap()->GetCreature(currentLoot);
-    if (creature && creature->getDeathState() == CORPSE)
-    {
-        *loot = &creature->loot;
-        return creature;
-    }
-
-    GameObject* gameObject = bot->GetMap()->GetGameObject(currentLoot);
-    if (gameObject)
-    {
-        *loot = &gameObject->loot;
-        return gameObject;
-    }
-
-    return NULL;
-}
-
-void LootManager::StoreLootItems(Loot* loot) 
-{
-    uint32 lootNum = loot->GetMaxSlotInLootFor(bot);
+    uint32 lootNum = lootObject.loot->GetMaxSlotInLootFor(bot);
     for( uint32 l=0; l<lootNum; l++ )
-    {
-        StoreLootItem(loot, l);
+        StoreLootItem(lootObject, l);
 
-    }
+    if (!lootObject.loot->unlootedCount)
+        DeactivateLootGameObject(lootObject);
+
+    ReleaseLoot();
 }
 
 void LootManager::ReleaseLoot()
@@ -77,9 +51,9 @@ void LootManager::ReleaseLoot()
         bot->GetSession()->DoLootRelease( lguid );
 }
 
-void LootManager::DeactivateLootGameObject()
+void LootManager::DeactivateLootGameObject(LootObject &loot)
 {
-    GameObject* go = bot->GetMap()->GetGameObject(currentLoot);
+    GameObject* go = bot->GetMap()->GetGameObject(loot.guid);
     if(go)
     {
         go->SetLootState(GO_JUST_DEACTIVATED);
@@ -90,48 +64,28 @@ void LootManager::DeactivateLootGameObject()
 
 void LootManager::DoLoot()
 {
-    if (!currentLoot)
+    bot->GetMotionMaster()->Clear();
+
+    AddMasterSelection();
+
+    if (CanLoot())
     {
-        Player* master = bot->GetPlayerbotAI()->GetMaster();
-        uint64 guid = master->GetSelection();
-        if (guid) AddLoot(guid);
+        LootObject &lootObject = availableLoot->GetLoot(BOTLOOT_DISTANCE);
+        DoLoot(lootObject);
+    }
+}
+
+void LootManager::DoLoot(LootObject &lootObject)
+{
+    float distance = bot->GetDistance(lootObject.worldObject);
+    if (distance > INTERACTION_DISTANCE)
+    {
+        bot->GetPlayerbotAI()->GetAiRegistry()->GetMoveManager()->MoveTo(lootObject.worldObject);
+        return;
     }
 
-    while (CanLoot())
-    {
-        if (!currentLoot)
-            currentLoot = FindNewLoot();
-
-        if (!currentLoot)
-            break;
-
-        Loot* loot;
-        WorldObject *wo = GetLootObject(&loot);
-        if (!wo)
-        {
-            currentLoot = 0;
-            continue;
-        }
-
-        float distance = bot->GetDistance(wo);
-        if (distance > INTERACTION_DISTANCE && distance < BOTLOOT_DISTANCE)
-        {
-            bot->GetPlayerbotAI()->GetAiRegistry()->GetMoveManager()->MoveTo(wo->GetMapId(), wo->GetPositionX(), wo->GetPositionY(), wo->GetPositionZ());
-            break;
-        }
-
-        bot->GetMotionMaster()->Clear();
-	    bot->SendLoot(currentLoot, LOOT_CORPSE);
-
-        StoreLootItems(loot);
-        ReleaseLoot();
-
-        if (!loot->unlootedCount)
-            DeactivateLootGameObject();
-
-        currentLoot = 0;
-        break;
-    }
+    StoreLootItems(lootObject);
+    availableLoot->Remove(lootObject.guid);
 }
 
 void LootManager::StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem )
@@ -171,8 +125,9 @@ void LootManager::StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot
     bot->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count );
 }
 
-void LootManager::StoreLootItem(Loot* loot, uint32 lootIndex)
+void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
 {
+    Loot* loot = lootObject.loot;
     QuestItem *qitem=0, *ffaitem=0, *conditem=0;
     LootItem *item = loot->LootItemInSlot( lootIndex, bot, &qitem, &ffaitem, &conditem );
     if( !item )
@@ -187,7 +142,7 @@ void LootManager::StoreLootItem(Loot* loot, uint32 lootIndex)
     if (item->AllowedForPlayer(bot) && item->needs_quest)
         StoreQuestItem(item, qitem, loot, lootIndex, ffaitem, conditem);
 
-    GameObject* go = bot->GetMap()->GetGameObject(currentLoot);
+    GameObject* go = bot->GetMap()->GetGameObject(lootObject.guid);
     if(go)
         StoreGameObjectLootItem(go, item, loot);
 }
@@ -230,3 +185,11 @@ void LootManager::StoreGameObjectLootItem( GameObject* go, LootItem * item, Loot
         --loot->unlootedCount;
     }
 }
+
+void LootManager::AddMasterSelection()
+{
+    uint64 masterSelection = bot->GetPlayerbotAI()->GetMaster()->GetSelection();
+    if (masterSelection) 
+        AddLoot(masterSelection);
+}
+

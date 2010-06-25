@@ -1838,6 +1838,14 @@
 					RelativePath="..\..\src\game\playerbot\ai\LootManager.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\LootObjectStack.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\ai\LootObjectStack.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="strategy"

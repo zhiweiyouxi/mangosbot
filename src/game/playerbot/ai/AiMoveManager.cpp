@@ -23,6 +23,11 @@ void AiMoveManager::MoveTo(Unit* target, float distance)
 	Follow(target, distance);
 }
 
+void AiMoveManager::MoveTo(WorldObject* target)
+{
+    MoveTo(target->GetMapId(), target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
+}
+
 float AiMoveManager::GetFollowAngle()
 {
 	Group* group = bot->GetGroup();
