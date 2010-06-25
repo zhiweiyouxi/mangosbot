@@ -576,7 +576,7 @@ public:
     virtual void Visit(Item* item)
     {
         if (item->GetProto()->ItemId == itemId)
-            count++;
+            count += item->GetCount();
     }
 
     int GetCount() { return count; }
