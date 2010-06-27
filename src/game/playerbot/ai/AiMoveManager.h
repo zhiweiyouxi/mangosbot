@@ -37,6 +37,8 @@ namespace ai
         bool IsMovingAllowed(Unit* target);
         bool IsMovingAllowed(uint32 mapId, float x, float y, float z);
         bool IsMovingAllowed();
+        void UseMeetingStone(uint64 guid);
+        void TeleportToMaster();
 
     private:
         vector<uint32> taxiNodes;

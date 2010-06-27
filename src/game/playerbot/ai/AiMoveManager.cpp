@@ -225,14 +225,19 @@ void AiMoveManager::Summon()
         return;
     }
 
-    if (!bot->IsWithinDistInMap( master, BOT_REACT_DISTANCE, true ))
-    {
-        PlayerbotChatHandler ch(master);
-        if (! ch.teleport(*bot))
-        {
-            aiRegistry->GetSocialManager()->TellMaster("You cannot summon me");
-        }
-    }
+    TeleportToMaster();
+}
+
+void AiMoveManager::TeleportToMaster()
+{
+    Player* master = bot->GetPlayerbotAI()->GetMaster();
+
+    if (bot->IsWithinDistInMap(master, BOT_REACT_DISTANCE, true))
+        return;
+
+    PlayerbotChatHandler ch(master);
+    if (!ch.teleport(*bot))
+        aiRegistry->GetSocialManager()->TellMaster("You cannot summon me");
 }
 
 void AiMoveManager::HandleCommand(const string& text, Player& fromPlayer)
@@ -335,18 +340,51 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 
 }
 
+void AiMoveManager::UseMeetingStone(uint64 guid) 
+{
+    Player* master = bot->GetPlayerbotAI()->GetMaster();
+    if (master->GetSelection() != bot->GetGUID())
+        return;
+
+    GameObject* gameObject = master->GetMap()->GetGameObject(guid);
+    if (!gameObject)
+        return;
+
+    const GameObjectInfo* goInfo = gameObject->GetGOInfo();
+    if (!goInfo || goInfo->type != GAMEOBJECT_TYPE_SUMMONING_RITUAL)
+        return;
+
+    TeleportToMaster();
+}
+
 void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
 {
     switch (packet.GetOpcode())
     {
     case CMSG_ACTIVATETAXI:
-        WorldPacket p(packet);
-        p.rpos(0);
-        
-        taxiNodes.clear();
-        taxiNodes.resize(2);
+        {
+            WorldPacket p(packet);
+            p.rpos(0);
+            
+            taxiNodes.clear();
+            taxiNodes.resize(2);
 
-        p >> taxiMaster >> taxiNodes[0] >> taxiNodes[1];
-        return;
-    }   
+            p >> taxiMaster >> taxiNodes[0] >> taxiNodes[1];
+            return;
+        }
+    case CMSG_GAMEOBJ_REPORT_USE:
+        {
+            WorldPacket p(packet);
+            p.rpos(0);
+
+            uint64 guid;
+            p >> guid;
+
+            UseMeetingStone(MAKE_NEW_GUID(guid, 0, HIGHGUID_GAMEOBJECT));
+            return;
+        }
+    }
+
+    void Teleport( Player* master );
 }
+
