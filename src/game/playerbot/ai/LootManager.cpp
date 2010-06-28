@@ -33,9 +33,6 @@ bool LootManager::CanLoot()
 
 void LootManager::StoreLootItems(LootObject &lootObject) 
 {
-    if (lootObject.loot->empty())
-        return;
-
     bot->SendLoot(lootObject.guid, LOOT_CORPSE);
 
     uint32 lootNum = lootObject.loot->GetMaxSlotInLootFor(bot);
