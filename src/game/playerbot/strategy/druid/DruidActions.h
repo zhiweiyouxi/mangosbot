@@ -34,7 +34,16 @@ namespace ai
 
 	};
    
-  
+    class CastHealingTouchAction : public CastHealingSpellAction {
+    public:
+        CastHealingTouchAction(AiManagerRegistry* const ai) : CastHealingSpellAction(ai, "healing touch") {}
+
+        virtual NextAction** getPrerequisites() {
+            return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), CastHealingSpellAction::getPrerequisites());
+        }
+
+    };
+
     class CastRejuvenationOnPartyAction : public HealPartyMemberAction
     {
     public:
@@ -53,6 +62,16 @@ namespace ai
 		virtual NextAction** getPrerequisites() {
 			return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), HealPartyMemberAction::getPrerequisites());
 		}
+    };
+
+    class CastHealingTouchOnPartyAction : public HealPartyMemberAction
+    {
+    public:
+        CastHealingTouchOnPartyAction(AiManagerRegistry* const ai) : HealPartyMemberAction(ai, "healing touch") {}
+
+        virtual NextAction** getPrerequisites() {
+            return NextAction::merge( NextAction::array(0, new NextAction("caster form"), NULL), HealPartyMemberAction::getPrerequisites());
+        }
     };
 
 	class CastReviveAction : public ResurrectPartyMemberAction

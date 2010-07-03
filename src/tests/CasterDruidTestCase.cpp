@@ -66,8 +66,9 @@ protected:
 
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
+        tickWithLowHealth(39);
         
-		assertActions(">T:faerie fire>-moonkin form>S:rejuvenation>S:moonkin form>T:insect swarm>-moonkin form>S:regrowth");
+        assertActions(">T:faerie fire>-moonkin form>S:regrowth>S:moonkin form>T:insect swarm>-moonkin form>S:rejuvenation>S:healing touch");
     }
 
 	void healOthers()
@@ -75,8 +76,9 @@ protected:
         tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
+        tickWithPartyLowHealth(39);
 
-		assertActions(">-moonkin form>P:rejuvenation>P:regrowth");
+        assertActions(">-moonkin form>P:regrowth>P:rejuvenation>P:healing touch");
     }
 
 	void curePoison() 

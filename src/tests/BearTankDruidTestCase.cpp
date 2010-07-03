@@ -142,8 +142,9 @@ protected:
                 
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
+        tickWithLowHealth(39);
         
-		assertActions(">T:faerie fire>S:dire bear form>melee>-dire bear form>S:rejuvenation>S:bear form>melee>-bear form>S:regrowth");
+        assertActions(">T:faerie fire>S:dire bear form>melee>-dire bear form>S:regrowth>S:bear form>melee>-bear form>S:rejuvenation>S:healing touch");
     }
 
     void intensiveHealing()
@@ -163,8 +164,9 @@ protected:
 		tickWithPartyLowHealth(59);
 		tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
+        tickWithPartyLowHealth(39);
 
-		assertActions(">T:faerie fire>S:dire bear form>-dire bear form>P:rejuvenation>P:regrowth");
+		assertActions(">T:faerie fire>S:dire bear form>-dire bear form>P:regrowth>P:rejuvenation>P:healing touch");
     }
     void curePoison() 
     {

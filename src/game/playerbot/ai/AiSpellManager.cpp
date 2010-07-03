@@ -435,6 +435,15 @@ void AiSpellManager::ListSpells()
 
 void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 {
+    RemoveAura("bear form");
+    RemoveAura("dire bear form");
+    RemoveAura("moonkin form");
+    RemoveAura("travel form");
+    RemoveAura("cat form");
+    RemoveAura("flight form");
+    RemoveAura("swift flight form");
+    RemoveAura("aquatic form");
+
 	uint32 spellMount = 0;
 	for(PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr)
 	{

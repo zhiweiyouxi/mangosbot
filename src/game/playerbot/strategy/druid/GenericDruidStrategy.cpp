@@ -18,19 +18,19 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
 	triggers.push_back(new TriggerNode(
 		new LowHealthTrigger(ai, 60, 40),
-		NextAction::array(0, new NextAction("rejuvenation", 50.0f), NULL)));
+		NextAction::array(0, new NextAction("regrowth", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 40, 25),
-        NextAction::array(0, new NextAction("regrowth", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("rejuvenation", 70.0f), new NextAction("healing touch", 70.0f), NULL)));
 
 	triggers.push_back(new TriggerNode(
 		new PartyMemberLowHealthTrigger(ai, 60, 40),
-		NextAction::array(0, new NextAction("rejuvenation on party", 50.0f), NULL)));
+		NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new PartyMemberLowHealthTrigger(ai),
-        NextAction::array(0, new NextAction("regrowth on party", 50.0f), NULL)));
+        NextAction::array(0, new NextAction("rejuvenation on party", 70.0f), new NextAction("healing touch on party", 70.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new NeedCureTrigger(ai, "cure poison", DISPEL_POISON),
@@ -82,16 +82,30 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("healing touch", name)) 
+    {
+        return new ActionNode (new CastHealingTouchAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else if (!strcmp("regrowth on party", name)) 
     {
         return new ActionNode (new CastRegrowthOnPartyAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("caster form"), new NextAction("rejuvenation on party"), NULL),
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
             /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
     else if (!strcmp("rejuvenation on party", name)) 
     {
         return new ActionNode (new CastRejuvenationOnPartyAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("healing touch on party", name)) 
+    {
+        return new ActionNode (new CastHealingTouchOnPartyAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
             /*A*/ NULL, 
             /*C*/ NULL);

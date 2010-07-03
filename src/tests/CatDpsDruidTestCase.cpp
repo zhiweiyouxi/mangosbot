@@ -70,8 +70,9 @@ protected:
 
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
+        tickWithLowHealth(39);
 
-		assertActions(">T:rake>-cat form>S:rejuvenation>S:cat form>T:mangle (cat)>-cat form>S:regrowth");
+        assertActions(">T:rake>-cat form>S:regrowth>S:cat form>T:mangle (cat)>-cat form>S:rejuvenation>S:healing touch");
 	}
 	
     void intensiveHealing()
@@ -86,8 +87,9 @@ protected:
 		tickWithPartyLowHealth(59);
 		tickWithPartyLowHealth(59);
         tickWithPartyLowHealth(39);
+        tickWithPartyLowHealth(39);
 
-		assertActions(">-cat form>P:rejuvenation>P:regrowth");
+		assertActions(">-cat form>P:regrowth>P:rejuvenation>P:healing touch");
     }
 
     void boost()
