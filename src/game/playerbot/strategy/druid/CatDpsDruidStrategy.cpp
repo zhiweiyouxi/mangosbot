@@ -10,7 +10,7 @@ using namespace ai;
 
 NextAction** CatDpsDruidStrategy::getDefaultActions()
 {
-    return NextAction::array(0, new NextAction("faerie fire", 30.0f), new NextAction("mangle (cat)", 10.0f), NULL);
+    return NextAction::array(0, new NextAction("mangle (cat)", 10.0f), NULL);
 }
 
 void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
@@ -32,6 +32,10 @@ void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new MyAttackerCountTrigger(ai, 2),
         NextAction::array(0, new NextAction("cower", 90.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new FaerieFireFeralTrigger(ai),
+        NextAction::array(0, new NextAction("faerie fire (feral)", 30.0f), NULL)));
 }
 
 void CatDpsDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -49,6 +53,13 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("faerie fire (feral)", name)) 
+    {
+        return new ActionNode (new CastFaerieFireFeralAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("cat form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
+    }
     else if (!strcmp("melee", name)) 
     {
         return new ActionNode (new MeleeAction(ai),  
@@ -62,13 +73,6 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("reach melee"), NULL), 
             /*C*/ NULL);
-    }
-    else if (!strcmp("faerie fire", name)) 
-    {
-        return new ActionNode (new CastFaerieFireAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
     else if (!strcmp("cat form", name)) 
     {

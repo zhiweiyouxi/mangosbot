@@ -9,20 +9,12 @@ using namespace ai;
 
 NextAction** BearTankDruidStrategy::getDefaultActions()
 {
-    return NextAction::array(0, new NextAction("faerie fire", 20.0f), new NextAction("melee", 10.0f), NULL);
+    return NextAction::array(0, new NextAction("melee", 10.0f), NULL);
 }
 
 void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     FeralDruidStrategy::InitTriggers(triggers);
-
-	triggers.push_back(new TriggerNode(
-		new ThornsTrigger(ai),
-		NextAction::array(0, new NextAction("thorns", 25.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        new EnemyOutOfMeleeTrigger(ai), 
-        NextAction::array(0, new NextAction("melee", 10.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new LoseAggroTrigger(ai),
@@ -43,6 +35,10 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new InterruptSpellTrigger(ai, "bash"),
         NextAction::array(0, new NextAction("bash", 50.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new FaerieFireFeralTrigger(ai),
+        NextAction::array(0, new NextAction("faerie fire (feral)", 30.0f), NULL)));
 }
 
 void BearTankDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -60,13 +56,6 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-	else if (!strcmp("thorns", name)) 
-	{
-		return new ActionNode (new CastThornsAction(ai),  
-			/*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
-			/*A*/ NULL, 
-			/*C*/ NULL);
-	}
     else if (!strcmp("feral charge - bear", name)) 
     {
         return new ActionNode (new CastFeralChargeBearAction(ai),  
@@ -74,12 +63,12 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("reach melee"), NULL), 
             /*C*/ NULL);
     }
-    else if (!strcmp("faerie fire", name)) 
+    else if (!strcmp("faerie fire (feral)", name)) 
     {
-        return new ActionNode (new CastFaerieFireAction(ai),  
-            /*P*/ NULL,
+        return new ActionNode (new CastFaerieFireFeralAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), NULL),
             /*A*/ NULL, 
-            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), new NextAction("dire bear form", 15.0f), NULL));
+            /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
     else if (!strcmp("bear form", name)) 
     {
@@ -127,7 +116,7 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastGrowlAction(ai),  
             /*P*/ NextAction::array(0, new NextAction("dire bear form"), new NextAction("reach spell"), NULL),
-            /*A*/ NextAction::array(0, new NextAction("faerie fire"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NextAction::array(0, new NextAction("melee", 10.0f), NULL));
     }
     else if (!strcmp("demoralizing roar", name)) 

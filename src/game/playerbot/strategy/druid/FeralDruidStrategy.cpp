@@ -9,10 +9,14 @@ using namespace ai;
 void FeralDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericDruidStrategy::InitTriggers(triggers);
-    
+
     triggers.push_back(new TriggerNode(
         new LowHealthTrigger(ai, 25),
         NextAction::array(0, new NextAction("survival instincts", 80.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new ThornsTrigger(ai),
+        NextAction::array(0, new NextAction("thorns", 25.0f), NULL)));
 
 }
 
@@ -23,6 +27,13 @@ ActionNode* FeralDruidStrategy::createAction(const char* name)
         return new ActionNode (new CastSurvivalInstinctsAction(ai),  
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("rejuvenation"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("thorns", name)) 
+    {
+        return new ActionNode (new CastThornsAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("cure poison", name)) 

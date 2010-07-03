@@ -13,6 +13,11 @@ namespace ai
 		CastFaerieFireAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "faerie fire") {} 
 	};
 
+    class CastFaerieFireFeralAction : public CastSpellAction 
+    { 
+    public: 
+        CastFaerieFireFeralAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "faerie fire (feral)") {} 
+    };
   
 	class CastRejuvenationAction : public CastHealingSpellAction {
 	public:

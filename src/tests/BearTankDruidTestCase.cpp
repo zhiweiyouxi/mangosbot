@@ -7,7 +7,6 @@ using namespace ai;
 class BearTankDruidTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( BearTankDruidTestCase );
-    CPPUNIT_TEST( tooFarForSpells );
     CPPUNIT_TEST( druidMustDoMauls );
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( druidMustHoldAggro );
@@ -29,36 +28,19 @@ public:
 		setupEngine(new DruidActionFactory(ai), "bear", NULL);
 
 		addAura("thorns");
+        addTargetAura("faerie fire (feral)");
     }
 
 protected:
     void bearFormIfDireNotAvailable()
     {
-        tick(); 
-        
 		tickWithSpellUnavailable("dire bear form");
 
-		assertActions(">T:faerie fire>S:bear form");
-    }
-
-    void tooFarForSpells()
-    {
-		tickOutOfSpellRange();
-
-        tick(); 
-        tick(); 
-		addAura("dire bear form");
-
-        tick(); 
-        
-		tickInMeleeRange();
-
-		assertActions(">reach spell>T:faerie fire>S:dire bear form>T:feral charge - bear>melee");
+		assertActions(">S:bear form");
     }
 
     void druidMustDemoralizeAttackers()
     {
-        tick(); 
         tick(); 
 
 		spellAvailable("dire bear form"); // aura not yet applied
@@ -71,12 +53,11 @@ protected:
         
 		tick(); 
 
-		assertActions(">T:faerie fire>S:dire bear form>S:dire bear form>reach melee>T:demoralizing roar>melee");
+		assertActions(">S:dire bear form>S:dire bear form>reach melee>T:demoralizing roar>melee");
     }
 
     void druidMustHoldAggro()
     {
-        tick();
         tick();
         addAura("dire bear form");
 
@@ -85,12 +66,11 @@ protected:
         tick();
         tick();
 
-		assertActions(">T:faerie fire>S:dire bear form>T:growl>T:feral charge - bear>melee");
+		assertActions(">S:dire bear form>T:growl>T:feral charge - bear>melee");
     }
 
     void druidMustDoMauls()
     {
-        tick();
         tick();
         addAura("dire bear form");
 
@@ -101,11 +81,12 @@ protected:
         
 		tickWithSpellAvailable("maul");
     
-		assertActions(">T:faerie fire>S:dire bear form>melee>T:mangle (bear)>T:maul>melee");
+		assertActions(">S:dire bear form>melee>T:mangle (bear)>T:maul>melee");
     }
 
     void combatVsMelee()
     {
+        removeTargetAura("faerie fire (feral)");
         tick();
         tick();
         addAura("dire bear form");
@@ -122,12 +103,11 @@ protected:
 
         tickWithRage(40);
         
-        assertActions(">T:faerie fire>S:dire bear form>T:feral charge - bear>melee>reach melee>melee>T:mangle (bear)>T:swipe>T:maul");
+        assertActions(">S:dire bear form>T:faerie fire (feral)>T:feral charge - bear>melee>reach melee>melee>T:mangle (bear)>T:swipe>T:maul");
     }
 
     void healHimself()
     {
-        tick();
         tick();
         addAura("dire bear form");
 
@@ -144,7 +124,7 @@ protected:
 		tickWithLowHealth(39);
         tickWithLowHealth(39);
         
-        assertActions(">T:faerie fire>S:dire bear form>melee>-dire bear form>S:regrowth>S:bear form>melee>-bear form>S:rejuvenation>S:healing touch");
+        assertActions(">S:dire bear form>melee>-dire bear form>S:regrowth>S:bear form>melee>-bear form>S:rejuvenation>S:healing touch");
     }
 
     void intensiveHealing()
@@ -158,7 +138,6 @@ protected:
     void healOthers()
     {
         tick();
-        tick();
         addAura("dire bear form");
 
 		tickWithPartyLowHealth(59);
@@ -166,11 +145,10 @@ protected:
         tickWithPartyLowHealth(39);
         tickWithPartyLowHealth(39);
 
-		assertActions(">T:faerie fire>S:dire bear form>-dire bear form>P:regrowth>P:rejuvenation>P:healing touch");
+		assertActions(">S:dire bear form>-dire bear form>P:regrowth>P:rejuvenation>P:healing touch");
     }
     void curePoison() 
     {
-        tick();
         tick();
         addAura("dire bear form");
 
@@ -185,11 +163,10 @@ protected:
 		spellAvailable("cure poison");
 		tickWithPartyAuraToDispel(DISPEL_POISON);
 
-		assertActions(">T:faerie fire>S:dire bear form>-dire bear form>S:abolish poison>P:abolish poison>S:cure poison>P:cure poison");
+		assertActions(">S:dire bear form>-dire bear form>S:abolish poison>P:abolish poison>S:cure poison>P:cure poison");
     }
     void interruptSpells() 
     {
-        tick();
         tick();
         addAura("dire bear form");
         
@@ -197,16 +174,18 @@ protected:
 
 		tickWithTargetIsCastingNonMeleeSpell();
 
-        assertActions(">T:faerie fire>S:dire bear form>melee>T:bash");
+        assertActions(">S:dire bear form>melee>T:bash");
     }
 	void buff() 
 	{
-		removeAura("thorns");
-		tick();
-		
-		tick();
+        removeAura("thorns");
+        tick();
+        
+        removeTargetAura("faerie fire (feral)");
+        tickInMeleeRange();
+        tick();
 
-		assertActions(">S:thorns>T:faerie fire");
+        assertActions(">S:thorns>S:dire bear form>T:faerie fire (feral)");
 	}
 };
 

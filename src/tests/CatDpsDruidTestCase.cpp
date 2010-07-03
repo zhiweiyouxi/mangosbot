@@ -9,13 +9,13 @@ using namespace ai;
 class CatDpsDruidTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( CatDpsDruidTestCase );
-    CPPUNIT_TEST( tooFarForSpells );
     CPPUNIT_TEST( combatVsMelee );
     CPPUNIT_TEST( healHimself );
     CPPUNIT_TEST( intensiveHealing );
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( boost );
     CPPUNIT_TEST( cower );
+    CPPUNIT_TEST( buff );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,25 +25,11 @@ public:
 		setupEngine(new DruidActionFactory(ai), "cat", NULL);
 
 		addAura("cat form");
-		spellUnavailable("faerie fire");
+        addAura("thorns");
+		addTargetAura("faerie fire (feral)");
     }
 
 protected:
-    void tooFarForSpells()
-    {
-		removeAura("cat form");
-		spellAvailable("faerie fire");
-
-		tickOutOfSpellRange();
-		tick();
-        tick();
-		addAura("cat form");
-		
-		tickOutOfMeleeRange();
-		tickInMeleeRange();
-
-		assertActions(">reach spell>T:faerie fire>S:cat form>reach melee>T:rake");
-    }
 
     void combatVsMelee()
     {
@@ -111,6 +97,18 @@ protected:
 		assertActions(">S:cower>reach melee");
     }
 
+    void buff() 
+    {
+        removeAura("cat form");
+        removeAura("thorns");
+        tick();
+
+        removeTargetAura("faerie fire (feral)");
+        tickInMeleeRange();
+        tick();
+
+        assertActions(">S:thorns>S:cat form>T:faerie fire (feral)");
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CatDpsDruidTestCase );

@@ -40,5 +40,11 @@ namespace ai {
     public: 
         FaerieFireTrigger(AiManagerRegistry* const ai) : DebuffTrigger(ai, "faerie fire") {} 
     };
-	
+
+    class FaerieFireFeralTrigger : public DebuffTrigger 
+    { 
+    public: 
+        FaerieFireFeralTrigger(AiManagerRegistry* const ai) : DebuffTrigger(ai, "faerie fire (feral)") {} 
+    };
+
 }
