@@ -13,7 +13,7 @@ Unit* NeedCureTrigger::GetTarget()
 bool NeedCureTrigger::IsActive() 
 {
 	Unit* target = GetTarget();
-	return target && spellManager->HasAuraToDispel(target, dispelType) && spellManager->CanCastSpell(spell, target);
+	return target && spellManager->HasAuraToDispel(target, dispelType);
 }
 
 Unit* TargetAuraDispelTrigger::GetTarget()

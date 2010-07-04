@@ -53,12 +53,56 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new AttackerCountTrigger(ai, 3), 
         NextAction::array(0, new NextAction("hammer of the righteous", 26.0f), new NextAction("holy wrath", 25.0f), new NextAction("avenger's shield", 24.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NeedCureTrigger(ai, "cleanse", DISPEL_DISEASE),
+        NextAction::array(0, new NextAction("cleanse", 41.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberNeedCureTrigger(ai, "cleanse", DISPEL_DISEASE),
+        NextAction::array(0, new NextAction("cleanse on party", 40.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new NeedCureTrigger(ai, "cleanse", DISPEL_POISON),
+        NextAction::array(0, new NextAction("cleanse", 41.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new PartyMemberNeedCureTrigger(ai, "cleanse", DISPEL_POISON),
+        NextAction::array(0, new NextAction("cleanse on party", 40.0f), NULL)));
 }
 
 
 ActionNode* GenericPaladinStrategy::createAction(const char* name)
 {
-    if (!strcmp("seal of wisdom", name)) 
+    if (!strcmp("cleanse", name)) 
+    {
+        return new ActionNode (new CastCleanseAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("purify"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("purify", name)) 
+    {
+        return new ActionNode (new CastPurifyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }    
+    else if (!strcmp("cleanse on party", name)) 
+    {
+        return new ActionNode (new CastCleanseOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("purify on party"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("purify on party", name)) 
+    {
+        return new ActionNode (new CastPurifyOnPartyAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }    
+    else if (!strcmp("seal of wisdom", name)) 
     {
         return new ActionNode (new CastSealOfWisdomAction(ai),  
             /*P*/ NULL,
