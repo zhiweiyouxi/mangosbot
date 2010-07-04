@@ -50,14 +50,66 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 		new TargetLowHealthTrigger(ai, 25), 
 		NextAction::array(0, new NextAction("hammer of wrath", 40.0f), NULL)));
 
+    triggers.push_back(new TriggerNode(
+        new AttackerCountTrigger(ai, 3), 
+        NextAction::array(0, new NextAction("hammer of the righteous", 26.0f), new NextAction("holy wrath", 25.0f), new NextAction("avenger's shield", 24.0f), NULL)));
 }
 
 
 ActionNode* GenericPaladinStrategy::createAction(const char* name)
 {
-    if (!strcmp("flash of light", name)) 
+    if (!strcmp("seal of wisdom", name)) 
+    {
+        return new ActionNode (new CastSealOfWisdomAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("seal of justice"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("seal of justice", name)) 
+    {
+        return new ActionNode (new CastSealOfJusticeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("seal of righteousness"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("seal of righteousness", name)) 
+    {
+        return new ActionNode (new CastSealOfRighteousnessAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("flash of light", name)) 
     {
         return new ActionNode (new CastFlashOfLightAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("hand of reckoning", name)) 
+    {
+        return new ActionNode (new CastHandOfReckoningAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("judgement of justice"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("avenger's shield", name)) 
+    {
+        return new ActionNode (new CastAvengersShieldAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("exorcism", name)) 
+    {
+        return new ActionNode (new CastExorcismAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("judgement of light", name)) 
+    {
+        return new ActionNode (new CastJudgementOfLightAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
@@ -146,5 +198,40 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("holy shield", name)) 
+    {
+        return new ActionNode (new CastHolyShieldAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("hammer of the righteous", name)) 
+    {
+        return new ActionNode (new CastHammerOfTheRighteousAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("holy wrath", name)) 
+    {
+        return new ActionNode (new CastHolyWrathAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("consecration"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("consecration", name)) 
+    {
+        return new ActionNode (new CastConsecrationAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("blessing of kings", name)) 
+    {
+        return new ActionNode (new CastBlessingOfKingsAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     return NULL;
 }

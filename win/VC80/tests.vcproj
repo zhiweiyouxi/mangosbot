@@ -739,6 +739,10 @@
 			Name="Paladin"
 			>
 			<File
+				RelativePath="..\..\src\tests\DpsPaladinTestCase.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\PaladinNonCombatTestCase.cpp"
 				>
 			</File>

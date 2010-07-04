@@ -17,6 +17,10 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     GenericPaladinStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
+        new DevotionAuraTrigger(ai), 
+        NextAction::array(0, new NextAction("devotion aura", 25.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new JudgementOfLightTrigger(ai), 
         NextAction::array(0, new NextAction("judgement of light", 1.2f), NULL)));
 
@@ -35,6 +39,14 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new HolyShieldTrigger(ai), 
 		NextAction::array(0, new NextAction("holy shield", 18.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new SealTrigger(ai), 
+        NextAction::array(0, new NextAction("seal of light", 24.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new BlessingTrigger(ai), 
+        NextAction::array(0, new NextAction("blessing of sanctuary", 21.0f), NULL)));
 }
 
 void TankPaladinStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -44,9 +56,16 @@ void TankPaladinStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 
 ActionNode* TankPaladinStrategy::createAction(const char* name)
 {
-    if (!strcmp("judgement of light", name)) 
+    if (!strcmp("seal of light", name)) 
     {
-        return new ActionNode (new CastJudgementOfLightAction(ai),  
+        return new ActionNode (new CastSealOfLightAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("seal of justice"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("devotion aura", name)) 
+    {
+        return new ActionNode (new CastDevotionAuraAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
@@ -107,5 +126,12 @@ ActionNode* TankPaladinStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("blessing of sanctuary", name)) 
+    {
+        return new ActionNode (new CastBlessingOfSanctuaryAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("blessing of kings"), NULL), 
+            /*C*/ NULL);
+    }
     else return GenericPaladinStrategy::createAction(name);
 }

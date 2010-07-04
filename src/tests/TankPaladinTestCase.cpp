@@ -25,7 +25,7 @@ public:
 
         addAura("devotion aura");
         addAura("seal of justice");
-        addAura("blessing of kings");
+        addAura("blessing of sanctuary");
         addAura("righteous fury");
 
 		addAura("holy shield");
@@ -36,15 +36,30 @@ public:
 protected:
     void buff()
     {
+        removeAura("devotion aura");
         removeAura("righteous fury");
-		tickInMeleeRange();
-		addAura("righteous fury");
-		
-		removeAura("holy shield");
-		tick();
-		addAura("holy shield");
+        removeAura("blessing of sanctuary");
+        removeAura("seal of justice");
+        removeAura("holy shield");
+        
+        tick();
+        addAura("devotion aura");
+        
+        tick();
+        tick();
+        addAura("seal of light");
 
-		assertActions(">S:righteous fury>S:holy shield");
+        tick();
+        tick(); 
+        addAura("blessing of kings");
+                
+        tick();
+        addAura("holy shield");
+
+        tick();
+        addAura("righteous fury");
+
+        assertActions(">S:devotion aura>S:seal of light>S:seal of justice>S:blessing of sanctuary>S:blessing of kings>S:holy shield>S:righteous fury");
     }
 
     void healing()

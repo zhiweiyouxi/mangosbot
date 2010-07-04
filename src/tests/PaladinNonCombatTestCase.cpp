@@ -26,26 +26,9 @@ public:
 protected:
     void buff()
     {
-        tick();
-        addAura("devotion aura");
-
-		spellUnavailable("seal of justice");
-		
-		tickWithSpellUnavailable("seal of light");
-
-		tickWithSpellAvailable("seal of justice");
-        
-		tickWithSpellAvailable("seal of light");
-		addAura("seal of light");
-
-        tick(); 
-        addAura("blessing of sanctuary");
-        
-		tickWithSpellAvailable("blessing of kings");
-		addPartyAura("blessing of kings");
         tick(); 
 
-		assertActions(">S:devotion aura>S:seal of righteousness>S:seal of justice>S:seal of light>S:blessing of sanctuary>P:blessing of kings");
+		assertActions(">P:blessing of kings");
     }
 
 	void resurrect()

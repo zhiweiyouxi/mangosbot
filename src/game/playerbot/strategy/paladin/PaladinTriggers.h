@@ -7,6 +7,7 @@ namespace ai
     BUFF_TRIGGER(RighteousFuryTrigger, "righteous fury", "righteous fury")
 
     BUFF_TRIGGER(DevotionAuraTrigger, "devotion aura", "devotion aura")
+    BUFF_TRIGGER(RetributionAuraTrigger, "retribution aura", "retribution aura")
 	
 	class SealTrigger : public BuffTrigger
 	{

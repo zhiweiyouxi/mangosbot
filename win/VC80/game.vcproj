@@ -2936,6 +2936,14 @@
 					Name="paladin"
 					>
 					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\DpsPaladinStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\paladin\DpsPaladinStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\playerbot\strategy\paladin\GenericPaladinNonCombatStrategy.cpp"
 						>
 					</File>
