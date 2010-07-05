@@ -219,4 +219,11 @@ namespace ai
 	public:
 		CastGiftOfTheNaaruAction(AiManagerRegistry* const ai) : CastHealingSpellAction(ai, "gift of the naaru") {}
 	};
+
+    class CastArcaneTorrentAction : public CastBuffSpellAction
+    {
+    public:
+        CastArcaneTorrentAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "arcane torrent") {}
+    };
+    
 }

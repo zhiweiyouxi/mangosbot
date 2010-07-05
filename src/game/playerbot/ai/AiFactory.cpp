@@ -55,6 +55,7 @@ Engine* AiFactory::createCombatEngine(Player* player, AiManagerRegistry* const f
 			engine->addStrategies("dps", "dps assist", NULL);
 			break;
     }
+    engine->addStrategy("racials");
 	return engine;
 }
 

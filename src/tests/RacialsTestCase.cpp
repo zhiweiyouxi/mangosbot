@@ -32,7 +32,9 @@ protected:
 		tickWithLowHealth(39);
 		tickWithLowHealth(39);
 
-		assertActions(">S:lifeblood>S:gift of the naaru");
+        tickWithLowMana(39);
+
+        assertActions(">S:lifeblood>S:gift of the naaru>S:arcane torrent");
     }
 };
 

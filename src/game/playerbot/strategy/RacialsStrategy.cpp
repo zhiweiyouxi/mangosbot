@@ -3,6 +3,7 @@
 #include "RacialsStrategy.h"
 #include "HealthTriggers.h"
 #include "GenericSpellActions.h"
+#include "GenericTriggers.h"
 
 using namespace ai;
 
@@ -11,6 +12,10 @@ void RacialsStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new LowHealthTrigger(ai), 
 		NextAction::array(0, new NextAction("lifeblood", 71.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new LowManaTrigger(ai), 
+        NextAction::array(0, new NextAction("arcane torrent", 55.0f), NULL)));
 }
 
 
@@ -30,6 +35,13 @@ ActionNode* RacialsStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("arcane torrent", name)) 
+    {
+        return new ActionNode (new CastArcaneTorrentAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
 	else return NULL;
 }
 
