@@ -6,6 +6,21 @@
 using namespace ai;
 using namespace std;
 
+vector<string>& split(const string &s, char delim, vector<string> &elems) {
+    stringstream ss(s);
+    string item;
+    while(getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+vector<string> split(const string &s, char delim) {
+    vector<string> elems;
+    return split(s, delim, elems);
+}
+
 PlayerbotAI::PlayerbotAI() : PlayerbotAIBase()
 {
 	aiRegistry = NULL;
@@ -61,10 +76,10 @@ void PlayerbotAI::HandleCommand(const string& text, Player& fromPlayer)
 {
 	// ignore any messages from Addons
 	if (text.empty() ||
-		text.find("X-Perl") != std::wstring::npos ||
-		text.find("HealBot") != std::wstring::npos ||
-		text.find("LOOT_OPENED") != std::wstring::npos ||
-		text.find("CTRA") != std::wstring::npos)
+		text.find("X-Perl") != wstring::npos ||
+		text.find("HealBot") != wstring::npos ||
+		text.find("LOOT_OPENED") != wstring::npos ||
+		text.find("CTRA") != wstring::npos)
 		return;
 
 	if (fromPlayer.GetGuildId() != bot->GetGuildId())
@@ -74,7 +89,7 @@ void PlayerbotAI::HandleCommand(const string& text, Player& fromPlayer)
 
     if (text.size() > 2 && text.substr(0, 2) == "q ")
     {
-        std::string query = text.substr(text.find(" ") + 1);
+        string query = text.substr(text.find(" ") + 1);
         for (int i=0; i<aiRegistry->GetManagerCount(); i++)
             managers[i]->Query(query);
         return;

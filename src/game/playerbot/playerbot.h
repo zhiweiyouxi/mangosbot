@@ -8,6 +8,7 @@
 #define SPELL_DISTANCE 25.0f
 #define BOT_REACT_DISTANCE 50.0f
 
+std::vector<std::string> split(const std::string &s, char delim);
 
 #include "../Spell.h"
 #include "../WorldPacket.h"

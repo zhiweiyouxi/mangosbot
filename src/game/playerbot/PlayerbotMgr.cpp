@@ -482,35 +482,20 @@ bool ChatHandler::HandlePlayerbotCommand(const char* args)
         }
         return res;
     }
-    else if (charnameStr.find(',') != string::npos)
+
+    bool res = true;
+    vector<string> chars = split(charnameStr, ',');
+    for (vector<string>::iterator i = chars.begin(); i != chars.end(); i++)
     {
-        int lastPos = 0;
-        int pos = charnameStr.find(',');
-        bool res = true;
-        while (pos != string::npos)
-        {
-            string s = charnameStr.substr(lastPos, pos - lastPos);
-            bool res = processBotCommand(m_session, cmdStr, sObjectMgr.GetPlayerGUIDByName(s.c_str()));
-            if (!res)
-            {
-                PSendSysMessage("Error processing bot command");
-                SetSentErrorMessage(true);
-            }
-            lastPos = pos + 1;
-            pos = charnameStr.find(',', lastPos);
-        }
-        return res;
-    }
-    else
-    {
-        bool res = processBotCommand(m_session, cmdStr, sObjectMgr.GetPlayerGUIDByName(charnameStr.c_str()));
+        string s = *i;
+        res &= processBotCommand(m_session, cmdStr, sObjectMgr.GetPlayerGUIDByName(s.c_str()));
         if (!res)
         {
             PSendSysMessage("Error processing bot command");
             SetSentErrorMessage(true);
         }
-        return res;
     }
+    return res;
 }
 
 

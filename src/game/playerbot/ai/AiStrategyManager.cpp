@@ -62,22 +62,27 @@ void AiStrategyManager::DoNextAction()
 	currentEngine->DoNextAction(NULL);
 }
 
-void AiStrategyManager::ChangeStrategy( const char* name, Engine* e ) 
+void AiStrategyManager::ChangeStrategy( const char* names, Engine* e ) 
 {
     if (!e)
         return;
     
-    switch (name[0]) 
-	{
-    case '+':
-        e->addStrategy(name+1);
-        break;
-    case '-':
-        e->removeStrategy(name+1);
-        break;
-    case '?':
-        aiRegistry->GetSocialManager()->TellMaster(e->ListStrategies().c_str());
-        break;
+    vector<string> splitted = split(names, ',');
+    for (vector<string>::iterator i = splitted.begin(); i != splitted.end(); i++)
+    {
+        const char* name = i->c_str();
+        switch (name[0]) 
+	    {
+        case '+':
+            e->addStrategy(name+1);
+            break;
+        case '-':
+            e->removeStrategy(name+1);
+            break;
+        case '?':
+            aiRegistry->GetSocialManager()->TellMaster(e->ListStrategies().c_str());
+            break;
+        }
     }
 }
 
