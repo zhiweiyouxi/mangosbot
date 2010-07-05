@@ -1,14 +1,11 @@
 [ ] aoe
 [ ] flee out of damaging aoe
 [ ] crowd control
-[ ] interrupt spell on target death
-[ ] remove shapeshift before mount
 [ ] resistance auras, spells etc on (from enemy spells)
 [ ] magic shield
-[ ] use threat level
 [ ] warlock: heal demon
 
 [ ] check quest status on movement
 [ ] remove triggers if spell not known
 [ ] move to flightmaster before flee
-[ ] disable auto-cast on target death
+[?] disable auto-cast on target death

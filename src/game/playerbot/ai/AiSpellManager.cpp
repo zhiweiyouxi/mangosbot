@@ -304,6 +304,8 @@ void AiSpellManager::InterruptSpell()
     for (int type = CURRENT_MELEE_SPELL; type < CURRENT_MAX_SPELL; type++)
         bot->InterruptSpell((CurrentSpellTypes)type);
 
+    bot->m_mover->InterruptSpell(CURRENT_AUTOREPEAT_SPELL);
+
 	SpellInterrupted(lastSpellId);
 }
 
