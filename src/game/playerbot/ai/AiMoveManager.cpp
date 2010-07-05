@@ -162,9 +162,9 @@ void AiMoveManager::Attack(Unit* target)
     Pet* pet = bot->GetPet();
     if (pet)
     {
-        pet->GetMotionMaster()->Clear();
-        if (((Creature*)pet)->AI())
-            ((Creature*)pet)->AI()->AttackStart(target);
+        CreatureAI* creatureAI = ((Creature*)pet)->AI();
+        if (creatureAI)
+            creatureAI->AttackStart(target);
     }
 
     aiRegistry->GetTargetManager()->SetCurrentTarget(target);
