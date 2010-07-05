@@ -2,8 +2,8 @@
 #include "../playerbot.h"
 #include "../../MotionMaster.h"
 #include "../../MovementGenerator.h"
-
 #include "FleeManager.h"
+#include "../../CreatureAI.h"
 
 using namespace ai;
 using namespace std;
@@ -158,6 +158,14 @@ void AiMoveManager::Attack(Unit* target)
 	uint64 guid = target->GetGUID();
 	bot->SetSelection(guid);
 	bot->Attack(target, true);
+
+    Pet* pet = bot->GetPet();
+    if (pet)
+    {
+        pet->GetMotionMaster()->Clear();
+        if (((Creature*)pet)->AI())
+            ((Creature*)pet)->AI()->AttackStart(target);
+    }
 
     aiRegistry->GetTargetManager()->SetCurrentTarget(target);
 	aiRegistry->GetInventoryManager()->AddLoot(guid);
