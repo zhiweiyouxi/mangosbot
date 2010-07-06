@@ -60,6 +60,7 @@ namespace ai
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
         virtual void HandleMasterIncomingPacket(const WorldPacket& packet);
         virtual void Query(const string& text);
+        virtual void QueryItemUsage(ItemPrototype const *item);
 
 	private:
 		Item* FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, int *count=NULL);
@@ -72,7 +73,6 @@ namespace ai
 		virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
 		void UseItem(Item& item);
 		void EquipItem(Item& item);
-        void QueryItemUsage(ItemPrototype const *item);
         void QueryItemsUsage(list<uint32> items);
         void QueryItemCount(ItemPrototype const * item);
         void IterateItems(IterateItemsVisitor* visitor);

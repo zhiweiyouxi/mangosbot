@@ -22,6 +22,7 @@ namespace ai
 		map<uint32, uint32> GetQuestItems() { return questNeedItems; }
 		void TurnInQuests( WorldObject *questgiver );
 		void AcceptQuest( Quest const *qInfo, Player *pGiver );
+        void QueryQuestItem(uint32 itemId);
 
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
@@ -29,7 +30,6 @@ namespace ai
         virtual void Query(const string& text);
 
     private:
-        void QueryQuestItem(uint32 itemId);
         void QueryQuestItem(uint32 itemId, const Quest *questTemplate, QuestStatusData *questStatus);
 
 	private:

@@ -123,6 +123,10 @@ void LootManager::StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot
     --loot->unlootedCount;
     bot->SendNewItem( newitem, uint32(item->count), false, false, true );
     bot->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count );
+
+    ItemPrototype const *proto = sItemStorage.LookupEntry<ItemPrototype>(item->itemid);
+    bot->GetPlayerbotAI()->GetAiRegistry()->GetInventoryManager()->QueryItemUsage(proto);
+    bot->GetPlayerbotAI()->GetAiRegistry()->GetQuestManager()->QueryQuestItem(item->itemid);
 }
 
 void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)

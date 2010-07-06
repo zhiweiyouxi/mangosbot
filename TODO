@@ -6,6 +6,5 @@
 [ ] warlock: heal demon
 
 [ ] check quest status on movement
-[ ] remove triggers if spell not known
 [ ] move to flightmaster before flee
-[?] disable auto-cast on target death
+[ ] disable auto-cast on target death
