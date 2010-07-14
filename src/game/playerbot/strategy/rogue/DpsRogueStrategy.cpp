@@ -40,6 +40,10 @@ void DpsRogueStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new InterruptSpellTrigger(ai, "kick"), 
 		NextAction::array(0, new NextAction("kick", 30.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new IsBehindTargetTrigger(ai), 
+        NextAction::array(0, new NextAction("backstab", 21.0f), NULL)));
 }
 
 void DpsRogueStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -120,5 +124,12 @@ ActionNode* DpsRogueStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("backstab", name)) 
+    {
+        return new ActionNode (new CastBackstabAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("mutilate"), NULL), 
+            /*C*/ NULL);
+    }
 	else return CombatStrategy::createAction(name);
 }

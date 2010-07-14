@@ -327,3 +327,10 @@ void EngineTestBase::tickWithDeadPartyMember()
 	tick();
 	targetManager->deadPartyMember = false;
 }
+
+void EngineTestBase::tickBehindTarget()
+{
+    moveManager->isBehind[MockedTargets::GetCurrentTarget()] = true;
+    tick();
+    moveManager->isBehind[MockedTargets::GetCurrentTarget()] = false;
+}

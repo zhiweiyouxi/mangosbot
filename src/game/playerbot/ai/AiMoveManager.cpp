@@ -396,3 +396,14 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
     void Teleport( Player* master );
 }
 
+bool AiMoveManager::IsBehind(Unit* target)
+{
+    if (!target)
+        return false;
+
+    float targetOrientation = target->GetOrientation();
+    float orientation = bot->GetOrientation();
+    float distance = bot->GetDistance(target);
+    
+    return distance <= ATTACK_DISTANCE && abs(targetOrientation - orientation) < M_PI / 2;
+}

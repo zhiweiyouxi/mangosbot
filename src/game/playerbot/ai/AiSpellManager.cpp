@@ -84,7 +84,7 @@ uint32 AiSpellManager::FindSpellId(const char* args)
 
 bool AiSpellManager::HasAura(uint32 spellId, const Unit* player) 
 {
-	if (!spellId) 
+	if (!spellId || !player) 
 		return false;
 
 	for (AuraMap::const_iterator iter = player->GetAuras().begin(); iter != player->GetAuras().end(); ++iter) 

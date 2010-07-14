@@ -20,4 +20,9 @@ namespace ai
 		CastGougeAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "gouge") {} 
 	};
 
+    class CastBackstabAction : public CastMeleeSpellAction 
+    { 
+    public: 
+        CastBackstabAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "backstab") {} 
+    };
 }

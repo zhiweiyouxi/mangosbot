@@ -55,6 +55,7 @@ protected:
 	void tickWithPartyLowHealth(int amount);
 	void tickWithAuraToDispel(uint32 type);
 	void tickWithPartyAuraToDispel(uint32 type);
+    void tickBehindTarget();
 	void lowHealth(int amount);
 	void lowMana(int amount);
 	void healthRestored();

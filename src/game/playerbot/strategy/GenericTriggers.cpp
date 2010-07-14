@@ -158,3 +158,9 @@ bool TankAoeTrigger::IsActive()
     return statsManager->GetAttackerCount() > 0 && 
         (!target || target->getVictim() == targetManager->GetSelf());
 }
+
+bool IsBehindTargetTrigger::IsActive()
+{
+    Unit* target = targetManager->GetCurrentTarget();
+    return target && moveManager->IsBehind(target);
+}

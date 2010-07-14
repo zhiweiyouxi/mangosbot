@@ -66,3 +66,8 @@ void MockAiMoveManager::Attack(Unit* target)
 	if (target == MockedTargets::GetTargetForTank())
 	buffer->append(">tank assist");
 }
+
+bool MockAiMoveManager::IsBehind(Unit* target)
+{
+    return isBehind[target];
+}

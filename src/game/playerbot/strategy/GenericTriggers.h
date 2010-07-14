@@ -289,6 +289,15 @@ namespace ai
 		virtual bool IsActive();
 
 	};
+
+    class IsBehindTargetTrigger : public Trigger
+    {
+    public:
+        IsBehindTargetTrigger(AiManagerRegistry* const ai) : Trigger(ai) {}
+
+    public: 
+        virtual bool IsActive();
+    };
 }
 
 #include "RangeTriggers.h"

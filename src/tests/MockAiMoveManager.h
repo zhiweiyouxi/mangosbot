@@ -15,6 +15,7 @@ namespace ai
         {
 			distanceTo[MockedTargets::GetCurrentTarget()] = 15.0f; 
 			moving[MockedTargets::GetCurrentTarget()] = false;
+            isBehind[MockedTargets::GetCurrentTarget()] = false;
 			this->buffer = buffer;
 		}
 
@@ -27,6 +28,7 @@ namespace ai
 		virtual void Stay();
 		virtual bool IsMoving(Unit* target);
 		virtual void Attack(Unit* target);
+        virtual bool IsBehind(Unit* target);
 
 	private:
 		string *buffer;
@@ -34,6 +36,7 @@ namespace ai
 	public:
 		map<Unit*, float> distanceTo;
 		map<Unit*, bool> moving;
+        map<Unit*, bool> isBehind;
     };
 
 }

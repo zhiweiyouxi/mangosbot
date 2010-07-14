@@ -34,8 +34,10 @@ protected:
         tickWithComboPoints(5);
 		tickWithComboPoints(5);
 		tickWithComboPoints(5);
+
+        tickBehindTarget();
         
-		assertActions(">reach melee>melee>T:mutilate>T:sinister strike>T:kidney shot>T:rupture>T:slice and dice>T:eviscerate");
+        assertActions(">reach melee>melee>T:mutilate>T:sinister strike>T:kidney shot>T:rupture>T:slice and dice>T:eviscerate>T:backstab");
     }
 
 	void healHimself()
