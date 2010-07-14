@@ -4,7 +4,12 @@
 namespace ai
 {
     BUFF_TRIGGER(WaterShieldTrigger, "water shield", "water shield")
-    BUFF_TRIGGER(EarthlivingWeaponTrigger, "earthliving weapon", "earthliving weapon")
+
+    class ShamanWeaponTrigger : public BuffTrigger {
+    public:
+        ShamanWeaponTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "rockbiter weapon") {}
+        virtual bool IsActive();
+    };
 
     class TotemTrigger : public BuffTrigger {
     public:

@@ -338,7 +338,8 @@ int32 AiSpellManager::CalculateGlobalCooldown(uint32 spellid)
 		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_1 || 
 		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_2 || 
 		spellInfo->Attributes & SPELL_ATTR_OUTDOORS_ONLY ||
-		spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE)
+		spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE ||
+        !spellInfo->StartRecoveryCategory)
 		return 0;
 
     if (spellInfo->AttributesEx3 & SPELL_ATTR_EX3_REQ_WAND)

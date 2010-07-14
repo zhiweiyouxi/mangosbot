@@ -103,6 +103,41 @@ ActionNode* GenericShamanStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("earthliving weapon", name)) 
+    {
+        return new ActionNode (new CastEarthlivingWeaponAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("flametongue weapon"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("rockbiter weapon", name)) 
+    {
+        return new ActionNode (new CastRockbiterWeaponAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("flametongue weapon", name)) 
+    {
+        return new ActionNode (new CastFlametongueWeaponAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("frostbrand weapon"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("frostbrand weapon", name)) 
+    {
+        return new ActionNode (new CastFrostbrandWeaponAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("rockbiter weapon"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("windfury weapon", name)) 
+    {
+        return new ActionNode (new CastWindfuryWeaponAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("rockbiter weapon"), NULL), 
+            /*C*/ NULL);
+    }
     return NULL;
 }
 

@@ -71,7 +71,26 @@ namespace ai
     public:
         CastEarthlivingWeaponAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "earthliving weapon") {}
     };
-    
+
+    class CastRockbiterWeaponAction : public CastBuffSpellAction {
+    public:
+        CastRockbiterWeaponAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "rockbiter weapon") {}
+    };
+
+    class CastFlametongueWeaponAction : public CastBuffSpellAction {
+    public:
+        CastFlametongueWeaponAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "flametongue weapon") {}
+    };
+
+    class CastFrostbrandWeaponAction : public CastBuffSpellAction {
+    public:
+        CastFrostbrandWeaponAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "frostbrand weapon") {}
+    };
+
+    class CastWindfuryWeaponAction : public CastBuffSpellAction {
+    public:
+        CastWindfuryWeaponAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "windfury weapon") {}
+    };
 
     class CastStoneskinTotemAction : public CastBuffSpellAction {
     public:

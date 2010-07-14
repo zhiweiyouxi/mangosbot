@@ -15,10 +15,6 @@ void ShamanNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new WaterShieldTrigger(ai), 
         NextAction::array(0, new NextAction("water shield", 21.0f), NULL)));
 
-    triggers.push_back(new TriggerNode(
-        new EarthlivingWeaponTrigger(ai), 
-        NextAction::array(0, new NextAction("earthliving weapon", 22.0f), NULL)));
-
 	triggers.push_back(new TriggerNode(
 		new PartyMemberDeadTrigger(ai),
 		NextAction::array(0, new NextAction("ancestral spirit", 23.0f), NULL)));
@@ -35,14 +31,7 @@ ActionNode* ShamanNonCombatStrategy::createAction(const char* name)
     if (node)
         return node;
 
-    if (!strcmp("earthliving weapon", name)) 
-    {
-        return new ActionNode (new CastEarthlivingWeaponAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("water shield", name)) 
+    if (!strcmp("water shield", name)) 
     {
         return new ActionNode (new CastWaterShieldAction(ai),  
             /*P*/ NULL,

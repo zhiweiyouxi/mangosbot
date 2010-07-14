@@ -94,8 +94,6 @@ void AiStrategyManager::DoSpecificAction(const char* name)
 		aiRegistry->GetSocialManager()->TellMaster(name);
         return;
 	}
-
-    bot->GetPlayerbotAI()->SetNextCheckDelay(GLOBAL_COOLDOWN);
 }
 
 void AiStrategyManager::HandleCommand(const string& text, Player& fromPlayer)

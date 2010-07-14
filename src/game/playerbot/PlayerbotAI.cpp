@@ -47,8 +47,6 @@ void PlayerbotAI::UpdateAI(uint32 elapsed)
     if (bot->IsBeingTeleported() || bot->GetTrader())
         return;
 
-    UpdateNextCheckDelay();
-
 	if (bot->isAlive())
 		aiRegistry->GetStrategyManager()->DoNextAction();
 	else

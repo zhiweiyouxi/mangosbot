@@ -24,11 +24,8 @@ protected:
     void buff()
     {
 		tick();
-		addAura("earthliving weapon");
-                        
-		tick();
 
-		assertActions(">S:earthliving weapon>S:water shield");
+		assertActions(">S:water shield");
     }
 
 	void ressurect()

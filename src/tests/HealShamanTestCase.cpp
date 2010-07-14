@@ -22,27 +22,31 @@ public:
 		setupEngine(new ShamanActionFactory(ai), "heal", NULL);
 
         addAura("water shield");
+        addAura("earthliving weapon");
     }
 
 protected:
     void healHimself()
     {
 		tickWithLowHealth(45);
+        tickWithLowHealth(45);
 		tickWithLowHealth(35);
+        tickWithLowHealth(35);
         
         tick();
         tickInMeleeRange();
 
-		assertActions(">S:chain heal>S:riptide>reach melee>melee");
+        assertActions(">S:chain heal>S:lesser healing wave>S:riptide>S:healing wave>reach melee>melee");
     }
 
     void healOthers()
     {
         tickWithPartyLowHealth(45);
+        tickWithPartyLowHealth(45);
         tickWithPartyLowHealth(35);
 		tickWithPartyLowHealth(35);
 
-		assertActions(">P:chain heal>P:riptide>P:earth shield");
+        assertActions(">P:chain heal>P:lesser healing wave>P:riptide>P:healing wave");
     }
 
     void buff()
@@ -52,12 +56,19 @@ protected:
         tick(); 
         addAura("water shield");
 
+        removeAura("earthliving weapon");
+        tick(); 
+        tick(); 
+        tick(); 
+        tick(); 
+        addAura("earthliving weapon");
+
         tickWithAttackerCount(3);
         tickWithAttackerCount(3);
         tickWithAttackerCount(3);
         tickWithAttackerCount(3);
 
-		assertActions(">S:water shield>S:strength of earth totem>S:windfury totem>S:flametongue totem>S:mana spring totem");
+        assertActions(">S:water shield>S:earthliving weapon>S:flametongue weapon>S:frostbrand weapon>S:rockbiter weapon>S:strength of earth totem>S:windfury totem>S:flametongue totem>S:mana spring totem");
     }
 
     void interruptSpell() 
