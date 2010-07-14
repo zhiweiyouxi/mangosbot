@@ -5,6 +5,12 @@
 using namespace ai;
 using namespace std;
 
+uint32 PlayerbotChatHandler::extractQuestId(const char *str)
+{
+    char* cId = extractKeyFromLink((char*)str,"Hquest");
+    return cId ? atol(cId) : 0;
+}
+
 AiManagerBase::AiManagerBase(PlayerbotAI* ai, AiManagerRegistry* aiRegistry)
 {
 	this->ai = ai;

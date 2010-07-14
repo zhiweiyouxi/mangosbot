@@ -282,13 +282,33 @@ void AiQuestManager::QueryQuestItem(uint32 itemId)
     }    
 }
 
+
+void AiQuestManager::QueryQuest(uint32 id) 
+{
+    for (uint16 slot = 0; slot < MAX_QUEST_LOG_SIZE; ++slot)
+    {
+        if(id == bot->GetQuestSlotQuestId(slot))
+        {
+            ostringstream out;
+            out << "Quest ";
+            out << (bot->GetQuestStatus(id) == QUEST_STATUS_COMPLETE ? "completed" : "not completed");
+            aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
+            break;
+        }
+    }
+}
+
 void AiQuestManager::Query(const string& text)
 {
     list<uint32> items;
     aiRegistry->GetInventoryManager()->extractItemIds(text, items);
 
     for (list<uint32>::iterator i = items.begin(); i != items.end(); i++)
-    {
         QueryQuestItem(*i);
-    }
+
+ 
+    PlayerbotChatHandler ch(ai->GetMaster());
+    uint32 questId = ch.extractQuestId(text.c_str());
+    if (questId)
+        QueryQuest(questId);
 }

@@ -31,6 +31,7 @@ namespace ai
 
     private:
         void QueryQuestItem(uint32 itemId, const Quest *questTemplate, QuestStatusData *questStatus);
+        void QueryQuest(uint32 id);
 
 	private:
 		map<uint32, uint32> questNeedItems;

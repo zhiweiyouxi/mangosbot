@@ -13,6 +13,7 @@ public:
 	bool teleport(const Player& botPlayer) { return HandleNamegoCommand(botPlayer.GetName()); }
 	void sysmessage(const char *str) { SendSysMessage(str); }
 	bool dropQuest(const char *str) { return HandleQuestRemove(str); }
+    uint32 extractQuestId(const char *str);
 };
 
 class PlayerbotAI;
