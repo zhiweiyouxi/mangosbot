@@ -427,6 +427,72 @@ void AiInventoryManager::ListQuestItems()
 	aiRegistry->GetSocialManager()->TellMaster( out.str().c_str() );
 }
 
+class SellItemsVisitor : public IterateItemsVisitor
+{
+public:
+    SellItemsVisitor(AiInventoryManager* inventoryManager) : IterateItemsVisitor() 
+    {
+        this->inventoryManager = inventoryManager;
+    }
+
+    virtual void Visit(Item* item)
+    {
+        inventoryManager->Sell(item);
+    }
+
+private:
+    AiInventoryManager* inventoryManager;
+};
+
+class SellGrayItemsVisitor : public SellItemsVisitor
+{
+public:
+    SellGrayItemsVisitor(AiInventoryManager* inventoryManager) : SellItemsVisitor(inventoryManager) {}
+
+    virtual void Visit(Item* item)
+    {
+        if (item->GetProto()->Quality != ITEM_QUALITY_POOR)
+            return;
+
+        SellItemsVisitor::Visit(item);
+    }
+};
+
+void AiInventoryManager::Sell(string link) 
+{
+    list<uint32> ids;
+    extractItemIds(link, ids);
+    
+    list<Item*> items;
+    findItemsInInv(ids, items);
+
+    SellItemsVisitor visitor(this);
+    for (list<Item*>::iterator i = items.begin(); i != items.end(); i++)
+        visitor.Visit(*i);
+
+    if (link == "gray" || link == "*")
+    {
+        IterateItems(&SellGrayItemsVisitor(this));
+    }
+}
+
+void AiInventoryManager::Sell(Item* item)
+{
+    uint64 vendorguid = bot->GetPlayerbotAI()->GetMaster()->GetSelection();
+    if (!vendorguid)
+    {
+        aiRegistry->GetSocialManager()->TellMaster("Select a vendor first");
+        return;
+    }
+
+    uint64 itemguid = item->GetGUID();
+    uint32 count = item->GetCount();
+
+    WorldPacket p;
+    p << vendorguid << itemguid << count;
+    bot->GetSession()->HandleSellItemOpcode(p);
+}
+
 void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 {
 	if (text == "report")
@@ -449,6 +515,11 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
     else if (text.size() > 2 && text.substr(0, 2) == "b " || text.size() > 4 && text.substr(0, 4) == "buy ")
     {
         Buy(text.c_str());
+    }
+    else if (text.size() > 2 && text.substr(0, 2) == "s " || text.size() > 4 && text.substr(0, 5) == "sell ")
+    {
+        string link = text.substr(text.find(" ") + 1);
+        Sell(link.c_str());
     }
     else if (text.size() > 2 && text.substr(0, 2) == "c " || text.size() > 4 && text.substr(0, 6) == "count ")
     {
