@@ -18,7 +18,7 @@ void MockAiMoveManager::MoveTo(Unit* target, float distance)
 
 	if (target == MockedTargets::GetCurrentTarget())
 	{
-		if (distance == SPELL_DISTANCE) 
+		if (distance >= SPELL_DISTANCE) 
 			buffer->append(">reach spell"); 
 		else 
 			buffer->append(">reach melee");

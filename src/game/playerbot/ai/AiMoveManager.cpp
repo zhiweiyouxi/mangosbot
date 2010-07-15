@@ -20,7 +20,27 @@ float AiMoveManager::GetDistanceTo(Unit* target)
 
 void AiMoveManager::MoveTo(Unit* target, float distance)
 {
-	Follow(target, distance);
+    if (!IsMovingAllowed(target))
+        return;
+
+    float bx = bot->GetPositionX();
+    float by = bot->GetPositionY();
+    float bz = bot->GetPositionZ();
+
+    float tx = target->GetPositionX();
+    float ty = target->GetPositionY();
+    float tz = target->GetPositionZ();
+
+    float distanceToTarget = bot->GetDistance(target);
+
+    float ax = acos((tx - bx) / distanceToTarget);
+    float ay = asin((ty - by) / distanceToTarget);
+
+    float destinationDistance = distanceToTarget - distance;
+    float dx = cos(ax) * destinationDistance + bx;
+    float dy = sin(ay) * destinationDistance + by;
+
+	MoveTo(target->GetMapId(), dx, dy, tz);
 }
 
 void AiMoveManager::MoveTo(WorldObject* target)
@@ -53,6 +73,9 @@ bool AiMoveManager::IsMovingAllowed(Unit* target)
     if (!target)
         return false;
 
+    if (bot->GetMapId() != target->GetMapId())
+        return false;
+
     if (bot->GetDistance(target) > BOT_REACT_DISTANCE)
         return false;
 
@@ -69,7 +92,7 @@ bool AiMoveManager::IsMovingAllowed(uint32 mapId, float x, float y, float z)
 
 bool AiMoveManager::IsMovingAllowed() 
 {
-    if (bot->isFrozen() || bot->IsPolymorphed() || !bot->CanFreeMove() || bot->IsNonMeleeSpellCasted(true))
+    if (bot->isFrozen() || bot->IsPolymorphed() || !bot->CanFreeMove() || bot->isDead())
         return false;
 
     MotionMaster &mm = *bot->GetMotionMaster();
@@ -81,7 +104,14 @@ void AiMoveManager::Follow(Unit* target, float distance)
     if (!IsMovingAllowed(target))
         return;
 
-	bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle());
+    float distanceToRun = bot->GetDistance(target) - distance;
+    if (distanceToRun <= 0)
+        return;
+
+    bot->GetMotionMaster()->MoveFollow(target, distance, GetFollowAngle());
+
+    WaitForReach(distanceToRun);
+
 }
 
 void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
@@ -90,6 +120,7 @@ void AiMoveManager::MoveTo(uint32 mapId, float x, float y, float z)
         return;
 
     bot->GetMotionMaster()->MovePoint(mapId, x, y, z);
+    WaitForReach(bot->GetDistance(x, y, z));
 }
 
 bool AiMoveManager::Flee(Unit* target, float distance)
@@ -104,8 +135,8 @@ bool AiMoveManager::Flee(Unit* target, float distance)
 	if (!manager.CalculateDestination(&rx, &ry, &rz)) 
         return false;
 
-    bot->UpdateGroundPositionZ(rx, ry, rz);
 	bot->GetMotionMaster()->MovePoint(0, rx, ry, rz);
+    WaitForReach(bot->GetDistance(rx, ry, rz));
 	return true;
 }
 
@@ -406,4 +437,10 @@ bool AiMoveManager::IsBehind(Unit* target)
     float distance = bot->GetDistance(target);
     
     return distance <= ATTACK_DISTANCE && abs(targetOrientation - orientation) < M_PI / 2;
+}
+
+void AiMoveManager::WaitForReach(float distance)
+{
+    float delay = ceil(distance / bot->GetSpeed(MOVE_RUN));
+    bot->GetPlayerbotAI()->SetNextCheckDelay((uint32)delay);
 }

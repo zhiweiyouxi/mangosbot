@@ -40,6 +40,7 @@ namespace ai
         bool IsMovingAllowed();
         void UseMeetingStone(uint64 guid);
         void TeleportToMaster();
+        void WaitForReach(float distance);
 
     private:
         vector<uint32> taxiNodes;

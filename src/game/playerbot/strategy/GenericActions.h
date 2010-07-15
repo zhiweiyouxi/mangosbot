@@ -122,4 +122,13 @@ namespace ai
     protected:
         uint32 type;
     };
+    
+    class ChangeCombatStrategyAction : public Action {
+    public:
+        ChangeCombatStrategyAction(AiManagerRegistry* const ai, const char* name);
+        virtual void Execute();
+
+    private:
+        string name;
+    };
 }

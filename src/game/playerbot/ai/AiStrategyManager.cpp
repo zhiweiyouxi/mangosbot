@@ -10,6 +10,9 @@ using namespace ai;
 AiStrategyManager::AiStrategyManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : 
 	AiManagerBase(ai, aiRegistry)
 {
+    if (!aiRegistry)
+        return;
+
 	combatEngine = AiFactory::createCombatEngine(bot, aiRegistry);
 	nonCombatEngine = AiFactory::createNonCombatEngine(bot, aiRegistry);
 

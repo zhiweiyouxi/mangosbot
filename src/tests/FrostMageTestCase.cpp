@@ -13,6 +13,7 @@ class FrostMageTestCase : public EngineTestBase
   CPPUNIT_TEST( dispel );
   CPPUNIT_TEST( boost );
   CPPUNIT_TEST( interruptSpells );
+  CPPUNIT_TEST( pull );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -77,6 +78,19 @@ protected:
         tick(); // frostbolt
 
         assertActions(">T:counterspell>T:frostbolt");
+    }
+
+
+    void pull() 
+    {
+        engine->addStrategy("pull");
+        
+        tickOutOfSpellRange();
+        tickInSpellRange();
+        tick();
+        tick();
+
+        assertActions(">reach spell>T:shoot>follow>co:-pull");
     }
 
 };

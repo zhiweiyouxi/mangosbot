@@ -851,6 +851,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\tests\MockAiStrategyManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tests\MockAiStrategyManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tests\MockAiTargetManager.cpp"
 				>
 			</File>

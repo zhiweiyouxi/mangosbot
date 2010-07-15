@@ -37,4 +37,20 @@ namespace ai
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
 		virtual StrategyType GetType() { return STRATEGY_TYPE_COMBAT; }
     };
+
+
+    class MeleeCombatStrategy : public CombatStrategy
+    {
+    public:
+        MeleeCombatStrategy(AiManagerRegistry* const ai) : CombatStrategy(ai) {}
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+    };
+
+
+    class RangedCombatStrategy : public CombatStrategy
+    {
+    public:
+        RangedCombatStrategy(AiManagerRegistry* const ai) : CombatStrategy(ai) {}
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+    };
 }

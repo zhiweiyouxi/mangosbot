@@ -14,6 +14,7 @@ MockAiManagerRegistry::MockAiManagerRegistry() : AiManagerRegistry()
 	managers[AiMoveManagerType] = new MockAiMoveManager(&ai, this, &buffer);
 	managers[AiInventoryManagerType] = new MockAiInventoryManager(&ai, this, &buffer);
 	managers[AiSocialManagerType] = new MockAiSocialManager(&ai, this, &buffer);
+    managers[AiStrategyManagerType] = new MockAiStrategyManager(&ai, NULL, &buffer);
 }
 
 MockAiManagerRegistry::~MockAiManagerRegistry()

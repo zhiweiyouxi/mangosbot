@@ -42,14 +42,14 @@ ActionNode* GenericHunterStrategy::createAction(const char* name)
     }
 	else if (!strcmp("reach spell", name)) 
 	{
-		return new ActionNode (new ReachSpellAction(ai, 40.0f),  
+		return new ActionNode (new ReachSpellAction(ai),  
 			/*P*/ NULL,
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
 	else if (!strcmp("flee", name)) 
 	{
-		return new ActionNode (new FleeAction(ai, 40.0f),  
+		return new ActionNode (new FleeAction(ai),  
 			/*P*/ NULL,
 			/*A*/ NULL, 
 			/*C*/ NULL);

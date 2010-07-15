@@ -2924,6 +2924,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MagePullStrategy.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\mage\MagePullStrategy.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\playerbot\strategy\mage\MageTriggers.cpp"
 						>
 					</File>
