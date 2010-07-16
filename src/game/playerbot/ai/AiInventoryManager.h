@@ -38,6 +38,13 @@ namespace ai
         Item* result;
     };
 
+    enum IterateItemsMask
+    {
+        ITERATE_ITEMS_IN_BAGS = 1,
+        ITERATE_ITEMS_IN_EQUIP = 2,
+        ITERATE_ALL_ITEMS = 255
+    };
+
 	class AiInventoryManager : public AiManagerBase
 	{
 	public:
@@ -68,6 +75,7 @@ namespace ai
         virtual bool CanLoot() { return lootManager->CanLoot(); }
         virtual void DoLoot() { lootManager->DoLoot(); }
 		
+        virtual void UnequipItem(const char* link);
         virtual void EquipItem(const char* link);
 		virtual void UseItem(const char* link);
 		virtual void Reward(const char* link);
@@ -82,7 +90,6 @@ namespace ai
 		
         virtual void ItemLocalization(std::string& itemName, const uint32 itemID);
 		virtual void extractItemIds(const string& text, list<uint32>& itemIds);
-		virtual void findItemsInEquip(std::list<uint32>& itemIdSearchList, std::list<Item*>& foundItemList);
 
         virtual void Trade(const char* text);
         virtual void AcceptTrade();
@@ -103,11 +110,16 @@ namespace ai
         void EquipItem(Item& item);
         void EquipItem(FindItemVisitor* visitor);
 
+        void UnequipItem(Item& item);
+        void UnequipItem(FindItemVisitor* visitor);
+
         void Sell(FindItemVisitor* visitor);
 
         void QueryItemsUsage(list<uint32> items);
         void QueryItemCount(ItemPrototype const * item);
-        void IterateItems(IterateItemsVisitor* visitor);
+        void IterateItems(IterateItemsVisitor* visitor, IterateItemsMask mask = ITERATE_ITEMS_IN_BAGS);
+        void IterateItemsInBags(IterateItemsVisitor* visitor);
+        void IterateItemsInEquip(IterateItemsVisitor* visitor);
 
         bool TradeItem(const Item& item, int8 slot = -1);
         bool TradeItem(FindItemVisitor *visitor, int8 slot = -1);

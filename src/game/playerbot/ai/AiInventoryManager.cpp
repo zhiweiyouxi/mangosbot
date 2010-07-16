@@ -279,9 +279,17 @@ AiInventoryManager::~AiInventoryManager()
 }
 
 
-void AiInventoryManager::IterateItems(IterateItemsVisitor* visitor)
+void AiInventoryManager::IterateItems(IterateItemsVisitor* visitor, IterateItemsMask mask)
 {
-    int count = 0;
+    if (mask & ITERATE_ITEMS_IN_BAGS)
+        IterateItemsInBags(visitor);
+
+    if (mask & ITERATE_ITEMS_IN_EQUIP)
+        IterateItemsInEquip(visitor);
+}
+
+void AiInventoryManager::IterateItemsInBags(IterateItemsVisitor* visitor)
+{
     for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
     {
         Item* pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
@@ -310,10 +318,23 @@ void AiInventoryManager::IterateItems(IterateItemsVisitor* visitor)
     }
 }
 
+void AiInventoryManager::IterateItemsInEquip(IterateItemsVisitor* visitor)
+{
+    for (uint8 slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; slot++)
+    {
+        Item* const pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+        if(!pItem)
+            continue;
+
+        if (!visitor->Visit(pItem))
+            return;
+    }
+}
+
 
 void AiInventoryManager::UseItem(FindItemVisitor* visitor, const uint32 delay)
 {
-    IterateItems(visitor);
+    IterateItems(visitor, ITERATE_ALL_ITEMS);
     Item* item = visitor->GetResult();
     if (!item) 
         return;
@@ -324,7 +345,7 @@ void AiInventoryManager::UseItem(FindItemVisitor* visitor, const uint32 delay)
 
 bool AiInventoryManager::HasItem(FindItemVisitor* visitor)
 {
-    IterateItems(visitor);
+    IterateItems(visitor, ITERATE_ALL_ITEMS);
     return visitor->GetResult();
 }
 
@@ -361,7 +382,7 @@ void AiInventoryManager::UseItem(Item& item)
 int AiInventoryManager::GetItemCount(const char* name) 
 {
     QueryNamedItemCountVisitor visitor(name);
-    IterateItems(&visitor);
+    IterateItems(&visitor, ITERATE_ALL_ITEMS);
     return visitor.GetCount();
 }
 
@@ -382,25 +403,6 @@ void AiInventoryManager::extractItemIds(const string& text, list<uint32>& itemId
 		pos = endPos;
 		if (id)
 			itemIds.push_back(id);
-	}
-}
-
-void AiInventoryManager::findItemsInEquip(list<uint32>& itemIdSearchList, list<Item*>& foundItemList)
-{
-	for( uint8 slot=EQUIPMENT_SLOT_START; itemIdSearchList.size()>0 && slot<EQUIPMENT_SLOT_END; slot++ ) {
-		Item* const pItem = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
-		if( !pItem )
-			continue;
-
-		for (list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
-		{
-			if (pItem->GetProto()->ItemId != *it)
-				continue;
-
-			foundItemList.push_back(pItem);
-			itemIdSearchList.erase(it);
-			break;
-		}
 	}
 }
 
@@ -427,6 +429,33 @@ void AiInventoryManager::EquipItem(Item& item)
 	WorldPacket* const packet = new WorldPacket(CMSG_AUTOEQUIP_ITEM, 2);
 	*packet << bagIndex << slot;
 	bot->GetSession()->QueuePacket(packet);
+}
+
+
+void AiInventoryManager::UnequipItem(const char* link)
+{
+    list<uint32> ids; /* = */ extractItemIds(link, ids);
+
+    for (list<uint32>::iterator i =ids.begin(); i != ids.end(); i++)
+        UnequipItem(&FindItemByIdVisitor(*i));
+}
+
+void AiInventoryManager::UnequipItem(FindItemVisitor* visitor)
+{
+    IterateItems(visitor, ITERATE_ALL_ITEMS);
+    Item *item = visitor->GetResult();
+    if (item) UnequipItem(*item);
+}
+
+void AiInventoryManager::UnequipItem(Item& item)
+{
+    uint8 bagIndex = item.GetBagSlot();
+    uint8 slot = item.GetSlot();
+    uint8 dstBag = NULL_BAG; 
+
+    WorldPacket* const packet = new WorldPacket(CMSG_AUTOSTORE_BAG_ITEM, 3);
+    *packet << bagIndex << slot << dstBag;
+    bot->GetSession()->QueuePacket(packet);
 }
 
 void AiInventoryManager::UseItem(const char* link)
@@ -595,11 +624,14 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 	{
 		UseItem(text.c_str());
 	}
-
 	else if (text.size() > 2 && text.substr(0, 2) == "e " || text.size() > 6 && text.substr(0, 6) == "equip ")
 	{
 		EquipItem(text.c_str());
 	}
+    else if (text.size() > 3 && text.substr(0, 3) == "ue " || text.size() > 6 && text.substr(0, 8) == "unequip ")
+    {
+        UnequipItem(text.c_str());
+    }
 	else if (text.size() > 2 && text.substr(0, 2) == "r " || text.size() > 7 && text.substr(0, 7) == "reward ")
 	{
 		Reward(text.c_str());
@@ -727,7 +759,7 @@ void AiInventoryManager::Query(const string& text)
 void AiInventoryManager::QueryItemCount(ItemPrototype const * item) 
 {
     QueryItemCountVisitor visitor(item->ItemId);
-    IterateItems(&visitor);
+    IterateItems(&visitor, ITERATE_ALL_ITEMS);
 
     int count = visitor.GetCount();
     if (count)
@@ -852,7 +884,7 @@ void AiInventoryManager::Trade(const char* text)
 
 bool AiInventoryManager::TradeItem(FindItemVisitor *visitor, int8 slot)
 {
-    IterateItems(visitor);
+    IterateItems(visitor, ITERATE_ALL_ITEMS);
     Item* item = visitor->GetResult();
     if (item) return TradeItem(*item, slot);
     return false;
