@@ -1,13 +1,14 @@
 #pragma once
 
-#include "GenericMageStrategy.h"
-
 namespace ai
 {
-    class MagePullStrategy : public RangedCombatStrategy
+    class PullStrategy : public RangedCombatStrategy
     {
     public:
-        MagePullStrategy(AiManagerRegistry* const ai) : RangedCombatStrategy(ai) {}
+        PullStrategy(AiManagerRegistry* const ai, const char *action) : RangedCombatStrategy(ai) 
+        {
+            this->action = action;
+        }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -16,5 +17,7 @@ namespace ai
         virtual ActionNode* createAction(const char* name);
         virtual NextAction** getDefaultActions();
 
+    private:
+        const char* action;
     };
 }

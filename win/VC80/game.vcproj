@@ -2318,6 +2318,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\playerbot\strategy\PullStrategy.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\playerbot\strategy\PullStrategy.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Queue.cpp"
 					>
 				</File>
@@ -2921,14 +2929,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\mage\MageMultipliers.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\playerbot\strategy\mage\MagePullStrategy.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\game\playerbot\strategy\mage\MagePullStrategy.h"
 						>
 					</File>
 					<File

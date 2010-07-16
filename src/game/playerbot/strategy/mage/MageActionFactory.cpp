@@ -5,7 +5,7 @@
 #include "FrostMageStrategy.h"
 #include "GenericMageNonCombatStrategy.h"
 #include "FireMageStrategy.h"
-#include "MagePullStrategy.h"
+#include "../PullStrategy.h"
 
 using namespace ai;
 
@@ -24,7 +24,7 @@ Strategy* MageActionFactory::createStrategy(const char* name)
         return new MageBoostStrategy(ai);
 
     if (!strcmp("pull", name))
-        return new MagePullStrategy(ai);
+        return new PullStrategy(ai, "shoot");
 
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)

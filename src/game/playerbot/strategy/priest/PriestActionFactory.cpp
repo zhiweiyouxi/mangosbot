@@ -4,6 +4,7 @@
 #include "PriestActionFactory.h"
 #include "HealPriestNonCombatStrategy.h"
 #include "DpsPriestStrategy.h"
+#include "../PullStrategy.h"
 
 using namespace ai;
 
@@ -20,6 +21,9 @@ Strategy* PriestActionFactory::createStrategy(const char* name)
 
     if (!strcmp("boost", name))
         return new PriestBoostStrategy(ai);
+
+    if (!strcmp("pull", name))
+        return new PullStrategy(ai, "shoot");
 
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)
