@@ -13,7 +13,29 @@ namespace ai
     public:
         IterateItemsVisitor() {}
 
-        virtual void Visit(Item* item) = NULL;
+        virtual bool Visit(Item* item) = NULL;
+    };
+
+    class FindItemVisitor : public IterateItemsVisitor {
+    public:
+        FindItemVisitor() : IterateItemsVisitor(), result(NULL) {}
+
+        virtual bool Visit(Item* item)
+        {
+            if (!Accept(item->GetProto()))
+                return true;
+
+            result = item;
+            return false;
+        }
+
+        Item* GetResult() { return result; }
+
+    protected:
+        virtual bool Accept(const ItemPrototype* proto) = NULL;
+
+    private:
+        Item* result;
     };
 
 	class AiInventoryManager : public AiManagerBase
@@ -23,21 +45,23 @@ namespace ai
         virtual ~AiInventoryManager();
 
 	public:
-		virtual void UseHealingPotion() { FindAndUse(isHealingPotion); }
-		virtual void UseManaPotion() { FindAndUse(isManaPotion); }
-		virtual void UsePanicPotion()  { FindAndUse(isPanicPotion); }
-		virtual void UseFood();
-		virtual void UseDrink();
-		virtual bool HasFood() { return FindUsableItem(isFood) != NULL; }
-		virtual bool HasDrink() { return FindUsableItem(isDrink) != NULL; }
-		virtual bool HasHealingPotion() { return FindUsableItem(isHealingPotion) != NULL; }
-		virtual bool HasManaPotion() { return FindUsableItem(isManaPotion) != NULL; }
-		virtual bool HasPanicPotion() { return FindUsableItem(isPanicPotion) != NULL; }
+		virtual void UseHealingPotion();
+        virtual bool HasHealingPotion();
+		
+        virtual void UseManaPotion();
+        virtual bool HasManaPotion();
+		
+        virtual void UsePanicPotion();
+        virtual bool HasPanicPotion();
+        
+        virtual void UseFood();
+        virtual bool HasFood();
+        
+        virtual void UseDrink();
+		virtual bool HasDrink();
+
 		virtual int GetItemCount(const char* name);
-		virtual bool FindAndUse(const char* item, uint8 ignore_time = 0)
-		{
-			return FindAndUse(isTheSameName, (const void*)item, ignore_time);
-		}
+		virtual void FindAndUse(const char* item, uint8 delay = 0);
 		
         virtual void ClearLoot() { lootManager->ClearLoot(); }
         virtual void AddLoot(uint64 guid) { lootManager->AddLoot(guid); }
@@ -47,15 +71,22 @@ namespace ai
         virtual void EquipItem(const char* link);
 		virtual void UseItem(const char* link);
 		virtual void Reward(const char* link);
+        
         virtual void Buy(const char* link);
+        
         virtual void Sell(string link);
         virtual void Sell(Item* item);
+        
         virtual void ListCount(const char* link);
-		virtual void ItemLocalization(std::string& itemName, const uint32 itemID);
+        virtual void ListQuestItems();
+		
+        virtual void ItemLocalization(std::string& itemName, const uint32 itemID);
 		virtual void extractItemIds(const string& text, list<uint32>& itemIds);
-		virtual void findItemsInInv(list<uint32>& itemIdSearchList, list<Item*>& foundItemList);
 		virtual void findItemsInEquip(std::list<uint32>& itemIdSearchList, std::list<Item*>& foundItemList);
-		virtual void ListQuestItems();
+
+        virtual void Trade(const char* text);
+        virtual void AcceptTrade();
+        virtual void BeginTrade();
 
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
@@ -65,20 +96,22 @@ namespace ai
         virtual void QueryItemUsage(ItemPrototype const *item);
 
 	private:
-		Item* FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, int *count=NULL);
-		static bool isHealingPotion(const ItemPrototype* pItemProto, const void* param);
-		static bool isManaPotion(const ItemPrototype* pItemProto, const void* param);
-		static bool isPanicPotion(const ItemPrototype* pItemProto, const void* param);
-		static bool isFood(const ItemPrototype* pItemProto, const void* param);
-		static bool isDrink(const ItemPrototype* pItemProto, const void* param);
-		static bool isTheSameName(const ItemPrototype* pItemProto, const void* param);
-		virtual bool FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param = NULL, uint8 ignore_time = 0);
+        void UseItem(FindItemVisitor* visitor, const uint32 delay = 0);
+        bool HasItem(FindItemVisitor* visitor);
 		void UseItem(Item& item);
-		void EquipItem(Item& item);
+		
+        void EquipItem(Item& item);
+        void EquipItem(FindItemVisitor* visitor);
+
+        void Sell(FindItemVisitor* visitor);
+
         void QueryItemsUsage(list<uint32> items);
         void QueryItemCount(ItemPrototype const * item);
         void IterateItems(IterateItemsVisitor* visitor);
 
+        bool TradeItem(const Item& item, int8 slot = -1);
+        bool TradeItem(FindItemVisitor *visitor, int8 slot = -1);
+  
 	private:
         LootManager *lootManager;
 	};

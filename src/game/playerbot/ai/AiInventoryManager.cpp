@@ -4,6 +4,270 @@
 using namespace ai;
 using namespace std;
 
+char * __cdecl strstri (
+                        const char * str1,
+                        const char * str2
+                        )
+{
+    char *cp = (char *) str1;
+    char *s1, *s2;
+
+    if ( !*str2 )
+        return((char *)str1);
+
+    while (*cp)
+    {
+        s1 = cp;
+        s2 = (char *) str2;
+
+        while ( *s1 && *s2 && !(tolower(*s1)-tolower(*s2)) )
+            s1++, s2++;
+
+        if (!*s2)
+            return(cp);
+
+        cp++;
+    }
+
+    return(NULL);
+}
+
+uint32 extractMoney(const string& text)
+{
+    // if user specified money in ##g##s##c format
+    string acum = "";
+    uint32 copper = 0;
+    for (uint8 i = 0; i < text.length(); i++)
+    {
+        if (text[i] == 'g')
+        {
+            copper += (atol(acum.c_str()) * 100 * 100);
+            acum = "";
+        }
+        else if (text[i] == 'c')
+        {
+            copper += atol(acum.c_str());
+            acum = "";
+        }
+        else if (text[i] == 's')
+        {
+            copper += (atol(acum.c_str()) * 100);
+            acum = "";
+        }
+        else if (text[i] == ' ')
+            break;
+        else if (text[i] >= 48 && text[i] <= 57)
+            acum += text[i];
+        else
+        {
+            copper = 0;
+            break;
+        }
+    }
+    return copper;
+}
+
+
+class FindUsableItemVisitor : public FindItemVisitor {
+public:
+    FindUsableItemVisitor(Player* bot) : FindItemVisitor() 
+    {
+        this->bot = bot;
+    }
+
+    virtual bool Visit(Item* item)
+    {
+        if (bot->CanUseItem(item->GetProto()))
+            return FindItemVisitor::Visit(item);
+
+        return true;
+    }
+
+private:
+    Player* bot;
+};
+
+
+class SellItemsVisitor : public IterateItemsVisitor
+{
+public:
+    SellItemsVisitor(AiInventoryManager* inventoryManager) : IterateItemsVisitor() 
+    {
+        this->inventoryManager = inventoryManager;
+    }
+
+    virtual bool Visit(Item* item)
+    {
+        inventoryManager->Sell(item);
+        return true;
+    }
+
+private:
+    AiInventoryManager* inventoryManager;
+};
+
+class SellGrayItemsVisitor : public SellItemsVisitor
+{
+public:
+    SellGrayItemsVisitor(AiInventoryManager* inventoryManager) : SellItemsVisitor(inventoryManager) {}
+
+    virtual bool Visit(Item* item)
+    {
+        if (item->GetProto()->Quality != ITEM_QUALITY_POOR)
+            return true;
+
+        return SellItemsVisitor::Visit(item);
+    }
+};
+
+
+class QueryItemCountVisitor : public IterateItemsVisitor 
+{
+public:
+    QueryItemCountVisitor(uint32 itemId) 
+    {
+        count = 0;
+        this->itemId = itemId;
+    }
+
+    virtual bool Visit(Item* item)
+    {
+        if (item->GetProto()->ItemId == itemId)
+            count += item->GetCount();
+
+        return true;
+    }
+
+    int GetCount() { return count; }
+
+protected:
+    int count;
+    uint32 itemId;
+};
+
+
+class QueryNamedItemCountVisitor : public QueryItemCountVisitor 
+{
+public:
+    QueryNamedItemCountVisitor(const char* name) : QueryItemCountVisitor(0)
+    {
+        this->name = name;
+    }
+
+    virtual bool Visit(Item* item)
+    {
+        const ItemPrototype* proto = item->GetProto();
+        if (proto && proto->Name1 && strstri(proto->Name1, name))
+            count += item->GetCount();
+
+        return true;
+    }
+
+private:
+    const char* name;
+};
+
+
+
+class FindPotionVisitor : public FindUsableItemVisitor {
+public:
+    FindPotionVisitor(Player* bot, uint32 spellId) : FindUsableItemVisitor(bot) 
+    {
+        this->spellId = spellId;
+    }
+
+    virtual bool Accept(const ItemPrototype* proto)
+    {
+        return proto->Class == ITEM_CLASS_CONSUMABLE && 
+            proto->SubClass == ITEM_SUBCLASS_POTION &&    
+            proto->Spells[0].SpellCategory == 4 && 
+            proto->Spells[0].SpellId == spellId;
+    }
+
+private:
+    uint32 spellId;
+};
+
+class FindFoodVisitor : public FindUsableItemVisitor {
+public:
+    FindFoodVisitor(Player* bot, uint32 spellCategory) : FindUsableItemVisitor(bot) 
+    {
+        this->spellCategory = spellCategory;
+    }
+
+    virtual bool Accept(const ItemPrototype* proto)
+    {
+        return proto->Class == ITEM_CLASS_CONSUMABLE && 
+            proto->SubClass == ITEM_SUBCLASS_FOOD && 
+            proto->Spells[0].SpellCategory == spellCategory;
+    }
+
+private:
+    uint32 spellCategory;
+};
+
+
+class FindUsableNamedItemVisitor : public FindUsableItemVisitor {
+public:
+    FindUsableNamedItemVisitor(Player* bot, const char* name) : FindUsableItemVisitor(bot) 
+    {
+        this->name = name;
+    }
+
+    virtual bool Accept(const ItemPrototype* proto)
+    {
+        return proto && proto->Name1 && strstri(proto->Name1, name);
+    }
+
+private:
+    const char* name;
+};
+
+class FindItemByIdVisitor : public FindItemVisitor {
+public:
+    FindItemByIdVisitor(uint32 id) : FindItemVisitor() 
+    {
+        this->id = id;
+    }
+
+    virtual bool Accept(const ItemPrototype* proto)
+    {
+        return proto->ItemId == id;
+    }
+
+private:
+    uint32 id;
+};
+
+class ListItemsVisitor : public IterateItemsVisitor
+{
+public:
+    ListItemsVisitor() : IterateItemsVisitor(), first(true) {}
+
+    virtual bool Visit(Item* item)
+    {
+        if (first) 
+            first = false;
+        else 
+            out << ", ";
+
+        const ItemPrototype *proto = item->GetProto();
+        out << " |cffffffff|Hitem:" << proto->ItemId
+            << ":0:0:0:0:0:0:0" << "|h[" << proto->Name1
+            << "]|h|r";
+        if (item->GetCount() > 1)
+            out << "x" << item->GetCount();
+
+        return true;
+    }
+    
+    ostringstream out;
+
+private:
+    bool first;
+};
+
+
 AiInventoryManager::AiInventoryManager(PlayerbotAI* ai, AiManagerRegistry* aiRegistry) : AiManagerBase(ai, aiRegistry)
 {
     lootManager = new LootManager(bot);
@@ -15,153 +279,53 @@ AiInventoryManager::~AiInventoryManager()
 }
 
 
-Item* AiInventoryManager::FindUsableItem(bool predicate(const ItemPrototype*, const void*), const void* param, int *count/*=NULL*/)
+void AiInventoryManager::IterateItems(IterateItemsVisitor* visitor)
 {
-    if (count) (*count) = 0;
-	Item* found = NULL;
+    int count = 0;
+    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
+    {
+        Item* pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+        if (!pItem)
+            continue;
 
-	// list out items in main backpack
-	for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-	{
-		Item* const pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-		if (pItem)
-		{
-			const ItemPrototype* const pItemProto = pItem->GetProto();
+        if (!visitor->Visit(pItem))
+            return;
+    }    
 
-			if (!pItemProto || !bot->CanUseItem(pItemProto))
-				continue;
+    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
+    {
+        const Bag* pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
+        if (!pBag)
+            continue;
 
-			if (predicate(pItemProto, param)) {
-				if (!found) 
-					found = pItem;
+        for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
+        {
+            Item* pItem = bot->GetItemByPos(bag, slot);
+            if (!pItem)
+                continue;
 
-				if (count) 
-					(*count)++;
-				else 
-					return found;
-			}
-		}
-	}
-	// list out items in other removable backpacks
-	for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-	{
-		const Bag* const pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-		if (pBag)
-		{
-			for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-			{
-				Item* const pItem = bot->GetItemByPos(bag, slot);
-				if (pItem)
-				{
-					const ItemPrototype* const pItemProto = pItem->GetProto();
-
-					if (!pItemProto || !bot->CanUseItem(pItemProto))
-						continue;
-
-					if (predicate(pItemProto, param)) {
-						if (!found) 
-							found = pItem;
-
-						if (count) 
-							(*count)++;
-						else 
-							return found;
-					}
-				}
-			}
-		}
-	}
-	return found;
+            if (!visitor->Visit(pItem))
+                return;
+        }
+    }
 }
 
 
-bool AiInventoryManager::FindAndUse(bool predicate(const ItemPrototype*, const void*), const void* param, uint8 ignore_time)
+void AiInventoryManager::UseItem(FindItemVisitor* visitor, const uint32 delay)
 {
-	Item* item = FindUsableItem(predicate, param);
-	if (item)
-	{
-		UseItem(*item);
-		if (ignore_time)
-			ai->SetNextCheckDelay(ignore_time);
-		return TRUE;
-	}
-	return FALSE;
+    IterateItems(visitor);
+    Item* item = visitor->GetResult();
+    if (!item) 
+        return;
+    
+    UseItem(*item);
+    if (delay) bot->GetPlayerbotAI()->SetNextCheckDelay(delay);
 }
 
-void AiInventoryManager::UseFood() 
+bool AiInventoryManager::HasItem(FindItemVisitor* visitor)
 {
-	FindAndUse(isFood, NULL, 30);
-}
-
-void AiInventoryManager::UseDrink() 
-{
-	FindAndUse(isDrink, NULL, 30);
-}
-
-
-bool AiInventoryManager::isPanicPotion(const ItemPrototype* pItemProto, const void* param)
-{
-	return FALSE; //(pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION;
-}
-
-bool AiInventoryManager::isHealingPotion(const ItemPrototype* pItemProto, const void* param)
-{
-	return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
-		pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 441;
-}
-
-bool AiInventoryManager::isManaPotion(const ItemPrototype* pItemProto, const void* param)
-{
-	return pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_POTION &&    
-		pItemProto->Spells[0].SpellCategory == 4 && pItemProto->Spells[0].SpellId == 438;
-}
-
-bool AiInventoryManager::isFood(const ItemPrototype* pItemProto, const void* param)
-{
-	return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
-		pItemProto->Spells[0].SpellCategory == 11);
-}
-
-bool AiInventoryManager::isDrink(const ItemPrototype* pItemProto, const void* param)
-{
-	return (pItemProto->Class == ITEM_CLASS_CONSUMABLE && pItemProto->SubClass == ITEM_SUBCLASS_FOOD && 
-		pItemProto->Spells[0].SpellCategory == 59);
-}
-
-
-char * __cdecl strstri (
-						const char * str1,
-						const char * str2
-						)
-{
-	char *cp = (char *) str1;
-	char *s1, *s2;
-
-	if ( !*str2 )
-		return((char *)str1);
-
-	while (*cp)
-	{
-		s1 = cp;
-		s2 = (char *) str2;
-
-		while ( *s1 && *s2 && !(tolower(*s1)-tolower(*s2)) )
-			s1++, s2++;
-
-		if (!*s2)
-			return(cp);
-
-		cp++;
-	}
-
-	return(NULL);
-
-}
-
-bool AiInventoryManager::isTheSameName(const ItemPrototype* pItemProto, const void* param)
-{
-	const char* name = (const char*)param;
-	return pItemProto && pItemProto->Name1 && strstri(pItemProto->Name1, name);
+    IterateItems(visitor);
+    return visitor->GetResult();
 }
 
 void AiInventoryManager::UseItem(Item& item)
@@ -196,13 +360,12 @@ void AiInventoryManager::UseItem(Item& item)
 
 int AiInventoryManager::GetItemCount(const char* name) 
 {
-    int count; 
-    if (!FindUsableItem(isTheSameName, (const void*)name, &count))
-        return 0;
-    return count; 
+    QueryNamedItemCountVisitor visitor(name);
+    IterateItems(&visitor);
+    return visitor.GetCount();
 }
 
-void AiInventoryManager::extractItemIds(const std::string& text, std::list<uint32>& itemIds)
+void AiInventoryManager::extractItemIds(const string& text, list<uint32>& itemIds)
 {
 	uint8 pos = 0;
 	while (true)
@@ -214,7 +377,7 @@ void AiInventoryManager::extractItemIds(const std::string& text, std::list<uint3
 		int endPos = text.find(':', pos);
 		if (endPos == -1)
 			break;
-		std::string idC = text.substr(pos, endPos - pos);
+		string idC = text.substr(pos, endPos - pos);
 		uint32 id = atol(idC.c_str());
 		pos = endPos;
 		if (id)
@@ -222,62 +385,14 @@ void AiInventoryManager::extractItemIds(const std::string& text, std::list<uint3
 	}
 }
 
-// TODO: rewrite
-void AiInventoryManager::findItemsInInv(list<uint32>& itemIdSearchList, list<Item*>& foundItemList)
-{
-
-	// look for items in main bag
-	for (uint8 slot = INVENTORY_SLOT_ITEM_START; itemIdSearchList.size() > 0 && slot < INVENTORY_SLOT_ITEM_END; ++slot)
-	{
-		Item* const pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-		if (!pItem)
-			continue;
-
-		for (std::list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
-		{
-			if (pItem->GetProto()->ItemId != *it)
-				continue;
-
-			foundItemList.push_back(pItem);
-			itemIdSearchList.erase(it);
-			break;
-		}
-	}
-
-	// for all for items in other bags
-	for (uint8 bag = INVENTORY_SLOT_BAG_START; itemIdSearchList.size() > 0 && bag < INVENTORY_SLOT_BAG_END; ++bag)
-	{
-		Bag* const pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-		if (!pBag)
-			continue;
-
-		for (uint8 slot = 0; itemIdSearchList.size() > 0 && slot < pBag->GetBagSize(); ++slot)
-		{
-			Item* const pItem = bot->GetItemByPos(bag, slot);
-			if (!pItem)
-				continue;
-
-			for (std::list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
-			{
-				if (pItem->GetProto()->ItemId != *it)
-					continue;
-
-				foundItemList.push_back(pItem);
-				itemIdSearchList.erase(it);
-				break;
-			}
-		}
-	}
-}
-
-void AiInventoryManager::findItemsInEquip(std::list<uint32>& itemIdSearchList, std::list<Item*>& foundItemList)
+void AiInventoryManager::findItemsInEquip(list<uint32>& itemIdSearchList, list<Item*>& foundItemList)
 {
 	for( uint8 slot=EQUIPMENT_SLOT_START; itemIdSearchList.size()>0 && slot<EQUIPMENT_SLOT_END; slot++ ) {
 		Item* const pItem = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
 		if( !pItem )
 			continue;
 
-		for (std::list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
+		for (list<uint32>::iterator it = itemIdSearchList.begin(); it != itemIdSearchList.end(); ++it)
 		{
 			if (pItem->GetProto()->ItemId != *it)
 				continue;
@@ -291,12 +406,17 @@ void AiInventoryManager::findItemsInEquip(std::list<uint32>& itemIdSearchList, s
 
 void AiInventoryManager::EquipItem(const char* link)
 {
-	std::list<uint32> itemIds;
-	std::list<Item*> itemList;
-	extractItemIds(string(link), itemIds);
-	findItemsInInv(itemIds, itemList);
-	for (std::list<Item*>::iterator it = itemList.begin(); it != itemList.end(); ++it)
-		EquipItem(**it);
+	list<uint32> ids; /* = */ extractItemIds(link, ids);
+    
+    for (list<uint32>::iterator i =ids.begin(); i != ids.end(); i++)
+        EquipItem(&FindItemByIdVisitor(*i));
+}
+
+void AiInventoryManager::EquipItem(FindItemVisitor* visitor)
+{
+    IterateItems(visitor);
+    Item *item = visitor->GetResult();
+    if (item) EquipItem(*item);
 }
 
 void AiInventoryManager::EquipItem(Item& item)
@@ -311,25 +431,22 @@ void AiInventoryManager::EquipItem(Item& item)
 
 void AiInventoryManager::UseItem(const char* link)
 {
-	std::list<uint32> itemIds;
-	std::list<Item*> itemList;
-	extractItemIds(string(link), itemIds);
-	findItemsInInv(itemIds, itemList);
-	for (std::list<Item*>::iterator it = itemList.begin(); it != itemList.end(); ++it)
-		UseItem(**it);
+    list<uint32> ids; /* = */ extractItemIds(link, ids);
+    for (list<uint32>::iterator i =ids.begin(); i != ids.end(); i++)
+        UseItem(&FindItemByIdVisitor(*i));
 }
 
-void AiInventoryManager::ItemLocalization(std::string& itemName, const uint32 itemID)
+void AiInventoryManager::ItemLocalization(string& itemName, const uint32 itemID)
 {
 	int loc = ai->GetMaster()->GetSession()->GetSessionDbLocaleIndex();
-	std::wstring wnamepart;
+	wstring wnamepart;
 
 	ItemLocale const *pItemInfo = sObjectMgr.GetItemLocale(itemID);
 	if (pItemInfo)
 	{
 		if (pItemInfo->Name.size() > loc && !pItemInfo->Name[loc].empty())
 		{
-			const std::string name = pItemInfo->Name[loc];
+			const string name = pItemInfo->Name[loc];
 			if (Utf8FitTo(name, wnamepart))
 				itemName = name.c_str();
 		}
@@ -356,7 +473,7 @@ void AiInventoryManager::Buy(const char* link)
 
 void AiInventoryManager::Reward(const char* link)
 {
-	std::list<uint32> itemIds;
+	list<uint32> itemIds;
 	extractItemIds(link, itemIds);
 	if (itemIds.empty()) 
 		return;
@@ -391,12 +508,12 @@ void AiInventoryManager::Reward(const char* link)
 				{
 					bot->RewardQuest(pQuest, rewardIdx, pNpc, false);
 
-					std::string questTitle  = pQuest->GetTitle();
+					string questTitle  = pQuest->GetTitle();
 					aiRegistry->GetQuestManager()->QuestLocalization(questTitle, questID);
-					std::string itemName = pRewardItem->Name1;
+					string itemName = pRewardItem->Name1;
 					ItemLocalization(itemName, pRewardItem->ItemId);
 
-					std::ostringstream out;
+					ostringstream out;
 					out << "|cffffffff|Hitem:" << pRewardItem->ItemId << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r rewarded";
 					aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
 					wasRewarded = true;
@@ -409,13 +526,13 @@ void AiInventoryManager::Reward(const char* link)
 void AiInventoryManager::ListQuestItems()
 {
 	map<uint32, uint32> questItems = aiRegistry->GetQuestManager()->GetQuestItems();
-	std::ostringstream out;
+	ostringstream out;
 
 	for( map<uint32, uint32>::iterator itr=questItems.begin(); itr!=questItems.end(); ++itr )
 	{
 		const ItemPrototype * pItemProto = sObjectMgr.GetItemPrototype( itr->first );
 
-		std::string itemName = pItemProto->Name1;
+		string itemName = pItemProto->Name1;
 		ItemLocalization(itemName, pItemProto->ItemId);
 
 		out << " " << itr->second << "x|cffffffff|Hitem:" << pItemProto->ItemId
@@ -427,53 +544,24 @@ void AiInventoryManager::ListQuestItems()
 	aiRegistry->GetSocialManager()->TellMaster( out.str().c_str() );
 }
 
-class SellItemsVisitor : public IterateItemsVisitor
-{
-public:
-    SellItemsVisitor(AiInventoryManager* inventoryManager) : IterateItemsVisitor() 
-    {
-        this->inventoryManager = inventoryManager;
-    }
-
-    virtual void Visit(Item* item)
-    {
-        inventoryManager->Sell(item);
-    }
-
-private:
-    AiInventoryManager* inventoryManager;
-};
-
-class SellGrayItemsVisitor : public SellItemsVisitor
-{
-public:
-    SellGrayItemsVisitor(AiInventoryManager* inventoryManager) : SellItemsVisitor(inventoryManager) {}
-
-    virtual void Visit(Item* item)
-    {
-        if (item->GetProto()->Quality != ITEM_QUALITY_POOR)
-            return;
-
-        SellItemsVisitor::Visit(item);
-    }
-};
-
 void AiInventoryManager::Sell(string link) 
 {
-    list<uint32> ids;
-    extractItemIds(link, ids);
-    
-    list<Item*> items;
-    findItemsInInv(ids, items);
-
-    SellItemsVisitor visitor(this);
-    for (list<Item*>::iterator i = items.begin(); i != items.end(); i++)
-        visitor.Visit(*i);
-
     if (link == "gray" || link == "*")
     {
         IterateItems(&SellGrayItemsVisitor(this));
+        return;
     }
+
+    list<uint32> ids; /* = */ extractItemIds(link, ids);
+    for (list<uint32>::iterator i =ids.begin(); i != ids.end(); i++)
+        Sell(&FindItemByIdVisitor(*i));
+}
+
+void AiInventoryManager::Sell(FindItemVisitor* visitor)
+{
+    IterateItems(visitor);
+    Item* item = visitor->GetResult();
+    if (item) Sell(item);
 }
 
 void AiInventoryManager::Sell(Item* item)
@@ -495,7 +583,11 @@ void AiInventoryManager::Sell(Item* item)
 
 void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 {
-	if (text == "report")
+    if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
+    {
+        Trade(text.c_str());
+    }
+	else if (text == "report")
 	{
 		ListQuestItems();
 	}
@@ -532,8 +624,30 @@ void AiInventoryManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 	switch (packet.GetOpcode())
 	{
 	case SMSG_INVENTORY_CHANGE_FAILURE:
-		aiRegistry->GetSocialManager()->TellMaster("I can't use that.");
-		break;
+        {
+		    aiRegistry->GetSocialManager()->TellMaster("I can't use that.");
+		    return;
+        }
+    case SMSG_TRADE_STATUS:
+        {
+            if (bot->GetTrader() == NULL)
+                break;
+
+            WorldPacket p(packet);
+            uint32 status;
+            p >> status;
+            p.clear();
+
+            //4 == TRADE_STATUS_TRADE_ACCEPT
+            if (status == 4)
+                AcceptTrade();
+
+            //1 == TRADE_STATUS_BEGIN_TRADE
+            else if (status == 1)
+                BeginTrade();
+
+            return;
+        }
     }
 }
 
@@ -587,7 +701,7 @@ void AiInventoryManager::QueryItemUsage(ItemPrototype const *item)
 
     if (equip)
     {
-        std::ostringstream out;
+        ostringstream out;
         out << "Replace +";
         out << (item->ItemLevel - oldItem->ItemLevel);
         out << " lvl";
@@ -609,53 +723,6 @@ void AiInventoryManager::Query(const string& text)
     list<uint32> items; /* = */ extractItemIds(text, items);
     QueryItemsUsage(items);
 }
-
-void AiInventoryManager::IterateItems(IterateItemsVisitor* visitor)
-{
-    int count = 0;
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (pItem)
-            visitor->Visit(pItem);
-    }    
-
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (pBag)
-        {
-            for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-            {
-                Item* pItem = bot->GetItemByPos(bag, slot);
-                if (pItem)
-                    visitor->Visit(pItem);
-            }
-        }
-    }
-}
-
-class QueryItemCountVisitor : public IterateItemsVisitor 
-{
-public:
-    QueryItemCountVisitor(uint32 itemId) 
-    {
-        count = 0;
-        this->itemId = itemId;
-    }
-
-    virtual void Visit(Item* item)
-    {
-        if (item->GetProto()->ItemId == itemId)
-            count += item->GetCount();
-    }
-
-    int GetCount() { return count; }
-
-private:
-    int count;
-    uint32 itemId;
-};
 
 void AiInventoryManager::QueryItemCount(ItemPrototype const * item) 
 {
@@ -681,3 +748,141 @@ void AiInventoryManager::ListCount(const char* link)
     }
 
 }
+
+
+void AiInventoryManager::UseHealingPotion() 
+{
+    UseItem(&FindPotionVisitor(bot, 441));
+}
+
+bool AiInventoryManager::HasHealingPotion() 
+{
+    return HasItem(&FindPotionVisitor(bot, 441));
+}
+
+
+void AiInventoryManager::UseManaPotion() 
+{
+    UseItem(&FindPotionVisitor(bot, 438));
+}
+
+bool AiInventoryManager::HasManaPotion() 
+{
+    return HasItem(&FindPotionVisitor(bot, 438));
+}
+
+
+void AiInventoryManager::UsePanicPotion() 
+{
+}
+
+bool AiInventoryManager::HasPanicPotion() 
+{
+    return false;
+}
+
+
+void AiInventoryManager::UseFood() 
+{
+    UseItem(&FindFoodVisitor(bot, 11), 30);
+}
+
+bool AiInventoryManager::HasFood() 
+{
+    return HasItem(&FindFoodVisitor(bot, 11));
+}
+
+
+void AiInventoryManager::UseDrink() 
+{
+    UseItem(&FindFoodVisitor(bot, 59), 30);
+}
+
+bool AiInventoryManager::HasDrink() 
+{
+    return HasItem(&FindFoodVisitor(bot, 59));
+}
+
+void AiInventoryManager::FindAndUse(const char* item, uint8 delay)
+{
+    UseItem(&FindUsableNamedItemVisitor(bot, item), delay);
+}
+
+
+
+
+
+
+void AiInventoryManager::AcceptTrade()
+{
+    WorldPacket p;
+    bot->GetSession()->HandleAcceptTradeOpcode(p);
+}
+
+void AiInventoryManager::BeginTrade()
+{
+    WorldPacket p;
+    bot->GetSession()->HandleBeginTradeOpcode(p);
+
+    aiRegistry->GetStatsManager()->ListStats();
+
+    ListItemsVisitor visitor;
+    IterateItems(&visitor);
+    aiRegistry->GetSocialManager()->TellMaster(visitor.out.str().c_str());
+}
+
+
+
+void AiInventoryManager::Trade(const char* text)
+{
+    uint32 copper = extractMoney(text);
+    if (copper > 0)
+    {
+        WorldPacket* const packet = new WorldPacket(CMSG_SET_TRADE_GOLD, 4);
+        *packet << copper;
+        bot->GetSession()->QueuePacket(packet);
+    }
+
+    int8 slot = !strncmp(text, "nt ", 3) ? TRADE_SLOT_NONTRADED : -1;
+
+    list<uint32> ids; /* = */ extractItemIds(text, ids);
+    for (list<uint32>::iterator i = ids.begin(); i != ids.end(); i++)
+        TradeItem(&FindItemByIdVisitor(*i), slot);
+}
+
+bool AiInventoryManager::TradeItem(FindItemVisitor *visitor, int8 slot)
+{
+    IterateItems(visitor);
+    Item* item = visitor->GetResult();
+    if (item) return TradeItem(*item, slot);
+    return false;
+}
+
+bool AiInventoryManager::TradeItem(const Item& item, int8 slot)
+{
+    if (!bot->GetTrader() || item.IsInTrade() || (!item.CanBeTraded() && slot!=TRADE_SLOT_NONTRADED) )
+        return false;
+
+    int8 tradeSlot = -1;
+
+    if( (slot>=0 && slot<TRADE_SLOT_COUNT) && bot->GetItemPosByTradeSlot(slot)==NULL_SLOT )
+        tradeSlot = slot;
+    else
+    {
+        for( uint8 i=0; i<TRADE_SLOT_TRADED_COUNT && tradeSlot==-1; i++ )
+        {
+            if( bot->GetItemPosByTradeSlot(i) == NULL_SLOT )
+                tradeSlot = i;
+        }
+    }
+
+    if( tradeSlot == -1 ) return false;
+
+    WorldPacket* const packet = new WorldPacket(CMSG_SET_TRADE_ITEM, 3);
+    *packet << (uint8) tradeSlot << (uint8) item.GetBagSlot()
+        << (uint8) item.GetSlot();
+    bot->GetSession()->QueuePacket(packet);
+    return true;
+}
+
+
