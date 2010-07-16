@@ -108,7 +108,7 @@ bool Engine::DoNextAction(Unit* unit, int depth)
                         continue;
                     }
 
-                    sLog.outBasic("A:%s", actionNode->getName());
+                    sLog.outDetail("A:%s", actionNode->getName());
 
                     if (actionExecutionListeners.ActionExecuted(actionNode->getAction()))
                         actionExecuted = actionNode->Execute();
@@ -121,17 +121,17 @@ bool Engine::DoNextAction(Unit* unit, int depth)
                     }
                     else {
                         MultiplyAndPush(actionNode->getAlternatives(), relevance);
-                        sLog.outBasic("NOT EXECUTED:%s", actionNode->getName());
+                        sLog.outDetail("NOT EXECUTED:%s", actionNode->getName());
                     }
                 }
                 else {
                     MultiplyAndPush(actionNode->getAlternatives(), relevance);
-                    sLog.outBasic("IMPOSSIBLE:%s", actionNode->getName());
+                    sLog.outDetail("IMPOSSIBLE:%s", actionNode->getName());
                 }
             }
             else {
                 lastRelevance = relevance;
-                sLog.outBasic("USELESS:%s", actionNode->getName());
+                sLog.outDetail("USELESS:%s", actionNode->getName());
             }
             delete actionNode;
         }
@@ -146,7 +146,7 @@ bool Engine::DoNextAction(Unit* unit, int depth)
     }
 
     if (time(0) - currentTime > 1) {
-        sLog.outBasic("too long execution");
+        sLog.outDetail("too long execution");
     }
 
     return actionExecuted;

@@ -13,3 +13,13 @@ void ChangeCombatStrategyAction::Execute()
 {
     ai->GetStrategyManager()->ChangeCombatStrategy(name.c_str());
 }
+
+void FollowAction::Execute()
+{
+    ai->GetMoveManager()->Follow(ai->GetTargetManager()->GetMaster());
+}
+
+void StayAction::Execute()
+{
+    ai->GetMoveManager()->Stay();
+}

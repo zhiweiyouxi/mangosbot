@@ -25,18 +25,13 @@ namespace ai
     class FollowAction : public Action {
     public:
         FollowAction(AiManagerRegistry* const ai) : Action(ai, "follow") {}
-        virtual void Execute() 
-		{
-			ai->GetMoveManager()->Follow(ai->GetTargetManager()->GetMaster());
-        }
+        virtual void Execute();
     };
 
     class StayAction : public Action {
     public:
         StayAction(AiManagerRegistry* const ai) : Action(ai, "stay") {}
-        virtual void Execute() {
-            ai->GetMoveManager()->Stay();
-        }
+        virtual void Execute();
     };
 
     class GoAwayAction : public Action {
