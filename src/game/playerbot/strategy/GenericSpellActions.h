@@ -204,9 +204,11 @@ namespace ai
 
     //---------------------------------------------------------------------------------------------------------------------
 
-    BEGIN_RANGED_SPELL_ACTION(CastShootAction, "shoot")
-    END_SPELL_ACTION()
-
+    class CastShootAction : public CastSpellAction
+    {
+    public:
+        CastShootAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "shoot") {}
+    };
 
 	class CastLifeBloodAction : public CastHealingSpellAction
 	{

@@ -5,6 +5,7 @@
 #include "GenericWarriorNonCombatStrategy.h"
 #include "TankWarriorStrategy.h"
 #include "DpsWarriorStrategy.h"
+#include "../PullStrategy.h"
 
 using namespace ai;
 
@@ -21,6 +22,9 @@ Strategy* WarriorActionFactory::createStrategy(const char* name)
 
     if (!strcmp("boost", name))
         return new WarriorBoostStrategy(ai);
+
+    if (!strcmp("pull", name))
+        return new PullStrategy(ai, "shoot");
 
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)

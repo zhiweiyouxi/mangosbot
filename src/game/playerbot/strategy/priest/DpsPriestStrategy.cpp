@@ -86,13 +86,6 @@ ActionNode* DpsPriestStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("shoot"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("shoot"), NULL));
     }
-    else if (!strcmp("shoot", name)) 
-    {
-        return new ActionNode (new CastShootAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
     else return NULL;
 }
 

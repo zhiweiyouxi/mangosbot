@@ -4,6 +4,7 @@
 #include "RogueActionFactory.h"
 #include "DpsRogueStrategy.h"
 #include "GenericRogueNonCombatStrategy.h"
+#include "../PullStrategy.h"
 
 using namespace ai;
 
@@ -15,6 +16,9 @@ Strategy* RogueActionFactory::createStrategy(const char* name)
 
     if (!strcmp("nc", name))
         return new GenericRogueNonCombatStrategy(ai);
+
+    if (!strcmp("pull", name))
+        return new PullStrategy(ai, "shoot");
 
     return ActionFactory::createStrategy(name);
 }

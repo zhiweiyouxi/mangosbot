@@ -27,13 +27,6 @@ ActionNode* HealPriestStrategy::createAction(const char* name)
     if (node)
         return node;
 
-    if (!strcmp("shoot", name)) 
-    {
-        return new ActionNode (new CastShootAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
     else return NULL;
 }
 

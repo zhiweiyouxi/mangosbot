@@ -107,13 +107,6 @@ ActionNode* GenericWarlockStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("shoot", name)) 
-    {
-        return new ActionNode (new CastShootAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
     else return NULL;
 }
 
