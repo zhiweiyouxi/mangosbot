@@ -249,11 +249,8 @@ void Engine::addStrategies(const char* first, ...)
 	va_end(vl);
 }
 
-void Engine::removeStrategy(const char* name)
+bool Engine::removeStrategy(const char* name)
 {
-    if (strategies.empty())
-        return;
-
     for (std::list<Strategy*>::iterator i = strategies.begin(); i != strategies.end(); i++)
     {
         Strategy* strategy = *i;
@@ -261,11 +258,18 @@ void Engine::removeStrategy(const char* name)
         {
             strategies.remove(strategy);
             delete strategy;
-            break;
+            Init();
+            return true;
         }
     }
 
-    Init();
+    return false;
+}
+
+void Engine::toggleStrategy(const char* name)
+{
+    if (!removeStrategy(name)) 
+        addStrategy(name);
 }
 
 void Engine::ProcessTriggers()

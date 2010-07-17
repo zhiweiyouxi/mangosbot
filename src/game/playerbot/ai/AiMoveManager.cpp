@@ -23,6 +23,12 @@ void AiMoveManager::MoveTo(Unit* target, float distance)
     if (!IsMovingAllowed(target))
         return;
 
+    if (distance <= 10.0f)
+    {
+        Follow(target, distance);
+        return;
+    }
+
     float bx = bot->GetPositionX();
     float by = bot->GetPositionY();
     float bz = bot->GetPositionZ();
@@ -174,6 +180,8 @@ void AiMoveManager::Attack(Unit* target)
 	if (bot->getStandState() != UNIT_STAND_STATE_STAND)
 		bot->SetStandState(UNIT_STAND_STATE_STAND);
 
+    if (aiRegistry->GetStatsManager()->IsMounted())
+        aiRegistry->GetSpellManager()->Unmount();
 
 	if (bot->IsFriendlyTo(target))
 	{
@@ -182,7 +190,7 @@ void AiMoveManager::Attack(Unit* target)
 	}
 	if (!bot->IsWithinLOSInMap(target))
 	{
-		aiRegistry->GetSocialManager()->TellMaster("Target is not in my sight, maybe later?");
+		aiRegistry->GetSocialManager()->TellMaster("Target is not in my sight");
 		return;
 	}
 
@@ -442,5 +450,8 @@ bool AiMoveManager::IsBehind(Unit* target)
 void AiMoveManager::WaitForReach(float distance)
 {
     float delay = ceil(distance / bot->GetSpeed(MOVE_RUN));
+    if (delay > GLOBAL_COOLDOWN)
+        delay = GLOBAL_COOLDOWN;
+
     bot->GetPlayerbotAI()->SetNextCheckDelay((uint32)delay);
 }
