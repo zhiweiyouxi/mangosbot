@@ -310,6 +310,18 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                     guild->BroadcastToGuild(this, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
             }
 
+            // Playerbot mod: broadcast message to bot members
+            PlayerbotMgr *mgr = GetPlayer()->GetPlayerbotMgr();
+            if (mgr)
+            {
+                for (PlayerBotMap::const_iterator it = mgr->GetPlayerBotsBegin(); it != mgr->GetPlayerBotsEnd(); ++it)
+                {
+                    Player* const bot = it->second;
+                    if (bot->GetGuildId() == GetPlayer()->GetGuildId())
+                        bot->GetPlayerbotAI()->HandleCommand(msg, *GetPlayer());
+                }
+            }
+            // END Playerbot mod
             break;
         }
         case CHAT_MSG_OFFICER:
