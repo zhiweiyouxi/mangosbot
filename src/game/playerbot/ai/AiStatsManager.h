@@ -26,6 +26,7 @@ namespace ai
 		virtual bool HasMana(Unit* target);
 		virtual bool IsDead(Unit* target);
 		virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE);
+        virtual int GetAttackerCount(Unit* target, float range = 15.0f);
 		virtual int GetMyAttackerCount();
         virtual float GetBalancePercent();
 		virtual bool HasAggro(Unit* target);	

@@ -37,6 +37,7 @@ namespace ai
 		virtual bool IsDead(Unit* target);
 		virtual uint8 GetComboPoints(Player* target);
 		virtual int GetAttackerCount(float distance = BOT_REACT_DISTANCE) { return attackerCount; }
+        virtual int GetAttackerCount(Unit* target, float distance = 10.0f) {return attackerCount; }
 		virtual int GetMyAttackerCount() {return myAttackerCount; }
 		virtual float GetBalancePercent() { return balancePercent; }
 		virtual bool HasAggro(Unit* target) { return aggro; }

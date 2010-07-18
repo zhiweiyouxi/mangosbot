@@ -17,7 +17,7 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	CombatStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
-        new AndTrigger(ai, new RageAvailable(ai, 40), new AttackerCountTrigger(ai, 2)),
+        new AoeTrigger(ai, 2),
         NextAction::array(0, new NextAction("cleave", 21.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
@@ -37,11 +37,11 @@ void GenericWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("rend", 1.3f), NULL)));
     
     triggers.push_back(new TriggerNode(
-        new AttackerCountTrigger(ai, 2), 
+        new AoeTrigger(ai, 2), 
         NextAction::array(0, new NextAction("demoralizing shout", 23.0f), new NextAction("thunder clap", 23.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new AttackerCountTrigger(ai, 3), 
+        new AoeTrigger(ai, 3), 
         NextAction::array(0, new NextAction("challenging shout", 23.0f), NULL)));
 
     triggers.push_back(new TriggerNode(

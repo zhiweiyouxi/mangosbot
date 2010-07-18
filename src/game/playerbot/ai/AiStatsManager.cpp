@@ -191,6 +191,28 @@ int AiStatsManager::GetAttackerCount(float distance)
     return ai->GetGroupStatsManager()->GetAttackerCount();
 }
 
+int AiStatsManager::GetAttackerCount(Unit* target, float range)
+{
+    if (!target) 
+        return 0;
+
+    int count = 1;
+
+    AttackerMap attackers = ai->GetGroupStatsManager()->GetAttackers();
+    for (AttackerMapIterator i = attackers.begin(); i != attackers.end(); i++)
+    {
+        Unit* unit = i->first;
+        if (unit == target)
+            continue;
+
+        float distance = target->GetDistance(unit);
+        if (distance <= range)
+            count++;
+    }
+    
+    return count;
+}
+
 float AiStatsManager::GetBalancePercent()
 {
     return ai->GetGroupStatsManager()->GetBalancePercent();

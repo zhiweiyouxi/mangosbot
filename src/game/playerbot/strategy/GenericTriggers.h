@@ -125,6 +125,21 @@ namespace ai
         virtual const char* getName() { return "my attacker count"; }
     };    
 
+    class AoeTrigger : public AttackerCountTrigger
+    {
+    public:
+        AoeTrigger(AiManagerRegistry* const ai, int amount = 3, float range = 15.0f) : AttackerCountTrigger(ai, amount) 
+        {
+            this->range = range;
+        }
+    public: 
+        virtual bool IsActive();
+        virtual const char* getName() { return "aoe"; }
+
+    private:
+        float range;
+    };    
+
     class BuffTrigger : public SpellTrigger
     {
     public:

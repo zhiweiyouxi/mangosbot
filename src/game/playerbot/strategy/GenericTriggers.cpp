@@ -65,6 +65,11 @@ bool MyAttackerCountTrigger::IsActive()
     return statsManager->GetMyAttackerCount() >= amount;
 }
 
+bool AoeTrigger::IsActive()
+{
+    return statsManager->GetAttackerCount(targetManager->GetCurrentTarget(), range) >= amount;
+}
+
 Unit* DebuffTrigger::GetTarget()
 {
 	return targetManager->GetCurrentTarget();

@@ -51,7 +51,7 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 		NextAction::array(0, new NextAction("hammer of wrath", 40.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new AttackerCountTrigger(ai, 3), 
+        new AoeTrigger(ai, 3), 
         NextAction::array(0, new NextAction("hammer of the righteous", 26.0f), new NextAction("holy wrath", 25.0f), new NextAction("avenger's shield", 24.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
