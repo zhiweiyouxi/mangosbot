@@ -194,12 +194,13 @@ bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
 	if (!spellInfo)
 		return true; // there can be known alternatives
 
-	if (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
+    // TODO: this prevents shoot and auto-shot from changing its target
+	/*if (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_AUTOREPEAT_FLAG)
 	{
 		Spell* spell = bot->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL);
 		if (spell && spell->m_spellInfo->Id == spellid && spell->IsAutoRepeat())
 			return false;
-	}
+	}*/
 	
 	if (spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_1 || 
 		spellInfo->Attributes & SPELL_ATTR_ON_NEXT_SWING_2)

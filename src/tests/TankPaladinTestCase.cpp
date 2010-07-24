@@ -108,12 +108,11 @@ protected:
     void stopEnemyMove()
     {
 		tickWithTargetIsMoving();
-		tickWithTargetIsMoving();
         
 		tick(); 
 		tick(); 
 
-        assertActions(">T:hammer of justice>T:judgement of justice>melee>T:judgement of light");
+        assertActions(">T:hammer of justice>melee>T:judgement of light");
     }
 
 	void interruptSpells() 

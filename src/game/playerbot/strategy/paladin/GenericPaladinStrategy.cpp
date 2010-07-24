@@ -183,7 +183,7 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastHammerOfJusticeAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("judgement of justice"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("flash of light", name)) 
