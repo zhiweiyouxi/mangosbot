@@ -37,8 +37,12 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 {
     if (!AHBSeller)
         return;
-    AuctionHouseEntry const* ahEntry = sAuctionMgr.GetAuctionHouseEntry(config->GetAHFID());
-    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(config->GetAHFID());
+
+    AuctionHouseEntry const* ahEntry = sAuctionHouseStore.LookupEntry(config->GetAHID());
+    if(!ahEntry)
+        return;
+
+    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
     uint32 items = 0;
     uint32 minItems = config->GetMinItems();
     uint32 maxItems = config->GetMaxItems();
@@ -397,7 +401,6 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 
         AuctionEntry* auctionEntry = new AuctionEntry;
         auctionEntry->Id = sObjectMgr.GenerateAuctionID();
-        auctionEntry->auctioneer = AuctioneerGUID;
         auctionEntry->item_guidlow = item->GetGUIDLow();
         auctionEntry->item_template = item->GetEntry();
         auctionEntry->owner = AHBplayer->GetGUIDLow();
@@ -422,7 +425,11 @@ void AuctionHouseBot::addNewAuctionBuyerBotBid(Player *AHBplayer, AHBConfig *con
         return;
 
     // Fetches content of selected AH
-    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(config->GetAHFID());
+    AuctionHouseEntry const* ahEntry = sAuctionHouseStore.LookupEntry(config->GetAHID());
+    if(!ahEntry)
+        return;
+
+    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
     vector<uint32> possibleBids;
 
     for (AuctionHouseObject::AuctionEntryMap::const_iterator itr = auctionHouse->GetAuctionsBegin();itr != auctionHouse->GetAuctionsEnd();++itr)
@@ -1040,7 +1047,7 @@ void AuctionHouseBot::Initialize()
         sLog.outString("loaded %d yellow items", yellowItemsBin.size());
     }
     sLog.outString("AuctionHouseBot [AHBot-004-HotFix-08] is now loaded");
-    sLog.outString("AuctionHouseBot updated by Naicisum (original by ChrisK and Paradox)");
+    sLog.outString("AuctionHouseBot updated by blueboy (original by Naicisum, ChrisK and Paradox)");
     sLog.outString("AuctionHouseBot now includes AHBuyer by Kerbe and Paradox");
 }
 
@@ -1090,7 +1097,12 @@ void AuctionHouseBot::Commands(uint32 command, uint32 ahMapID, uint32 col, char*
     {
     case 0:     //ahexpire
         {
-            AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(config->GetAHFID());
+
+            AuctionHouseEntry const* ahEntry = sAuctionHouseStore.LookupEntry(config->GetAHID());
+            if(!ahEntry)
+                return;
+            
+            AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
 
             AuctionHouseObject::AuctionEntryMap::iterator itr;
             itr = auctionHouse->GetAuctionsBegin();
