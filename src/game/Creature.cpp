@@ -74,7 +74,7 @@ bool VendorItemData::RemoveItem( uint32 item_id )
     return found;
 }
 
-VendorItem const* VendorItemData::FindItemCostPair(uint32 item_id, int32 extendedCost) const
+VendorItem const* VendorItemData::FindItemCostPair(uint32 item_id, uint32 extendedCost) const
 {
     for(VendorItemList::const_iterator i = m_items.begin(); i != m_items.end(); ++i )
         if((*i)->item == item_id && (*i)->ExtendedCost == extendedCost)
@@ -117,7 +117,7 @@ m_subtype(subtype), m_defaultMovementType(IDLE_MOTION_TYPE), m_DBTableGuid(0), m
 m_AlreadyCallAssistance(false), m_AlreadySearchedAssistance(false),
 m_regenHealth(true), m_AI_locked(false), m_isDeadByDefault(false), m_needNotify(false),
 m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL),
-m_creatureInfo(NULL), m_isActiveObject(false), m_splineFlags(SPLINEFLAG_WALKMODE)
+m_creatureInfo(NULL), m_splineFlags(SPLINEFLAG_WALKMODE)
 {
     m_regenTimer = 200;
     m_valuesCount = UNIT_END;
@@ -221,6 +221,8 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
     SetEntry(Entry);                                        // normal entry always
     m_creatureInfo = cinfo;                                 // map mode related always
 
+    SetObjectScale(cinfo->scale);
+
     // equal to player Race field, but creature does not have race
     SetByteValue(UNIT_FIELD_BYTES_0, 0, 0);
 
@@ -245,22 +247,23 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
 
     SetDisplayId(display_id);
     SetNativeDisplayId(display_id);
+
     SetByteValue(UNIT_FIELD_BYTES_0, 2, minfo->gender);
 
     // Load creature equipment
-    if(!data || data->equipmentId == 0)
-    {                                                       // use default from the template
-        LoadEquipment(cinfo->equipmentId);
+    if (!data || data->equipmentId == 0)
+    {
+        if (cinfo->equipmentId == 0)
+            LoadEquipment(normalInfo->equipmentId);         // use default from normal template if diff does not have any
+        else
+            LoadEquipment(cinfo->equipmentId);              // else use from diff template
     }
-    else if(data && data->equipmentId != -1)
+    else if (data && data->equipmentId != -1)
     {                                                       // override, -1 means no equipment
         LoadEquipment(data->equipmentId);
     }
 
     SetName(normalInfo->Name);                              // at normal entry always
-
-    SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, minfo->bounding_radius);
-    SetFloatValue(UNIT_FIELD_COMBATREACH, minfo->combat_reach);
 
     SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 
@@ -268,8 +271,6 @@ bool Creature::InitEntry(uint32 Entry, uint32 team, const CreatureData *data )
     SetSpeedRate(MOVE_RUN,  cinfo->speed_run);
     SetSpeedRate(MOVE_SWIM, 1.0f);                          // using 1.0 rate
     SetSpeedRate(MOVE_FLIGHT, 1.0f);                        // using 1.0 rate
-
-    SetFloatValue(OBJECT_FIELD_SCALE_X, cinfo->scale);
 
     // checked at loading
     m_defaultMovementType = MovementGeneratorType(cinfo->MovementType);
@@ -786,29 +787,6 @@ bool Creature::isCanTrainingAndResetTalentsOf(Player* pPlayer) const
     return pPlayer->getLevel() >= 10
         && GetCreatureInfo()->trainer_type == TRAINER_TYPE_CLASS
         && pPlayer->getClass() == GetCreatureInfo()->trainer_class;
-}
-
-void Creature::AI_SendMoveToPacket(float x, float y, float z, uint32 time, SplineFlags flags, SplineType type)
-{
-    /*    uint32 timeElap = getMSTime();
-        if ((timeElap - m_startMove) < m_moveTime)
-        {
-            oX = (dX - oX) * ( (timeElap - m_startMove) / m_moveTime );
-            oY = (dY - oY) * ( (timeElap - m_startMove) / m_moveTime );
-        }
-        else
-        {
-            oX = dX;
-            oY = dY;
-        }
-
-        dX = x;
-        dY = y;
-        m_orientation = atan2((oY - dY), (oX - dX));
-
-        m_startMove = getMSTime();
-        m_moveTime = time;*/
-    SendMonsterMove(x, y, z, type, flags, time);
 }
 
 void Creature::PrepareBodyLootState()
@@ -1397,8 +1375,8 @@ bool Creature::FallGround()
     if (getDeathState() == DEAD_FALLING)
         return false;
 
-    // Let's do with no vmap because no way to get far distance with vmap high call
-    float tz = GetMap()->GetHeight(GetPositionX(), GetPositionY(), GetPositionZ(), false);
+    // use larger distance for vmap height search than in most other cases
+    float tz = GetMap()->GetHeight(GetPositionX(), GetPositionY(), GetPositionZ(), true, MAX_FALL_DISTANCE);
 
     // Abort too if the ground is very near
     if (fabs(GetPositionZ() - tz) < 0.1f)
@@ -1836,9 +1814,28 @@ bool Creature::LoadCreaturesAddon(bool reload)
                 continue;
             }
 
-            Aura* AdditionalAura = CreateAura(AdditionalSpellInfo, cAura->effect_idx, NULL, this, this, 0);
-            AddAura(AdditionalAura);
-            DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Spell: %u with Aura %u added to creature (GUIDLow: %u Entry: %u )", cAura->spell_id, AdditionalSpellInfo->EffectApplyAuraName[EFFECT_INDEX_0],GetGUIDLow(),GetEntry());
+            SpellAuraHolder *holder = GetSpellAuraHolder(cAura->spell_id, GetGUID());
+
+            bool addedToExisting = true;
+            if (!holder)
+            {
+                holder = CreateSpellAuraHolder(AdditionalSpellInfo, this, this);
+                addedToExisting = false;
+            }
+            Aura* AdditionalAura = CreateAura(AdditionalSpellInfo, cAura->effect_idx, NULL, holder, this, this, 0);
+            holder->AddAura(AdditionalAura, cAura->effect_idx);
+
+            if (addedToExisting)
+            {
+                AddAuraToModList(AdditionalAura);
+                holder->SetInUse(true);
+                AdditionalAura->ApplyModifier(true,true);
+                holder->SetInUse(false);
+            }
+            else
+                AddSpellAuraHolder(holder);
+
+            DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Spell: %u - Aura %u added to creature (GUIDLow: %u Entry: %u )", cAura->spell_id, AdditionalSpellInfo->EffectApplyAuraName[EFFECT_INDEX_0],GetGUIDLow(),GetEntry());
         }
     }
     return true;
@@ -2034,8 +2031,6 @@ void Creature::AllLootRemovedFromCorpse()
     if (lootForBody && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE))
     {
         uint32 nDeathTimer;
-
-        CreatureInfo const *cinfo = GetCreatureInfo();
 
         // corpse was not skinned -> apply corpse looted timer
         if (!lootForSkin)

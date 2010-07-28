@@ -34,6 +34,7 @@
 
 class Player;
 class Spell;
+struct CreatureInfo;
 struct SpellModifier;
 
 // only used in code
@@ -103,6 +104,7 @@ enum SpellSpecific
     SPELL_FOOD              = 20,
     SPELL_DRINK             = 21,
     SPELL_FOOD_AND_DRINK    = 22,
+    SPELL_UA_IMMOLATE       = 23,                           // Unstable Affliction and Immolate
 };
 
 SpellSpecific GetSpellSpecific(uint32 spellId);
@@ -138,6 +140,28 @@ inline bool IsSpellHaveEffect(SpellEntry const *spellInfo, SpellEffects effect)
     return false;
 }
 
+inline bool IsSpellAppliesAura(SpellEntry const *spellInfo, uint32 effectMask)
+{
+    for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
+    {
+        if (effectMask & (1 << i))
+        {
+            switch (spellInfo->Effect[i])
+            {
+                case SPELL_EFFECT_APPLY_AURA:
+                case SPELL_EFFECT_APPLY_AREA_AURA_PARTY:
+                case SPELL_EFFECT_APPLY_AREA_AURA_RAID:
+                case SPELL_EFFECT_APPLY_AREA_AURA_PET:
+                case SPELL_EFFECT_APPLY_AREA_AURA_FRIEND:
+                case SPELL_EFFECT_APPLY_AREA_AURA_ENEMY:
+                case SPELL_EFFECT_APPLY_AREA_AURA_OWNER:
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
 inline bool IsEffectHandledOnDelayedSpellLaunch(SpellEntry const *spellInfo, SpellEffectIndex effecIdx)
 {
     switch (spellInfo->Effect[effecIdx])
@@ -169,7 +193,7 @@ inline bool IsSpellLastAuraEffect(SpellEntry const *spellInfo, SpellEffectIndex 
     return true;
 }
 
-bool IsNoStackAuraDueToAura(uint32 spellId_1, SpellEffectIndex effIndex_1, uint32 spellId_2, SpellEffectIndex effIndex_2);
+bool IsNoStackAuraDueToAura(uint32 spellId_1, uint32 spellId_2);
 
 inline bool IsSealSpell(SpellEntry const *spellInfo)
 {
@@ -202,7 +226,7 @@ inline bool IsLootCraftingSpell(SpellEntry const *spellInfo)
         (spellInfo->TotemCategory[0] != 0 || spellInfo->EffectItemType[0]==0)));
 }
 
-int32 CompareAuraRanks(uint32 spellId_1, SpellEffectIndex effIndex_1, uint32 spellId_2, SpellEffectIndex effIndex_2);
+int32 CompareAuraRanks(uint32 spellId_1, uint32 spellId_2);
 
 // order from less to more strict
 bool IsSingleFromSpellSpecificPerTargetPerCaster(SpellSpecific spellSpec1,SpellSpecific spellSpec2);
@@ -210,10 +234,11 @@ bool IsSingleFromSpellSpecificSpellRanksPerTarget(SpellSpecific spellSpec1,Spell
 bool IsSingleFromSpellSpecificPerTarget(SpellSpecific spellSpec1,SpellSpecific spellSpec2);
 
 bool IsPassiveSpell(uint32 spellId);
+bool IsPassiveSpell(SpellEntry const* spellProto);
 
 inline bool IsPassiveSpellStackableWithRanks(SpellEntry const* spellProto)
 {
-    if(!IsPassiveSpell(spellProto->Id))
+    if(!IsPassiveSpell(spellProto))
         return false;
 
     return !IsSpellHaveEffect(spellProto,SPELL_EFFECT_APPLY_AURA);
@@ -319,6 +344,25 @@ inline bool IsPointEffectTarget( Targets target )
     return false;
 }
 
+inline bool IsAreaEffectPossitiveTarget( Targets target )
+{
+    switch (target )
+    {
+        case TARGET_ALL_PARTY_AROUND_CASTER:
+        case TARGET_ALL_FRIENDLY_UNITS_AROUND_CASTER:
+        case TARGET_ALL_FRIENDLY_UNITS_IN_AREA:
+        case TARGET_ALL_PARTY:
+        case TARGET_ALL_PARTY_AROUND_CASTER_2:
+        case TARGET_AREAEFFECT_PARTY:
+        case TARGET_ALL_RAID_AROUND_CASTER:
+        case TARGET_AREAEFFECT_PARTY_AND_CLASS:
+            return true;
+        default:
+            break;
+    }
+    return false;
+}
+
 inline bool IsAreaEffectTarget( Targets target )
 {
     switch (target )
@@ -369,14 +413,35 @@ inline bool IsAreaAuraEffect(uint32 effect)
     return false;
 }
 
-inline bool IsDispelSpell(SpellEntry const *spellInfo)
+inline bool HasAreaAuraEffect(SpellEntry const *spellInfo)
 {
-    if (spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_DISPEL ||
-        spellInfo->Effect[EFFECT_INDEX_1] == SPELL_EFFECT_DISPEL ||
-        spellInfo->Effect[EFFECT_INDEX_2] == SPELL_EFFECT_DISPEL )
-        return true;
+    for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
+        if (IsAreaAuraEffect(spellInfo->Effect[i]))
+            return true;
     return false;
 }
+
+inline bool HasAuraWithTriggerEffect(SpellEntry const *spellInfo)
+{
+    for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
+    {
+        switch(spellInfo->Effect[i])
+        {
+            case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
+            case SPELL_AURA_PROC_TRIGGER_SPELL:
+            case SPELL_AURA_PROC_TRIGGER_DAMAGE:
+            case SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE:
+                return true;
+        }
+    }
+    return false;
+}
+
+inline bool IsDispelSpell(SpellEntry const *spellInfo)
+{
+    return IsSpellHaveEffect(spellInfo, SPELL_EFFECT_DISPEL);
+}
+
 inline bool isSpellBreakStealth(SpellEntry const* spellInfo)
 {
     return !(spellInfo->AttributesEx & SPELL_ATTR_EX_NOT_BREAK_STEALTH);
@@ -454,43 +519,43 @@ SpellEntry const* GetSpellEntryByDifficulty(uint32 id, Difficulty difficulty);
 // Spell proc event related declarations (accessed using SpellMgr functions)
 enum ProcFlags
 {
-   PROC_FLAG_NONE                          = 0x00000000,
+    PROC_FLAG_NONE                          = 0x00000000,
 
-   PROC_FLAG_KILLED                        = 0x00000001,    // 00 Killed by agressor
-   PROC_FLAG_KILL                          = 0x00000002,    // 01 Kill target (in most cases need XP/Honor reward)
+    PROC_FLAG_KILLED                        = 0x00000001,   // 00 Killed by aggressor
+    PROC_FLAG_KILL                          = 0x00000002,   // 01 Kill target (in most cases need XP/Honor reward, see Unit::IsTriggeredAtSpellProcEvent for additinoal check)
 
-   PROC_FLAG_SUCCESSFUL_MELEE_HIT          = 0x00000004,    // 02 Successful melee auto attack
-   PROC_FLAG_TAKEN_MELEE_HIT               = 0x00000008,    // 03 Taken damage from melee auto attack hit
+    PROC_FLAG_SUCCESSFUL_MELEE_HIT          = 0x00000004,   // 02 Successful melee auto attack
+    PROC_FLAG_TAKEN_MELEE_HIT               = 0x00000008,   // 03 Taken damage from melee auto attack hit
 
-   PROC_FLAG_SUCCESSFUL_MELEE_SPELL_HIT    = 0x00000010,    // 04 Successful attack by Spell that use melee weapon
-   PROC_FLAG_TAKEN_MELEE_SPELL_HIT         = 0x00000020,    // 05 Taken damage by Spell that use melee weapon
+    PROC_FLAG_SUCCESSFUL_MELEE_SPELL_HIT    = 0x00000010,   // 04 Successful attack by Spell that use melee weapon
+    PROC_FLAG_TAKEN_MELEE_SPELL_HIT         = 0x00000020,   // 05 Taken damage by Spell that use melee weapon
 
-   PROC_FLAG_SUCCESSFUL_RANGED_HIT         = 0x00000040,    // 06 Successful Ranged auto attack
-   PROC_FLAG_TAKEN_RANGED_HIT              = 0x00000080,    // 07 Taken damage from ranged auto attack
+    PROC_FLAG_SUCCESSFUL_RANGED_HIT         = 0x00000040,   // 06 Successful Ranged auto attack
+    PROC_FLAG_TAKEN_RANGED_HIT              = 0x00000080,   // 07 Taken damage from ranged auto attack
 
-   PROC_FLAG_SUCCESSFUL_RANGED_SPELL_HIT   = 0x00000100,    // 08 Successful Ranged attack by Spell that use ranged weapon
-   PROC_FLAG_TAKEN_RANGED_SPELL_HIT        = 0x00000200,    // 09 Taken damage by Spell that use ranged weapon
+    PROC_FLAG_SUCCESSFUL_RANGED_SPELL_HIT   = 0x00000100,   // 08 Successful Ranged attack by Spell that use ranged weapon
+    PROC_FLAG_TAKEN_RANGED_SPELL_HIT        = 0x00000200,   // 09 Taken damage by Spell that use ranged weapon
 
-   PROC_FLAG_SUCCESSFUL_POSITIVE_AOE_HIT   = 0x00000400,    // 10 Successful AoE (not 100% shure unused)
-   PROC_FLAG_TAKEN_POSITIVE_AOE            = 0x00000800,    // 11 Taken AoE      (not 100% shure unused)
+    PROC_FLAG_SUCCESSFUL_POSITIVE_AOE_HIT   = 0x00000400,   // 10 Successful AoE (not 100% shure unused)
+    PROC_FLAG_TAKEN_POSITIVE_AOE            = 0x00000800,   // 11 Taken AoE      (not 100% shure unused)
 
-   PROC_FLAG_SUCCESSFUL_AOE_SPELL_HIT      = 0x00001000,    // 12 Successful AoE damage spell hit (not 100% shure unused)
-   PROC_FLAG_TAKEN_AOE_SPELL_HIT           = 0x00002000,    // 13 Taken AoE damage spell hit      (not 100% shure unused)
+    PROC_FLAG_SUCCESSFUL_AOE_SPELL_HIT      = 0x00001000,   // 12 Successful AoE damage spell hit (not 100% shure unused)
+    PROC_FLAG_TAKEN_AOE_SPELL_HIT           = 0x00002000,   // 13 Taken AoE damage spell hit      (not 100% shure unused)
 
-   PROC_FLAG_SUCCESSFUL_POSITIVE_SPELL     = 0x00004000,    // 14 Successful cast positive spell (by default only on healing)
-   PROC_FLAG_TAKEN_POSITIVE_SPELL          = 0x00008000,    // 15 Taken positive spell hit (by default only on healing)
+    PROC_FLAG_SUCCESSFUL_POSITIVE_SPELL     = 0x00004000,   // 14 Successful cast positive spell (by default only on healing)
+    PROC_FLAG_TAKEN_POSITIVE_SPELL          = 0x00008000,   // 15 Taken positive spell hit (by default only on healing)
 
-   PROC_FLAG_SUCCESSFUL_NEGATIVE_SPELL_HIT = 0x00010000,    // 16 Successful negative spell cast (by default only on damage)
-   PROC_FLAG_TAKEN_NEGATIVE_SPELL_HIT      = 0x00020000,    // 17 Taken negative spell (by default only on damage)
+    PROC_FLAG_SUCCESSFUL_NEGATIVE_SPELL_HIT = 0x00010000,   // 16 Successful negative spell cast (by default only on damage)
+    PROC_FLAG_TAKEN_NEGATIVE_SPELL_HIT      = 0x00020000,   // 17 Taken negative spell (by default only on damage)
 
-   PROC_FLAG_ON_DO_PERIODIC                = 0x00040000,    // 18 Successful do periodic (damage / healing, determined from 14-17 flags)
-   PROC_FLAG_ON_TAKE_PERIODIC              = 0x00080000,    // 19 Taken spell periodic (damage / healing, determined from 14-17 flags)
+    PROC_FLAG_ON_DO_PERIODIC                = 0x00040000,   // 18 Successful do periodic (damage / healing, determined from 14-17 flags)
+    PROC_FLAG_ON_TAKE_PERIODIC              = 0x00080000,   // 19 Taken spell periodic (damage / healing, determined from 14-17 flags)
 
-   PROC_FLAG_TAKEN_ANY_DAMAGE              = 0x00100000,    // 20 Taken any damage
-   PROC_FLAG_ON_TRAP_ACTIVATION            = 0x00200000,    // 21 On trap activation
+    PROC_FLAG_TAKEN_ANY_DAMAGE              = 0x00100000,   // 20 Taken any damage
+    PROC_FLAG_ON_TRAP_ACTIVATION            = 0x00200000,   // 21 On trap activation
 
-   PROC_FLAG_TAKEN_OFFHAND_HIT             = 0x00400000,    // 22 Taken off-hand melee attacks(not used)
-   PROC_FLAG_SUCCESSFUL_OFFHAND_HIT        = 0x00800000     // 23 Successful off-hand melee attacks
+    PROC_FLAG_TAKEN_OFFHAND_HIT             = 0x00400000,   // 22 Taken off-hand melee attacks(not used)
+    PROC_FLAG_SUCCESSFUL_OFFHAND_HIT        = 0x00800000    // 23 Successful off-hand melee attacks
 };
 
 #define MELEE_BASED_TRIGGER_MASK (PROC_FLAG_SUCCESSFUL_MELEE_HIT        | \
@@ -510,33 +575,33 @@ enum ProcFlags
 
 enum ProcFlagsEx
 {
-   PROC_EX_NONE                = 0x0000000,                 // If none can tigger on Hit/Crit only (passive spells MUST defined by SpellFamily flag)
-   PROC_EX_NORMAL_HIT          = 0x0000001,                 // If set only from normal hit (only damage spells)
-   PROC_EX_CRITICAL_HIT        = 0x0000002,
-   PROC_EX_MISS                = 0x0000004,
-   PROC_EX_RESIST              = 0x0000008,
-   PROC_EX_DODGE               = 0x0000010,
-   PROC_EX_PARRY               = 0x0000020,
-   PROC_EX_BLOCK               = 0x0000040,
-   PROC_EX_EVADE               = 0x0000080,
-   PROC_EX_IMMUNE              = 0x0000100,
-   PROC_EX_DEFLECT             = 0x0000200,
-   PROC_EX_ABSORB              = 0x0000400,
-   PROC_EX_REFLECT             = 0x0000800,
-   PROC_EX_INTERRUPT           = 0x0001000,                 // Melee hit result can be Interrupt (not used)
-   PROC_EX_FULL_BLOCK          = 0x0002000,                 // block al attack damage
-   PROC_EX_RESERVED2           = 0x0004000,
-   PROC_EX_RESERVED3           = 0x0008000,
-   PROC_EX_EX_TRIGGER_ALWAYS   = 0x0010000,                 // If set trigger always ( no matter another flags) used for drop charges
-   PROC_EX_EX_ONE_TIME_TRIGGER = 0x0020000                  // If set trigger always but only one time (not used)
+    PROC_EX_NONE                = 0x0000000,                // If none can tigger on Hit/Crit only (passive spells MUST defined by SpellFamily flag)
+    PROC_EX_NORMAL_HIT          = 0x0000001,                // If set only from normal hit (only damage spells)
+    PROC_EX_CRITICAL_HIT        = 0x0000002,
+    PROC_EX_MISS                = 0x0000004,
+    PROC_EX_RESIST              = 0x0000008,
+    PROC_EX_DODGE               = 0x0000010,
+    PROC_EX_PARRY               = 0x0000020,
+    PROC_EX_BLOCK               = 0x0000040,
+    PROC_EX_EVADE               = 0x0000080,
+    PROC_EX_IMMUNE              = 0x0000100,
+    PROC_EX_DEFLECT             = 0x0000200,
+    PROC_EX_ABSORB              = 0x0000400,
+    PROC_EX_REFLECT             = 0x0000800,
+    PROC_EX_INTERRUPT           = 0x0001000,                // Melee hit result can be Interrupt (not used)
+    PROC_EX_FULL_BLOCK          = 0x0002000,                // block al attack damage
+    PROC_EX_RESERVED2           = 0x0004000,
+    PROC_EX_RESERVED3           = 0x0008000,
+    PROC_EX_EX_TRIGGER_ALWAYS   = 0x0010000,                // If set trigger always ( no matter another flags) used for drop charges
+    PROC_EX_EX_ONE_TIME_TRIGGER = 0x0020000                 // If set trigger always but only one time (not used)
 };
 
 struct SpellProcEventEntry
 {
     uint32      schoolMask;                                 // if nonzero - bit mask for matching proc condition based on spell candidate's school: Fire=2, Mask=1<<(2-1)=2
     uint32      spellFamilyName;                            // if nonzero - for matching proc condition based on candidate spell's SpellFamilyNamer value
-    uint64      spellFamilyMask;                            // if nonzero - for matching proc condition based on candidate spell's SpellFamilyFlags  (like auras 107 and 108 do)
-    uint32      spellFamilyMask2;                           // if nonzero - for matching proc condition based on candidate spell's SpellFamilyFlags2 (like auras 107 and 108 do)
+    uint64      spellFamilyMask[MAX_EFFECT_INDEX];          // if nonzero - for matching proc condition based on candidate spell's SpellFamilyFlags  (like auras 107 and 108 do)
+    uint32      spellFamilyMask2[MAX_EFFECT_INDEX];         // if nonzero - for matching proc condition based on candidate spell's SpellFamilyFlags2 (like auras 107 and 108 do)
     uint32      procFlags;                                  // bitmask for matching proc event
     uint32      procEx;                                     // proc Extend info (see ProcFlagsEx)
     float       ppmRate;                                    // for melee (ranged?) damage spells - proc rate per minute. if zero, falls back to flat chance from Spell.dbc
@@ -813,7 +878,7 @@ class SpellMgr
             return itr->second;
         }
 
-        static bool IsSpellProcEventCanTriggeredBy( SpellProcEventEntry const * spellProcEvent, uint32 EventProcFlag, SpellEntry const * procSpell, uint32 procFlags, uint32 procExtra, bool active);
+        static bool IsSpellProcEventCanTriggeredBy( SpellProcEventEntry const * spellProcEvent, uint32 EventProcFlag, SpellEntry const * procSpell, uint32 procFlags, uint32 procExtra);
 
         // Spell bonus data
         SpellBonusEntry const* GetSpellBonusData(uint32 spellId) const
@@ -903,10 +968,14 @@ class SpellMgr
         }
 
         bool IsRankSpellDueToSpell(SpellEntry const *spellInfo_1,uint32 spellId_2) const;
-        static bool canStackSpellRanks(SpellEntry const *spellInfo);
         bool IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) const;
+        bool canStackSpellRanksInSpellBook(SpellEntry const *spellInfo) const;
+        bool IsRankedSpellNonStackableInSpellBook(SpellEntry const *spellInfo) const
+        {
+            return !canStackSpellRanksInSpellBook(spellInfo) && GetSpellRank(spellInfo->Id) != 0;
+        }
 
-        SpellEntry const* SelectAuraRankForPlayerLevel(SpellEntry const* spellInfo, uint32 playerLevel) const;
+        SpellEntry const* SelectAuraRankForLevel(SpellEntry const* spellInfo, uint32 Level) const;
 
         // Spell learning
         SpellLearnSkillNode const* GetSpellLearnSkill(uint32 spell_id) const
@@ -1040,6 +1109,8 @@ class SpellMgr
         void LoadSpellAreas();
 
     private:
+        bool LoadPetDefaultSpells_helper(CreatureInfo const* cInfo, PetDefaultSpellsEntry& petDefSpells);
+
         SpellScriptTarget  mSpellScriptTarget;
         SpellChainMap      mSpellChains;
         SpellChainMapNext  mSpellChainsNext;

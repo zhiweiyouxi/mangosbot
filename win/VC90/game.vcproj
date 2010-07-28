@@ -747,6 +747,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\GridMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\GridMap.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\GridNotifiers.cpp"
 				>
 			</File>
@@ -948,6 +956,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\SpellAuras.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\UnitAuraProcHandler.cpp"
 				>
 			</File>
 			<File
@@ -1160,6 +1172,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\Calendar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Camera.h"
 				>
 			</File>
 			<File

@@ -78,6 +78,8 @@ libmangosgame_a_SOURCES = \
 	Calendar.cpp \
 	Calendar.h \
 	CalendarHandler.cpp \
+	Camera.cpp \
+	Camera.h \
 	Cell.h \
 	CellImpl.h \
 	Channel.cpp \
@@ -134,6 +136,8 @@ libmangosgame_a_SOURCES = \
 	GossipDef.cpp \
 	GossipDef.h \
 	GridDefines.h \
+	GridMap.cpp \
+	GridMap.h \
 	GridNotifiers.cpp \
 	GridNotifiers.h \
 	GridNotifiersImpl.h \
@@ -269,6 +273,7 @@ libmangosgame_a_SOURCES = \
 	Traveller.h \
 	Unit.cpp \
 	Unit.h \
+	UnitAuraProcHandler.cpp \
 	UnitEvents.h \
 	UpdateData.cpp \
 	UpdateData.h \

@@ -392,8 +392,9 @@ void WorldSession::HandleLootRoll( WorldPacket &recv_data )
     if (rollType >= MAX_ROLL_FROM_CLIENT)
         return;
 
-    // everything is fine, do it
-    group->CountRollVote(GetPlayer()->GetObjectGuid(), lootedTarget, itemSlot, RollVote(rollType));
+    // everything is fine, do it, if false then some cheating problem found
+    if(!group->CountRollVote(GetPlayer(), lootedTarget, itemSlot, RollVote(rollType)))
+        return;
 
     switch (rollType)
     {
@@ -401,6 +402,7 @@ void WorldSession::HandleLootRoll( WorldPacket &recv_data )
             GetPlayer()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_NEED, 1);
             break;
         case ROLL_GREED:
+        case ROLL_DISENCHANT:
             GetPlayer()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_GREED, 1);
             break;
     }
@@ -555,9 +557,10 @@ void WorldSession::HandleGroupAssistantLeaderOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandlePartyAssignmentOpcode( WorldPacket & recv_data )
 {
-    uint8 flag1, flag2;
+    uint8 role;
+    uint8 apply;
     uint64 guid;
-    recv_data >> flag1 >> flag2;
+    recv_data >> role >> apply;                             // role 0 = Main Tank, 1 = Main Assistant
     recv_data >> guid;
 
     DEBUG_LOG("MSG_PARTY_ASSIGNMENT");
@@ -566,21 +569,28 @@ void WorldSession::HandlePartyAssignmentOpcode( WorldPacket & recv_data )
     if(!group)
         return;
 
-    // if(flag1) Main Assist
-    //     0x4
-    // if(flag2) Main Tank
-    //     0x2
-
     /** error handling **/
     if(!group->IsLeader(GetPlayer()->GetGUID()))
         return;
     /********************/
 
     // everything is fine, do it
-    if(flag1 == 1)
-        group->SetMainAssistant(guid);
-    if(flag2 == 1)
-        group->SetMainTank(guid);
+    if (apply)
+    {
+        switch(role)
+        {
+            case 0: group->SetMainTank(guid); break;
+            case 1: group->SetMainAssistant(guid); break;
+            default: break;
+        }
+    }
+    else
+    {
+        if (group->GetMainTank() == guid)
+            group->SetMainTank(0);
+        if (group->GetMainAssistant() == guid)
+            group->SetMainAssistant(0);
+    }
 }
 
 void WorldSession::HandleRaidReadyCheckOpcode( WorldPacket & recv_data )
@@ -635,9 +645,6 @@ void WorldSession::HandleRaidReadyCheckFinishedOpcode( WorldPacket & /*recv_data
 void WorldSession::BuildPartyMemberStatsChangedPacket(Player *player, WorldPacket *data)
 {
     uint32 mask = player->GetGroupUpdateFlag();
-
-    if (mask == GROUP_UPDATE_FLAG_NONE)
-        return;
 
     if (mask & GROUP_UPDATE_FLAG_POWER_TYPE)                // if update power type, update current/max power also
         mask |= (GROUP_UPDATE_FLAG_CUR_POWER | GROUP_UPDATE_FLAG_MAX_POWER);
