@@ -54,7 +54,7 @@
 #include "DBCEnums.h"
 #include "AuctionHouseBot.h"
 
-bool ChatHandler::HandleAHBotOptionsCommand(const char* args)
+bool ChatHandler::HandleAHBotOptionsCommand(char* args)
 {
     uint32 ahMapID = 0;
     char * opt = strtok((char*)args, " ");
@@ -527,40 +527,40 @@ bool ChatHandler::HandleAHBotOptionsCommand(const char* args)
 //reload commands
 bool ChatHandler::HandleReloadAllCommand(char* /*args*/)
 {
-    HandleReloadSkillFishingBaseLevelCommand("");
+    HandleReloadSkillFishingBaseLevelCommand((char*)"");
 
-    HandleReloadAllAchievementCommand("");
-    HandleReloadAllAreaCommand("");
-    HandleReloadAllEventAICommand("");
-    HandleReloadAllLootCommand("");
-    HandleReloadAllNpcCommand("");
-    HandleReloadAllQuestCommand("");
-    HandleReloadAllSpellCommand("");
-    HandleReloadAllItemCommand("");
-    HandleReloadAllGossipsCommand("");
-    HandleReloadAllLocalesCommand("");
+    HandleReloadAllAchievementCommand((char*)"");
+    HandleReloadAllAreaCommand((char*)"");
+    HandleReloadAllEventAICommand((char*)"");
+    HandleReloadAllLootCommand((char*)"");
+    HandleReloadAllNpcCommand((char*)"");
+    HandleReloadAllQuestCommand((char*)"");
+    HandleReloadAllSpellCommand((char*)"");
+    HandleReloadAllItemCommand((char*)"");
+    HandleReloadAllGossipsCommand((char*)"");
+    HandleReloadAllLocalesCommand((char*)"");
 
-    HandleReloadMailLevelRewardCommand("");
-    HandleReloadCommandCommand("");
-    HandleReloadReservedNameCommand("");
-    HandleReloadMangosStringCommand("");
-    HandleReloadGameTeleCommand("");
+    HandleReloadMailLevelRewardCommand((char*)"");
+    HandleReloadCommandCommand((char*)"");
+    HandleReloadReservedNameCommand((char*)"");
+    HandleReloadMangosStringCommand((char*)"");
+    HandleReloadGameTeleCommand((char*)"");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllAchievementCommand(char* /*args*/)
 {
-    HandleReloadAchievementCriteriaRequirementCommand("");
-    HandleReloadAchievementRewardCommand("");
+    HandleReloadAchievementCriteriaRequirementCommand((char*)"");
+    HandleReloadAchievementRewardCommand((char*)"");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllAreaCommand(char* /*args*/)
 {
-    //HandleReloadQuestAreaTriggersCommand(""); -- reloaded in HandleReloadAllQuestCommand
-    HandleReloadAreaTriggerTeleportCommand("");
-    HandleReloadAreaTriggerTavernCommand("");
-    HandleReloadGameGraveyardZoneCommand("");
+    //HandleReloadQuestAreaTriggersCommand((char*)""); -- reloaded in HandleReloadAllQuestCommand
+    HandleReloadAreaTriggerTeleportCommand((char*)"");
+    HandleReloadAreaTriggerTavernCommand((char*)"");
+    HandleReloadGameGraveyardZoneCommand((char*)"");
     return true;
 }
 
@@ -575,19 +575,19 @@ bool ChatHandler::HandleReloadAllLootCommand(char* /*args*/)
 bool ChatHandler::HandleReloadAllNpcCommand(char* args)
 {
     if (*args!='a')                                         // will be reloaded from all_gossips
-        HandleReloadNpcGossipCommand("a");
-    HandleReloadNpcTrainerCommand("a");
-    HandleReloadNpcVendorCommand("a");
-    HandleReloadPointsOfInterestCommand("a");
-    HandleReloadSpellClickSpellsCommand("a");
+        HandleReloadNpcGossipCommand((char*)"a");
+    HandleReloadNpcTrainerCommand((char*)"a");
+    HandleReloadNpcVendorCommand((char*)"a");
+    HandleReloadPointsOfInterestCommand((char*)"a");
+    HandleReloadSpellClickSpellsCommand((char*)"a");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllQuestCommand(char* /*args*/)
 {
-    HandleReloadQuestAreaTriggersCommand("a");
-    HandleReloadQuestPOICommand("a");
-    HandleReloadQuestTemplateCommand("a");
+    HandleReloadQuestAreaTriggersCommand((char*)"a");
+    HandleReloadQuestPOICommand((char*)"a");
+    HandleReloadQuestTemplateCommand((char*)"a");
 
     sLog.outString( "Re-Loading Quests Relations..." );
     sObjectMgr.LoadQuestRelations();
@@ -605,73 +605,73 @@ bool ChatHandler::HandleReloadAllScriptsCommand(char* /*args*/)
     }
 
     sLog.outString( "Re-Loading Scripts..." );
-    HandleReloadGameObjectScriptsCommand("a");
-    HandleReloadGossipScriptsCommand("a");
-    HandleReloadEventScriptsCommand("a");
-    HandleReloadQuestEndScriptsCommand("a");
-    HandleReloadQuestStartScriptsCommand("a");
-    HandleReloadSpellScriptsCommand("a");
+    HandleReloadGameObjectScriptsCommand((char*)"a");
+    HandleReloadGossipScriptsCommand((char*)"a");
+    HandleReloadEventScriptsCommand((char*)"a");
+    HandleReloadQuestEndScriptsCommand((char*)"a");
+    HandleReloadQuestStartScriptsCommand((char*)"a");
+    HandleReloadSpellScriptsCommand((char*)"a");
     SendGlobalSysMessage("DB tables `*_scripts` reloaded.");
-    HandleReloadDbScriptStringCommand("a");
+    HandleReloadDbScriptStringCommand((char*)"a");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllEventAICommand(char* /*args*/)
 {
-    HandleReloadEventAITextsCommand("a");
-    HandleReloadEventAISummonsCommand("a");
-    HandleReloadEventAIScriptsCommand("a");
+    HandleReloadEventAITextsCommand((char*)"a");
+    HandleReloadEventAISummonsCommand((char*)"a");
+    HandleReloadEventAIScriptsCommand((char*)"a");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllSpellCommand(char* /*args*/)
 {
-    HandleReloadSkillDiscoveryTemplateCommand("a");
-    HandleReloadSkillExtraItemTemplateCommand("a");
-    HandleReloadSpellAreaCommand("a");
-    HandleReloadSpellChainCommand("a");
-    HandleReloadSpellElixirCommand("a");
-    HandleReloadSpellLearnSpellCommand("a");
-    HandleReloadSpellProcEventCommand("a");
-    HandleReloadSpellBonusesCommand("a");
-    HandleReloadSpellProcItemEnchantCommand("a");
-    HandleReloadSpellScriptTargetCommand("a");
-    HandleReloadSpellTargetPositionCommand("a");
-    HandleReloadSpellThreatsCommand("a");
-    HandleReloadSpellPetAurasCommand("a");
+    HandleReloadSkillDiscoveryTemplateCommand((char*)"a");
+    HandleReloadSkillExtraItemTemplateCommand((char*)"a");
+    HandleReloadSpellAreaCommand((char*)"a");
+    HandleReloadSpellChainCommand((char*)"a");
+    HandleReloadSpellElixirCommand((char*)"a");
+    HandleReloadSpellLearnSpellCommand((char*)"a");
+    HandleReloadSpellProcEventCommand((char*)"a");
+    HandleReloadSpellBonusesCommand((char*)"a");
+    HandleReloadSpellProcItemEnchantCommand((char*)"a");
+    HandleReloadSpellScriptTargetCommand((char*)"a");
+    HandleReloadSpellTargetPositionCommand((char*)"a");
+    HandleReloadSpellThreatsCommand((char*)"a");
+    HandleReloadSpellPetAurasCommand((char*)"a");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllGossipsCommand(char* args)
 {
-    HandleReloadGossipMenuCommand("a");
-    HandleReloadGossipMenuOptionCommand("a");
+    HandleReloadGossipMenuCommand((char*)"a");
+    HandleReloadGossipMenuOptionCommand((char*)"a");
     if (*args!='a')                                         // already reload from all_scripts
-        HandleReloadGossipScriptsCommand("a");
-    HandleReloadNpcGossipCommand("a");
-    HandleReloadPointsOfInterestCommand("a");
+        HandleReloadGossipScriptsCommand((char*)"a");
+    HandleReloadNpcGossipCommand((char*)"a");
+    HandleReloadPointsOfInterestCommand((char*)"a");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllItemCommand(char* /*args*/)
 {
-    HandleReloadPageTextsCommand("a");
-    HandleReloadItemEnchantementsCommand("a");
-    HandleReloadItemRequiredTragetCommand("a");
+    HandleReloadPageTextsCommand((char*)"a");
+    HandleReloadItemEnchantementsCommand((char*)"a");
+    HandleReloadItemRequiredTragetCommand((char*)"a");
     return true;
 }
 
 bool ChatHandler::HandleReloadAllLocalesCommand(char* /*args*/)
 {
-    HandleReloadLocalesAchievementRewardCommand("a");
-    HandleReloadLocalesCreatureCommand("a");
-    HandleReloadLocalesGameobjectCommand("a");
-    HandleReloadLocalesGossipMenuOptionCommand("a");
-    HandleReloadLocalesItemCommand("a");
-    HandleReloadLocalesNpcTextCommand("a");
-    HandleReloadLocalesPageTextCommand("a");
-    HandleReloadLocalesPointsOfInterestCommand("a");
-    HandleReloadLocalesQuestCommand("a");
+    HandleReloadLocalesAchievementRewardCommand((char*)"a");
+    HandleReloadLocalesCreatureCommand((char*)"a");
+    HandleReloadLocalesGameobjectCommand((char*)"a");
+    HandleReloadLocalesGossipMenuOptionCommand((char*)"a");
+    HandleReloadLocalesItemCommand((char*)"a");
+    HandleReloadLocalesNpcTextCommand((char*)"a");
+    HandleReloadLocalesPageTextCommand((char*)"a");
+    HandleReloadLocalesPointsOfInterestCommand((char*)"a");
+    HandleReloadLocalesQuestCommand((char*)"a");
     return true;
 }
 
@@ -2308,8 +2308,8 @@ bool ChatHandler::HandleLearnAllGMCommand(char* /*args*/)
 
 bool ChatHandler::HandleLearnAllMyClassCommand(char* /*args*/)
 {
-    HandleLearnAllMySpellsCommand("");
-    HandleLearnAllMyTalentsCommand("");
+    HandleLearnAllMySpellsCommand((char*)"");
+    HandleLearnAllMyTalentsCommand((char*)"");
     return true;
 }
 
