@@ -27,6 +27,9 @@ void GenericMageNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trigger
 		new NoFoodTrigger(ai), 
 		NextAction::array(0, new NextAction("conjure food", 15.0f), NULL)));
 
+    triggers.push_back(new TriggerNode(
+        new MageArmorTrigger(ai), 
+        NextAction::array(0, new NextAction("mage armor", 19.0f), NULL)));
 }
 
 
@@ -64,6 +67,27 @@ ActionNode* GenericMageNonCombatStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("mage armor", name)) 
+    {
+        return new ActionNode (new CastMageArmorAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("ice armor"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("ice armor", name)) 
+    {
+        return new ActionNode (new CastIceArmorAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("frost armor"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("frost armor", name)) 
+    {
+        return new ActionNode (new CastFrostArmorAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
 
     return NULL;
 }

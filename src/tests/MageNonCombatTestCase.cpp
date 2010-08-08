@@ -27,10 +27,15 @@ protected:
 
 		tickWithSpellAvailable("arcane intellect");
 
+        tick();
+        tick();
+        tick();
+        addAura("mage armor");
+
 		tickWithNoDrink();
 		tickWithNoFood();
 
-		assertActions(">S:arcane intellect>P:arcane intellect>S:conjure water>S:conjure food");
+        assertActions(">S:arcane intellect>P:arcane intellect>S:mage armor>S:ice armor>S:frost armor>S:conjure water>S:conjure food");
     }
     
 };
