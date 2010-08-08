@@ -43,10 +43,10 @@ uint32 AiSpellManager::FindSpellId(const char* args)
 	int loc = bot->GetSession()->GetSessionDbcLocale();
 
 	uint32 foundSpellId = 0;
-	bool foundExactMatch = false;
 	bool foundMatchUsesNoReagents = false;
 
-	for (PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr) {
+	for (PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr) 
+    {
 		uint32 spellId = itr->first;
 
 		if (itr->second->state == PLAYERSPELL_REMOVED || itr->second->disabled || IsPassiveSpell(spellId))
@@ -57,24 +57,21 @@ uint32 AiSpellManager::FindSpellId(const char* args)
 			continue;
 
 		const string name = pSpellInfo->SpellName[loc];
-		if (name.empty() || !Utf8FitTo(name, wnamepart))
+		if (name.empty() || name.length() != wnamepart.length() || !Utf8FitTo(name, wnamepart))
 			continue;
 
-		bool isExactMatch = (name.length() == wnamepart.length()) ? true : false;
-		bool usesNoReagents = (pSpellInfo->Reagent[0] <= 0) ? true : false;
+		bool usesNoReagents = (pSpellInfo->Reagent[0] <= 0);
 
 		// if we already found a spell
 		bool useThisSpell = true;
 		if (foundSpellId > 0) {
-			if (isExactMatch && !foundExactMatch) {}
-			else if (usesNoReagents && !foundMatchUsesNoReagents) {}
-			else if (spellId > foundSpellId && isExactMatch) {}
+			if (usesNoReagents && !foundMatchUsesNoReagents) {}
+			else if (spellId > foundSpellId) {}
 			else
 				useThisSpell = false;
 		}
 		if (useThisSpell) {
 			foundSpellId = spellId;
-			foundExactMatch = isExactMatch;
 			foundMatchUsesNoReagents = usesNoReagents;
 		}
 	}
