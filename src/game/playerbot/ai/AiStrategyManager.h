@@ -30,6 +30,9 @@ namespace ai
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
 		virtual void HandleBotOutgoingPacket(const WorldPacket& packet);
 
+    private:
+        void ReInitCurrentEngine();
+
 	protected:
 		Engine* currentEngine;
 		Engine* combatEngine;

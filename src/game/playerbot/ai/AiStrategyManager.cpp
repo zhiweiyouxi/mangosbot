@@ -45,16 +45,20 @@ void AiStrategyManager::DoNextAction()
 	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
 	if (target && target->isAlive() && target->IsHostileTo(bot))
 	{
-		currentEngine = combatEngine;
+        if (currentEngine != combatEngine)
+        {
+            currentEngine = combatEngine;
+            ReInitCurrentEngine();
+        }
 	}
 	else 
     {
         aiRegistry->GetTargetManager()->SetCurrentTarget(NULL);
         bot->SetSelection(0);
-        if (!bot->isInCombat() && currentEngine != nonCombatEngine)
+        if (currentEngine != nonCombatEngine)
 	    {
-		    aiRegistry->GetSpellManager()->InterruptSpell();
 		    currentEngine = nonCombatEngine;
+            ReInitCurrentEngine();
 	    }
     }
 
@@ -63,6 +67,13 @@ void AiStrategyManager::DoNextAction()
         managers[i]->Update();
 
 	currentEngine->DoNextAction(NULL);
+}
+
+void AiStrategyManager::ReInitCurrentEngine()
+{
+    aiRegistry->GetSpellManager()->InterruptSpell();
+    currentEngine->Init();
+    ai->SetNextCheckDelay(0);
 }
 
 void AiStrategyManager::ChangeStrategy( const char* names, Engine* e ) 
@@ -136,4 +147,7 @@ void AiStrategyManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 bool AiStrategyManager::ContainsStrategy(StrategyType type)
 {
 	return combatEngine->ContainsStrategy(type) || nonCombatEngine->ContainsStrategy(type);
+
+    void AfterEngineChanged();
 }
+
