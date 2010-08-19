@@ -971,7 +971,7 @@ public:
     void Initialize();
     void LoadValues(AHBConfig*);
     void Commands(uint32, uint32, uint32, char*);
-    uint32 GetAHBplayerGUID() { return AHBplayerGUID; };
+    uint64 GetAHBplayerGUID() { return AHBplayerGUID; };
 };
 
 #define auctionbot MaNGOS::Singleton<AuctionHouseBot>::Instance()
