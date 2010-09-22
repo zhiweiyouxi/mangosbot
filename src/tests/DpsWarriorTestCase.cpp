@@ -39,7 +39,7 @@ protected:
 		tickInMeleeRange();
         tick();
 
-		assertActions(">S:battle stance>S:battle shout>T:charge");
+		assertActions(">S:battle shout>S:battle stance>T:charge");
 
     }
 

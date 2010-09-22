@@ -57,7 +57,6 @@ protected:
         statsManager->rage[MockedTargets::GetSelf()] = 0;
         removeAura("battle shout");
 
-        tickInSpellRange(); // battle stance
         tickInSpellRange(); // battle shout
 
         tickInSpellRange(); // defensive stance
@@ -68,7 +67,7 @@ protected:
         tick(); // melee
         tick(); // battle shout
 
-		assertActions(">S:battle stance>S:battle shout>S:defensive stance>reach melee>melee>S:bloodrage>T:rend");
+		assertActions(">S:battle shout>S:defensive stance>reach melee>melee>S:bloodrage>T:rend");
 
     }
 

@@ -154,7 +154,7 @@ ActionNode* GenericWarriorStrategy::createAction(const char* name)
     else if (!strcmp("battle shout", name)) 
     {
         return new ActionNode (new CastBattleShoutAction(ai),  
-            /*P*/ NextAction::array(0, new NextAction("battle stance"), NULL),
+            /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }
