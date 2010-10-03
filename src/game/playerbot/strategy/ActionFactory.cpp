@@ -40,7 +40,7 @@ ActionNode* ActionFactory::createAction(const char* name)
     }
 	else if (!strcmp("healthstone", name)) 
 	{
-		return new ActionNode (new UseHealthstone(ai),  
+		return new ActionNode (new UseItemAction(ai, "healthstone"),  
 			/*P*/ NULL,
 			/*A*/ NextAction::array(0, new NextAction("panic potion"), NULL), 
 			/*C*/ NULL);

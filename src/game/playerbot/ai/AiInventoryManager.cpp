@@ -364,19 +364,33 @@ void AiInventoryManager::UseItem(Item& item)
 	// see SpellCastTargets::read in Spell.cpp to see other options
 	// for setting target
 
-	uint32 target = TARGET_FLAG_SELF;
+    WorldPacket* const packet = new WorldPacket(CMSG_USE_ITEM, 1 + 1 + 1 + 4 + 8 + 4 + 1 + 8);
+    *packet << bagIndex << slot << cast_count << spellid << item_guid
+        << glyphIndex << unk_flags;
 
-	WorldPacket* const packet = new WorldPacket(CMSG_USE_ITEM, 1 + 1 + 1 + 4 + 8 + 4 + 1);
-	*packet << bagIndex << slot << cast_count << spellid << item_guid
-		<< glyphIndex << unk_flags << target;
-	bot->GetSession()->QueuePacket(packet); // queue the packet to get around race condition
+    for (int i=0; i<MAX_ITEM_PROTO_SPELLS; i++)
+    {
+        uint32 spellId = item.GetProto()->Spells[i].SpellId;
+        if (!spellId)
+            continue;
 
-	// certain items cause player to sit (food,drink)
-	// tell bot to stop following if this is the case
-	// (doesn't work since we queued the packet!)
-	// maybe its not needed???
-	//if (! bot->IsStandState())
-	//    bot->GetMotionMaster()->Clear();
+        const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(spellId);
+        Item* itemForSpell = aiRegistry->GetSpellManager()->FindItemForSpell(pSpellInfo);
+        if (itemForSpell)
+        {
+            if (itemForSpell->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
+                continue;
+
+            *packet << TARGET_FLAG_ITEM;
+            (*packet).append(itemForSpell->GetPackGUID());
+            *packet << uint32(0);
+            bot->GetSession()->QueuePacket(packet);
+            return;
+        }
+    }
+
+    *packet << TARGET_FLAG_SELF;
+ 	bot->GetSession()->QueuePacket(packet);
 }
 
 int AiInventoryManager::GetItemCount(const char* name) 

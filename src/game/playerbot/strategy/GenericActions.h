@@ -84,14 +84,15 @@ namespace ai
         }
     };
 
-	class UseHealthstone : public Action {
+	class UseItemAction : public Action {
 	public:
-		UseHealthstone(AiManagerRegistry* const ai) : Action(ai, "healthstone") {}
+		UseItemAction(AiManagerRegistry* const ai, const char* name) : Action(ai, name) {}
 		virtual void Execute() {
-			ai->GetInventoryManager()->FindAndUse("healthstone"); 
+			ai->GetInventoryManager()->FindAndUse(getName()); 
 		}
+        virtual bool isUseful();
 		virtual bool isPossible() {
-			return ai->GetInventoryManager()->GetItemCount("healthstone") > 0;
+			return ai->GetInventoryManager()->GetItemCount(getName()) > 0;
 		}
 	};
 

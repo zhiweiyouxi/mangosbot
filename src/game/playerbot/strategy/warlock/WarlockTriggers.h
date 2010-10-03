@@ -10,6 +10,13 @@ namespace ai
 		virtual bool IsActive();
 	};
 
+    class SpellstoneTrigger : public BuffTrigger
+    {
+    public:
+        SpellstoneTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "spellstone") {}
+        virtual bool IsActive();
+    };
+
     DEBUFF_TRIGGER(CurseOfAgonyTrigger, "curse of agony", "curse of agony");
     DEBUFF_TRIGGER(CorruptionTrigger, "corruption", "corruption");
     DEBUFF_TRIGGER(ImmolateTrigger, "immolate", "immolate");
