@@ -364,7 +364,7 @@ void AiInventoryManager::UseItem(Item& item)
 	// see SpellCastTargets::read in Spell.cpp to see other options
 	// for setting target
 
-    WorldPacket* const packet = new WorldPacket(CMSG_USE_ITEM, 1 + 1 + 1 + 4 + 8 + 4 + 1 + 8);
+    WorldPacket* const packet = new WorldPacket(CMSG_USE_ITEM, 1 + 1 + 1 + 4 + 8 + 4 + 1 + 8 + 1);
     *packet << bagIndex << slot << cast_count << spellid << item_guid
         << glyphIndex << unk_flags;
 
@@ -381,9 +381,15 @@ void AiInventoryManager::UseItem(Item& item)
             if (itemForSpell->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
                 continue;
 
-            *packet << TARGET_FLAG_ITEM;
-            (*packet).append(itemForSpell->GetPackGUID());
-            *packet << uint32(0);
+            if (bot->GetTrader())
+            {
+                *packet << TARGET_FLAG_TRADE_ITEM << (uint8)1 << (uint64)TRADE_SLOT_NONTRADED;
+            }
+            else
+            {
+                *packet << TARGET_FLAG_ITEM;
+                (*packet).append(itemForSpell->GetPackGUID());
+            }
             bot->GetSession()->QueuePacket(packet);
             return;
         }
@@ -626,11 +632,7 @@ void AiInventoryManager::Sell(Item* item)
 
 void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 {
-    if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
-    {
-        Trade(text.c_str());
-    }
-	else if (text == "report")
+	if (text == "report")
 	{
 		ListQuestItems();
 	}
@@ -662,6 +664,10 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
     else if (text.size() > 2 && text.substr(0, 2) == "c " || text.size() > 4 && text.substr(0, 6) == "count ")
     {
         ListCount(text.c_str());
+    }
+    else if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
+    {
+        Trade(text.c_str());
     }
 }
 

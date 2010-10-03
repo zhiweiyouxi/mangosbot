@@ -223,6 +223,13 @@ bool AiSpellManager::IsSpellCastUseful(const char* name, Unit* target)
 
 Item* AiSpellManager::FindItemForSpell(const SpellEntry* const pSpellInfo) 
 {
+    Player* trader = bot->GetTrader();
+    if (trader)
+    {
+        uint16 pos = trader->GetItemPosByTradeSlot(TRADE_SLOT_NONTRADED);
+        if (pos) 
+            return trader->GetItemByPos(pos);
+    }
     for( uint8 slot=EQUIPMENT_SLOT_START; slot<EQUIPMENT_SLOT_END; slot++ ) {
         Item* const pItem = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
         if( !pItem )
