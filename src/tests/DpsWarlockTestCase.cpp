@@ -36,9 +36,12 @@ protected:
 		
 		inventoryManager->itemCounts["soul shard"] = 2;
 		spellAvailable("drain soul");
-		tickWithTargetLowHealth(19);
+		tick();
 
-		assertActions(">T:corruption>T:curse of agony>T:drain life>T:shoot>T:drain soul");
+		addAura("nightfall"); 
+		tick();
+
+		assertActions(">T:corruption>T:curse of agony>T:drain life>T:shoot>T:drain soul>T:shadow bolt");
 	}
 
     void summonPet()

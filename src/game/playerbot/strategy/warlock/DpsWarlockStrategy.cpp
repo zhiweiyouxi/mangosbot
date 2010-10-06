@@ -20,6 +20,9 @@ void DpsWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         new NoPetTrigger(ai),
         NextAction::array(0, new NextAction("summon imp", 50.0f), NULL)));
 
+	triggers.push_back(new TriggerNode(
+		new HasAuraTrigger(ai, "nightfall"),
+		NextAction::array(0, new NextAction("shadow bolt", 20.0f), NULL)));
 }
 
 
