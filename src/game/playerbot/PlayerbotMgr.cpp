@@ -65,6 +65,7 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
         }
 
         case CMSG_GAMEOBJ_USE:
+		case CMSG_GAMEOBJ_REPORT_USE:
             {
                 WorldPacket p(packet);
         	    p.rpos(0); // reset reader
