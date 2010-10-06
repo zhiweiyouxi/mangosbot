@@ -44,7 +44,7 @@ void PlayerbotAI::UpdateAI(uint32 elapsed)
 	if (!CanUpdateAI())
 		return;
 
-    if (bot->IsBeingTeleported() || bot->GetTrader())
+    if (bot->IsBeingTeleported())
         return;
 
 	if (bot->isAlive())

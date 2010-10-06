@@ -23,3 +23,8 @@ void StayAction::Execute()
 {
     ai->GetMoveManager()->Stay();
 }
+
+bool UseItemAction::isUseful()
+{
+    return ai->GetSpellManager()->IsSpellCastUseful(getName(), ai->GetTargetManager()->GetSelf());
+}

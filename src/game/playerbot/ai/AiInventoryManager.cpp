@@ -364,19 +364,39 @@ void AiInventoryManager::UseItem(Item& item)
 	// see SpellCastTargets::read in Spell.cpp to see other options
 	// for setting target
 
-	uint32 target = TARGET_FLAG_SELF;
+    WorldPacket* const packet = new WorldPacket(CMSG_USE_ITEM, 1 + 1 + 1 + 4 + 8 + 4 + 1 + 8 + 1);
+    *packet << bagIndex << slot << cast_count << spellid << item_guid
+        << glyphIndex << unk_flags;
 
-	WorldPacket* const packet = new WorldPacket(CMSG_USE_ITEM, 1 + 1 + 1 + 4 + 8 + 4 + 1);
-	*packet << bagIndex << slot << cast_count << spellid << item_guid
-		<< glyphIndex << unk_flags << target;
-	bot->GetSession()->QueuePacket(packet); // queue the packet to get around race condition
+    for (int i=0; i<MAX_ITEM_PROTO_SPELLS; i++)
+    {
+        uint32 spellId = item.GetProto()->Spells[i].SpellId;
+        if (!spellId)
+            continue;
 
-	// certain items cause player to sit (food,drink)
-	// tell bot to stop following if this is the case
-	// (doesn't work since we queued the packet!)
-	// maybe its not needed???
-	//if (! bot->IsStandState())
-	//    bot->GetMotionMaster()->Clear();
+        const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(spellId);
+        Item* itemForSpell = aiRegistry->GetSpellManager()->FindItemForSpell(pSpellInfo);
+        if (itemForSpell)
+        {
+            if (itemForSpell->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
+                continue;
+
+            if (bot->GetTrader())
+            {
+                *packet << TARGET_FLAG_TRADE_ITEM << (uint8)1 << (uint64)TRADE_SLOT_NONTRADED;
+            }
+            else
+            {
+                *packet << TARGET_FLAG_ITEM;
+                (*packet).append(itemForSpell->GetPackGUID());
+            }
+            bot->GetSession()->QueuePacket(packet);
+            return;
+        }
+    }
+
+    *packet << TARGET_FLAG_SELF;
+ 	bot->GetSession()->QueuePacket(packet);
 }
 
 int AiInventoryManager::GetItemCount(const char* name) 
@@ -612,11 +632,7 @@ void AiInventoryManager::Sell(Item* item)
 
 void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 {
-    if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
-    {
-        Trade(text.c_str());
-    }
-	else if (text == "report")
+	if (text == "report")
 	{
 		ListQuestItems();
 	}
@@ -648,6 +664,10 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
     else if (text.size() > 2 && text.substr(0, 2) == "c " || text.size() > 4 && text.substr(0, 6) == "count ")
     {
         ListCount(text.c_str());
+    }
+    else if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
+    {
+        Trade(text.c_str());
     }
 }
 

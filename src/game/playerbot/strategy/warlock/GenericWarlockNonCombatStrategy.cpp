@@ -26,6 +26,10 @@ void GenericWarlockNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trig
 	triggers.push_back(new TriggerNode(
 		new ItemCountTrigger(ai, "spellstone", 1), 
 		NextAction::array(0, new NextAction("create spellstone", 13.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new SpellstoneTrigger(ai), 
+        NextAction::array(0, new NextAction("spellstone", 13.0f), NULL)));
 }
 
 
@@ -70,6 +74,13 @@ ActionNode* GenericWarlockNonCombatStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("spellstone", name)) 
+    {
+        return new ActionNode (new UseItemAction(ai, "spellstone"),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
 
     return NULL;
 }
