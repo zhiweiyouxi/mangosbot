@@ -38,7 +38,7 @@ protected:
 		spellAvailable("drain soul");
 		tick();
 
-		addAura("nightfall"); 
+		addAura("shadow trance"); 
 		tick();
 
 		assertActions(">T:corruption>T:curse of agony>T:drain life>T:shoot>T:drain soul>T:shadow bolt");
