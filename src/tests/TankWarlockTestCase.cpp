@@ -10,6 +10,7 @@ class TankWarlockTestCase : public EngineTestBase
 {
   CPPUNIT_TEST_SUITE( TankWarlockTestCase );
       CPPUNIT_TEST( summonPet );
+      CPPUNIT_TEST( cc );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,6 +28,13 @@ protected:
         tickWithNoPet();
 
 		assertActions(">S:summon voidwalker");
+    }
+
+    void cc()
+    {
+        tickWithCcTarget();
+
+        assertActions(">Cc:banish");
     }
 };
 

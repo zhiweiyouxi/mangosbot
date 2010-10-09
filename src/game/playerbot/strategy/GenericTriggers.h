@@ -313,6 +313,15 @@ namespace ai
     public: 
         virtual bool IsActive();
     };
+
+    class HasCcTargetTrigger : public Trigger
+    {
+    public:
+        HasCcTargetTrigger(AiManagerRegistry* const ai, const char* name) : Trigger(ai, name) {}
+
+    public: 
+        virtual bool IsActive();
+    };
 }
 
 #include "RangeTriggers.h"

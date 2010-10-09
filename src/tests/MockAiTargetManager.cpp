@@ -58,3 +58,9 @@ Unit* MockAiTargetManager::GetPet()
 {
 	return hasPet ? MockedTargets::GetPet() : NULL;
 }
+
+
+Unit* MockAiTargetManager::FindCcTarget(const char* spell)
+{
+    return hasCc ? MockedTargets::GetCc() : NULL;
+}

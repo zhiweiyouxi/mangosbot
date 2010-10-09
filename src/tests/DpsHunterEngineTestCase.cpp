@@ -12,6 +12,7 @@ class DpsHunterEngineTestCase : public EngineTestBase
   CPPUNIT_TEST( summonPet );
   CPPUNIT_TEST( lowMana );
   CPPUNIT_TEST( boost );
+  CPPUNIT_TEST( cc );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -89,6 +90,14 @@ protected:
 		tickWithBalancePercent(1);
 
 		assertActions(">T:hunter's mark>S:rapid fire>S:readyness");
+    }
+
+
+    void cc() 
+    {
+        tickWithCcTarget();
+
+        assertActions(">Cc:freezing trap");
     }
 };
 

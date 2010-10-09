@@ -169,3 +169,8 @@ bool IsBehindTargetTrigger::IsActive()
     Unit* target = targetManager->GetCurrentTarget();
     return target && moveManager->IsBehind(target);
 }
+
+bool HasCcTargetTrigger::IsActive()
+{
+    return statsManager->GetAttackerCount() > 2 && targetManager->FindCcTarget(name) && !targetManager->GetCurrentCcTarget(name);
+}

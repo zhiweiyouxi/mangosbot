@@ -30,6 +30,10 @@ void GenericMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new LowHealthTrigger(ai, 25), 
 		NextAction::array(0, new NextAction("ice block", 80.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HasCcTargetTrigger(ai, "polymorph"), 
+        NextAction::array(0, new NextAction("polymorph", 30.0f), NULL)));
 }
 
 
@@ -98,6 +102,13 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("polymorph", name)) 
+    {
+        return new ActionNode (new CastPolymorphAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else return NULL;
 }
 

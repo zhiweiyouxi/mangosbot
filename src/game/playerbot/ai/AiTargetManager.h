@@ -26,6 +26,8 @@ namespace ai
 		virtual Unit* FindTargetForTank();
 		virtual Unit* FindTargetForDps();
         virtual Unit* GetCurrentTarget() { return selection; }
+        virtual Unit* FindCcTarget(const char* spell);
+        virtual Unit* GetCurrentCcTarget(const char* spell);
         virtual void SetCurrentTarget(Unit* target) { selection = target; }
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();

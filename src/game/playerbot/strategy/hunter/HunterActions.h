@@ -98,5 +98,10 @@ namespace ai
 	public:
 		CastBlackArrow(AiManagerRegistry* const ai) : CastDebuffSpellAction(ai, "black arrow") {}
 	};
-   
+
+    class CastFreezingTrap : public CastDebuffSpellAction {
+    public:
+        CastFreezingTrap(AiManagerRegistry* const ai) : CastDebuffSpellAction(ai, "freezing trap") {}
+        virtual Unit* GetTarget();
+    };
 }

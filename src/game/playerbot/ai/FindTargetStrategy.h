@@ -73,4 +73,35 @@ namespace ai
 		int minDpsCount;
 	};
 
+    class FindTargetForCcStrategy : public FindTargetStrategy
+    {
+    public:
+        FindTargetForCcStrategy(AiManagerRegistry* aiRegistry, const char* spell) : FindTargetStrategy(aiRegistry)
+        {
+            this->spell = spell;
+            maxDistance = 0;
+        }
+
+    protected:
+        virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager);
+    
+    private:
+        const char* spell;
+        float maxDistance;
+    };
+
+    class FindCurrentCcTargetStrategy : public FindTargetStrategy
+    {
+    public:
+        FindCurrentCcTargetStrategy(AiManagerRegistry* aiRegistry, const char* spell) : FindTargetStrategy(aiRegistry)
+        {
+            this->spell = spell;
+        }
+
+    protected:
+        virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager);
+
+    private:
+        const char* spell;
+    };
 };

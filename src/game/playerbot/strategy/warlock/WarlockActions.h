@@ -94,4 +94,12 @@ namespace ai
 	public:
 		CastCreateSpellstoneAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "create spellstone") {}
 	};
+
+    class CastBanishAction : public CastBuffSpellAction 
+    {
+    public:
+        CastBanishAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "banish") {}
+        virtual Unit* GetTarget();
+    };
+    
 }

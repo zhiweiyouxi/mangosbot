@@ -13,6 +13,7 @@ class FrostMageTestCase : public EngineTestBase
   CPPUNIT_TEST( dispel );
   CPPUNIT_TEST( boost );
   CPPUNIT_TEST( interruptSpells );
+  CPPUNIT_TEST( cc );
   CPPUNIT_TEST( pull );
   CPPUNIT_TEST_SUITE_END();
 
@@ -80,6 +81,12 @@ protected:
         assertActions(">T:counterspell>T:frostbolt");
     }
 
+    void cc() 
+    {
+        tickWithCcTarget();
+
+        assertActions(">Cc:polymorph");
+    }
 
     void pull() 
     {

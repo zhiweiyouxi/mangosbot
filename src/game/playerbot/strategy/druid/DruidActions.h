@@ -149,6 +149,14 @@ namespace ai
 		CastEntanglingRootsAction(AiManagerRegistry* const ai) : CastDebuffSpellAction(ai, "entangling roots") {} 
 	};
 
+    class CastEntanglingRootsCcAction : public CastDebuffSpellAction 
+    { 
+    public: 
+        CastEntanglingRootsCcAction(AiManagerRegistry* const ai) : CastDebuffSpellAction(ai, "entangling roots on cc") {} 
+        virtual Unit* GetTarget();
+        virtual bool ExecuteResult();
+    };
+
 	class CastNaturesGraspAction : public CastBuffSpellAction 
 	{ 
 	public: 

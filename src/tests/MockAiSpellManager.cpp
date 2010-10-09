@@ -47,6 +47,8 @@ bool MockAiSpellManager::CastSpell(const char* name, Unit* target)
 		buffer->append("S:"); 
 	if (target == MockedTargets::GetPet()) 
 		buffer->append("Pet:"); 
+    if (target == MockedTargets::GetCc()) 
+        buffer->append("Cc:"); 
 	buffer->append(name); 
 
 	spellCooldowns.push_back(name); 

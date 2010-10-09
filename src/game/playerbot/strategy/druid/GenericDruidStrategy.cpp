@@ -43,6 +43,10 @@ void GenericDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new PartyMemberDeadTrigger(ai),
 		NextAction::array(0, new NextAction("rebirth", 30.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HasCcTargetTrigger(ai, "entangling roots"),
+        NextAction::array(0, new NextAction("entangling roots on cc", 31.0f), NULL)));
 }
 
 ActionNode* GenericDruidStrategy::createAction(const char* name)
@@ -145,6 +149,13 @@ ActionNode* GenericDruidStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
+    else if (!strcmp("entangling roots on cc", name)) 
+    {
+        return new ActionNode (new CastEntanglingRootsCcAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("caster form"), NULL),
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
 
     else return NULL;
 }

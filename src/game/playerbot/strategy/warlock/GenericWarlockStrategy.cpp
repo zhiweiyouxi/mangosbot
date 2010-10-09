@@ -32,6 +32,9 @@ void GenericWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 		new TargetLowHealthTrigger(ai, 20),
 		NextAction::array(0, new NextAction("drain soul", 30.0f), NULL)));
 
+    triggers.push_back(new TriggerNode(
+        new HasCcTargetTrigger(ai, "banish"),
+        NextAction::array(0, new NextAction("banish", 21.0f), NULL)));
 }
 
 
@@ -103,6 +106,13 @@ ActionNode* GenericWarlockStrategy::createAction(const char* name)
     else if (!strcmp("drain life", name)) 
     {
         return new ActionNode (new CastDrainLifeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("banish", name)) 
+    {
+        return new ActionNode (new CastBanishAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

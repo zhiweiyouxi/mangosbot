@@ -334,3 +334,12 @@ void EngineTestBase::tickBehindTarget()
     tick();
     moveManager->isBehind[MockedTargets::GetCurrentTarget()] = false;
 }
+
+void EngineTestBase::tickWithCcTarget()
+{   
+    statsManager->attackerCount = 3;
+    targetManager->hasCc = true;
+    tick();
+    statsManager->attackerCount = 1;
+    targetManager->hasCc = false;
+}

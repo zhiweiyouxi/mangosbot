@@ -18,6 +18,7 @@ namespace ai
 			  partyMemberWithoutAura = false;
 			  haveTarget = true;
 			  hasPet = true;
+              hasCc = false;
           }
 
 	public:
@@ -31,6 +32,8 @@ namespace ai
 		virtual Player* GetSelf();
 		virtual Unit* GetPet();
 		virtual Player* GetMaster();
+        virtual Unit* FindCcTarget(const char* spell);
+        virtual Unit* GetCurrentCcTarget(const char* spell) { return NULL; }
 
 	public:
 		static MockAiTargetManager* Instance();
@@ -40,6 +43,7 @@ namespace ai
 		bool hasPet;
 		bool partyMemberWithoutAura;
 		bool deadPartyMember;
+        bool hasCc;
     };
 
 }

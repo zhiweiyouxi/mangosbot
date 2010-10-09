@@ -265,3 +265,15 @@ Unit* AiTargetManager::FindTargetForDps()
 	FindTargetForDpsStrategy strategy(aiRegistry);
 	return FindTarget(&strategy);
 }
+
+Unit* AiTargetManager::FindCcTarget(const char* spell)
+{
+    FindTargetForCcStrategy strategy(aiRegistry, spell);
+    return FindTarget(&strategy);
+}
+
+Unit* AiTargetManager::GetCurrentCcTarget(const char* spell)
+{
+    FindCurrentCcTargetStrategy strategy(aiRegistry, spell);
+    return FindTarget(&strategy);
+}

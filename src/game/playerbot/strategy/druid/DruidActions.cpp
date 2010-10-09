@@ -25,3 +25,13 @@ NextAction** CastAbolishPoisonOnPartyAction::getAlternatives()
 {
     return NextAction::merge( NextAction::array(0, new NextAction("cure poison on party"), NULL), CastSpellAction::getPrerequisites());
 }
+
+Unit* CastEntanglingRootsCcAction::GetTarget()
+{
+    return ai->GetTargetManager()->FindCcTarget(name);
+}
+
+bool CastEntanglingRootsCcAction::ExecuteResult()
+{
+    return spellManager->CastSpell("entangling roots", GetTarget()); 
+}

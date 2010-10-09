@@ -14,6 +14,7 @@ class CasterDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( healOthers );
 	CPPUNIT_TEST( curePoison );
 	CPPUNIT_TEST( resurrect );
+    CPPUNIT_TEST( cc );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -103,6 +104,13 @@ protected:
 
 		assertActions(">-moonkin form>P:rebirth");
 	}
+
+    void cc()
+    {
+        tickWithCcTarget();
+
+        assertActions(">Cc:entangling roots");
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CasterDruidTestCase );

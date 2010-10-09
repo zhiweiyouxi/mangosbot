@@ -17,7 +17,8 @@ class BearTankDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( curePoison );
     CPPUNIT_TEST( interruptSpells );
-	CPPUNIT_TEST( buff );
+    CPPUNIT_TEST( buff );
+    CPPUNIT_TEST( cc );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -187,6 +188,15 @@ protected:
 
         assertActions(">S:thorns>S:dire bear form>T:faerie fire (feral)");
 	}
+
+    void cc()
+    {
+        addAura("dire bear form");
+        tickWithCcTarget();
+        tickWithCcTarget();
+
+        assertActions(">-dire bear form>Cc:entangling roots");
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( BearTankDruidTestCase );

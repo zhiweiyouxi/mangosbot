@@ -54,6 +54,10 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new DebuffTrigger(ai, "hunter's mark"), 
         NextAction::array(0, new NextAction("hunter's mark", 52.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new HasCcTargetTrigger(ai, "freezing trap"), 
+        NextAction::array(0, new NextAction("freezing trap", 83.0f), NULL)));
 }
 
 void DpsHunterStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -168,6 +172,13 @@ ActionNode* DpsHunterStrategy::createAction(const char* name)
     else if (!strcmp("black arrow", name)) 
     {
         return new ActionNode (new CastBlackArrow(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("freezing trap", name)) 
+    {
+        return new ActionNode (new CastFreezingTrap(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);

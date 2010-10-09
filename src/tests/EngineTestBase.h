@@ -73,6 +73,7 @@ protected:
 	void tickWithNoDrink();
 	void itemAvailable(const char* item, int amount);
 	void tickWithDeadPartyMember();
+    void tickWithCcTarget();
 
 protected:
     MockAiManagerRegistry *ai;

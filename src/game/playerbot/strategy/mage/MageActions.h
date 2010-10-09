@@ -88,4 +88,11 @@ namespace ai
     public:
         CastFrostArmorAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "frost armor") {}
     };
+
+    class CastPolymorphAction : public CastBuffSpellAction 
+    {
+    public:
+        CastPolymorphAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "polymorph") {}
+        virtual Unit* GetTarget();
+    };
 }

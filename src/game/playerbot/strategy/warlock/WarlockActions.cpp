@@ -3,3 +3,8 @@
 #include "WarlockActions.h"
 
 using namespace ai;
+
+Unit* CastBanishAction::GetTarget()
+{
+    return ai->GetTargetManager()->FindCcTarget(name);
+}

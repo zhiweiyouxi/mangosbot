@@ -43,3 +43,8 @@ bool CastAspectOfTheCheetahAction::isUseful() {
 bool CastAspectOfTheViperAction::isUseful() {
 	return CastBuffSpellAction::isUseful() && statsManager->GetManaPercent(targetManager->GetSelf()) < 50;
 }
+
+Unit* CastFreezingTrap::GetTarget()
+{
+    return ai->GetTargetManager()->FindCcTarget(name);
+}
