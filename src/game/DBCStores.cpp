@@ -32,7 +32,7 @@ typedef std::map<uint32,uint32> AreaFlagByMapID;
 
 struct WMOAreaTableTripple
 {
-    WMOAreaTableTripple(int32 r, int32 a, int32 g) : rootId(r), adtId(a), groupId(g)
+    WMOAreaTableTripple(int32 r, int32 a, int32 g) : groupId(g), rootId(r), adtId(a)
     {
     }
 
@@ -259,7 +259,7 @@ static uint32 ReadDBCBuild(const std::string& dbc_path, LocaleNameStr const* loc
 
 static bool LoadDBC_assert_print(uint32 fsize,uint32 rsize, const std::string& filename)
 {
-    sLog.outError("ERROR: Size of '%s' setted by format string (%u) not equal size of C++ structure (%u).",filename.c_str(),fsize,rsize);
+    sLog.outError("Size of '%s' setted by format string (%u) not equal size of C++ structure (%u).",filename.c_str(),fsize,rsize);
 
     // ASSERT must fail after function call
     return false;
@@ -357,7 +357,7 @@ void LoadDBCStores(const std::string& dataPath)
         exit(1);
     }
 
-    const uint32 DBCFilesCount = 85;
+    const uint32 DBCFilesCount = 87;
 
     barGoLink bar( (int)DBCFilesCount );
 
