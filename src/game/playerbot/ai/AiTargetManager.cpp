@@ -183,9 +183,9 @@ bool AiTargetManager::HasAuraToDispel(Unit* player, uint32 dispelType)
 			continue;
 
 		if (canDispel(entry, dispelType))
-			return TRUE;
+			return true;
 	}
-	return FALSE;
+	return false;
 }
 
 bool AiTargetManager::canDispel(const SpellEntry* entry, uint32 dispelType) {

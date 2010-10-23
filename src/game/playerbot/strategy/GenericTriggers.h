@@ -253,7 +253,7 @@ namespace ai
 	public:
 		NoPetTrigger(AiManagerRegistry* const ai) : Trigger(ai, "no pet", 5) {}
 
-		virtual bool NoPetTrigger::IsActive() {
+		virtual bool IsActive() {
 			return !targetManager->GetPet() && !ai->GetStatsManager()->IsMounted();
 		}
 	};

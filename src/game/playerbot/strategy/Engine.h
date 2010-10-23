@@ -12,7 +12,7 @@ namespace ai
     class ActionExecutionListener 
     {
     public:
-        virtual bool ActionExecuted(Action* action) = NULL;
+        virtual bool ActionExecuted(Action* action) = 0;
     };
 
     // -----------------------------------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ namespace ai
 	    virtual ~Engine(void);
 
     private:
-        bool MultiplyAndPush(NextAction** actions, float forceRelevance = 0.0f, bool skipPrerequisites = FALSE);
+        bool MultiplyAndPush(NextAction** actions, float forceRelevance = 0.0f, bool skipPrerequisites = false);
         void Reset();
         void ProcessTriggers();
         void PushDefaultActions();

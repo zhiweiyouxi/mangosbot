@@ -45,10 +45,10 @@ namespace ai
         virtual ~Action(void) {}
 
     public:
-        virtual bool ExecuteResult() { Execute(); return TRUE; }
+        virtual bool ExecuteResult() { Execute(); return true; }
         virtual void Execute() { }
-        virtual bool isPossible() { return TRUE; }
-        virtual bool isUseful() { return TRUE; }
+        virtual bool isPossible() { return true; }
+        virtual bool isUseful() { return true; }
         virtual NextAction** getPrerequisites() { return NULL; }
         virtual NextAction** getAlternatives() { return NULL; }
         virtual NextAction** getContinuers() { return NULL; }
@@ -101,7 +101,7 @@ namespace ai
 	class ActionBasket
 	{
 	public:
-		ActionBasket(ActionNode* action, float relevance, bool skipPrerequisites = FALSE)
+		ActionBasket(ActionNode* action, float relevance, bool skipPrerequisites = false)
         {
             this->action = action;
             this->relevance = relevance;

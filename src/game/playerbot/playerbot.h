@@ -9,6 +9,9 @@
 #define BOT_REACT_DISTANCE 75.0f
 
 std::vector<std::string> split(const std::string &s, char delim);
+#ifndef WIN32
+int strcmpi(const char *s1, const char *s2);
+#endif
 
 #include "../Spell.h"
 #include "../WorldPacket.h"

@@ -4,7 +4,7 @@
 using namespace ai;
 using namespace std;
 
-char * __cdecl strstri (
+char * strstri (
                         const char * str1,
                         const char * str2
                         )

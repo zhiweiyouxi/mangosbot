@@ -40,7 +40,7 @@ namespace ai {
 			return spellManager->HasAnyAuraOf(GetTarget(), "dire bear form", "bear form", "cat form", "travel form", "aquatic form", 
 				"flight form", "swift flight form", "moonkin form", NULL); 
 		}
-		virtual bool isPossible() { return TRUE; }
+		virtual bool isPossible() { return true; }
 		
 		virtual bool ExecuteResult();
 	};

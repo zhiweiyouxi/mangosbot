@@ -8,7 +8,7 @@ namespace ai
     public:
         AttackAction(AiManagerRegistry* const ai, const char* name) : Action(ai, name) {}
         
-        virtual Unit* GetTarget() = NULL;
+        virtual Unit* GetTarget() = 0;
 
         virtual void Execute() {
             Unit* target = GetTarget();

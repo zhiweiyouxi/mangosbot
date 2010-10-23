@@ -376,11 +376,18 @@ bool AiSpellManager::HasAuraToDispel(Unit* player, uint32 dispelType)
 			continue;
 
 		if (canDispel(entry, dispelType))
-			return TRUE;
+			return true;
 	}
-	return FALSE;
+	return false;
 }
 
+#ifndef WIN32
+int strcmpi(const char *s1, const char *s2)
+{
+	for (; *s1 && *s2 && (toupper(*s1) == toupper(*s2)); ++s1, ++s2);
+	return *s1 - *s2;
+}
+#endif
 
 bool AiSpellManager::canDispel(const SpellEntry* entry, uint32 dispelType) 
 {

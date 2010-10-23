@@ -22,7 +22,7 @@ namespace ai
 		Unit* GetResult() { return result; }
 
 	protected:
-		virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager) = NULL;
+		virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager) = 0;
 		void GetPlayerCount(Player* bot, Unit* creature, int* tankCount, int* dpsCount);
 
 	protected:

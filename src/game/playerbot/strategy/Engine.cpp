@@ -83,7 +83,7 @@ void Engine::Init()
 
 bool Engine::DoNextAction(Unit* unit, int depth) 
 {
-    bool actionExecuted = FALSE;
+    bool actionExecuted = false;
     ActionBasket* basket = NULL;
 
     time_t currentTime = time(0);
@@ -166,7 +166,7 @@ ActionNode* Engine::createAction(const char* name)
 
 bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool skipPrerequisites)
 {
-    bool pushed = FALSE;
+    bool pushed = false;
     if (actions)
     {
         for (int j=0; j<10; j++) // TODO: remove 10
@@ -188,7 +188,7 @@ bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool sk
                 if (k > 0)
                 {
                     queue.Push(new ActionBasket(action, k, skipPrerequisites));
-                    pushed = TRUE;
+                    pushed = true;
                 }
 
                 delete nextAction;
@@ -314,7 +314,7 @@ void Engine::PushAgain( ActionNode* actionNode, float relevance )
     NextAction** nextAction = new NextAction*[2];
     nextAction[0] = new NextAction(actionNode->getName(), relevance);
     nextAction[1] = NULL;
-    MultiplyAndPush(nextAction, relevance, TRUE);
+    MultiplyAndPush(nextAction, relevance, true);
     delete actionNode;
 }
 

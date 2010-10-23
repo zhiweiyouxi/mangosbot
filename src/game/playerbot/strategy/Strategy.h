@@ -25,7 +25,7 @@ namespace ai
         virtual NextAction** getDefaultActions() { return NULL; }
         virtual void InitTriggers(std::list<TriggerNode*> &triggers) {}
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers) {}
-        virtual const char* getName() = NULL;
+        virtual const char* getName() = 0;
 		virtual StrategyType GetType() { return STRATEGY_TYPE_GENERIC; }
         virtual ActionNode* createAction(const char* name)  { return NULL; }
     };

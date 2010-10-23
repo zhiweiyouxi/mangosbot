@@ -70,7 +70,7 @@ void LootManager::DoLoot()
 
     if (CanLoot())
     {
-        LootObject &lootObject = availableLoot->GetLoot(BOTLOOT_DISTANCE);
+        LootObject lootObject = availableLoot->GetLoot(BOTLOOT_DISTANCE);
         DoLoot(lootObject);
     }
 }

@@ -13,7 +13,7 @@ namespace ai
     public:
         IterateItemsVisitor() {}
 
-        virtual bool Visit(Item* item) = NULL;
+        virtual bool Visit(Item* item) = 0;
     };
 
     class FindItemVisitor : public IterateItemsVisitor {
@@ -32,7 +32,7 @@ namespace ai
         Item* GetResult() { return result; }
 
     protected:
-        virtual bool Accept(const ItemPrototype* proto) = NULL;
+        virtual bool Accept(const ItemPrototype* proto) = 0;
 
     private:
         Item* result;

@@ -33,7 +33,7 @@ namespace ai
         virtual ~Trigger() {}
 
 	public:
-		virtual bool IsActive() = NULL;
+		virtual bool IsActive() = 0;
         virtual NextAction** getHandlers() { return NULL; }
         virtual const char* getName() { return name ? name : "trigger"; }
 		

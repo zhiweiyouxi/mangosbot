@@ -10,7 +10,7 @@ namespace ai
             this->minValue = minValue;
         }
     public: 
-        virtual float GetValue() = NULL;
+        virtual float GetValue() = 0;
         virtual bool IsActive() {
             float value = GetValue();
             return value < maxValue && value > minValue;
@@ -25,7 +25,7 @@ namespace ai
 		HealthInRangeTrigger(AiManagerRegistry* const ai, const char* name, float maxValue, float minValue = 0) :
 		  ValueInRangeTrigger(ai, name, maxValue, minValue) {}
 
-		  virtual Unit* GetTarget() = NULL;
+		  virtual Unit* GetTarget() = 0;
 		  virtual float GetValue();
 	};
 

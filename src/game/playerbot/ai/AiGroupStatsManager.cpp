@@ -39,7 +39,7 @@ float AiGroupStatsManager::CalculateBalancePercent()
 		}
 	}
 
-    AttackerMap &v = attackerMapProvider->GetAttackers();
+    AttackerMap v = attackerMapProvider->GetAttackers();
 
 	for (AttackerMapIterator i = v.begin(); i!=v.end(); i++)
 	{  
