@@ -296,7 +296,7 @@ AC_CONFIG_FILES([
    src/mangosd/Makefile
    src/mangosd/mangosd.conf.dist
    src/bindings/Makefile
-   src/bindings/universal/Makefile
+   src/bindings/scriptdev2/Makefile
 ])
 
 ## Configure ACE, if needed

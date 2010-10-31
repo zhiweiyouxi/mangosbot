@@ -405,7 +405,7 @@ libmangosgame_a_SOURCES = \
 	playerbot/strategy/druid/GenericDruidNonCombatStrategy.cpp \
 	playerbot/strategy/druid/GenericDruidNonCombatStrategy.h \
 	playerbot/strategy/druid/GenericDruidStrategy.cpp \
-	playerbot/strategy/druid/GenericDruidStrategy.h
+	playerbot/strategy/druid/GenericDruidStrategy.h \
 	playerbot/strategy/hunter/DpsHunterStrategy.cpp \
 	playerbot/strategy/hunter/DpsHunterStrategy.h \
 	playerbot/strategy/hunter/GenericHunterNonCombatStrategy.cpp \
