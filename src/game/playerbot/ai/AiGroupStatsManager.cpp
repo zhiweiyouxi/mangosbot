@@ -31,7 +31,7 @@ float AiGroupStatsManager::CalculateBalancePercent()
 		Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
 		for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
 		{
-			Player *player = sObjectMgr.GetPlayer(uint64 (itr->guid));
+			Player *player = sObjectMgr.GetPlayer(itr->guid);
 			if( !player || !player->isAlive() || player == master)
 				continue;
 

@@ -174,16 +174,20 @@ Unit* AiTargetManager::GetPartyMemberToDispell(uint32 dispelType)
 
 bool AiTargetManager::HasAuraToDispel(Unit* player, uint32 dispelType) 
 {
-	Unit::AuraMap &uAuras = player->GetAuras();
-	for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)
+	for (uint32 type = SPELL_AURA_NONE; type < TOTAL_AURAS; ++type)
 	{
-		const SpellEntry* entry = itr->second->GetSpellProto();
-		uint32 spellId = entry->Id;
-		if (IsPositiveSpell(spellId))
-			continue;
+		Unit::AuraList auras = player->GetAurasByType((AuraType)type);
+		for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+		{
+			Aura* aura = *itr;
+			const SpellEntry* entry = aura->GetSpellProto();
+			uint32 spellId = entry->Id;
+			if (IsPositiveSpell(spellId))
+				continue;
 
-		if (canDispel(entry, dispelType))
-			return true;
+			if (canDispel(entry, dispelType))
+				return true;
+		}
 	}
 	return false;
 }

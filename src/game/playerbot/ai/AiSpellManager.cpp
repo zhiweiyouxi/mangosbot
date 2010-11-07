@@ -49,7 +49,7 @@ uint32 AiSpellManager::FindSpellId(const char* args)
     {
 		uint32 spellId = itr->first;
 
-		if (itr->second->state == PLAYERSPELL_REMOVED || itr->second->disabled || IsPassiveSpell(spellId))
+		if (itr->second.state == PLAYERSPELL_REMOVED || itr->second.disabled || IsPassiveSpell(spellId))
 			continue;
 
 		const SpellEntry* pSpellInfo = sSpellStore.LookupEntry(spellId);
@@ -84,11 +84,11 @@ bool AiSpellManager::HasAura(uint32 spellId, const Unit* player)
 	if (!spellId || !player) 
 		return false;
 
-	for (AuraMap::const_iterator iter = player->GetAuras().begin(); iter != player->GetAuras().end(); ++iter) 
-	{
-		if (iter->second->GetId() == spellId)
-			return true;
-	}
+	Unit* unit = (Unit*)player;
+	if (unit->GetAura(spellId, EFFECT_INDEX_0) ||
+			unit->GetAura(spellId, EFFECT_INDEX_1) ||
+			unit->GetAura(spellId, EFFECT_INDEX_2))
+		return true;
 	return false;
 }
 
@@ -136,8 +136,8 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
 	if (!spellInfo)
 		return false;
 
-	uint64 oldSel = bot->GetSelection();
-	bot->SetSelection(target->GetGUID());
+	ObjectGuid oldSel = bot->GetSelectionGuid();
+	bot->SetSelectionGuid(target->GetObjectGuid());
 	Spell *spell = new Spell(bot, spellInfo, false );
     SpellCastTargets targets;
     targets.setUnitTarget(target);
@@ -145,7 +145,7 @@ bool AiSpellManager::CanCastSpell(uint32 spellid, Unit* target)
     spell->m_CastItem = FindItemForSpell(spellInfo);
 	SpellCastResult result = spell->CheckCast(false);
 	delete spell;
-	bot->SetSelection(oldSel);
+	bot->SetSelectionGuid(oldSel);
 
 	switch (result)
 	{
@@ -226,9 +226,7 @@ Item* AiSpellManager::FindItemForSpell(const SpellEntry* const pSpellInfo)
     Player* trader = bot->GetTrader();
     if (trader)
     {
-        uint16 pos = trader->GetItemPosByTradeSlot(TRADE_SLOT_NONTRADED);
-        if (pos) 
-            return trader->GetItemByPos(pos);
+        return trader->GetTradeData()->GetItem(TRADE_SLOT_NONTRADED);
     }
     for( uint8 slot=EQUIPMENT_SLOT_START; slot<EQUIPMENT_SLOT_END; slot++ ) {
         Item* const pItem = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, slot );
@@ -249,21 +247,18 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
     if (!bot->isInFrontInMap(target, 10))
     {
         bot->SetInFront(target);
-		WorldPacket data;
-		bot->BuildHeartBeatMsg( &data );
-		bot->SendMessageToSet( &data, false );
 		bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
     }
 
     lastSpellId = spellId;
-    lastSpellTarget = target->GetGUID();
+    lastSpellTarget = target->GetObjectGuid();
     lastCastTime = time(0);
 
 	aiRegistry->GetMoveManager()->Stay();
 
     const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(lastSpellId);
-    uint64 oldSel = bot->GetSelection();
-    bot->SetSelection(lastSpellTarget);
+    ObjectGuid oldSel = bot->GetSelectionGuid().GetRawValue();
+    bot->SetSelectionGuid(lastSpellTarget);
     
     Spell *spell = new Spell(bot, pSpellInfo, false);
     SpellCastTargets targets;
@@ -271,7 +266,7 @@ bool AiSpellManager::CastSpell(uint32 spellId, Unit* target)
     targets.setItemTarget(FindItemForSpell(pSpellInfo));
     spell->prepare(&targets, false);
     
-    bot->SetSelection(oldSel);
+    bot->SetSelectionGuid(oldSel);
 
     float castTime = GetSpellCastTime(pSpellInfo);
 
@@ -309,7 +304,8 @@ void AiSpellManager::InterruptSpell()
     for (int type = CURRENT_MELEE_SPELL; type < CURRENT_MAX_SPELL; type++)
         bot->InterruptSpell((CurrentSpellTypes)type);
 
-    bot->m_mover->InterruptSpell(CURRENT_AUTOREPEAT_SPELL);
+    for (int type = CURRENT_MELEE_SPELL; type < CURRENT_MAX_SPELL; type++)
+    	bot->GetMover()->InterruptSpell((CurrentSpellTypes)type);
 
 	SpellInterrupted(lastSpellId);
 }
@@ -367,16 +363,20 @@ bool AiSpellManager::IsSpellCasting(Unit* player)
 
 bool AiSpellManager::HasAuraToDispel(Unit* player, uint32 dispelType) 
 {
-	Unit::AuraMap &uAuras = player->GetAuras();
-	for (Unit::AuraMap::const_iterator itr = uAuras.begin(); itr != uAuras.end(); ++itr)
+	for (uint32 type = SPELL_AURA_NONE; type < TOTAL_AURAS; ++type)
 	{
-		const SpellEntry* entry = itr->second->GetSpellProto();
-		uint32 spellId = entry->Id;
-		if (IsPositiveSpell(spellId))
-			continue;
+		Unit::AuraList auras = player->GetAurasByType((AuraType)type);
+		for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+		{
+			Aura* aura = *itr;
+			const SpellEntry* entry = aura->GetSpellProto();
+			uint32 spellId = entry->Id;
+			if (IsPositiveSpell(spellId))
+				continue;
 
-		if (canDispel(entry, dispelType))
-			return true;
+			if (canDispel(entry, dispelType))
+				return true;
+		}
 	}
 	return false;
 }
@@ -414,7 +414,7 @@ void AiSpellManager::ListSpells()
 	for (PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr) {
 		const uint32 spellId = itr->first;
 
-		if (itr->second->state == PLAYERSPELL_REMOVED || itr->second->disabled || IsPassiveSpell(spellId))
+		if (itr->second.state == PLAYERSPELL_REMOVED || itr->second.disabled || IsPassiveSpell(spellId))
 			continue;
 
 		const SpellEntry* const pSpellInfo = sSpellStore.LookupEntry(spellId);
@@ -463,7 +463,7 @@ void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 	for(PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr)
 	{
 		uint32 spellId = itr->first;
-		if(itr->second->state == PLAYERSPELL_REMOVED || itr->second->disabled || IsPassiveSpell(spellId))
+		if(itr->second.state == PLAYERSPELL_REMOVED || itr->second.disabled || IsPassiveSpell(spellId))
 			continue;
 		const SpellEntry* pSpellInfo = sSpellStore.LookupEntry(spellId);
 		if (!pSpellInfo)
@@ -480,7 +480,7 @@ void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 				}
 			}
 			else if((pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
-				&& (pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED))
+				&& (pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
 			{
 				if((pSpellInfo->EffectBasePoints[1] == master_speed1)
 					&& (pSpellInfo->EffectBasePoints[2] == master_speed2) && CanCastSpell(spellId, bot))
@@ -490,7 +490,7 @@ void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 				}
 			}
 			else if((pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
-				&& (pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED))
+				&& (pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
 			{
 				if((pSpellInfo->EffectBasePoints[2] == master_speed2) 
 					&& (pSpellInfo->EffectBasePoints[1] == master_speed1) && CanCastSpell(spellId, bot))

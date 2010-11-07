@@ -57,7 +57,7 @@ void LootManager::DeactivateLootGameObject(LootObject &loot)
     if(go)
     {
         go->SetLootState(GO_JUST_DEACTIVATED);
-        go->Update(0);
+        go->Update(0, 0);
     }
 }
 
@@ -192,7 +192,7 @@ void LootManager::StoreGameObjectLootItem( GameObject* go, LootItem * item, Loot
 
 void LootManager::AddMasterSelection()
 {
-    uint64 masterSelection = bot->GetPlayerbotAI()->GetMaster()->GetSelection();
+    uint64 masterSelection = bot->GetPlayerbotAI()->GetMaster()->GetSelectionGuid().GetRawValue();
     if (masterSelection) 
         AddLoot(masterSelection);
 }

@@ -30,7 +30,7 @@ void AiSocialManager::AcceptInvitation()
 	if (!grp)
 		return;
 
-	Player* inviter = sObjectMgr.GetPlayer(grp->GetLeaderGUID());
+	Player* inviter = sObjectMgr.GetPlayer(grp->GetLeaderGuid());
 	if (!inviter)
 		return;
 

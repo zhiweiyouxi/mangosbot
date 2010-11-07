@@ -307,7 +307,6 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if (GetPlayer()->GetGuildId())
                 if (Guild *guild = sObjectMgr.GetGuildById(GetPlayer()->GetGuildId()))
                     guild->BroadcastToGuild(this, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
-        } break;
 
             // Playerbot mod: broadcast message to bot members
             PlayerbotMgr *mgr = GetPlayer()->GetPlayerbotMgr();
@@ -321,6 +320,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 }
             }
             // END Playerbot mod
+        } break;
+
         case CHAT_MSG_OFFICER:
         {
             std::string msg;

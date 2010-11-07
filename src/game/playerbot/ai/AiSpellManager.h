@@ -51,7 +51,7 @@ namespace ai
 
 	public:
 		uint32 GetLastSpellId() { return lastSpellId; }
-		uint64 GetLastSpellTarget() { return lastSpellTarget; }
+		uint64 GetLastSpellTarget() { return lastSpellTarget.GetRawValue(); }
 		int32 CalculateGlobalCooldown(uint32 spellid);
         Item* FindItemForSpell(const SpellEntry* const pSpellInfo);
 	
@@ -63,7 +63,7 @@ namespace ai
 		std::map<std::string, uint32> spellMap;
 
 		uint32 lastSpellId;
-		uint64 lastSpellTarget;
+		ObjectGuid lastSpellTarget;
 		time_t lastCastTime;
 	};
 

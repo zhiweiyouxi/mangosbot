@@ -1,4 +1,4 @@
-#include "Config/ConfigEnv.h"
+#include "Config/Config.h"
 #include "../pchdef.h"
 #include "playerbot.h"
 
@@ -156,7 +156,7 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 		{
 
 			WorldPacket p(packet); //WorldPacket packet for CMSG_LOOT_ROLL, (8+4+1)
-			uint64 Guid;
+			ObjectGuid Guid;
 			uint32 NumberOfPlayers;
 			uint8 rollType;
 			p.rpos(0); //reset packet pointer
@@ -182,17 +182,17 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 						{
 						case GROUP_LOOT:
 							// bot random roll
-							group->CountRollVote(bot->GetGUID(), Guid, NumberOfPlayers, choice);
+							group->CountRollVote(bot, Guid, NumberOfPlayers, ROLL_NEED);
 							break;
 						case NEED_BEFORE_GREED:
 							choice = 1;
 							// bot need roll
-							group->CountRollVote(bot->GetGUID(), Guid, NumberOfPlayers, choice);
+							group->CountRollVote(bot, Guid, NumberOfPlayers, ROLL_NEED);
 							break;
 						case MASTER_LOOT:
 							choice = 0;
 							// bot pass on roll
-							group->CountRollVote(bot->GetGUID(), Guid, NumberOfPlayers, choice);
+							group->CountRollVote(bot, Guid, NumberOfPlayers, ROLL_PASS);
 							break;
 						default:
 							break;
@@ -414,7 +414,7 @@ bool processBotCommand(WorldSession* session, string cmdStr, uint64 guid)
     return true;
 }
 
-bool ChatHandler::HandlePlayerbotCommand(const char* args)
+bool ChatHandler::HandlePlayerbotCommand(char* args)
 {
 	if(sConfig.GetBoolDefault("PlayerbotAI.DisableBots", false))
 	{
@@ -473,7 +473,7 @@ bool ChatHandler::HandlePlayerbotCommand(const char* args)
         Group::MemberSlotList slots = group->GetMemberSlots();
         for (Group::member_citerator i = slots.begin(); i != slots.end(); i++) 
         {
-            uint64 member = i->guid;
+            uint64 member = i->guid.GetRawValue();
             if (member != player->GetGUID() && !processBotCommand(m_session, cmdStr, member))
             {
                 PSendSysMessage("Error processing bot command");

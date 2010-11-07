@@ -44,7 +44,7 @@ namespace ai
 
     private:
         vector<uint32> taxiNodes;
-        uint64 taxiMaster;
+        ObjectGuid taxiMaster;
 	};
 
 };

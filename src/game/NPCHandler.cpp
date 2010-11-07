@@ -349,24 +349,6 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
             return;
         }
 
-    // Playerbot mod
-    if(pCreature->isBotGiver() && ! _player->GetPlayerbotAI())
-    {
-        if (! _player->GetPlayerbotMgr())
-            _player->SetPlayerbotMgr(new PlayerbotMgr(_player));
-        WorldSession * m_session = _player->GetSession();
-        uint64 guidlo = _player->PlayerTalkClass->GossipOptionSender(option);
-        if(_player->GetPlayerbotMgr()->GetPlayerBot(guidlo) != NULL)
-        {
-            _player->GetPlayerbotMgr()->LogoutPlayerBot(guidlo);
-        }
-        else if(_player->GetPlayerbotMgr()->GetPlayerBot(guidlo) == NULL)
-        {
-            _player->GetPlayerbotMgr()->AddPlayerBot(guidlo, m_session);
-        }
-        _player->PlayerTalkClass->CloseGossip();
-    }
-
         if (!code.empty())
         {
             if (!Script->GOGossipSelectWithCode(_player, pGo, _player->PlayerTalkClass->GossipOptionSender(gossipListId), _player->PlayerTalkClass->GossipOptionAction(gossipListId), code.c_str()))

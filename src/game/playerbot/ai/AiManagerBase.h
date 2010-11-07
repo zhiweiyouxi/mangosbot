@@ -9,10 +9,10 @@ class PlayerbotChatHandler: protected ChatHandler
 {
 public:
 	explicit PlayerbotChatHandler(Player* pMasterPlayer) : ChatHandler(pMasterPlayer) {}
-	bool revive(const Player& botPlayer) { return HandleReviveCommand(botPlayer.GetName()); }
-	bool teleport(const Player& botPlayer) { return HandleNamegoCommand(botPlayer.GetName()); }
+	bool revive(const Player& botPlayer) { return HandleReviveCommand((char*)botPlayer.GetName()); }
+	bool teleport(const Player& botPlayer) { return HandleNamegoCommand((char*)botPlayer.GetName()); }
 	void sysmessage(const char *str) { SendSysMessage(str); }
-	bool dropQuest(const char *str) { return HandleQuestRemove(str); }
+	bool dropQuest(const char *str) { return HandleQuestRemoveCommand((char*)str); }
     uint32 extractQuestId(const char *str);
 };
 

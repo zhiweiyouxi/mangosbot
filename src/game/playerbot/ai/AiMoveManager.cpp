@@ -195,7 +195,7 @@ void AiMoveManager::Attack(Unit* target)
 	}
 
 	uint64 guid = target->GetGUID();
-	bot->SetSelection(guid);
+	bot->SetSelectionGuid(target->GetObjectGuid());
 	bot->Attack(target, true);
 
     Pet* pet = bot->GetPet();
@@ -254,7 +254,7 @@ void AiMoveManager::Revive()
 		return;
 	}
     aiRegistry->GetTargetManager()->SetCurrentTarget(NULL);
-	bot->SetSelection(0);
+	bot->SetSelectionGuid(ObjectGuid());
 }
 
 void AiMoveManager::Summon()
@@ -291,15 +291,15 @@ void AiMoveManager::HandleCommand(const string& text, Player& fromPlayer)
 {
 	if (text == "attack")
 	{
-		Attack(ObjectAccessor::GetUnit(*bot, fromPlayer.GetSelection()));
+		Attack(ObjectAccessor::GetUnit(*bot, fromPlayer.GetSelectionGuid()));
 	}
 	else if(text == "release" && !bot->isAlive())
 	{
 		ReleaseSpirit();
 	}
-    else if(text == "fly" && taxiMaster)
+    else if(text == "fly" && !taxiMaster.IsEmpty())
     {
-        bot->SetSelection(taxiMaster);
+        bot->SetSelectionGuid(taxiMaster);
 
         Creature *npc = bot->GetNPCIfCanInteractWith(taxiMaster, UNIT_NPC_FLAG_FLIGHTMASTER);
         if (!npc)
@@ -361,7 +361,7 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 			uint64 guid = extractGuid(p);
 			if (guid != bot->GetGUID())
 				return;
-			bot->m_movementInfo.AddMovementFlag(MOVEMENTFLAG_FLYING2);
+			bot->m_movementInfo.AddMovementFlag(MOVEFLAG_FLYING);
 			//bot->SetSpeed(MOVE_RUN, GetMaster()->GetSpeed(MOVE_FLIGHT) +0.1f, true);
 			return;
 		}
@@ -373,7 +373,7 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 			uint64 guid = extractGuid(p);
 			if (guid != bot->GetGUID())
 				return;
-			bot->m_movementInfo.RemoveMovementFlag(MOVEMENTFLAG_FLYING2);
+			bot->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLYING);
 			//bot->SetSpeed(MOVE_RUN,GetMaster()->GetSpeedRate(MOVE_RUN),true);
 			return;
 		}
@@ -390,7 +390,7 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 void AiMoveManager::UseMeetingStone(uint64 guid) 
 {
     Player* master = bot->GetPlayerbotAI()->GetMaster();
-    if (master->GetSelection() != bot->GetGUID())
+    if (master->GetSelectionGuid().GetRawValue() != bot->GetGUID())
         return;
 
     GameObject* gameObject = master->GetMap()->GetGameObject(guid);
@@ -427,7 +427,7 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
             uint64 guid;
             p >> guid;
 
-            UseMeetingStone(MAKE_NEW_GUID(guid, 0, HIGHGUID_GAMEOBJECT));
+            UseMeetingStone(guid);
             return;
         }
     }

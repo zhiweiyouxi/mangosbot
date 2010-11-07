@@ -38,7 +38,6 @@ AiStrategyManager::~AiStrategyManager()
 void AiStrategyManager::DoNextAction() 
 {
 	WorldPacket data;
-	bot->BuildHeartBeatMsg( &data );
 	bot->SendMessageToSet( &data, false );
 	bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
 
@@ -54,7 +53,7 @@ void AiStrategyManager::DoNextAction()
 	else 
     {
         aiRegistry->GetTargetManager()->SetCurrentTarget(NULL);
-        bot->SetSelection(0);
+        bot->SetSelectionGuid(ObjectGuid());
         if (currentEngine != nonCombatEngine)
 	    {
 		    currentEngine = nonCombatEngine;

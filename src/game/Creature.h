@@ -39,8 +39,6 @@ class Player;
 class WorldSession;
 
 
-    // Playerbot mod
-    ,GOSSIP_OPTION_BOT               = 99                    //UNUSED (just for bot system)
 enum CreatureFlagsExtra
 {
     CREATURE_FLAG_EXTRA_INSTANCE_BIND   = 0x00000001,       // creature kill bind instance with killer and killer's group

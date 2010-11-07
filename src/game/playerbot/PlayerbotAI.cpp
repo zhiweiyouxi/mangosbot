@@ -64,7 +64,7 @@ void PlayerbotAI::HandleTeleportAck()
 		p.appendPackGUID(bot->GetGUID());
 		p << (uint32) 0; // supposed to be flags? not used currently
 		p << (uint32) time(0); // time - not currently used
-		bot->GetSession()->HandleMoveTeleportAck(p);
+		bot->GetSession()->HandleMoveTeleportAckOpcode(p);
 	}
 	else if (bot->IsBeingTeleportedFar())
 		bot->GetSession()->HandleMoveWorldportAckOpcode();

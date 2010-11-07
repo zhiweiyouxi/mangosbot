@@ -67,7 +67,7 @@ void FindTargetForTankStrategy::CheckAttacker(Player* bot, Player* player, Threa
 	GetPlayerCount(bot, creature, &tankCount, &dpsCount);
 
 	if (!result || 
-        (bot->GetSelection() != creature->GetGUID() && minThreat >= threat && 
+        (bot->GetSelectionGuid().GetRawValue() != creature->GetGUID() && minThreat >= threat && 
             (minTankCount >= tankCount || maxDpsCount <= dpsCount)))
 	{
 		minThreat = threat;
@@ -117,7 +117,7 @@ void FindTargetForCcStrategy::CheckAttacker(Player* bot, Player* player, ThreatM
         Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
         for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
         {
-            Player *member = sObjectMgr.GetPlayer(uint64 (itr->guid));
+            Player *member = sObjectMgr.GetPlayer(itr->guid);
             if( !member || !member->isAlive() || member == bot)
                 continue;
 

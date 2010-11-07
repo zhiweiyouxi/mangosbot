@@ -108,7 +108,7 @@ void AiQuestManager::TurnInQuests( WorldObject *questgiver )
 		aiRegistry->GetSocialManager()->TellMaster("hey you are turning in quests without me!");
 	else
 	{
-		bot->SetSelection( giverGUID );
+		bot->SetSelectionGuid( ObjectGuid(giverGUID) );
 
 		// auto complete every completed quest this NPC has
 		bot->PrepareQuestMenu( giverGUID );

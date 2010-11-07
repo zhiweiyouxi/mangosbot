@@ -559,7 +559,7 @@ class ChatHandler
         bool HandleRespawnCommand(char* args);
         bool HandleComeToMeCommand(char* args);
         bool HandleCombatStopCommand(char* args);
-        bool HandlePlayerbotCommand(const char* args);
+        bool HandlePlayerbotCommand(char* args);
         bool HandleFlushArenaPointsCommand(char* args);
         bool HandleRepairitemsCommand(char* args);
         bool HandleStableCommand(char* args);

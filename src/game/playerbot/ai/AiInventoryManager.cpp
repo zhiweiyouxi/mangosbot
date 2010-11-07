@@ -388,7 +388,7 @@ void AiInventoryManager::UseItem(Item& item)
             else
             {
                 *packet << TARGET_FLAG_ITEM;
-                (*packet).append(itemForSpell->GetPackGUID());
+                *packet << itemForSpell->GetPackGUID();
             }
             bot->GetSession()->QueuePacket(packet);
             return;
@@ -510,13 +510,20 @@ void AiInventoryManager::Buy(const char* link)
         return;
 
     Player* master = bot->GetPlayerbotAI()->GetMaster();
-    uint64 vendorguid = master->GetSelection();
+    uint64 vendorguid = master->GetSelectionGuid().GetRawValue();
     if (!vendorguid)
         return;
 
+    Creature *pCreature = bot->GetNPCIfCanInteractWith(vendorguid,UNIT_NPC_FLAG_VENDOR);
+    VendorItemData const* tItems = pCreature->GetVendorTemplateItems();
+
     for (list<uint32>::iterator i = itemIds.begin(); i != itemIds.end(); i++) 
     {
-        bot->BuyItemFromVendor(vendorguid, *i, 1, NULL_BAG, NULL_SLOT);
+    	for (uint32 slot = 0; slot < tItems->GetItemCount(); slot++)
+    	{
+    		if (tItems->GetItem(slot)->item == *i)
+    	        bot->BuyItemFromVendorSlot(vendorguid, *i, slot, 1, NULL_BAG, NULL_SLOT);
+    	}
     }
 }
 
@@ -529,9 +536,13 @@ void AiInventoryManager::Reward(const char* link)
 
 	uint32 itemId = itemIds.front();
 	bool wasRewarded = false;
-	uint64 questRewarderGUID = bot->GetPlayerbotAI()->GetMaster()->GetSelection();
-    bot->SetSelection(questRewarderGUID);
-	Object* const pNpc = ObjectAccessor::GetObjectByTypeMask(*bot, questRewarderGUID, TYPEMASK_UNIT|TYPEMASK_GAMEOBJECT);
+	const ObjectGuid &questRewarder = bot->GetPlayerbotAI()->GetMaster()->GetSelectionGuid();
+	uint64 questRewarderGUID = bot->GetPlayerbotAI()->GetMaster()->GetSelectionGuid().GetRawValue();
+    bot->SetSelectionGuid(questRewarder);
+	Object* pNpc = ObjectAccessor::GetGameObjectInWorld(questRewarder);
+	if (!pNpc)
+		pNpc = ObjectAccessor::GetUnitInWorld(*bot, questRewarder);
+
 	if (!pNpc)
 		return;
 
@@ -615,7 +626,7 @@ void AiInventoryManager::Sell(FindItemVisitor* visitor)
 
 void AiInventoryManager::Sell(Item* item)
 {
-    uint64 vendorguid = bot->GetPlayerbotAI()->GetMaster()->GetSelection();
+    uint64 vendorguid = bot->GetPlayerbotAI()->GetMaster()->GetSelectionGuid().GetRawValue();
     if (!vendorguid)
     {
         aiRegistry->GetSocialManager()->TellMaster("Select a vendor first");
@@ -712,7 +723,7 @@ void AiInventoryManager::HandleMasterIncomingPacket(const WorldPacket& packet)
         p.rpos(0); // reset reader
         uint64 guid;
         p >> guid;
-        AddLoot(MAKE_NEW_GUID(guid, 0, HIGHGUID_GAMEOBJECT));
+        AddLoot(guid);
         break;
     }
 }
@@ -912,29 +923,32 @@ bool AiInventoryManager::TradeItem(FindItemVisitor *visitor, int8 slot)
 
 bool AiInventoryManager::TradeItem(const Item& item, int8 slot)
 {
-    if (!bot->GetTrader() || item.IsInTrade() || (!item.CanBeTraded() && slot!=TRADE_SLOT_NONTRADED) )
-        return false;
+	if (!bot->GetTrader() || item.IsInTrade() || (!item.CanBeTraded() && slot != TRADE_SLOT_NONTRADED))
+		return false;
 
-    int8 tradeSlot = -1;
+	int8 tradeSlot = -1;
 
-    if( (slot>=0 && slot<TRADE_SLOT_COUNT) && bot->GetItemPosByTradeSlot(slot)==NULL_SLOT )
-        tradeSlot = slot;
-    else
-    {
-        for( uint8 i=0; i<TRADE_SLOT_TRADED_COUNT && tradeSlot==-1; i++ )
-        {
-            if( bot->GetItemPosByTradeSlot(i) == NULL_SLOT )
-                tradeSlot = i;
-        }
-    }
+	TradeData* pTrade = bot->GetTradeData();
+	if ((slot >= 0 && slot < TRADE_SLOT_COUNT) && pTrade->GetItem(TradeSlots(slot)) == NULL)
+		tradeSlot = slot;
+	else
+		for (uint8 i = 0; i < TRADE_SLOT_TRADED_COUNT && tradeSlot == -1; i++)
+		{
+			if (pTrade->GetItem(TradeSlots(i)) == NULL)
+			{
+				tradeSlot = i;
+				// reserve trade slot to allow multiple items to be traded
+				pTrade->SetItem(TradeSlots(i), const_cast<Item*>(&item));
+			}
+		}
 
-    if( tradeSlot == -1 ) return false;
+	if (tradeSlot == -1) return false;
 
-    WorldPacket* const packet = new WorldPacket(CMSG_SET_TRADE_ITEM, 3);
-    *packet << (uint8) tradeSlot << (uint8) item.GetBagSlot()
-        << (uint8) item.GetSlot();
-    bot->GetSession()->QueuePacket(packet);
-    return true;
+	WorldPacket* const packet = new WorldPacket(CMSG_SET_TRADE_ITEM, 3);
+	*packet << (uint8) tradeSlot << (uint8) item.GetBagSlot()
+			<< (uint8) item.GetSlot();
+	bot->GetSession()->QueuePacket(packet);
+	return true;
 }
 
 
