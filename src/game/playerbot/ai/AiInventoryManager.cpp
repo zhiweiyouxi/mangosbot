@@ -77,7 +77,7 @@ public:
 
     virtual bool Visit(Item* item)
     {
-        if (bot->CanUseItem(item->GetProto()))
+        if (bot->CanUseItem(item->GetProto()) == EQUIP_ERR_OK)
             return FindItemVisitor::Visit(item);
 
         return true;
@@ -290,32 +290,22 @@ void AiInventoryManager::IterateItems(IterateItemsVisitor* visitor, IterateItems
 
 void AiInventoryManager::IterateItemsInBags(IterateItemsVisitor* visitor)
 {
-    for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
-    {
-        Item* pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
-        if (!pItem)
-            continue;
+    for(int i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; ++i)
+        if (Item *pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+			if (!visitor->Visit(pItem))
+				return;
 
-        if (!visitor->Visit(pItem))
-            return;
-    }    
+    for(int i = KEYRING_SLOT_START; i < CURRENCYTOKEN_SLOT_END; ++i)
+        if (Item *pItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+			if (!visitor->Visit(pItem))
+				return;
 
-    for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
-    {
-        const Bag* pBag = (Bag*) bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
-        if (!pBag)
-            continue;
-
-        for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
-        {
-            Item* pItem = bot->GetItemByPos(bag, slot);
-            if (!pItem)
-                continue;
-
-            if (!visitor->Visit(pItem))
-                return;
-        }
-    }
+    for(int i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
+        if (Bag *pBag = (Bag*)bot->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
+            for(uint32 j = 0; j < pBag->GetBagSize(); ++j)
+                if (Item* pItem = pBag->GetItemByPos(j))
+					if (!visitor->Visit(pItem))
+						return;
 }
 
 void AiInventoryManager::IterateItemsInEquip(IterateItemsVisitor* visitor)
@@ -730,7 +720,7 @@ void AiInventoryManager::HandleMasterIncomingPacket(const WorldPacket& packet)
 
 void AiInventoryManager::QueryItemUsage(ItemPrototype const *item)
 {
-    if (!bot->CanUseItem(item))
+    if (bot->CanUseItem(item) != EQUIP_ERR_OK)
         return;
 
     if (item->InventoryType == INVTYPE_NON_EQUIP)

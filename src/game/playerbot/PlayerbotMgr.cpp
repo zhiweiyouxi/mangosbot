@@ -313,33 +313,6 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 }
 void PlayerbotMgr::HandleMasterOutgoingPacket(const WorldPacket& packet)
 {
-	/**
-    switch (packet.GetOpcode())
-    {
-        // maybe our bots should only start looting after the master loots?
-        //case SMSG_LOOT_RELEASE_RESPONSE: {} 
-        case SMSG_NAME_QUERY_RESPONSE:
-        case SMSG_MONSTER_MOVE:
-        case SMSG_COMPRESSED_UPDATE_OBJECT:
-        case SMSG_DESTROY_OBJECT:
-        case SMSG_UPDATE_OBJECT:
-        case SMSG_STANDSTATE_UPDATE:
-        case MSG_MOVE_HEARTBEAT:
-        case SMSG_QUERY_TIME_RESPONSE:
-        case SMSG_AURA_UPDATE_ALL:
-        case SMSG_CREATURE_QUERY_RESPONSE:
-        case SMSG_GAMEOBJECT_QUERY_RESPONSE:
-            return;
-        default:
-        {
-            const char* oc = LookupOpcodeName(packet.GetOpcode());
-
-            std::ostringstream out;
-            out << "masterout: " << oc;
-            sLog.outError(out.str().c_str());
-        }
-    }
-	 */
 }
 
 void PlayerbotMgr::LogoutAllBots()

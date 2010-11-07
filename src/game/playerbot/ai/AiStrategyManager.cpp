@@ -37,8 +37,6 @@ AiStrategyManager::~AiStrategyManager()
 
 void AiStrategyManager::DoNextAction() 
 {
-	WorldPacket data;
-	bot->SendMessageToSet( &data, false );
 	bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
 
 	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();

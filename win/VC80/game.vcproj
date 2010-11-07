@@ -566,14 +566,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\BattleGroundABG.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\BattleGroundABG.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\BattleGroundAV.cpp"
 				>
 			</File>
@@ -634,6 +626,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\BattleGroundRB.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\BattleGroundRB.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\BattleGroundRL.cpp"
 				>
 			</File>
@@ -667,6 +667,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\CalendarHandler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Camera.h"
 				>
 			</File>
 			<File
@@ -743,6 +751,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\GridDefines.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\GridMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\GridMap.h"
 				>
 			</File>
 			<File
@@ -974,6 +990,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\UnitAuraProcHandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\UpdateData.cpp"
 				>
 			</File>
@@ -1011,6 +1031,106 @@
 			</File>
 		</Filter>
 		<Filter
+			Name="Motion generators"
+			>
+			<File
+				RelativePath="..\..\src\game\ConfusedMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\ConfusedMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\DestinationHolder.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\DestinationHolder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\DestinationHolderImp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\FleeingMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\FleeingMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\HomeMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\HomeMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\IdleMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\IdleMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MotionMaster.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MotionMaster.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PointMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PointMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\RandomMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\RandomMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\TargetedMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\TargetedMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Traveller.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\WaypointMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\WaypointMovementGenerator.h"
+				>
+			</File>
+		</Filter>
+		<Filter
 			Name="Object"
 			>
 			<File
@@ -1022,23 +1142,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AnimalRandomMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\ArenaTeam.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\game\ArenaTeam.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AuctionHouseBot.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AuctionHouseBot.h"
 				>
 			</File>
 			<File
@@ -1063,14 +1171,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\Calendar.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ConfusedMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ConfusedMovementGenerator.h"
 				>
 			</File>
 			<File
@@ -1134,31 +1234,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\DestinationHolder.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\DestinationHolder.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\DestinationHolderImp.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\DynamicObject.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\game\DynamicObject.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\FleeingMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\FleeingMovementGenerator.h"
 				>
 			</File>
 			<File
@@ -1198,22 +1278,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\HomeMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\HomeMovementGenerator.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\IdleMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\IdleMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Item.cpp"
 				>
 			</File>
@@ -1242,22 +1306,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\MotionMaster.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MotionMaster.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\NullCreatureAI.cpp"
 				>
 			</File>
@@ -1282,7 +1330,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\ObjectDefines.h"
+				RelativePath="..\..\src\game\ObjectGuid.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\ObjectGuid.h"
 				>
 			</File>
 			<File
@@ -1326,22 +1378,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\PointMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PointMovementGenerator.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\RandomMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\RandomMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\ReactorAI.cpp"
 				>
 			</File>
@@ -1378,14 +1414,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\TargetedMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\TargetedMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\TemporarySummon.cpp"
 				>
 			</File>
@@ -1407,10 +1435,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\TotemAI.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Traveller.h"
 				>
 			</File>
 			<File
@@ -1441,14 +1465,6 @@
 				RelativePath="..\..\src\game\Vehicle.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\game\WaypointMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\WaypointMovementGenerator.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Server"
@@ -1471,14 +1487,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\DBCStructure.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\GlobalEvents.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\GlobalEvents.h"
 				>
 			</File>
 			<File
@@ -1546,6 +1554,14 @@
 			Name="Tool"
 			>
 			<File
+				RelativePath="..\..\src\game\CharacterDatabaseCleaner.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\CharacterDatabaseCleaner.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\Language.h"
 				>
 			</File>
@@ -1611,7 +1627,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="PlayerBot"
+			Name="playerbot"
 			>
 			<File
 				RelativePath="..\..\src\game\playerbot\playerbot.h"
@@ -1735,33 +1751,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\ai\AiStrategyManager.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\ai\AiStrategyManager.h"
@@ -1794,33 +1783,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\ai\FleeManager.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\ai\FleeManager.h"
@@ -1853,33 +1815,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Action.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Action.h"
@@ -1896,33 +1831,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\ActionFactory.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\ActionFactory.h"
@@ -1935,33 +1843,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\CureTriggers.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\CureTriggers.h"
@@ -1970,33 +1851,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Engine.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Engine.h"
@@ -2005,33 +1859,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericActions.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericActions.h"
@@ -2040,33 +1867,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericNonCombatStrategy.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericNonCombatStrategy.h"
@@ -2075,33 +1875,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericSpellActions.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericSpellActions.h"
@@ -2110,33 +1883,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericTriggers.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\GenericTriggers.h"
@@ -2145,33 +1891,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\HealthTriggers.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\HealthTriggers.h"
@@ -2180,33 +1899,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\LowManaMultiplier.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\LowManaMultiplier.h"
@@ -2215,33 +1907,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Multiplier.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Multiplier.h"
@@ -2250,33 +1915,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\NonCombatActions.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\NonCombatActions.h"
@@ -2285,33 +1923,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\PassiveMultiplier.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\PassiveMultiplier.h"
@@ -2336,33 +1947,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\RacialsStrategy.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\RacialsStrategy.h"
@@ -2379,33 +1963,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Strategy.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Strategy.h"
@@ -2414,33 +1971,6 @@
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Trigger.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_NoPCH|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\game\playerbot\strategy\Trigger.h"
@@ -2452,33 +1982,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\BearTankDruidStrategy.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\BearTankDruidStrategy.h"
@@ -2487,33 +1990,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\CasterDruidStrategy.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\CasterDruidStrategy.h"
@@ -2522,33 +1998,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\CatDpsDruidStrategy.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\CatDpsDruidStrategy.h"
@@ -2557,33 +2006,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActionFactory.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActionFactory.h"
@@ -2592,33 +2014,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActions.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidActions.h"
@@ -2635,33 +2030,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidMultipliers.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidMultipliers.h"
@@ -2674,33 +2042,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidTriggers.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\DruidTriggers.h"
@@ -2709,33 +2050,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\FeralDruidStrategy.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\FeralDruidStrategy.h"
@@ -2744,33 +2058,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidNonCombatStrategy.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidNonCombatStrategy.h"
@@ -2779,33 +2066,6 @@
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidStrategy.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_NoPCH|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\game\playerbot\strategy\druid\GenericDruidStrategy.h"
@@ -3337,6 +2597,18 @@
 					</File>
 				</Filter>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="ahbot"
+			>
+			<File
+				RelativePath="..\..\src\game\AuctionHouseBot.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\AuctionHouseBot.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"

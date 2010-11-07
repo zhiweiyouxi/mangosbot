@@ -35,6 +35,8 @@ void AiSocialManager::AcceptInvitation()
 		return;
 
 	WorldPacket p;
+	uint32 roles_mask = 0;
+	p << roles_mask;
 	bot->GetSession()->HandleGroupAcceptOpcode(p);
 }
 
