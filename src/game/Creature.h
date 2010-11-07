@@ -38,6 +38,9 @@ class Quest;
 class Player;
 class WorldSession;
 
+
+    // Playerbot mod
+    ,GOSSIP_OPTION_BOT               = 99                    //UNUSED (just for bot system)
 enum CreatureFlagsExtra
 {
     CREATURE_FLAG_EXTRA_INSTANCE_BIND   = 0x00000001,       // creature kill bind instance with killer and killer's group
@@ -421,6 +424,11 @@ class MANGOS_DLL_SPEC Creature : public Unit
 
         bool IsTrainerOf(Player* player, bool msg) const;
         bool CanInteractWithBattleMaster(Player* player, bool msg) const;
+
+        // Playerbot mod - adds functionality to load/unload bots from NPC, also need to apply SQL scripts
+        bool isBotGiver();
+        void LoadBotMenu(Player *pPlayer);
+
         bool CanTrainAndResetTalentsOf(Player* pPlayer) const;
         bool IsOutOfThreatArea(Unit* pVictim) const;
         bool IsImmuneToSpell(SpellEntry const* spellInfo);

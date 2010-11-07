@@ -311,6 +311,11 @@ bool Creature::UpdateEntry(uint32 Entry, uint32 team, const CreatureData *data, 
     else
         setFaction(GetCreatureInfo()->faction_A);
 
+    // Playerbot START
+    if(isBotGiver())
+        SetUInt32Value(UNIT_NPC_FLAGS, 1);
+    else
+    // Playerbot END
     SetUInt32Value(UNIT_NPC_FLAGS,GetCreatureInfo()->npcflag);
 
     SetAttackTime(BASE_ATTACK,  GetCreatureInfo()->baseattacktime);
@@ -851,7 +856,15 @@ bool Creature::CanTrainAndResetTalentsOf(Player* pPlayer) const
         && pPlayer->getClass() == GetCreatureInfo()->trainer_class;
 }
 
+<<<<<<< HEAD
 void Creature::PrepareBodyLootState()
+=======
+
+
+
+
+void Creature::LoadGossipOptions()
+>>>>>>> dfb0036601ac516d75bf4b3e53f9c5980c214c7e
 {
     loot.clear();
 
@@ -1410,7 +1423,19 @@ void Creature::SetDeathState(DeathState s)
         CreatureInfo const *cinfo = GetCreatureInfo();
         SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
         RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+<<<<<<< HEAD
         AddSplineFlag(SPLINEFLAG_WALKMODE);
+=======
+        AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+
+		// Playerbot mod
+        //SetUInt32Value(UNIT_NPC_FLAGS, cinfo->npcflag);
+        if(isBotGiver())
+            SetUInt32Value(UNIT_NPC_FLAGS, 1);
+        else
+        // End Playerbot mod
+
+>>>>>>> dfb0036601ac516d75bf4b3e53f9c5980c214c7e
         SetUInt32Value(UNIT_NPC_FLAGS, cinfo->npcflag);
         Unit::SetDeathState(ALIVE);
         clearUnitState(UNIT_STAT_ALL_STATE);

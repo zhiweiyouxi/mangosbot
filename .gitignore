@@ -29,6 +29,7 @@ INSTALL
 #
 # Build generated files
 #
+m4/*
 aclocal.m4
 autom4te.cache
 compile
@@ -98,3 +99,4 @@ cmake_install.cmake
 #
 !dep/ACE_wrappers/ace/ace_message_table.bin
 !dep/tbb/src/Makefile
+/win/revision.h

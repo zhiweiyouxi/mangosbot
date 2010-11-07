@@ -61,6 +61,9 @@
 #include "AchievementMgr.h"
 #include "Mail.h"
 
+// Playerbot mod:
+#include "playerbot/playerbot.h"
+
 #include <cmath>
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
@@ -408,6 +411,10 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
 {
     m_transport = 0;
 
+    // Playerbot mod:
+    m_playerbotAI = 0;
+    m_playerbotMgr = 0;
+
     m_speakTime = 0;
     m_speakCount = 0;
 
@@ -628,6 +635,16 @@ Player::~Player ()
 
     delete m_declinedname;
     delete m_runes;
+
+    // Playerbot mod
+    if (m_playerbotAI) {
+        delete m_playerbotAI;
+        m_playerbotAI = 0;
+    }
+    if (m_playerbotMgr) {
+        delete m_playerbotMgr;
+        m_playerbotMgr = 0;
+    }
 }
 
 void Player::CleanupsBeforeDelete()
@@ -1467,6 +1484,12 @@ void Player::Update(uint32 update_diff, uint32 tick_diff)
 
     if (IsHasDelayedTeleport())
         TeleportTo(m_teleport_dest, m_teleport_options);
+
+	    // Playerbot mod
+    if (m_playerbotAI)
+        m_playerbotAI->UpdateAI(p_time);
+    else if (m_playerbotMgr)
+        m_playerbotMgr->UpdateAI(p_time);
 }
 
 void Player::SetDeathState(DeathState s)

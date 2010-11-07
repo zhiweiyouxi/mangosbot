@@ -34,6 +34,10 @@
 #include "Util.h"
 #include "LootMgr.h"
 
+// Playerbot mod
+#include "playerbot/playerbot.h"
+
+
 #define LOOT_ROLL_TIMEOUT  (1*MINUTE*IN_MILLISECONDS)
 
 //===================================================

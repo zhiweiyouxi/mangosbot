@@ -45,6 +45,9 @@ enum StableResultCode
     STABLE_ERR_EXOTIC       = 0x0C,                         // "you are unable to control exotic creatures"
 };
 
+// Playerbot mod
+#include "playerbot/playerbot.h"
+
 void WorldSession::HandleTabardVendorActivateOpcode( WorldPacket & recv_data )
 {
     ObjectGuid guid;
@@ -272,7 +275,15 @@ void WorldSession::HandleGossipHelloOpcode(WorldPacket & recv_data)
     if (GetPlayer()->hasUnitState(UNIT_STAT_DIED))
         GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
 
-    if (!pCreature->IsStopped())
+    // Playerbot mod
+    if(pCreature->isBotGiver())
+    {
+        GetPlayer()->TalkedToCreature(pCreature->GetEntry(),pCreature->GetGUID());
+        /*pCreature->prepareGossipMenu(GetPlayer(),GOSSIP_OPTION_BOT);
+        pCreature->sendPreparedGossip(GetPlayer());*/
+        pCreature->StopMoving();
+    }
+    else if (!pCreature->IsStopped())
         pCreature->StopMoving();
 
     if (pCreature->isSpiritGuide())
@@ -337,6 +348,24 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
             DEBUG_LOG("WORLD: HandleGossipSelectOptionOpcode - %s not found or you can't interact with it.", guid.GetString().c_str());
             return;
         }
+
+    // Playerbot mod
+    if(pCreature->isBotGiver() && ! _player->GetPlayerbotAI())
+    {
+        if (! _player->GetPlayerbotMgr())
+            _player->SetPlayerbotMgr(new PlayerbotMgr(_player));
+        WorldSession * m_session = _player->GetSession();
+        uint64 guidlo = _player->PlayerTalkClass->GossipOptionSender(option);
+        if(_player->GetPlayerbotMgr()->GetPlayerBot(guidlo) != NULL)
+        {
+            _player->GetPlayerbotMgr()->LogoutPlayerBot(guidlo);
+        }
+        else if(_player->GetPlayerbotMgr()->GetPlayerBot(guidlo) == NULL)
+        {
+            _player->GetPlayerbotMgr()->AddPlayerBot(guidlo, m_session);
+        }
+        _player->PlayerTalkClass->CloseGossip();
+    }
 
         if (!code.empty())
         {
