@@ -869,6 +869,8 @@ void AiInventoryManager::FindAndUse(const char* item, uint8 delay)
 void AiInventoryManager::AcceptTrade()
 {
     WorldPacket p;
+	uint32 status = 0;
+	p << status;
     bot->GetSession()->HandleAcceptTradeOpcode(p);
 }
 
