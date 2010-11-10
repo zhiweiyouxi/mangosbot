@@ -260,7 +260,9 @@ void AiStatsManager::ListXP( ostringstream &out )
 {
     uint32 curXP = bot->GetUInt32Value(PLAYER_XP);
     uint32 nextLevelXP = bot->GetUInt32Value(PLAYER_NEXT_LEVEL_XP);
-    uint32 xpPercent = 100 * curXP / nextLevelXP;
+    uint32 xpPercent = 0;
+	if (nextLevelXP)
+		xpPercent = 100 * curXP / nextLevelXP;
 
     out << "|r|cff00ff00" << xpPercent << "|r|cffffd333%" << "|h|cffffffff XP";
 }
