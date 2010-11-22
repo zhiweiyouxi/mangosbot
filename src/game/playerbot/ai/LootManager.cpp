@@ -57,7 +57,7 @@ void LootManager::DeactivateLootGameObject(LootObject &loot)
     if(go)
     {
         go->SetLootState(GO_JUST_DEACTIVATED);
-        go->Update(0, 0);
+        go->Update(0);
     }
 }
 

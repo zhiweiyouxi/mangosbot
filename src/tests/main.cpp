@@ -3,38 +3,70 @@
 
 DatabaseType WorldDatabase;                                 ///< Accessor to the world database
 DatabaseType CharacterDatabase;                             ///< Accessor to the character database
-DatabaseType loginDatabase;                                 ///< Accessor to the realm/login database
+DatabaseType LoginDatabase;                                 ///< Accessor to the realm/login database
 uint32 realmID;                                             ///< Id of the realm
 
-bool ChatHandler::HandleAccountDeleteCommand(const char* args)
+bool ChatHandler::HandleAccountDeleteCommand(char* args)
 {
     return true;
 }
 
-bool ChatHandler::HandleCharacterDeleteCommand(const char* args)
+bool ChatHandler::HandleServerExitCommand(char* /*args*/)
 {
     return true;
 }
 
-bool ChatHandler::HandleServerExitCommand(const char* /*args*/)
+bool ChatHandler::HandleAccountOnlineListCommand(char* /*args*/)
 {
     return true;
 }
 
-bool ChatHandler::HandleAccountOnlineListCommand(const char* /*args*/)
+bool ChatHandler::HandleAccountCreateCommand(char* args)
 {
     return true;
 }
 
-bool ChatHandler::HandleAccountCreateCommand(const char* args)
+bool __thiscall ChatHandler::HandleQuitCommand(char *)
 {
     return true;
 }
 
-bool ChatHandler::HandleServerSetLogLevelCommand(const char *args)
+bool __thiscall ChatHandler::HandleServerLogLevelCommand(char *)
 {
     return true;
 }
+
+bool __thiscall ChatHandler::HandleServerLogFilterCommand(char *)
+{
+    return true;
+}
+
+bool __thiscall ChatHandler::HandleCharacterEraseCommand(char *)
+{
+    return true;
+}
+
+bool __thiscall ChatHandler::HandleCharacterDeletedOldCommand(char *)
+{
+    return true;
+}
+
+bool __thiscall ChatHandler::HandleCharacterDeletedRestoreCommand(char *)
+{
+    return true;
+}
+
+bool __thiscall ChatHandler::HandleCharacterDeletedListCommand(char *)
+{
+    return true;
+}
+
+bool __thiscall ChatHandler::HandleCharacterDeletedDeleteCommand(char *)
+{
+    return true;
+}
+
+
 void CliRunnable::run()
 {
 }

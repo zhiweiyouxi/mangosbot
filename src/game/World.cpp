@@ -267,7 +267,7 @@ World::AddSession_ (WorldSession* s)
         float popu = float(GetActiveSessionCount());        // updated number of users on the server
         popu /= pLimit;
         popu *= 2;
-        LoginDatabase.PExecute ("UPDATE realmlist SET population = '%f' WHERE id = '%d'", popu, realmID);
+        LoginDatabase.PExecute ("UPDATE realmlist SET population = '%f' WHERE id = '%u'", popu, realmID);
         DETAIL_LOG("Server Population (%f).", popu);
     }
 }
@@ -883,16 +883,16 @@ void World::SetInitialWorldSettings()
     ///- Initialize config settings
     LoadConfigSettings();
 
-    ///- Check the existence of the map files for all races' startup areas.
-    if(   !MapManager::ExistMapAndVMap(0,-6240.32f, 331.033f)
-        ||!MapManager::ExistMapAndVMap(0,-8949.95f,-132.493f)
-        ||!MapManager::ExistMapAndVMap(0,-8949.95f,-132.493f)
-        ||!MapManager::ExistMapAndVMap(1,-618.518f,-4251.67f)
-        ||!MapManager::ExistMapAndVMap(0, 1676.35f, 1677.45f)
-        ||!MapManager::ExistMapAndVMap(1, 10311.3f, 832.463f)
-        ||!MapManager::ExistMapAndVMap(1,-2917.58f,-257.98f)
-        ||m_configUint32Values[CONFIG_UINT32_EXPANSION] && (
-        !MapManager::ExistMapAndVMap(530,10349.6f,-6357.29f) || !MapManager::ExistMapAndVMap(530,-3961.64f,-13931.2f) ) )
+    ///- Check the existence of the map files for all races start areas.
+    if (!MapManager::ExistMapAndVMap(0,-6240.32f, 331.033f) ||
+        !MapManager::ExistMapAndVMap(0,-8949.95f,-132.493f) ||
+        !MapManager::ExistMapAndVMap(0,-8949.95f,-132.493f) ||
+        !MapManager::ExistMapAndVMap(1,-618.518f,-4251.67f) ||
+        !MapManager::ExistMapAndVMap(0, 1676.35f, 1677.45f) ||
+        !MapManager::ExistMapAndVMap(1, 10311.3f, 832.463f) ||
+        !MapManager::ExistMapAndVMap(1,-2917.58f,-257.98f) ||
+        (m_configUint32Values[CONFIG_UINT32_EXPANSION] &&
+        (!MapManager::ExistMapAndVMap(530,10349.6f,-6357.29f) || !MapManager::ExistMapAndVMap(530,-3961.64f,-13931.2f))))
     {
         sLog.outError("Correct *.map files not found in path '%smaps' or *.vmtree/*.vmtile files in '%svmaps'. Please place *.map and vmap files in appropriate directories or correct the DataDir value in the mangosd.conf file.",m_dataPath.c_str(),m_dataPath.c_str());
         Log::WaitBeforeContinueIfNeed();
@@ -914,7 +914,7 @@ void World::SetInitialWorldSettings()
     // not send custom type REALM_FFA_PVP to realm list
     uint32 server_type = IsFFAPvPRealm() ? REALM_TYPE_PVP : getConfig(CONFIG_UINT32_GAME_TYPE);
     uint32 realm_zone = getConfig(CONFIG_UINT32_REALM_ZONE);
-    LoginDatabase.PExecute("UPDATE realmlist SET icon = %u, timezone = %u WHERE id = '%d'", server_type, realm_zone, realmID);
+    LoginDatabase.PExecute("UPDATE realmlist SET icon = %u, timezone = %u WHERE id = '%u'", server_type, realm_zone, realmID);
 
     ///- Remove the bones (they should not exist in DB though) and old corpses after a restart
     CharacterDatabase.PExecute("DELETE FROM corpse WHERE corpse_type = '0' OR time < (UNIX_TIMESTAMP()-'%u')", 3*DAY);
@@ -923,6 +923,7 @@ void World::SetInitialWorldSettings()
     sLog.outString("Initialize data stores...");
     LoadDBCStores(m_dataPath);
     DetectDBCLang();
+    sObjectMgr.SetDBCLocaleIndex(GetDefaultDbcLocale());    // Get once for all the locale index of DBC language (console/broadcasts)
 
     sLog.outString( "Loading Script Names...");
     sObjectMgr.LoadScriptNames();
@@ -945,19 +946,6 @@ void World::SetInitialWorldSettings()
 
     ///- Init highest guids before any guid using table loading to prevent using not initialized guids in some code.
     sObjectMgr.SetHighestGuids();                           // must be after packing instances
-
-    sLog.outString();
-    sLog.outString( "Loading Localization strings..." );
-    sObjectMgr.LoadCreatureLocales();
-    sObjectMgr.LoadGameObjectLocales();
-    sObjectMgr.LoadItemLocales();
-    sObjectMgr.LoadQuestLocales();
-    sObjectMgr.LoadNpcTextLocales();
-    sObjectMgr.LoadPageTextLocales();
-    sObjectMgr.LoadGossipMenuItemsLocales();
-    sObjectMgr.LoadPointOfInterestLocales();
-    sObjectMgr.SetDBCLocaleIndex(GetDefaultDbcLocale());        // Get once for all the locale index of DBC language (console/broadcasts)
-    sLog.outString( ">>> Localization strings loaded" );
     sLog.outString();
 
     sLog.outString( "Loading Page Texts..." );
@@ -973,7 +961,7 @@ void World::SetInitialWorldSettings()
     sSpellMgr.LoadSpellElixirs();
 
     sLog.outString( "Loading Spell Learn Skills..." );
-    sSpellMgr.LoadSpellLearnSkills();                        // must be after LoadSpellChains
+    sSpellMgr.LoadSpellLearnSkills();                       // must be after LoadSpellChains
 
     sLog.outString( "Loading Spell Learn Spells..." );
     sSpellMgr.LoadSpellLearnSpells();
@@ -1015,7 +1003,7 @@ void World::SetInitialWorldSettings()
     sObjectMgr.LoadCreatureModelRace();
 
     sLog.outString( "Loading SpellsScriptTarget...");
-    sSpellMgr.LoadSpellScriptTarget();                       // must be after LoadCreatureTemplates and LoadGameobjectInfo
+    sSpellMgr.LoadSpellScriptTarget();                      // must be after LoadCreatureTemplates and LoadGameobjectInfo
 
     sLog.outString( "Loading ItemRequiredTarget...");
     sObjectMgr.LoadItemRequiredTarget();
@@ -1043,7 +1031,7 @@ void World::SetInitialWorldSettings()
 
     sLog.outString( "Loading Creature Addon Data..." );
     sLog.outString();
-    sObjectMgr.LoadCreatureAddons();                            // must be after LoadCreatureTemplates() and LoadCreatures()
+    sObjectMgr.LoadCreatureAddons();                        // must be after LoadCreatureTemplates() and LoadCreatures()
     sLog.outString( ">>> Creature Addon Data loaded" );
     sLog.outString();
 
@@ -1063,14 +1051,14 @@ void World::SetInitialWorldSettings()
     sObjectMgr.LoadWeatherZoneChances();
 
     sLog.outString( "Loading Quests..." );
-    sObjectMgr.LoadQuests();                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
+    sObjectMgr.LoadQuests();                                // must be loaded after DBCs, creature_template, item_template, gameobject tables
 
     sLog.outString( "Loading Quest POI" );
     sObjectMgr.LoadQuestPOI();
 
     sLog.outString( "Loading Quests Relations..." );
     sLog.outString();
-    sObjectMgr.LoadQuestRelations();                            // must be after quest load
+    sObjectMgr.LoadQuestRelations();                        // must be after quest load
     sLog.outString( ">>> Quests Relations loaded" );
     sLog.outString();
 
@@ -1087,10 +1075,10 @@ void World::SetInitialWorldSettings()
     sSpellMgr.LoadSpellAreas();
 
     sLog.outString( "Loading AreaTrigger definitions..." );
-    sObjectMgr.LoadAreaTriggerTeleports();                      // must be after item template load
+    sObjectMgr.LoadAreaTriggerTeleports();                  // must be after item template load
 
     sLog.outString( "Loading Quest Area Triggers..." );
-    sObjectMgr.LoadQuestAreaTriggers();                         // must be after LoadQuests
+    sObjectMgr.LoadQuestAreaTriggers();                     // must be after LoadQuests
 
     sLog.outString( "Loading Tavern Area Triggers..." );
     sObjectMgr.LoadTavernAreaTriggers();
@@ -1162,6 +1150,45 @@ void World::SetInitialWorldSettings()
     sLog.outString( ">>> Achievements loaded" );
     sLog.outString();
 
+    sLog.outString( "Loading Npc Text Id..." );
+    sObjectMgr.LoadNpcTextId();                             // must be after load Creature and LoadGossipText
+
+    sLog.outString( "Loading Gossip scripts..." );
+    sObjectMgr.LoadGossipScripts();                         // must be before gossip menu options
+
+    sLog.outString( "Loading Gossip menus..." );
+    sObjectMgr.LoadGossipMenu();
+
+    sLog.outString( "Loading Gossip menu options..." );
+    sObjectMgr.LoadGossipMenuItems();
+
+    sLog.outString( "Loading Vendors..." );
+    sObjectMgr.LoadVendorTemplates();                       // must be after load ItemTemplate
+    sObjectMgr.LoadVendors();                               // must be after load CreatureTemplate, VendorTemplate, and ItemTemplate
+
+    sLog.outString( "Loading Trainers..." );
+    sObjectMgr.LoadTrainerSpell();                          // must be after load CreatureTemplate
+
+    sLog.outString( "Loading Waypoint scripts..." );        // before loading from creature_movement
+    sObjectMgr.LoadCreatureMovementScripts();
+
+    sLog.outString( "Loading Waypoints..." );
+    sLog.outString();
+    sWaypointMgr.Load();
+
+    ///- Loading localization data
+    sLog.outString( "Loading Localization strings..." );
+    sObjectMgr.LoadCreatureLocales();                       // must be after CreatureInfo loading
+    sObjectMgr.LoadGameObjectLocales();                     // must be after GameobjectInfo loading
+    sObjectMgr.LoadItemLocales();                           // must be after ItemPrototypes loading
+    sObjectMgr.LoadQuestLocales();                          // must be after QuestTemplates loading
+    sObjectMgr.LoadNpcTextLocales();                        // must be after LoadGossipText
+    sObjectMgr.LoadPageTextLocales();                       // must be after PageText loading
+    sObjectMgr.LoadGossipMenuItemsLocales();                // must be after gossip menu items loading
+    sObjectMgr.LoadPointOfInterestLocales();                // must be after POI loading
+    sLog.outString( ">>> Localization strings loaded" );
+    sLog.outString();
+
     ///- Load dynamic data tables from the database
     sLog.outString( "Loading Auctions..." );
     sLog.outString();
@@ -1193,32 +1220,6 @@ void World::SetInitialWorldSettings()
 
     sLog.outString( "Loading GameTeleports..." );
     sObjectMgr.LoadGameTele();
-
-    sLog.outString( "Loading Npc Text Id..." );
-    sObjectMgr.LoadNpcTextId();                             // must be after load Creature and NpcText
-
-    sLog.outString( "Loading Gossip scripts..." );
-    sObjectMgr.LoadGossipScripts();                         // must be before gossip menu options
-
-    sLog.outString( "Loading Gossip menus..." );
-    sObjectMgr.LoadGossipMenu();
-
-    sLog.outString( "Loading Gossip menu options..." );
-    sObjectMgr.LoadGossipMenuItems();
-
-    sLog.outString( "Loading Vendors..." );
-    sObjectMgr.LoadVendorTemplates();                       // must be after load ItemTemplate
-    sObjectMgr.LoadVendors();                               // must be after load CreatureTemplate, VendorTemplate, and ItemTemplate
-
-    sLog.outString( "Loading Trainers..." );
-    sObjectMgr.LoadTrainerSpell();                          // must be after load CreatureTemplate
-
-    sLog.outString( "Loading Waypoint scripts..." );        // before loading from creature_movement
-    sObjectMgr.LoadCreatureMovementScripts();
-
-    sLog.outString( "Loading Waypoints..." );
-    sLog.outString();
-    sWaypointMgr.Load();
 
     sLog.outString( "Loading GM tickets...");
     sTicketMgr.LoadGMTickets();
@@ -1287,7 +1288,7 @@ void World::SetInitialWorldSettings()
     //one second is 1000 -(tested on win system)
     mail_timer = uint32((((localtime( &m_gameTime )->tm_hour + 20) % 24)* HOUR * IN_MILLISECONDS) / m_timers[WUPDATE_AUCTIONS].GetInterval() );
                                                             //1440
-    mail_timer_expires = (DAY * IN_MILLISECONDS) / m_timers[WUPDATE_AUCTIONS].GetInterval();
+    mail_timer_expires = uint32( (DAY * IN_MILLISECONDS) / (m_timers[WUPDATE_AUCTIONS].GetInterval()));
     DEBUG_LOG("Mail timer set to: %u, mail return is called every %u minutes", mail_timer, mail_timer_expires);
 
     ///- Initialize static helper structures
@@ -1342,7 +1343,7 @@ void World::DetectDBCLang()
 {
     uint32 m_lang_confid = sConfig.GetIntDefault("DBC.Locale", 255);
 
-    if(m_lang_confid != 255 && m_lang_confid >= MAX_LOCALE)
+    if (m_lang_confid != 255 && m_lang_confid >= MAX_LOCALE)
     {
         sLog.outError("Incorrect DBC.Locale! Must be >= 0 and < %d (set to 0)",MAX_LOCALE);
         m_lang_confid = LOCALE_enUS;
@@ -1352,10 +1353,10 @@ void World::DetectDBCLang()
 
     std::string availableLocalsStr;
 
-    int default_locale = MAX_LOCALE;
+    uint32 default_locale = MAX_LOCALE;
     for (int i = MAX_LOCALE-1; i >= 0; --i)
     {
-        if ( strlen(race->name[i]) > 0)                     // check by race names
+        if (strlen(race->name[i]) > 0)                      // check by race names
         {
             default_locale = i;
             m_availableDbcLocaleMask |= (1 << i);
@@ -1364,13 +1365,13 @@ void World::DetectDBCLang()
         }
     }
 
-    if( default_locale != m_lang_confid && m_lang_confid < MAX_LOCALE &&
+    if (default_locale != m_lang_confid && m_lang_confid < MAX_LOCALE &&
         (m_availableDbcLocaleMask & (1 << m_lang_confid)) )
     {
         default_locale = m_lang_confid;
     }
 
-    if(default_locale >= MAX_LOCALE)
+    if (default_locale >= MAX_LOCALE)
     {
         sLog.outError("Unable to determine your DBC Locale! (corrupt DBC?)");
         Log::WaitBeforeContinueIfNeed();
@@ -1384,11 +1385,16 @@ void World::DetectDBCLang()
 }
 
 /// Update the World !
-void World::Update(uint32 time_, uint32 diff)
+void World::Update(uint32 diff)
 {
     ///- Update the different timers
     for(int i = 0; i < WUPDATE_COUNT; ++i)
-        m_timers[i].Update(diff);
+    {
+        if (m_timers[i].GetCurrent()>=0)
+            m_timers[i].Update(diff);
+        else
+            m_timers[i].SetCurrent(0);
+    }
 
     ///- Update the game time and check for shutdown time
     _UpdateGameTime();
@@ -1465,7 +1471,7 @@ void World::Update(uint32 time_, uint32 diff)
     {
         m_timers[WUPDATE_OBJECTS].Reset();
         ///- Update objects when the timer has passed (maps, transport, creatures,...)
-        sMapMgr.Update(time_, diff);                // As interval = 0
+        sMapMgr.Update(diff);                // As interval = 0
 
         sBattleGroundMgr.Update(diff);
     }
@@ -1506,6 +1512,9 @@ void World::Update(uint32 time_, uint32 diff)
 
     // And last, but not least handle the issued cli commands
     ProcessCliCommands();
+
+    //cleanup unused GridMap objects as well as VMaps
+    sTerrainMgr.Update(diff);
 }
 
 /// Send a packet to all players (except self if mentioned)
@@ -1857,8 +1866,7 @@ void World::SendServerMessage(ServerMessageType type, const char *text, Player* 
 {
     WorldPacket data(SMSG_SERVER_MESSAGE, 50);              // guess size
     data << uint32(type);
-    if(type <= SERVER_MSG_STRING)
-        data << text;
+    data << text;
 
     if(player)
         player->GetSession()->SendPacket(&data);
@@ -1933,7 +1941,7 @@ void World::_UpdateRealmCharCount(QueryResult *resultCharCount, uint32 accountId
         Field *fields = resultCharCount->Fetch();
         uint32 charCount = fields[0].GetUInt32();
         delete resultCharCount;
-        LoginDatabase.PExecute("DELETE FROM realmcharacters WHERE acctid= '%d' AND realmid = '%d'", accountId, realmID);
+        LoginDatabase.PExecute("DELETE FROM realmcharacters WHERE acctid= '%u' AND realmid = '%u'", accountId, realmID);
         LoginDatabase.PExecute("INSERT INTO realmcharacters (numchars, acctid, realmid) VALUES (%u, %u, %u)", charCount, accountId, realmID);
     }
 }
@@ -2096,7 +2104,8 @@ void World::SetPlayerLimit( int32 limit, bool needUpdate )
     m_playerLimit = limit;
 
     if (db_update_need)
-        LoginDatabase.PExecute("UPDATE realmlist SET allowedSecurityLevel = '%u' WHERE id = '%d'",uint8(GetPlayerSecurityLimit()),realmID);
+        LoginDatabase.PExecute("UPDATE realmlist SET allowedSecurityLevel = '%u' WHERE id = '%u'",
+            uint32(GetPlayerSecurityLimit()), realmID);
 }
 
 void World::UpdateMaxSessionCounters()
