@@ -70,7 +70,35 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
 ActionNode* GenericPaladinStrategy::createAction(const char* name)
 {
-    if (!strcmp("cleanse", name)) 
+    if (!strcmp("seal of light", name)) 
+    {
+        return new ActionNode (new CastSealOfLightAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("seal of justice"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("devotion aura", name)) 
+    {
+        return new ActionNode (new CastDevotionAuraAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("holy wrath", name)) 
+    {
+        return new ActionNode (new CastHolyWrathAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("consecration", name)) 
+    {
+        return new ActionNode (new CastConsecrationAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }    
+	else if (!strcmp("cleanse", name)) 
     {
         return new ActionNode (new CastCleanseAction(ai),  
             /*P*/ NULL,

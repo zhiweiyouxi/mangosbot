@@ -17,6 +17,7 @@ public:
 	{
 		EngineTestBase::setUp();
 		setupEngine(new PaladinActionFactory(ai), "dps", NULL);
+		engine->addStrategy("bdps");
 
         addAura("retribution aura");
         addAura("seal of command");

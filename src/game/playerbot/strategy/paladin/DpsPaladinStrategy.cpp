@@ -25,10 +25,6 @@ void DpsPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("judgement of wisdom", 1.2f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new SealTrigger(ai), 
-        NextAction::array(0, new NextAction("seal of command", 24.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new BlessingTrigger(ai), 
         NextAction::array(0, new NextAction("blessing of might", 21.0f), NULL)));
 }

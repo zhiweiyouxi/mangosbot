@@ -40,7 +40,7 @@ Engine* AiFactory::createCombatEngine(Player* player, AiManagerRegistry* const f
             break;
         case CLASS_PALADIN:
 			engine = new Engine(facade, new PaladinActionFactory(facade));
-			engine->addStrategies("tank", "tank assist", NULL);
+			engine->addStrategies("tank", "tank assist", "bhealth", NULL);
             break;
         case CLASS_DRUID:
 			engine = new Engine(facade, new DruidActionFactory(facade));

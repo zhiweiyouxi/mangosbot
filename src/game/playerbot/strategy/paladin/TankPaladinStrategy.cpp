@@ -45,10 +45,6 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 		NextAction::array(0, new NextAction("holy shield", 18.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new SealTrigger(ai), 
-        NextAction::array(0, new NextAction("seal of light", 24.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new BlessingTrigger(ai), 
         NextAction::array(0, new NextAction("blessing of sanctuary", 21.0f), NULL)));
 }
@@ -60,35 +56,7 @@ void TankPaladinStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 
 ActionNode* TankPaladinStrategy::createAction(const char* name)
 {
-    if (!strcmp("seal of light", name)) 
-    {
-        return new ActionNode (new CastSealOfLightAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("seal of justice"), NULL), 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("devotion aura", name)) 
-    {
-        return new ActionNode (new CastDevotionAuraAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("holy wrath", name)) 
-    {
-        return new ActionNode (new CastHolyWrathAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("consecration", name)) 
-    {
-        return new ActionNode (new CastConsecrationAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("righteous fury", name)) 
+    if (!strcmp("righteous fury", name)) 
     {
         return new ActionNode (new CastRighteousFuryAction(ai),  
             /*P*/ NULL,

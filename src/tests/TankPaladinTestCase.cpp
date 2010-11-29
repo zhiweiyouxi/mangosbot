@@ -14,6 +14,7 @@ class TankPaladinTestCase : public EngineTestBase
     CPPUNIT_TEST( healing );
     CPPUNIT_TEST( stopEnemyMove );
     CPPUNIT_TEST( buff );
+    CPPUNIT_TEST( bmana );
     CPPUNIT_TEST( cure );
 	CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST_SUITE_END();
@@ -23,6 +24,7 @@ public:
 	{
 		EngineTestBase::setUp();
 		setupEngine(new PaladinActionFactory(ai), "tank", NULL);
+		engine->addStrategy("bhealth");
 
         addAura("devotion aura");
         addAura("seal of justice");
@@ -35,6 +37,17 @@ public:
     }
  
 protected:
+    void bmana()
+    {
+		engine->removeStrategy("bhealth");
+		engine->addStrategy("bmana");
+	
+        removeAura("seal of justice");
+        tick();
+        
+		assertActions(">S:seal of wisdom");
+	}
+
     void buff()
     {
         removeAura("devotion aura");
