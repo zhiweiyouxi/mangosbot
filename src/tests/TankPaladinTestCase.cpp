@@ -72,7 +72,7 @@ protected:
 
         tick(); 
 
-		tickWithLowHealth(20);
+		tickWithLowHealth(19);
 
 		spellAvailable("lay on hands");
 		tickWithPartyLowHealth(20);
