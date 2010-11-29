@@ -93,7 +93,7 @@ Engine* AiFactory::createNonCombatEngine(Player* player, AiManagerRegistry* cons
             break;
         case CLASS_HUNTER:
 			nonCombatEngine = new Engine(facade, new HunterActionFactory(facade));
-			nonCombatEngine->addStrategy("dps assist");
+			nonCombatEngine->addStrategies("dps assist", "bspeed", NULL);
             break;
 		case CLASS_ROGUE:
 			nonCombatEngine = new Engine(facade, new RogueActionFactory(facade));

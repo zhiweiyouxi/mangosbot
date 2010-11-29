@@ -26,6 +26,8 @@ public:
 protected:
     void buff()
     {
+		engine->addStrategy("bspeed");
+
 		tick();
 
 		tickWithAttackerCount(1);
@@ -45,6 +47,8 @@ protected:
 
     void buffIfPackUnavailable()
     {
+		engine->addStrategy("bspeed");
+
         tickWithSpellUnavailable("aspect of the pack");
 
 		assertActions(">S:aspect of the cheetah");
