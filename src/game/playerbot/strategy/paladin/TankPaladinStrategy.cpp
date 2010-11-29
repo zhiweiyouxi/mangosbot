@@ -29,8 +29,12 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("righteous fury", 15.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
+        new AoeTrigger(ai, 2), 
+        NextAction::array(0, new NextAction("hammer of the righteous", 26.0f), new NextAction("avenger's shield", 25.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new AoeTrigger(ai, 3), 
-        NextAction::array(0, new NextAction("hammer of the righteous", 26.0f), new NextAction("holy wrath", 25.0f), new NextAction("avenger's shield", 24.0f), NULL)));
+        NextAction::array(0, new NextAction("consecration", 27.0f), new NextAction("holy wrath", 27.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new LoseAggroTrigger(ai), 
@@ -74,7 +78,7 @@ ActionNode* TankPaladinStrategy::createAction(const char* name)
     {
         return new ActionNode (new CastHolyWrathAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("consecration"), NULL), 
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("consecration", name)) 

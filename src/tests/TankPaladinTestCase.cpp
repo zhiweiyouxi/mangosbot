@@ -82,15 +82,16 @@ protected:
   
     void paladinMustHoldAggro()
     {
-		tickWithAttackerCount(3);
-		tickWithAttackerCount(3);
+		tickWithAttackerCount(2);
+		tickWithAttackerCount(2);
+
 		tickWithAttackerCount(3);
 		tickWithAttackerCount(3);
 
 		tickWithNoAggro();
 		tickWithNoAggro();
 
-		assertActions(">T:hammer of the righteous>T:holy wrath>T:consecration>T:avenger's shield>T:hand of reckoning>T:judgement of justice");
+		assertActions(">T:hammer of the righteous>T:avenger's shield>T:consecration>T:holy wrath>T:hand of reckoning>T:judgement of justice");
     }
 
     void combatVsMelee()
