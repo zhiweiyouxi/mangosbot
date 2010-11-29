@@ -105,9 +105,8 @@ protected:
 
         removeTargetAura("faerie fire (feral)");
         tickInMeleeRange();
-        tick();
 
-        assertActions(">S:thorns>S:cat form>T:faerie fire (feral)");
+        assertActions(">S:cat form>T:faerie fire (feral)");
     }
 };
 
