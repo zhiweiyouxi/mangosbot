@@ -686,7 +686,7 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 					<< ":0:0:0:0:0:0:0" << "|h[" << proto->Name1
 					<< "]|h|r";
 			}
-
+			ai->GetAiRegistry()->GetSocialManager()->TellMaster(out.str().c_str());
 		}
 		else
 		{
