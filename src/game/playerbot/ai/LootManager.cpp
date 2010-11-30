@@ -214,18 +214,42 @@ void LootManager::SetLootStrategy(string strategy)
 		lootStrategy = LOOTSTRATEGY_NORMAL;
 }
 
+string LootManager::GetLootStrategy()
+{
+	switch (lootStrategy)
+	{
+	case LOOTSTRATEGY_ALL:
+		return "all";
+	case LOOTSTRATEGY_QUEST:
+		return "quest";
+	default:
+		return "normal";
+	}
+}
+
 bool LootManager::IsLootAllowed(LootItem * item) 
 {
-	if (!item->AllowedForPlayer(bot))
+	if (!item->AllowedForPlayer(bot) || !item->is_blocked)
 		return false;
-
-	if (lootStrategy == LOOTSTRATEGY_QUEST && !item->needs_quest)
-		return false;
-
+	
 	if (lootStrategy == LOOTSTRATEGY_ALL)
 		return true;
 
-	// TODO: normal loot strategy
+	ItemPrototype const *proto = sItemStorage.LookupEntry<ItemPrototype>(item->itemid);
+	if (!proto)
+		return false;
 
-	return true;
+	if (item->needs_quest || proto->Bonding == BIND_QUEST_ITEM || proto->Bonding == BIND_QUEST_ITEM1)
+		return true;
+		
+	if (lootStrategy == LOOTSTRATEGY_QUEST)
+		return false;
+
+	if (proto->Bonding == BIND_WHEN_PICKED_UP)
+		return false;
+
+	if (item->freeforall || item->is_underthreshold)
+		return true;
+
+	return false;
 }

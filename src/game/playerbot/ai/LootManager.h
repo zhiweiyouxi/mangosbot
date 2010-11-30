@@ -28,6 +28,7 @@ namespace ai
 		virtual bool CanLoot();
 		virtual void DoLoot();
 		void SetLootStrategy(string strategy);
+		string GetLootStrategy();
 
 	private:
         void DoLoot(LootObject &lootObject);

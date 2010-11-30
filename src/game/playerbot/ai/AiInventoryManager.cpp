@@ -668,7 +668,15 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
     }
 	else if (text.size() > 2 && text.substr(0, 2) == "l " || text.size() > 4 && text.substr(0, 5) == "loot ")
 	{
-		lootManager->SetLootStrategy(text.substr(text.find(" ") + 1));
+		string strategy = text.substr(text.find(" ") + 1);
+		if (strategy == "?")
+		{
+			ostringstream out;
+			out << "Loot strategy: ";
+			out << lootManager->GetLootStrategy();
+		}
+		else
+			lootManager->SetLootStrategy(strategy);
 	}    
     else if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
     {
