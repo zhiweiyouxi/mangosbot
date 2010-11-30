@@ -698,8 +698,14 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 				return;
 			}
 
+			bool remove = strategy.size() > 1 && strategy.substr(0, 1) == "-";
 			for (list<uint32>::iterator i = items.begin(); i != items.end(); i++)
-				lootManager->AddLootItem(*i);
+			{
+				if (remove)
+					lootManager->RemoveLootItem(*i);
+				else
+					lootManager->AddLootItem(*i);
+			}
 		}
 	}    
     else if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())

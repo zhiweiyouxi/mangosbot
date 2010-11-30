@@ -33,6 +33,13 @@ void LootManager::AddLootItem(uint32 itemid)
 	lootItems.insert(itemid);
 }
 
+void LootManager::RemoveLootItem(uint32 itemid)
+{
+	set<uint32>::iterator i = lootItems.find(itemid);
+	if (i != lootItems.end())
+		lootItems.erase(i);
+}
+
 bool LootManager::CanLoot()
 {
     return availableLoot->CanLoot(BOTLOOT_DISTANCE);
@@ -144,9 +151,7 @@ void LootManager::NotifyLootItemRemoved(LootItem * item, QuestItem * qitem, Loot
 
     --loot->unlootedCount;
 
-	set<uint32>::iterator i = lootItems.find(item->itemid);
-	if (i != lootItems.end())
-		lootItems.erase(i);
+	RemoveLootItem(item->itemid);
 }
 
 void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)

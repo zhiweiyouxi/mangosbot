@@ -26,6 +26,7 @@ namespace ai
 		virtual void ClearLoot();
         virtual void AddLoot(uint64 guid);
 		virtual void AddLootItem(uint32 itemid);
+		virtual void RemoveLootItem(uint32 itemid);
 		virtual bool CanLoot();
 		virtual void DoLoot();
 		void SetLootStrategy(string strategy);
