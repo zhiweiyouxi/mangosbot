@@ -25,10 +25,12 @@ namespace ai
 	public:
 		virtual void ClearLoot();
         virtual void AddLoot(uint64 guid);
+		virtual void AddLootItem(uint32 itemid);
 		virtual bool CanLoot();
 		virtual void DoLoot();
 		void SetLootStrategy(string strategy);
 		string GetLootStrategy();
+		set<uint32> lootItems;
 
 	private:
         void DoLoot(LootObject &lootObject);

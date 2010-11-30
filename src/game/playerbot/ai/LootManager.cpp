@@ -20,11 +20,17 @@ LootManager::~LootManager()
 void LootManager::ClearLoot()
 {
 	availableLoot->Clear();
+	lootItems.clear();
 }
 
 void LootManager::AddLoot(uint64 guid)
 {
 	availableLoot->Add(guid);
+}
+
+void LootManager::AddLootItem(uint32 itemid)
+{
+	lootItems.insert(itemid);
 }
 
 bool LootManager::CanLoot()
@@ -137,6 +143,10 @@ void LootManager::NotifyLootItemRemoved(LootItem * item, QuestItem * qitem, Loot
         item->is_looted = true;
 
     --loot->unlootedCount;
+
+	set<uint32>::iterator i = lootItems.find(item->itemid);
+	if (i != lootItems.end())
+		lootItems.erase(i);
 }
 
 void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
@@ -244,6 +254,9 @@ bool LootManager::IsLootAllowed(LootItem * item)
 		
 	if (lootStrategy == LOOTSTRATEGY_QUEST)
 		return false;
+
+	if (lootItems.find(item->itemid) != lootItems.end())
+		return true;
 
 	if (proto->Bonding == BIND_WHEN_PICKED_UP)
 		return false;

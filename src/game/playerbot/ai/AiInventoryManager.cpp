@@ -674,9 +674,33 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
 			ostringstream out;
 			out << "Loot strategy: ";
 			out << lootManager->GetLootStrategy();
+			out << ", always loot items: ";
+
+			for (set<uint32>::iterator i = lootManager->lootItems.begin(); i != lootManager->lootItems.end(); i++)
+			{
+				ItemPrototype const *proto = sItemStorage.LookupEntry<ItemPrototype>(*i);
+				if (!proto)
+					continue;
+
+				out << " |cffffffff|Hitem:" << proto->ItemId
+					<< ":0:0:0:0:0:0:0" << "|h[" << proto->Name1
+					<< "]|h|r";
+			}
+
 		}
 		else
-			lootManager->SetLootStrategy(strategy);
+		{
+			list<uint32> items; /* = */ extractItemIds(text, items);
+
+			if (items.size() == 0)
+			{
+				lootManager->SetLootStrategy(strategy);
+				return;
+			}
+
+			for (list<uint32>::iterator i = items.begin(); i != items.end(); i++)
+				lootManager->AddLootItem(*i);
+		}
 	}    
     else if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
     {
