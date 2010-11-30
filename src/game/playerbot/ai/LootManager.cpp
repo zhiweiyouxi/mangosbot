@@ -9,6 +9,7 @@ LootManager::LootManager(Player* bot)
 {
     availableLoot = new LootObjectStack(bot);
     this->bot = bot;
+	lootStrategy = LOOTSTRATEGY_NORMAL;
 }
 
 LootManager::~LootManager()
@@ -88,15 +89,31 @@ void LootManager::DoLoot(LootObject &lootObject)
     availableLoot->Remove(lootObject.guid);
 }
 
-void LootManager::StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem )
+Item* LootManager::StoreItem( LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem )
 {
     ItemPosCountVec dest;
     if( bot->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item->itemid, item->count ) != EQUIP_ERR_OK )
-        return;
+        return NULL;
 
     Item * newitem = bot->StoreNewItem( dest, item->itemid, true, item->randomPropertyId);
+	if (!newitem)
+		return NULL;
 
-    if( qitem )
+	bot->SendNewItem( newitem, uint32(item->count), false, false, true );
+	bot->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count );
+
+	ItemPrototype const *proto = sItemStorage.LookupEntry<ItemPrototype>(item->itemid);
+	bot->GetPlayerbotAI()->GetAiRegistry()->GetInventoryManager()->QueryItemUsage(proto);
+	bot->GetPlayerbotAI()->GetAiRegistry()->GetQuestManager()->QueryQuestItem(item->itemid);
+
+	NotifyLootItemRemoved(item, qitem, loot, lootIndex, ffaitem, conditem);
+
+	return newitem;
+}
+
+void LootManager::NotifyLootItemRemoved(LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem )
+{
+    if (qitem)
     {
         qitem->is_looted = true;
         if( item->freeforall || loot->GetPlayerQuestItems().size() == 1 )
@@ -104,29 +121,22 @@ void LootManager::StoreQuestItem( LootItem * item, QuestItem * qitem, Loot* loot
         else
             loot->NotifyQuestItemRemoved( qitem->index );
     }
+    else if (ffaitem)
+    {
+        ffaitem->is_looted=true;
+        bot->SendNotifyLootItemRemoved( lootIndex );
+    }
     else
     {
-        if( ffaitem )
-        {
-            ffaitem->is_looted=true;
-            bot->SendNotifyLootItemRemoved( lootIndex );
-        }
-        else
-        {
-            if( conditem )
-                conditem->is_looted=true;
-            loot->NotifyItemRemoved( lootIndex );
-        }
+        if(conditem)
+            conditem->is_looted=true;
+        loot->NotifyItemRemoved( lootIndex );
     }
+    
     if (!item->freeforall)
         item->is_looted = true;
-    --loot->unlootedCount;
-    bot->SendNewItem( newitem, uint32(item->count), false, false, true );
-    bot->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count );
 
-    ItemPrototype const *proto = sItemStorage.LookupEntry<ItemPrototype>(item->itemid);
-    bot->GetPlayerbotAI()->GetAiRegistry()->GetInventoryManager()->QueryItemUsage(proto);
-    bot->GetPlayerbotAI()->GetAiRegistry()->GetQuestManager()->QueryQuestItem(item->itemid);
+    --loot->unlootedCount;
 }
 
 void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
@@ -138,20 +148,17 @@ void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
         return;
 
     if( !qitem && item->is_blocked )
-    {
-        bot->SendLootRelease( bot->GetLootGUID() );
         return;
-    }
 
-    if (item->AllowedForPlayer(bot) && item->needs_quest)
-        StoreQuestItem(item, qitem, loot, lootIndex, ffaitem, conditem);
+	if (IsLootAllowed(item))
+        StoreItem(item, qitem, loot, lootIndex, ffaitem, conditem);
 
     GameObject* go = bot->GetMap()->GetGameObject(lootObject.guid);
     if(go)
-        StoreGameObjectLootItem(go, item, loot);
+        StoreLockedLootItem(go, item, loot);
 }
 
-void LootManager::StoreGameObjectLootItem( GameObject* go, LootItem * item, Loot* loot )
+void LootManager::StoreLockedLootItem( GameObject* go, LootItem * item, Loot* loot )
 {
     if ( !go->isSpawned() )
         return;
@@ -197,3 +204,28 @@ void LootManager::AddMasterSelection()
         AddLoot(masterSelection);
 }
 
+void LootManager::SetLootStrategy(string strategy)
+{
+	if (strategy == "*" || strategy == "all")
+		lootStrategy = LOOTSTRATEGY_ALL;
+	else if (strategy == "q" || strategy == "quest")
+		lootStrategy = LOOTSTRATEGY_QUEST;
+	else 
+		lootStrategy = LOOTSTRATEGY_NORMAL;
+}
+
+bool LootManager::IsLootAllowed(LootItem * item) 
+{
+	if (!item->AllowedForPlayer(bot))
+		return false;
+
+	if (lootStrategy == LOOTSTRATEGY_QUEST && !item->needs_quest)
+		return false;
+
+	if (lootStrategy == LOOTSTRATEGY_ALL)
+		return true;
+
+	// TODO: normal loot strategy
+
+	return true;
+}

@@ -666,6 +666,10 @@ void AiInventoryManager::HandleCommand(const string& text, Player& fromPlayer)
     {
         ListCount(text.c_str());
     }
+	else if (text.size() > 2 && text.substr(0, 2) == "l " || text.size() > 4 && text.substr(0, 5) == "loot ")
+	{
+		lootManager->SetLootStrategy(text.substr(text.find(" ") + 1));
+	}    
     else if (bot->GetTrader() && bot->GetTrader()->GetGUID() == fromPlayer.GetGUID())
     {
         Trade(text.c_str());
