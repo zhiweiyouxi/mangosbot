@@ -162,9 +162,6 @@ void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
     if( !item )
         return;
 
-    if( !qitem && item->is_blocked )
-        return;
-
 	if (IsLootAllowed(item))
         StoreItem(item, qitem, loot, lootIndex, ffaitem, conditem);
 
@@ -244,7 +241,7 @@ string LootManager::GetLootStrategy()
 
 bool LootManager::IsLootAllowed(LootItem * item) 
 {
-	if (!item->AllowedForPlayer(bot) || !item->is_blocked)
+	if (!item->AllowedForPlayer(bot) || item->is_blocked)
 		return false;
 	
 	if (lootStrategy == LOOTSTRATEGY_ALL)
