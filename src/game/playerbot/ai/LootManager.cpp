@@ -179,6 +179,8 @@ void LootManager::SetLootStrategy(string strategy)
 		lootStrategy = LOOTSTRATEGY_ALL;
 	else if (strategy == "q" || strategy == "quest")
 		lootStrategy = LOOTSTRATEGY_QUEST;
+	else if (strategy == "g" || strategy == "gray")
+		lootStrategy = LOOTSTRATEGY_GRAY;
 	else 
 		lootStrategy = LOOTSTRATEGY_NORMAL;
 }
@@ -191,6 +193,8 @@ string LootManager::GetLootStrategy()
 		return "all";
 	case LOOTSTRATEGY_QUEST:
 		return "quest";
+	case LOOTSTRATEGY_GRAY:
+		return "gray";
 	default:
 		return "normal";
 	}
@@ -239,17 +243,20 @@ bool LootManager::IsLootAllowed(GameObject* go, LootItem * item)
 	if (lootStrategy == LOOTSTRATEGY_ALL)
 		return true;
 
+	if (lootItems.find(item->itemid) != lootItems.end())
+		return true;
+
 	ItemPrototype const *proto = sItemStorage.LookupEntry<ItemPrototype>(item->itemid);
 	if (!proto)
 		return false;
 
 	if (item->needs_quest || proto->Bonding == BIND_QUEST_ITEM || proto->Bonding == BIND_QUEST_ITEM1)
 		return true;
-		
+
 	if (lootStrategy == LOOTSTRATEGY_QUEST)
 		return false;
 
-	if (lootItems.find(item->itemid) != lootItems.end())
+	if (lootStrategy == LOOTSTRATEGY_GRAY && proto->Quality == ITEM_QUALITY_POOR)
 		return true;
 
 	if (proto->Bonding == BIND_WHEN_PICKED_UP)
