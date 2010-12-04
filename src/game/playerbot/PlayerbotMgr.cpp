@@ -240,10 +240,7 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 
 					Creature *unit = bot->GetNPCIfCanInteractWith(npcGUID, UNIT_NPC_FLAG_REPAIR);
 					if (!unit) // Check if NPC can repair bot or not
-					{
-						sLog.outDebug("PlayerbotMgr: HandleRepairItemOpcode - Unit (GUID: %u) not found or you can't interact with him.", uint32(GUID_LOPART(npcGUID)));
 						return;
-					}
 
 					// remove fake death
 					if(bot->hasUnitState(UNIT_STAT_DIED))
@@ -260,8 +257,6 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 					}
 					else  // Handle feature (repair all items) for bot
 					{
-						sLog.outDebug("ITEM: Repair all items, npcGUID = %u", GUID_LOPART(npcGUID));
-
 						TotalCost = bot->DurabilityRepairAll(true,discountMod,guildBank>0?true:false);
 					}
 					if (guildBank) // Handle guild repair

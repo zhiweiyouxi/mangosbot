@@ -14,11 +14,11 @@ int strcmpi(const char *s1, const char *s2);
 #endif
 
 #include "../Spell.h"
-#include "../WorldPacket.h"
+#include "../../../src/shared/WorldPacket.h"
 #include "../LootMgr.h"
 #include "../GossipDef.h"
 #include "../Chat.h"
-#include "../Common.h"
+#include "../../../src/shared/Common.h"
 #include "../World.h"
 #include "../SpellMgr.h"
 #include "../ObjectMgr.h"
