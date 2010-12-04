@@ -41,9 +41,9 @@ namespace ai
 		Item* StoreItem(LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem);
         void NotifyLootItemRemoved(LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem );
         void StoreLootItem(LootObject &loot, uint32 lootIndex);
-        void StoreLockedLootItem(GameObject* go, LootItem * item, Loot* loot);
         void DeactivateLootGameObject(LootObject &lootObject);
-		bool IsLootAllowed(LootItem * item);
+		bool IsLootAllowed(GameObject* go, LootItem * item);
+		bool CheckSkill(GameObject* go);
 
 	private:
         Player* bot;

@@ -150,8 +150,6 @@ void LootManager::NotifyLootItemRemoved(LootItem * item, QuestItem * qitem, Loot
         item->is_looted = true;
 
     --loot->unlootedCount;
-
-	RemoveLootItem(item->itemid);
 }
 
 void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
@@ -162,51 +160,10 @@ void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
     if( !item )
         return;
 
-	if (IsLootAllowed(item))
+	GameObject* go = bot->GetMap()->GetGameObject(lootObject.guid);
+
+	if (IsLootAllowed(go, item))
         StoreItem(item, qitem, loot, lootIndex, ffaitem, conditem);
-
-    GameObject* go = bot->GetMap()->GetGameObject(lootObject.guid);
-    if(go)
-        StoreLockedLootItem(go, item, loot);
-}
-
-void LootManager::StoreLockedLootItem( GameObject* go, LootItem * item, Loot* loot )
-{
-    if ( !go->isSpawned() )
-        return;
-
-    uint32 lockId = go->GetGOInfo()->GetLockId();
-    LockEntry const *lockInfo = sLockStore.LookupEntry(lockId);
-    if(!lockInfo)
-        return;
-
-    uint32 skillId = 0;
-    uint32 reqSkillValue = 0;
-    for(int i = 0; i < 8; ++i)
-    {
-        skillId = SkillByLockType(LockType(lockInfo->Index[i]));
-        if(skillId > 0)
-        {
-            reqSkillValue = lockInfo->Skill[i];
-            break;
-        }
-    }
-
-    if (skillId != SKILL_NONE && !bot->HasSkill(skillId))
-        return;
-
-    ItemPosCountVec dest;
-    if (bot->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item->itemid, item->count) != EQUIP_ERR_OK)
-        return;
-
-    Item* pItem = bot->StoreNewItem (dest,item->itemid,true,item->randomPropertyId);
-    uint32 SkillValue = bot->GetPureSkillValue(skillId);
-    if (SkillValue >= reqSkillValue)
-    {
-        bot->SendNewItem(pItem, uint32(item->count), false, false, true);
-        bot->UpdateGatherSkill(skillId, SkillValue, reqSkillValue);
-        --loot->unlootedCount;
-    }
 }
 
 void LootManager::AddMasterSelection()
@@ -239,11 +196,46 @@ string LootManager::GetLootStrategy()
 	}
 }
 
-bool LootManager::IsLootAllowed(LootItem * item) 
+bool LootManager::CheckSkill(GameObject* go)
+{
+	if(!go || !go->isSpawned())
+		return true;
+
+	uint32 lockId = go->GetGOInfo()->GetLockId();
+	LockEntry const *lockInfo = sLockStore.LookupEntry(lockId);
+	if(!lockInfo) 
+		return true;
+
+	uint32 skillId = 0;
+	uint32 reqSkillValue = 0;
+	for(int i = 0; i < 8; ++i)
+	{
+		skillId = SkillByLockType(LockType(lockInfo->Index[i]));
+		if(skillId > 0)
+		{
+			reqSkillValue = lockInfo->Skill[i];
+			break;
+		}
+	}
+
+	if (skillId == SKILL_NONE)
+		return true;
+
+	if (!bot->HasSkill(skillId) || bot->GetSkillValue(skillId) < reqSkillValue)
+		return false;
+
+	bot->UpdateGatherSkill(skillId, bot->GetSkillValue(skillId), reqSkillValue);
+	return true;
+}
+
+bool LootManager::IsLootAllowed(GameObject* go, LootItem * item) 
 {
 	if (!item->AllowedForPlayer(bot) || item->is_blocked)
 		return false;
 	
+	if (!CheckSkill(go))
+		return false;
+
 	if (lootStrategy == LOOTSTRATEGY_ALL)
 		return true;
 
