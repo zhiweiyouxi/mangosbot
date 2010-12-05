@@ -45,20 +45,6 @@ bool LootManager::CanLoot()
     return availableLoot->CanLoot(BOTLOOT_DISTANCE);
 }
 
-void LootManager::StoreLootItems(LootObject &lootObject, LootType lootType) 
-{
-    bot->SendLoot(lootObject.guid, lootType);
-
-    uint32 lootNum = lootObject.loot->GetMaxSlotInLootFor(bot);
-    for( uint32 l=0; l<lootNum; l++ )
-        StoreLootItem(lootObject, l, lootType);
-
-    if (lootObject.loot->isLooted())
-        DeactivateLootGameObject(lootObject);
-
-    ReleaseLoot();
-}
-
 void LootManager::ReleaseLoot()
 {
     if( uint64 lguid = bot->GetLootGUID() && bot->GetSession() )
@@ -98,9 +84,30 @@ void LootManager::DoLoot(LootObject &lootObject)
         return;
     }
 
-    StoreLootItems(lootObject, LOOT_CORPSE);
-	StoreLootItems(lootObject, LOOT_SKINNING);
-    availableLoot->Remove(lootObject.guid);
+    bool isLooted = StoreLootItems(lootObject, LOOT_CORPSE);
+	
+	if (isLooted)
+		StoreLootItems(lootObject, LOOT_SKINNING);
+    
+	availableLoot->Remove(lootObject.guid);
+}
+
+bool LootManager::StoreLootItems(LootObject &lootObject, LootType lootType) 
+{
+	bot->SendLoot(lootObject.guid, lootType);
+
+	uint32 lootNum = lootObject.loot->GetMaxSlotInLootFor(bot);
+	for( uint32 l=0; l<lootNum; l++ )
+		StoreLootItem(lootObject, l, lootType);
+
+	bool isLooted = lootObject.loot->isLooted();
+
+	if (isLooted)
+		DeactivateLootGameObject(lootObject);
+
+	ReleaseLoot();
+
+	return isLooted;
 }
 
 Item* LootManager::StoreItem( LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem )

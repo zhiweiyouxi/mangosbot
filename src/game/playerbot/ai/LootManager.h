@@ -37,7 +37,7 @@ namespace ai
 	private:
         void DoLoot(LootObject &lootObject);
         void AddMasterSelection();
-        void StoreLootItems(LootObject &lootObject, LootType lootType);
+        bool StoreLootItems(LootObject &lootObject, LootType lootType);
         void ReleaseLoot();
 		Item* StoreItem(LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem);
         void NotifyLootItemRemoved(LootItem * item, QuestItem * qitem, Loot* loot, uint32 lootIndex, QuestItem * ffaitem, QuestItem * conditem );
