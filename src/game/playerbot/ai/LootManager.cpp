@@ -95,6 +95,9 @@ void LootManager::DoLoot(LootObject &lootObject)
 bool LootManager::StoreLootItems(LootObject &lootObject, LootType lootType) 
 {
 	bot->SendLoot(lootObject.guid, lootType);
+	
+	WorldPacket p;
+	bot->GetSession()->HandleLootMoneyOpcode(p);
 
 	uint32 lootNum = lootObject.loot->GetMaxSlotInLootFor(bot);
 	for( uint32 l=0; l<lootNum; l++ )
