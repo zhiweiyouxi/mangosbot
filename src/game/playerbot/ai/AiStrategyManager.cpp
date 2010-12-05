@@ -37,9 +37,12 @@ AiStrategyManager::~AiStrategyManager()
 
 void AiStrategyManager::DoNextAction() 
 {
+	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
+	if (target)
+		bot->SetInFront(target);
+	
 	bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
 
-	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
 	if (target && target->isAlive() && target->IsHostileTo(bot))
 	{
         if (currentEngine != combatEngine)

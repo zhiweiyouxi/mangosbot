@@ -45,13 +45,13 @@ bool LootManager::CanLoot()
     return availableLoot->CanLoot(BOTLOOT_DISTANCE);
 }
 
-void LootManager::StoreLootItems(LootObject &lootObject) 
+void LootManager::StoreLootItems(LootObject &lootObject, LootType lootType) 
 {
-    bot->SendLoot(lootObject.guid, LOOT_CORPSE);
+    bot->SendLoot(lootObject.guid, lootType);
 
     uint32 lootNum = lootObject.loot->GetMaxSlotInLootFor(bot);
     for( uint32 l=0; l<lootNum; l++ )
-        StoreLootItem(lootObject, l);
+        StoreLootItem(lootObject, l, lootType);
 
     if (lootObject.loot->isLooted())
         DeactivateLootGameObject(lootObject);
@@ -98,7 +98,8 @@ void LootManager::DoLoot(LootObject &lootObject)
         return;
     }
 
-    StoreLootItems(lootObject);
+    StoreLootItems(lootObject, LOOT_CORPSE);
+	StoreLootItems(lootObject, LOOT_SKINNING);
     availableLoot->Remove(lootObject.guid);
 }
 
@@ -152,18 +153,27 @@ void LootManager::NotifyLootItemRemoved(LootItem * item, QuestItem * qitem, Loot
     --loot->unlootedCount;
 }
 
-void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex)
+void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex, LootType lootType)
 {
     Loot* loot = lootObject.loot;
     QuestItem *qitem=0, *ffaitem=0, *conditem=0;
     LootItem *item = loot->LootItemInSlot( lootIndex, bot, &qitem, &ffaitem, &conditem );
-    if( !item )
-        return;
+
+	if (!item || !item->AllowedForPlayer(bot) || item->is_blocked)
+		return;
 
 	GameObject* go = bot->GetMap()->GetGameObject(lootObject.guid);
+	if (go && go->isSpawned() && !CheckSkill(go->GetGOInfo()->GetLockId()))
+		return;
 
-	if (IsLootAllowed(go, item))
-        StoreItem(item, qitem, loot, lootIndex, ffaitem, conditem);
+	Creature* creature = bot->GetMap()->GetCreature(lootObject.guid);
+	if (lootType == LOOT_SKINNING && creature && !CheckLevelBasedSkill(creature->GetCreatureInfo()->GetRequiredLootSkill(), creature->getLevel()))
+		return;
+
+	if (!IsLootAllowed(item))
+		return;
+
+    StoreItem(item, qitem, loot, lootIndex, ffaitem, conditem);
 }
 
 void LootManager::AddMasterSelection()
@@ -200,12 +210,8 @@ string LootManager::GetLootStrategy()
 	}
 }
 
-bool LootManager::CheckSkill(GameObject* go)
+bool LootManager::CheckSkill(uint32 lockId)
 {
-	if(!go || !go->isSpawned())
-		return true;
-
-	uint32 lockId = go->GetGOInfo()->GetLockId();
 	LockEntry const *lockInfo = sLockStore.LookupEntry(lockId);
 	if(!lockInfo) 
 		return true;
@@ -232,14 +238,15 @@ bool LootManager::CheckSkill(GameObject* go)
 	return true;
 }
 
-bool LootManager::IsLootAllowed(GameObject* go, LootItem * item) 
+bool LootManager::CheckLevelBasedSkill(uint32 skill, int32 level)
 {
-	if (!item->AllowedForPlayer(bot) || item->is_blocked)
-		return false;
-	
-	if (!CheckSkill(go))
-		return false;
+	int32 skillValue = bot->GetSkillValue(skill);
+	int32 ReqValue = (skillValue < 100 ? (level-10) * 10 : level * 5);
+	return ReqValue <= skillValue;
+}
 
+bool LootManager::IsLootAllowed(LootItem * item) 
+{
 	if (lootStrategy == LOOTSTRATEGY_ALL)
 		return true;
 
