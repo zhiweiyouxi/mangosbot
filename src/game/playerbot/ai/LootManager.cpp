@@ -169,7 +169,7 @@ void LootManager::StoreLootItem(LootObject &lootObject, uint32 lootIndex, LootTy
     QuestItem *qitem=0, *ffaitem=0, *conditem=0;
     LootItem *item = loot->LootItemInSlot( lootIndex, bot, &qitem, &ffaitem, &conditem );
 
-	if (!item || !item->AllowedForPlayer(bot) || item->is_blocked)
+	if (!item || !item->AllowedForPlayer(bot))
 		return;
 
 	GameObject* go = bot->GetMap()->GetGameObject(lootObject.guid);
