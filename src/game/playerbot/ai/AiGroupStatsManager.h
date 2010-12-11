@@ -20,7 +20,7 @@ namespace ai
 
 	public:
         virtual int GetAttackerCount(float distance = 50){ return attackerMapProvider->GetAttackers().size(); }
-        virtual AttackerMap GetAttackers() { return attackerMapProvider->GetAttackers(); }
+        virtual AttackerMap GetAttackers();
 
 	private:
         float CalculateBalancePercent();

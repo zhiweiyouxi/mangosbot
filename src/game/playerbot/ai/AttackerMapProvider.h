@@ -7,8 +7,8 @@ using namespace std;
 
 namespace ai 
 {
-    typedef map<Unit*, ThreatManager*> AttackerMap;
-    typedef map<Unit*, ThreatManager*>::const_iterator AttackerMapIterator;
+    typedef map<ObjectGuid, ThreatManager*> AttackerMap;
+    typedef map<ObjectGuid, ThreatManager*>::const_iterator AttackerMapIterator;
 
 	class AttackerMapProvider 
 	{

@@ -43,7 +43,7 @@ float AiGroupStatsManager::CalculateBalancePercent()
 
 	for (AttackerMapIterator i = v.begin(); i!=v.end(); i++)
 	{  
-		Unit* unit = i->first;
+		Unit* unit = sObjectAccessor.GetUnit(*master, i->first);
 		if (unit || !unit->isAlive())
 			continue;
 
@@ -79,4 +79,10 @@ void AiGroupStatsManager::Update()
     attackerMapProvider->Reset();
     balancePercent->Reset();
 }
+
+AttackerMap AiGroupStatsManager::GetAttackers() 
+{
+	return attackerMapProvider->GetAttackers(); 
+}
+
 

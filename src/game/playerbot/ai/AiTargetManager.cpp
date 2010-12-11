@@ -5,6 +5,25 @@
 using namespace ai;
 using namespace std;
 
+Unit* AiTargetManager::GetCurrentTarget()
+{
+	if (selection.IsEmpty())
+		return NULL;
+
+	return sObjectAccessor.GetUnit(*bot, selection);
+}
+
+void AiTargetManager::SetCurrentTarget(Unit* target) 
+{
+	if (!target)
+	{
+		selection = ObjectGuid();
+		return;
+	}
+
+	selection = target->GetObjectGuid(); 
+}
+
 Unit* AiTargetManager::GetPartyMemberWithoutAura(const char* spell) 
 {
 	return FindPartyMember(&AiTargetManager::PlayerWithoutAuraPredicate, (void*)spell); 

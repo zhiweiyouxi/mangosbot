@@ -201,11 +201,11 @@ int AiStatsManager::GetAttackerCount(Unit* target, float range)
     AttackerMap attackers = ai->GetGroupStatsManager()->GetAttackers();
     for (AttackerMapIterator i = attackers.begin(); i != attackers.end(); i++)
     {
-        Unit* unit = i->first;
-        if (unit == target)
+        Unit* unit = sObjectAccessor.GetUnit(*bot, i->first);
+        if (!unit || unit == target)
             continue;
 
-        float distance = target->GetDistance(unit);
+        float distance = unit->GetDistance(target);
         if (distance <= range)
             count++;
     }

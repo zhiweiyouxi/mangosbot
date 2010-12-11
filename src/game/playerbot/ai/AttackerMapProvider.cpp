@@ -55,7 +55,7 @@ void AttackerMapProvider::addAttackersOf(Player *player, AttackerMap &out)
 		Unit *attacker = threatManager->getOwner();
 
         if (hasRealThreat(attacker))
-            out[attacker] = threatManager;
+            out[attacker->GetObjectGuid()] = threatManager;
 	}
 }
 

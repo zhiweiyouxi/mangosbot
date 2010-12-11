@@ -41,7 +41,9 @@ void FleeManager::calculateDistanceToCreatures(FleePoint *point)
 
 	for (AttackerMapIterator i = attackers->begin(); i!=attackers->end(); i++) 
     {  
-		Unit* unit = i->first;
+		Unit* unit = sObjectAccessor.GetUnit(*bot, i->first);
+		if (!unit)
+			continue;
 
 		float d = unit->GetDistance(point->x, point->y, point->z);
 		distance.probe(d);
