@@ -133,9 +133,6 @@ char const* WorldSession::GetPlayerName() const
 /// Send a packet to the client
 void WorldSession::SendPacket(WorldPacket const* packet)
 {
-    if (!m_Socket)
-        return;
-
 	// Playerbot mod: send packet to bot AI
     if (GetPlayer()) {
         if (GetPlayer()->GetPlayerbotAI())
@@ -143,6 +140,9 @@ void WorldSession::SendPacket(WorldPacket const* packet)
         else if (GetPlayer()->GetPlayerbotMgr())
             GetPlayer()->GetPlayerbotMgr()->HandleMasterOutgoingPacket(*packet);
     }
+
+	if (!m_Socket)
+		return;
 
     #ifdef MANGOS_DEBUG
 
