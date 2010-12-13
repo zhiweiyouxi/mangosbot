@@ -28,6 +28,7 @@
 #include "AuctionHouseMgr.h"
 #include "Mail.h"
 #include "Util.h"
+#include "AuctionHouseBot.h"
 #include "Chat.h"
 
 // please DO NOT use iterator++, because it is slower than ++iterator!!!
@@ -122,7 +123,10 @@ void WorldSession::SendAuctionOutbiddedMail(AuctionEntry *auction, uint32 newPri
         std::ostringstream msgAuctionOutbiddedSubject;
         msgAuctionOutbiddedSubject << auction->item_template << ":0:" << AUCTION_OUTBIDDED << ":0:0";
 
-        if (oldBidder)
+        if (oldBidder && !_player)
+            oldBidder->GetSession()->SendAuctionBidderNotification( auction->GetHouseId(), auction->Id, auctionbot.GetAHBplayerGUID(), newPrice, auction->GetAuctionOutBid(), auction->item_template);
+
+        if (oldBidder && _player)
             oldBidder->GetSession()->SendAuctionBidderNotification(
                 auction->GetHouseId(), auction->Id, _player->GetObjectGuid(),
                 newPrice, auction->GetAuctionOutBid(), auction->item_template);
@@ -281,6 +285,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
     AuctionEntry *AH = new AuctionEntry;
     AH->Id = sObjectMgr.GenerateAuctionID();
     AH->item_guidlow = itemGuid.GetCounter();
+
     AH->item_template = it->GetEntry();
     AH->owner = pl->GetGUIDLow();
     AH->startbid = bid;
