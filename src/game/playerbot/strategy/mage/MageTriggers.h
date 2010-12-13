@@ -24,4 +24,13 @@ namespace ai
         virtual bool IsActive();
     };
     
+    class FireballTrigger : public DebuffTrigger {
+    public:
+        FireballTrigger(AiManagerRegistry* const ai) : DebuffTrigger(ai, "fireball") {}
+	};
+
+    class PyroblastTrigger : public DebuffTrigger {
+    public:
+        PyroblastTrigger(AiManagerRegistry* const ai) : DebuffTrigger(ai, "pyroblast") {}
+    };
 }

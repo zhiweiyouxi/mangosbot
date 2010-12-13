@@ -23,18 +23,26 @@ protected:
  	void combatVsMelee()
 	{
         tick();
-        spellAvailable("fireball");
+		addTargetAura("pyroblast");
+
+        tick();
+		addTargetAura("fireball");
+
+		tick();
+		tick();
         
 		tickInMeleeRange();
 		tickInMeleeRange();
 
-		spellAvailable("fireball");
+		spellAvailable("fire blast");
+		spellAvailable("scorch");
 		tickInSpellRange();
+        tick();
         tick();
 
 		tickWithLowHealth(24);
 
-		assertActions(">T:fireball>T:frost nova>flee>T:fireball>T:shoot>S:ice block");
+		assertActions(">T:pyroblast>T:fireball>T:fire blast>T:scorch>T:frost nova>flee>T:fire blast>T:scorch>T:shoot>S:ice block");
 	}
 
 };

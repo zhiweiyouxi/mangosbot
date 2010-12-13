@@ -46,6 +46,34 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("shoot"), NULL), 
             /*C*/ NULL);
     }
+    else if (!strcmp("fireball", name)) 
+    {
+        return new ActionNode (new CastFireballAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("pyroblast", name)) 
+    {
+        return new ActionNode (new CastPyroblastAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("fire blast", name)) 
+    {
+        return new ActionNode (new CastFireBlastAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("scorch"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("scorch", name)) 
+    {
+        return new ActionNode (new CastScorchAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("shoot"), NULL), 
+            /*C*/ NULL);
+    }
 	else if (!strcmp("reach spell", name)) 
 	{
 		return new ActionNode (new ReachSpellAction(ai),  

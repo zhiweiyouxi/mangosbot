@@ -9,13 +9,19 @@ using namespace ai;
 
 NextAction** FireMageStrategy::getDefaultActions()
 {
-    return NextAction::array(0, new NextAction("fireball", 1.0f), NULL);
+    return NextAction::array(0, new NextAction("fire blast", 1.0f), new NextAction("scorch", 1.0f), NULL);
 }
 
 void FireMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericMageStrategy::InitTriggers(triggers);
 
+    triggers.push_back(new TriggerNode(
+        new FireballTrigger(ai), 
+        NextAction::array(0, new NextAction("fireball", 5.0f), NULL)));
+    triggers.push_back(new TriggerNode(
+        new PyroblastTrigger(ai), 
+        NextAction::array(0, new NextAction("pyroblast", 10.0f), NULL)));
 }
 
 void FireMageStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -29,12 +35,5 @@ ActionNode* FireMageStrategy::createAction(const char* name)
     if (node)
         return node;
 
-    if (!strcmp("fireball", name)) 
-    {
-        return new ActionNode (new CastFireballAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("shoot"), NULL), 
-            /*C*/ NULL);
-    }
-    else return NULL;
+    return NULL;
 }

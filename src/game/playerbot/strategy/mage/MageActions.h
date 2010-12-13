@@ -10,7 +10,25 @@ namespace ai
         CastFireballAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "fireball") {}
     };
 
-    BEGIN_SPELL_ACTION(CastFrostNovaAction, "frost nova")
+    class CastScorchAction : public CastSpellAction
+    {
+    public:
+        CastScorchAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "scorch") {}
+    };
+
+    class CastFireBlastAction : public CastSpellAction
+    {
+    public:
+        CastFireBlastAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "fire blast") {}
+    };
+
+    class CastPyroblastAction : public CastSpellAction
+    {
+    public:
+        CastPyroblastAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "pyroblast") {}
+    };
+
+	BEGIN_SPELL_ACTION(CastFrostNovaAction, "frost nova")
     END_SPELL_ACTION()
 
 	class CastFrostboltAction : public CastSpellAction
