@@ -41,11 +41,11 @@ PlayerbotAI::~PlayerbotAI()
 
 void PlayerbotAI::UpdateAI(uint32 elapsed)
 {
-	if (!CanUpdateAI())
-		return;
+	if (bot->isAlive())
+		aiRegistry->GetStrategyManager()->ChangeStrategyIfNecessary();
 
-    if (bot->IsBeingTeleported())
-        return;
+	if (!CanUpdateAI() || bot->IsBeingTeleported())
+		return;
 
 	if (bot->isAlive())
 		aiRegistry->GetStrategyManager()->DoNextAction();

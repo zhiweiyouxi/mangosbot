@@ -35,33 +35,36 @@ AiStrategyManager::~AiStrategyManager()
     }
 }
 
-void AiStrategyManager::DoNextAction() 
+void AiStrategyManager::ChangeStrategyIfNecessary()
 {
 	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
 	if (target)
 		bot->SetInFront(target);
-	
+
 	bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
 
 	if (target && target->isAlive() && target->IsHostileTo(bot))
 	{
-        if (currentEngine != combatEngine)
-        {
-            currentEngine = combatEngine;
-            ReInitCurrentEngine();
-        }
+		if (currentEngine != combatEngine)
+		{
+			currentEngine = combatEngine;
+			ReInitCurrentEngine();
+		}
 	}
 	else 
-    {
-        aiRegistry->GetTargetManager()->SetCurrentTarget(NULL);
-        bot->SetSelectionGuid(ObjectGuid());
-        if (currentEngine != nonCombatEngine)
-	    {
-		    currentEngine = nonCombatEngine;
-            ReInitCurrentEngine();
-	    }
-    }
+	{
+		aiRegistry->GetTargetManager()->SetCurrentTarget(NULL);
+		bot->SetSelectionGuid(ObjectGuid());
+		if (currentEngine != nonCombatEngine)
+		{
+			currentEngine = nonCombatEngine;
+			ReInitCurrentEngine();
+		}
+	}
+}
 
+void AiStrategyManager::DoNextAction() 
+{
     AiManagerBase** managers = aiRegistry->GetManagers();
     for (int i=0; i<aiRegistry->GetManagerCount(); i++)
         managers[i]->Update();

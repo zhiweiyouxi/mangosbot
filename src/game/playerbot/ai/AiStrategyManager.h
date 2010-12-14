@@ -19,6 +19,7 @@ namespace ai
 		virtual ~AiStrategyManager();
 
 	public:
+		void ChangeStrategyIfNecessary();
 		virtual void DoNextAction();
 		virtual void DoSpecificAction(const char* name);
 		virtual void ChangeStrategy( const char* name, Engine* e );
