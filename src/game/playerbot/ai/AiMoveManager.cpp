@@ -358,10 +358,11 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 	case SMSG_MOVE_SET_CAN_FLY:
 		{
 			WorldPacket p(packet);
-			uint64 guid = extractGuid(p);
+			uint64 guid = p.readPackGUID();
 			if (guid != bot->GetGUID())
 				return;
-			bot->m_movementInfo.AddMovementFlag(MOVEFLAG_FLYING);
+
+			bot->m_movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
 			//bot->SetSpeed(MOVE_RUN, GetMaster()->GetSpeed(MOVE_FLIGHT) +0.1f, true);
 			return;
 		}
@@ -370,7 +371,7 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 	case SMSG_MOVE_UNSET_CAN_FLY:
 		{
 			WorldPacket p(packet);
-			uint64 guid = extractGuid(p);
+			uint64 guid = p.readPackGUID();
 			if (guid != bot->GetGUID())
 				return;
 			bot->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLYING);
@@ -380,7 +381,16 @@ void AiMoveManager::HandleBotOutgoingPacket(const WorldPacket& packet)
 
 	case SMSG_RESURRECT_REQUEST:
 		{
-			aiRegistry->GetMoveManager()->Revive();
+			if (bot->isAlive())
+				return;
+			WorldPacket p(packet);
+			ObjectGuid guid;
+			p >> guid;
+
+			WorldPacket* const packet = new WorldPacket(CMSG_RESURRECT_RESPONSE, 8+1);
+			*packet << guid;
+			*packet << uint8(1);                        // accept
+			bot->GetSession()->QueuePacket(packet);   // queue the packet to get around race condition
 			return;
 		}
 	}
@@ -430,9 +440,35 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
             UseMeetingStone(guid);
             return;
         }
-    }
+	case CMSG_MOVE_SET_FLY:
+		{
+			WorldPacket p(packet);
+			p.rpos(0);
+			ObjectGuid guid;
+			MovementInfo movementInfo;
 
-    void Teleport( Player* master );
+			p >> guid.ReadAsPacked();
+			p >> movementInfo;
+
+			movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
+
+			WorldPacket packet(CMSG_MOVE_SET_FLY);
+			packet << bot->GetObjectGuid().WriteAsPacked();
+			packet << movementInfo;
+			bot->SetMover(bot);
+			bot->GetSession()->HandleMovementOpcodes(packet);
+
+			
+			bot->m_movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
+			bot->SetSpeedRate(MOVE_FLIGHT, 1.0f, true);
+			bot->SetSpeedRate(MOVE_FLIGHT, ai->GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
+
+			bot->SetSpeedRate(MOVE_RUN, 1.0f, true);
+			bot->SetSpeedRate(MOVE_RUN, ai->GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
+
+			return;
+		}
+    }
 }
 
 bool AiMoveManager::IsBehind(Unit* target)

@@ -41,8 +41,6 @@ void AiStrategyManager::ChangeStrategyIfNecessary()
 	if (target)
 		bot->SetInFront(target);
 
-	bot->SetPosition( bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), false );
-
 	if (target && target->isAlive() && target->IsHostileTo(bot))
 	{
 		if (currentEngine != combatEngine)
@@ -65,6 +63,9 @@ void AiStrategyManager::ChangeStrategyIfNecessary()
 
 void AiStrategyManager::DoNextAction() 
 {
+	bot->UpdateUnderwaterState(bot->GetMap(), bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ());
+	bot->CheckAreaExploreAndOutdoor();
+
     AiManagerBase** managers = aiRegistry->GetManagers();
     for (int i=0; i<aiRegistry->GetManagerCount(); i++)
         managers[i]->Update();
