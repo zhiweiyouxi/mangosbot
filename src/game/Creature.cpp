@@ -21,6 +21,7 @@
 #include "WorldPacket.h"
 #include "World.h"
 #include "ObjectMgr.h"
+#include "ScriptMgr.h"
 #include "ObjectGuid.h"
 #include "SpellMgr.h"
 #include "QuestDef.h"
@@ -2167,7 +2168,7 @@ std::string Creature::GetAIName() const
 
 std::string Creature::GetScriptName() const
 {
-    return sObjectMgr.GetScriptName(GetScriptId());
+    return sScriptMgr.GetScriptName(GetScriptId());
 }
 
 uint32 Creature::GetScriptId() const
@@ -2183,7 +2184,7 @@ VendorItemData const* Creature::GetVendorItems() const
 VendorItemData const* Creature::GetVendorTemplateItems() const
 {
     uint32 vendorId = GetCreatureInfo()->vendorId;
-    return vendorId ? sObjectMgr.GetNpcVendorItemList(vendorId) : NULL;
+    return vendorId ? sObjectMgr.GetNpcVendorTemplateItemList(vendorId) : NULL;
 }
 
 uint32 Creature::GetVendorItemCurrentCount(VendorItem const* vItem)
