@@ -45,7 +45,7 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new HuntersPetDeadTrigger(ai), 
-        NextAction::array(0, new NextAction("revive pet", 60.0f), NULL)));
+        NextAction::array(0, new NextAction("revive pet", 5.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new HuntersPetLowHealthTrigger(ai), 
@@ -58,6 +58,10 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new HasCcTargetTrigger(ai, "freezing trap"), 
         NextAction::array(0, new NextAction("freezing trap", 83.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new AoeTrigger(ai, 3), 
+        NextAction::array(0, new NextAction("multi-shot", 20.0f), NULL)));
 }
 
 void DpsHunterStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

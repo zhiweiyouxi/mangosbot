@@ -13,6 +13,7 @@ class DpsHunterEngineTestCase : public EngineTestBase
   CPPUNIT_TEST( lowMana );
   CPPUNIT_TEST( boost );
   CPPUNIT_TEST( cc );
+  CPPUNIT_TEST( aoe );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -75,7 +76,7 @@ protected:
 		tickWithPetLowHealth(0); // dead
 		tickWithPetLowHealth(30);
 
-		assertActions(">S:call pet>S:revive pet>Pet:mend pet");
+		assertActions(">S:call pet>T:hunter's mark>Pet:mend pet");
 	}    
 
 
@@ -96,6 +97,16 @@ protected:
         tickWithCcTarget();
 
         assertActions(">Cc:freezing trap");
+    }
+
+    void aoe() 
+    {
+		addTargetAura("hunter's mark");
+		addTargetAura("black arrow");
+		addTargetAura("serpent sting");
+        tickWithAttackerCount(3);
+
+		assertActions(">T:multi-shot");
     }
 };
 
