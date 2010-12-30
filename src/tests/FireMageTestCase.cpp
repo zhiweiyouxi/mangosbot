@@ -11,6 +11,7 @@ class FireMageTestCase : public EngineTestBase
   CPPUNIT_TEST_SUITE( FireMageTestCase );
   CPPUNIT_TEST( combatVsMelee );
   CPPUNIT_TEST( boost );
+  CPPUNIT_TEST( aoe );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +54,15 @@ protected:
         tick();
 
 		assertActions(">T:pyroblast>S:combustion>T:fireball");
+    }
+
+    void aoe() 
+    {
+        tick();
+		tickWithAttackerCount(3);
+        tick();
+
+		assertActions(">T:pyroblast>T:flamestrike>T:fireball");
     }
 };
 

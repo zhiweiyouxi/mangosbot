@@ -28,6 +28,12 @@ namespace ai
         CastPyroblastAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "pyroblast") {}
     };
 
+    class CastFlamestrikeAction : public CastSpellAction
+    {
+    public:
+        CastFlamestrikeAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "flamestrike") {}
+    };
+
 	BEGIN_SPELL_ACTION(CastFrostNovaAction, "frost nova")
     END_SPELL_ACTION()
 

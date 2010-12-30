@@ -60,6 +60,13 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("flamestrike", name)) 
+    {
+        return new ActionNode (new CastFlamestrikeAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else if (!strcmp("fire blast", name)) 
     {
         return new ActionNode (new CastFireBlastAction(ai),  
