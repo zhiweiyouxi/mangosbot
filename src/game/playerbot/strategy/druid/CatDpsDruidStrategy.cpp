@@ -40,6 +40,10 @@ void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new BoostTrigger(ai, "tiger's fury"),
 		NextAction::array(0, new NextAction("tiger's fury", 40.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new AoeTrigger(ai, 3),
+        NextAction::array(0, new NextAction("swipe (cat)", 30.0f), NULL)));
 }
 
 void CatDpsDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -98,6 +102,13 @@ ActionNode* CatDpsDruidStrategy::createAction(const char* name)
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("claw"), NULL), 
             /*C*/ NextAction::array(0, new NextAction("mangle (cat)", 15.0f), NULL));
+    }
+    else if (!strcmp("swipe (cat)", name)) 
+    {
+        return new ActionNode (new CastSwipeCatAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
     }
     else if (!strcmp("rake", name)) 
     {

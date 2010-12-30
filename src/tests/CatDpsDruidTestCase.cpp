@@ -16,6 +16,7 @@ class CatDpsDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( boost );
     CPPUNIT_TEST( cower );
     CPPUNIT_TEST( buff );
+	CPPUNIT_TEST( aoe );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -104,6 +105,14 @@ protected:
         tickInMeleeRange();
 
         assertActions(">S:cat form>T:faerie fire (feral)");
+    }
+
+    void aoe()
+    {
+		tickInMeleeRange();
+		tickWithAttackerCount(3);
+
+		assertActions(">T:rake>T:swipe (cat)");
     }
 };
 
