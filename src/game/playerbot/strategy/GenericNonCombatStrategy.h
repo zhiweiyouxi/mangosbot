@@ -48,6 +48,7 @@ namespace ai
         DpsAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "dps assist"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
+		virtual string GetIncompatibleStrategies() { return "-tank assist"; }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -70,6 +71,7 @@ namespace ai
         TankAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "tank assist"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_TANK; }
+		virtual string GetIncompatibleStrategies() { return "-dps assist"; }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

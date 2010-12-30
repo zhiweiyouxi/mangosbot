@@ -225,7 +225,16 @@ void Engine::addStrategy(const char* name)
 
     Strategy* strategy = actionFactory->createStrategy(name);
     if (strategy)
+	{
         strategies.push_back(strategy);
+
+		AiStrategyManager* manager = ai->GetStrategyManager();
+		if (manager)
+		{
+			string list = strategy->GetIncompatibleStrategies();
+			ai->GetStrategyManager()->ChangeStrategy(list.c_str(), this);
+		}
+	}
 
     Init();
 }

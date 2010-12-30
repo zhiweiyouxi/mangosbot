@@ -14,6 +14,9 @@ AiManagerRegistry::AiManagerRegistry()
 
 AiManagerRegistry::AiManagerRegistry(PlayerbotAI* ai) 
 {
+	for (int i=0; i<MAX_AI_MANAGER_TYPE; i++)
+		managers[i] = NULL;
+
 	managers[AiSpellManagerType] = new AiSpellManager(ai, this);
 	managers[AiStatsManagerType] = new AiStatsManager(ai, this);
 	managers[AiTargetManagerType] = new AiTargetManager(ai, this);
