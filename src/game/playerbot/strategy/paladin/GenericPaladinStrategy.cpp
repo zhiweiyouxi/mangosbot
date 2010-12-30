@@ -308,5 +308,26 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
 			/*A*/ NULL, 
 			/*C*/ NULL);
 	}
-    return NULL;
+	else if (!strcmp("shadow resistance aura", name)) 
+	{
+		return new ActionNode (new CastShadowResistanceAuraAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("frost resistance aura", name)) 
+	{
+		return new ActionNode (new CastFrostResistanceAuraAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("fire resistance aura", name)) 
+	{
+		return new ActionNode (new CastFireResistanceAuraAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else return NULL;
 }

@@ -9,14 +9,15 @@ using namespace ai;
 class TankPaladinTestCase : public EngineTestBase
 {
     CPPUNIT_TEST_SUITE( TankPaladinTestCase );
-    CPPUNIT_TEST( combatVsMelee );
-    CPPUNIT_TEST( paladinMustHoldAggro );
-    CPPUNIT_TEST( healing );
-    CPPUNIT_TEST( stopEnemyMove );
-    CPPUNIT_TEST( buff );
-    CPPUNIT_TEST( bmana );
-    CPPUNIT_TEST( cure );
-	CPPUNIT_TEST( interruptSpells );
+		CPPUNIT_TEST( combatVsMelee );
+		CPPUNIT_TEST( paladinMustHoldAggro );
+		CPPUNIT_TEST( healing );
+		CPPUNIT_TEST( stopEnemyMove );
+		CPPUNIT_TEST( buff );
+		CPPUNIT_TEST( bmana );
+		CPPUNIT_TEST( cure );
+		CPPUNIT_TEST( interruptSpells );
+		CPPUNIT_TEST( resistances );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -161,6 +162,20 @@ protected:
         spellAvailable("purify");
         tickWithPartyAuraToDispel(type);
     }
+
+	void resistances()
+	{
+		engine->addStrategy("rshadow");
+		tick();
+	
+		engine->addStrategy("rfrost");
+		tick();
+	
+		engine->addStrategy("rfire");
+		tick();
+
+		assertActions(">S:shadow resistance aura>S:frost resistance aura>S:fire resistance aura");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TankPaladinTestCase );

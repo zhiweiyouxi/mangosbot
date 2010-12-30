@@ -11,7 +11,6 @@ class PaladinNonCombatTestCase : public EngineTestBase
     CPPUNIT_TEST_SUITE( PaladinNonCombatTestCase );
         CPPUNIT_TEST( buff );
 		CPPUNIT_TEST( resurrect );
-		CPPUNIT_TEST( resistances );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -38,20 +37,6 @@ protected:
 	{
 		tickWithDeadPartyMember();
 		assertActions(">P:redemption");
-	}
-
-	void resistances()
-	{
-		engine->addStrategy("rshadow");
-		tick();
-	
-		engine->addStrategy("rfrost");
-		tick();
-	
-		engine->addStrategy("rfire");
-		tick();
-
-		assertActions(">S:shadow resistance aura>S:frost resistance aura>S:fire resistance aura");
 	}
 };
 

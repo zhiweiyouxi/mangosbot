@@ -1,5 +1,6 @@
 #include "../../pchdef.h"
 #include "../playerbot.h"
+#include "GenericActions.h"
 
 #include "Engine.h"
 
