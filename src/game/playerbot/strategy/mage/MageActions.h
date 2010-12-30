@@ -62,6 +62,12 @@ namespace ai
 		CastIcyVeinsAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "icy veins") {}
 	};
 
+	class CastCombustionAction : public CastBuffSpellAction 
+    {
+	public:
+		CastCombustionAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "combustion") {}
+	};
+
     BEGIN_SPELL_ACTION(CastCounterspellAction, "counterspell")
     END_SPELL_ACTION()
 

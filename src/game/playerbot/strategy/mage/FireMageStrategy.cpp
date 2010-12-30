@@ -22,6 +22,9 @@ void FireMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new PyroblastTrigger(ai), 
         NextAction::array(0, new NextAction("pyroblast", 10.0f), NULL)));
+    triggers.push_back(new TriggerNode(
+        new BoostTrigger(ai, "combustion"),
+        NextAction::array(0, new NextAction("combustion", 50.0f), NULL)));
 }
 
 void FireMageStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

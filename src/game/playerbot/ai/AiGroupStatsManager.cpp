@@ -22,7 +22,7 @@ AiGroupStatsManager::~AiGroupStatsManager()
 
 float AiGroupStatsManager::CalculateBalancePercent()
 {
-	uint32 playerLevel = 0,
+	float playerLevel = 0,
 		attackerLevel = 0;
 
 	Group* group = master->GetGroup();
@@ -32,7 +32,7 @@ float AiGroupStatsManager::CalculateBalancePercent()
 		for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
 		{
 			Player *player = sObjectMgr.GetPlayer(itr->guid);
-			if( !player || !player->isAlive() || player == master)
+			if( !player || !player->isAlive())
 				continue;
 
 			playerLevel += player->getLevel();
@@ -49,7 +49,7 @@ float AiGroupStatsManager::CalculateBalancePercent()
 
 		uint32 level = unit->getLevel();
 
-		Creature* creature = dynamic_cast<Creature*>(unit);
+		Creature* creature = sObjectAccessor.GetCreatureInWorld(unit->GetObjectGuid());
 		if (creature)
 		{
 			switch (creature->GetCreatureInfo()->rank) {
@@ -60,17 +60,17 @@ float AiGroupStatsManager::CalculateBalancePercent()
 				level *= 3;
 				break;
 			case CREATURE_ELITE_RAREELITE:
-				level *= 5;
+				level *= 3;
 				break;
 			case CREATURE_ELITE_WORLDBOSS:
-				level *= 10;
+				level *= 5;
 				break;
 			}
 		}
 		attackerLevel += level;
 	}
 
-	return !attackerLevel ? 100 : playerLevel * 100 / attackerLevel;
+	return attackerLevel ? playerLevel * 100 / attackerLevel : 100;
 
 }
 

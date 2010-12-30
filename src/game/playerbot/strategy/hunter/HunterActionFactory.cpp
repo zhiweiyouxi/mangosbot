@@ -15,9 +15,6 @@ Strategy* HunterActionFactory::createStrategy(const char* name)
     if (!strcmp("nc", name))
         return new GenericHunterNonCombatStrategy(ai);
 
-    if (!strcmp("boost", name))
-        return new HunterBoostStrategy(ai);
-
     if (!strcmp("bspeed", name))
         return new HunterBuffSpeedNonCombatStrategy(ai);
 

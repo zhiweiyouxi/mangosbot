@@ -10,6 +10,7 @@ class FireMageTestCase : public EngineTestBase
 {
   CPPUNIT_TEST_SUITE( FireMageTestCase );
   CPPUNIT_TEST( combatVsMelee );
+  CPPUNIT_TEST( boost );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +46,14 @@ protected:
 		assertActions(">T:pyroblast>T:fireball>T:fire blast>T:scorch>T:frost nova>flee>T:fire blast>T:scorch>T:shoot>S:ice block");
 	}
 
+    void boost() 
+    {
+        tick();
+		tickWithBalancePercent(1);
+        tick();
+
+		assertActions(">T:pyroblast>S:combustion>T:fireball");
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FireMageTestCase );

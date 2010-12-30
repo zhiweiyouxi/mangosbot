@@ -178,7 +178,7 @@ namespace ai
 	class BoostTrigger : public BuffTrigger
 	{
 	public:
-		BoostTrigger(AiManagerRegistry* const ai, const char* spell, float balance) : BuffTrigger(ai, spell) 
+		BoostTrigger(AiManagerRegistry* const ai, const char* spell, float balance = 50) : BuffTrigger(ai, spell) 
 		{
 			this->balance = balance;
 		}

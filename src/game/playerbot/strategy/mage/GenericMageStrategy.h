@@ -14,14 +14,4 @@ namespace ai
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
         virtual ActionNode* createAction(const char* name);
     };
-
-    class MageBoostStrategy : public Strategy
-    {
-    public:
-        MageBoostStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
-
-    public:
-        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
-        virtual const char* getName() { return "boost"; }
-    };
 }

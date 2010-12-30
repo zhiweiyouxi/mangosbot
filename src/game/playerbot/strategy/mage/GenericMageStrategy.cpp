@@ -123,6 +123,13 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("combustion", name) || !strcmp("boost", name)) 
+    {
+        return new ActionNode (new CastCombustionAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
 	else if (!strcmp("ice block", name)) 
 	{
 		return new ActionNode (new CastIceBlockAction(ai),  
@@ -138,13 +145,4 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*C*/ NULL);
     }
     else return NULL;
-}
-
-
-void MageBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
-{
-    triggers.push_back(new TriggerNode(
-        new BoostTrigger(ai, "berserk", 45),
-        NextAction::array(0, new NextAction("icy veins", 40.0f), NULL)));
-
 }

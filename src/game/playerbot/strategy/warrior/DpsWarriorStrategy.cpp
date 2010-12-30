@@ -43,6 +43,10 @@ void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new HasAuraTrigger(ai, "victory rush"), 
 		NextAction::array(0, new NextAction("victory rush", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new BoostTrigger(ai, "death wish"),
+        NextAction::array(0, new NextAction("death wish", 40.0f), NULL)));
 }
 
 void DpsWarriorStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -123,13 +127,4 @@ ActionNode* DpsWarriorStrategy::createAction(const char* name)
             /*C*/ NULL);
     }
     else return GenericWarriorStrategy::createAction(name);
-}
-
-
-void WarriorBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
-{
-    triggers.push_back(new TriggerNode(
-        new BoostTrigger(ai, "death wish", 45),
-        NextAction::array(0, new NextAction("death wish", 40.0f), NULL)));
-
 }

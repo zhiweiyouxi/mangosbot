@@ -58,8 +58,6 @@ protected:
 
     void boost() 
     {
-        engine->addStrategy("boost");
-
         tick(); // frostbolt
 
 		tickWithBalancePercent(1);

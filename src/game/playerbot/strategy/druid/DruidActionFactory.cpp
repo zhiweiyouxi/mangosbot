@@ -24,8 +24,5 @@ Strategy* DruidActionFactory::createStrategy(const char* name)
     if (!strcmp("nc", name))
         return new GenericDruidNonCombatStrategy(ai);
 
-    if (!strcmp("boost", name))
-        return new DruidBoostStrategy(ai);
-
     return ActionFactory::createStrategy(name);
 }

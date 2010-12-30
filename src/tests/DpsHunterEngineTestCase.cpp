@@ -81,8 +81,6 @@ protected:
 
     void boost()
     {
-        engine->addStrategy("boost");
-
 		tick();
         spellUnavailable("serpent sting");
 

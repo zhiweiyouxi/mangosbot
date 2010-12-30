@@ -36,6 +36,10 @@ void CatDpsDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new FaerieFireFeralTrigger(ai),
         NextAction::array(0, new NextAction("faerie fire (feral)", 30.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new BoostTrigger(ai, "tiger's fury"),
+		NextAction::array(0, new NextAction("tiger's fury", 40.0f), NULL)));
 }
 
 void CatDpsDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)

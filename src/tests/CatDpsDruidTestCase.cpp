@@ -80,13 +80,10 @@ protected:
 
     void boost()
     {
-        engine->addStrategy("boost");
-
-		tickWithBalancePercent(1);
-		tickWithBalancePercent(1);
+		tickWithBalancePercent(49);
 		tick();
 
-		assertActions(">S:berserk>S:tiger's fury>reach melee");
+		assertActions(">S:tiger's fury>reach melee");
     }
 
     void cower()

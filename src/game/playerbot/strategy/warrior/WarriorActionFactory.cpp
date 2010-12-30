@@ -20,9 +20,6 @@ Strategy* WarriorActionFactory::createStrategy(const char* name)
     if (!strcmp("nc", name))
         return new GenericWarriorNonCombatStrategy(ai);
 
-    if (!strcmp("boost", name))
-        return new WarriorBoostStrategy(ai);
-
     if (!strcmp("pull", name))
         return new PullStrategy(ai, "shoot");
 

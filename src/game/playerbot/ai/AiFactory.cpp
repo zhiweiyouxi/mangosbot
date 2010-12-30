@@ -44,7 +44,7 @@ Engine* AiFactory::createCombatEngine(Player* player, AiManagerRegistry* const f
             break;
         case CLASS_DRUID:
 			engine = new Engine(facade, new DruidActionFactory(facade));
-			engine->addStrategies("caster", "dps assist", NULL);
+			engine->addStrategies("bear", "tank assist", NULL);
             break;
         case CLASS_HUNTER:
 			engine = new Engine(facade, new HunterActionFactory(facade));

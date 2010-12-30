@@ -17,14 +17,4 @@ namespace ai
         virtual NextAction** getDefaultActions();
 
     };
-
-    class WarriorBoostStrategy : public Strategy
-    {
-    public:
-        WarriorBoostStrategy(AiManagerRegistry* const ai) : Strategy(ai) {}
-
-    public:
-        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
-        virtual const char* getName() { return "boost"; }
-    };
 }

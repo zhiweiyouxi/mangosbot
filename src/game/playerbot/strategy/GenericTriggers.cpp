@@ -122,8 +122,7 @@ const char* AndTrigger::getName()
 
 bool BoostTrigger::IsActive()
 {
-	Unit* target = GetTarget();
-	return target && !spellManager->HasAura(spell, target) && statsManager->GetBalancePercent() <= balance;
+	return BuffTrigger::IsActive() && statsManager->GetBalancePercent() <= balance;
 }
 
 bool SnareTargetTrigger::IsActive()

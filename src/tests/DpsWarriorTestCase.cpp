@@ -90,8 +90,6 @@ protected:
 
     void boost()
     {
-        engine->addStrategy("boost");
-
         tickInMeleeRange(); // battle stance
 
 		tickWithBalancePercent(1);

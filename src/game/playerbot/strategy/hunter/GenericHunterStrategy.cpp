@@ -29,6 +29,10 @@ void GenericHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new HuntersPetLowHealthTrigger(ai), 
         NextAction::array(0, new NextAction("mend pet", 60.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
+        new BoostTrigger(ai, "rapid fire"),
+        NextAction::array(0, new NextAction("rapid fire", 55.0f), NULL)));
 }
 
 ActionNode* GenericHunterStrategy::createAction(const char* name)
@@ -98,15 +102,3 @@ ActionNode* GenericHunterStrategy::createAction(const char* name)
     }
     else return NULL;
 }
-
-
-
-
-void HunterBoostStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
-{
-    triggers.push_back(new TriggerNode(
-        new BoostTrigger(ai, "rapid fire", 45),
-        NextAction::array(0, new NextAction("rapid fire", 55.0f), NULL)));
-
-}
-
