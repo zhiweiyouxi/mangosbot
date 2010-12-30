@@ -1,5 +1,6 @@
 #include "../../pchdef.h"
 #include "../playerbot.h"
+#include "GenericActions.h"
 
 #include "Engine.h"
 
@@ -161,7 +162,19 @@ ActionNode* Engine::createAction(const char* name)
         if (node)
             return node;
     }
-    return actionFactory->createAction(name);
+    ActionNode* node = actionFactory->createAction(name);
+	if (node)
+		return node;
+
+	ostringstream out;
+	out << "I cannot do ";
+	out << name;
+	ai->GetSocialManager()->TellMaster(out.str().c_str());
+
+    return new ActionNode (new StayAction(ai),  
+        /*P*/ NULL,
+        /*A*/ NULL, 
+        /*C*/ NULL);
 }
 
 bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool skipPrerequisites)
