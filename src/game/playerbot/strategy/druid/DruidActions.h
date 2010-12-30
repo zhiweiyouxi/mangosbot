@@ -125,6 +125,12 @@ namespace ai
 		CastWrathAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "wrath") {} 
 	};
 
+	class CastStarfallAction : public CastSpellAction 
+	{ 
+	public: 
+		CastStarfallAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "starfall") {} 
+	};
+
 	class CastMoonfireAction : public CastDebuffSpellAction 
 	{ 
 	public: 

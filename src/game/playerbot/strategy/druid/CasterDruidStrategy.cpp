@@ -32,6 +32,10 @@ void CasterDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 	triggers.push_back(new TriggerNode(
 		new AttackerCountTrigger(ai, 3),
 		NextAction::array(0, new NextAction("nature's grasp", 20.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new AoeTrigger(ai, 3),
+		NextAction::array(0, new NextAction("starfall", 17.0f), NULL)));
 }
 
 void CasterDruidStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -94,6 +98,13 @@ ActionNode* CasterDruidStrategy::createAction(const char* name)
     else if (!strcmp("wrath", name)) 
 	{
 		return new ActionNode (new CastWrathAction(ai),  
+			/*P*/ NextAction::array(0, new NextAction("moonkin form"), NULL),
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+    else if (!strcmp("starfall", name)) 
+	{
+		return new ActionNode (new CastStarfallAction(ai),  
 			/*P*/ NextAction::array(0, new NextAction("moonkin form"), NULL),
 			/*A*/ NULL, 
 			/*C*/ NULL);

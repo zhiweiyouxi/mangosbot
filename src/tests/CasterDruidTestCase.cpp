@@ -15,6 +15,7 @@ class CasterDruidTestCase : public EngineTestBase
 	CPPUNIT_TEST( curePoison );
 	CPPUNIT_TEST( resurrect );
     CPPUNIT_TEST( cc );
+	CPPUNIT_TEST( aoe );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -110,6 +111,14 @@ protected:
         tickWithCcTarget();
 
         assertActions(">Cc:entangling roots");
+    }
+
+    void aoe()
+    {
+        tickWithAttackerCount(3);
+        tickWithAttackerCount(3);
+
+		assertActions(">S:nature's grasp>T:starfall");
     }
 };
 
