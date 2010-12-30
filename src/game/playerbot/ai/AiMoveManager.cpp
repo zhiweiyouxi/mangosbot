@@ -442,6 +442,9 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
         }
 	case CMSG_MOVE_SET_FLY:
 		{
+			if (!bot->IsMounted())
+				return;
+
 			WorldPacket p(packet);
 			p.rpos(0);
 			ObjectGuid guid;
