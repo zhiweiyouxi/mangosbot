@@ -61,7 +61,7 @@ float AiMoveManager::GetFollowAngle()
 		return 0.0f;
 
 	GroupReference *gref = group->GetFirstMember();
-	int index = 0;
+	int index = 1;
 	while( gref )
 	{
 		if( gref->getSource() == bot)
@@ -111,12 +111,14 @@ void AiMoveManager::Follow(Unit* target, float distance)
         return;
 
     float distanceToRun = bot->GetDistance(target) - distance;
-    if (distanceToRun <= 3)
+    if (distanceToRun <= 3 && target->IsFriendlyTo(bot))
         return;
 
 	float angle = GetFollowAngle();
+	if (target->IsFriendlyTo(bot) && bot->IsMounted())
+		distance += angle;
 
-    bot->GetMotionMaster()->MoveFollow(target, distance + angle, angle);
+    bot->GetMotionMaster()->MoveFollow(target, distance, angle);
 
     WaitForReach(distanceToRun);
 
