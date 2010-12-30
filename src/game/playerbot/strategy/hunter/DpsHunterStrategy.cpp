@@ -24,10 +24,6 @@ void DpsHunterStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("aspect of the viper", 91.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
-        new HunterAspectOfTheHawkTrigger(ai), 
-        NextAction::array(0, new NextAction("aspect of the hawk", 90.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new DebuffTrigger(ai, "black arrow"), 
         NextAction::array(0, new NextAction("black arrow", 51.0f), NULL)));
 
@@ -189,3 +185,4 @@ ActionNode* DpsHunterStrategy::createAction(const char* name)
     }
     else return NULL;
 }
+

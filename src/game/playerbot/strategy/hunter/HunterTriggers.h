@@ -18,6 +18,17 @@ namespace ai
         };
     };
 
+	class HunterAspectOfTheWildTrigger : public BuffTrigger
+	{ 
+	public: 
+		HunterAspectOfTheWildTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "aspect of the wild") {
+			checkInterval = 1;
+		}
+		virtual bool IsActive() {
+			return BuffTrigger::IsActive() && !spellManager->HasAura("aspect of the viper", GetTarget());
+		};
+	};
+
     class HunterAspectOfTheViperTrigger : public BuffTrigger
     { 
     public: 

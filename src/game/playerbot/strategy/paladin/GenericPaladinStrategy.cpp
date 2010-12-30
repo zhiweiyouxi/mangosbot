@@ -301,5 +301,12 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("retribution aura", name)) 
+	{
+		return new ActionNode (new CastRetributionAuraAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     return NULL;
 }

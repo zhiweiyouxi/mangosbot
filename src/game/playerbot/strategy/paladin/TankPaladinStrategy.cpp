@@ -17,10 +17,6 @@ void TankPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     GenericPaladinStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
-        new DevotionAuraTrigger(ai), 
-        NextAction::array(0, new NextAction("devotion aura", 25.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new JudgementOfLightTrigger(ai), 
         NextAction::array(0, new NextAction("judgement of light", 1.2f), NULL)));
 

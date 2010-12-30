@@ -4,6 +4,7 @@
 #include "HunterActionFactory.h"
 #include "DpsHunterStrategy.h"
 #include "GenericHunterNonCombatStrategy.h"
+#include "HunterBuffStrategies.h"
 
 using namespace ai;
 
@@ -17,6 +18,12 @@ Strategy* HunterActionFactory::createStrategy(const char* name)
 
     if (!strcmp("bspeed", name))
         return new HunterBuffSpeedNonCombatStrategy(ai);
+
+	if (!strcmp("bdps", name))
+		return new HunterBuffDpsStrategy(ai);
+
+	if (!strcmp("rnature", name))
+		return new HunterNatureResistanceStrategy(ai);
 
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)

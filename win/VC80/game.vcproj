@@ -2196,6 +2196,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterBuffStrategies.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterBuffStrategies.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\playerbot\strategy\hunter\HunterMultipliers.cpp"
 						>
 					</File>

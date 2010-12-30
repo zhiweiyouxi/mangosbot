@@ -14,6 +14,7 @@ class DpsHunterEngineTestCase : public EngineTestBase
   CPPUNIT_TEST( boost );
   CPPUNIT_TEST( cc );
   CPPUNIT_TEST( aoe );
+  CPPUNIT_TEST( buff );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -21,6 +22,7 @@ public:
     {
 		EngineTestBase::setUp();
 		setupEngine(new HunterActionFactory(ai), "dps", NULL);
+		engine->addStrategy("bdps");
 
         addAura("aspect of the hawk");
     }
@@ -108,6 +110,19 @@ protected:
 
 		assertActions(">T:multi-shot");
     }
+
+	void buff()
+	{
+		engine->removeStrategy("bdps");
+		engine->addStrategy("rnature");
+		removeAura("aspect of the hawk");
+
+		tick();
+		addAura("aspect of the wild");
+
+		assertActions(">S:aspect of the wild");
+
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( DpsHunterEngineTestCase );

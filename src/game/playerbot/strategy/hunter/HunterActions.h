@@ -51,6 +51,11 @@ namespace ai
 		CastAspectOfTheHawkAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "aspect of the hawk") {}
 	};
 
+	class CastAspectOfTheWildAction : public CastBuffSpellAction {
+	public:
+		CastAspectOfTheWildAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "aspect of the wild") {}
+	};
+
 	class CastAspectOfTheCheetahAction : public CastBuffSpellAction {
 	public:
 		CastAspectOfTheCheetahAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "aspect of the cheetah") {}

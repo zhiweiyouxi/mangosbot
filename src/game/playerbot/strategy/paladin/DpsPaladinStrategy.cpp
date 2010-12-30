@@ -17,10 +17,6 @@ void DpsPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     GenericPaladinStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
-        new DevotionAuraTrigger(ai), 
-        NextAction::array(0, new NextAction("retribution aura", 25.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
         new JudgementOfLightTrigger(ai), 
         NextAction::array(0, new NextAction("judgement of wisdom", 1.2f), NULL)));
 
@@ -36,14 +32,7 @@ void DpsPaladinStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 
 ActionNode* DpsPaladinStrategy::createAction(const char* name)
 {
-    if (!strcmp("retribution aura", name)) 
-    {
-        return new ActionNode (new CastRetributionAuraAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
-    else if (!strcmp("seal of command", name)) 
+    if (!strcmp("seal of command", name)) 
     {
         return new ActionNode (new CastSealOfCommandAction(ai),  
             /*P*/ NULL,

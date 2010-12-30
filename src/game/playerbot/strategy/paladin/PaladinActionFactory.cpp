@@ -29,6 +29,18 @@ Strategy* PaladinActionFactory::createStrategy(const char* name)
 	if (!strcmp("bdps", name))
         return new PaladinBuffDpsStrategy(ai);
 
+	if (!strcmp("barmor", name))
+		return new PaladinBuffArmorStrategy(ai);
+
+	if (!strcmp("rshadow", name))
+		return new PaladinShadowResistanceStrategy(ai);
+
+	if (!strcmp("rfrost", name))
+		return new PaladinFrostResistanceStrategy(ai);
+
+	if (!strcmp("rfire", name))
+		return new PaladinFireResistanceStrategy(ai);
+
     Strategy* strategy = ActionFactory::createStrategy(name);
     if (strategy)
         return strategy;

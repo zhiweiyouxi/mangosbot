@@ -25,6 +25,7 @@ public:
 		EngineTestBase::setUp();
 		setupEngine(new PaladinActionFactory(ai), "tank", NULL);
 		engine->addStrategy("bhealth");
+		engine->addStrategy("barmor");
 
         addAura("devotion aura");
         addAura("seal of justice");
