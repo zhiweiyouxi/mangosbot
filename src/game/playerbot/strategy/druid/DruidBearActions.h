@@ -36,4 +36,8 @@ namespace ai {
 		CastMangleBearAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "mangle (bear)") {}
 	};
 	
+	class CastSwipeBearAction : public CastMeleeSpellAction {
+	public:
+		CastSwipeBearAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "swipe (bear)") {}
+	};
 }

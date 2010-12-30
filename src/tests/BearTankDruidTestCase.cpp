@@ -19,6 +19,7 @@ class BearTankDruidTestCase : public EngineTestBase
     CPPUNIT_TEST( interruptSpells );
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST( cc );
+	CPPUNIT_TEST( aoe );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -54,7 +55,7 @@ protected:
         
 		tick(); 
 
-		assertActions(">S:dire bear form>S:dire bear form>reach melee>T:demoralizing roar>melee");
+		assertActions(">S:dire bear form>S:dire bear form>reach melee>T:swipe (bear)>T:demoralizing roar");
     }
 
     void druidMustHoldAggro()
@@ -197,6 +198,16 @@ protected:
 
         assertActions(">-dire bear form>Cc:entangling roots");
     }
+
+    void aoe()
+    {
+        addAura("dire bear form");
+		tickInMeleeRange();
+		tickWithAttackerCount(3);
+
+		assertActions(">melee>T:swipe (bear)");
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( BearTankDruidTestCase );

@@ -87,6 +87,11 @@ namespace ai {
 		CastMangleCatAction(AiManagerRegistry* const ai) : CastCatMeleeSpellAction(ai, "mangle (cat)") {}
 	};
 
+	class CastSwipeCatAction : public CastMeleeSpellAction {
+	public:
+		CastSwipeCatAction(AiManagerRegistry* const ai) : CastMeleeSpellAction(ai, "swipe (cat)") {}
+	};
+
 	class CastFerociousBiteAction : public CastCatMeleeSpellAction {
 	public:
 		CastFerociousBiteAction(AiManagerRegistry* const ai) : CastCatMeleeSpellAction(ai, "ferocious bite") {}

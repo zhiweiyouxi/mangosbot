@@ -37,6 +37,10 @@ void BearTankDruidStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         NextAction::array(0, new NextAction("demoralizing roar", 20.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
+        new AoeTrigger(ai, 3),
+        NextAction::array(0, new NextAction("swipe (bear)", 30.0f), NULL)));
+
+    triggers.push_back(new TriggerNode(
         new InterruptSpellTrigger(ai, "bash"),
         NextAction::array(0, new NextAction("bash", 50.0f), NULL)));
 
@@ -65,6 +69,13 @@ ActionNode* BearTankDruidStrategy::createAction(const char* name)
         return new ActionNode (new CastFeralChargeBearAction(ai),  
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("reach melee"), NULL), 
+            /*C*/ NULL);
+    }
+    else if (!strcmp("swipe (bear)", name)) 
+    {
+        return new ActionNode (new CastSwipeBearAction(ai),  
+            /*P*/ NextAction::array(0, new NextAction("dire bear form"), NULL),
+            /*A*/ NULL, 
             /*C*/ NULL);
     }
     else if (!strcmp("faerie fire (feral)", name)) 
