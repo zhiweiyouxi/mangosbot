@@ -8,7 +8,14 @@ namespace ai
 
     BUFF_TRIGGER(DevotionAuraTrigger, "devotion aura", "devotion aura")
     BUFF_TRIGGER(RetributionAuraTrigger, "retribution aura", "retribution aura")
-	
+
+	class CrusaderAuraTrigger : public BuffTrigger
+	{
+	public:
+		CrusaderAuraTrigger(AiManagerRegistry* const ai) : BuffTrigger(ai, "crusader aura") {}
+		virtual bool IsActive();
+	};
+
 	class SealTrigger : public BuffTrigger
 	{
 	public:

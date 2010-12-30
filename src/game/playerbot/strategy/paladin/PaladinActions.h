@@ -53,6 +53,11 @@ namespace ai
 		CastFireResistanceAuraAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "fire resistance aura") {}
 	};
 
+	class CastCrusaderAuraAction : public CastBuffSpellAction {
+	public:
+		CastCrusaderAuraAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "crusader aura") {}
+	};
+
 	class CastSealOfRighteousnessAction : public CastBuffSpellAction {
 	public:
 		CastSealOfRighteousnessAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "seal of righteousness") {}

@@ -23,9 +23,10 @@ namespace ai
 			mana[MockedTargets::GetPet()] = 100.0f;
 			mana[MockedTargets::GetSelf()] = 100.0f;
 		
-			aggro = TRUE; 
+			aggro = true; 
 			attackerCount = 1;myAttackerCount = 1;
 			balancePercent = 100;
+			mounted = false;
 		}
 
 	public:
@@ -41,7 +42,7 @@ namespace ai
 		virtual int GetMyAttackerCount() {return myAttackerCount; }
 		virtual float GetBalancePercent() { return balancePercent; }
 		virtual bool HasAggro(Unit* target) { return aggro; }
-		virtual bool IsMounted() { return false; }
+		virtual bool IsMounted() { return mounted; }
 
 		map<Unit*, uint8> health;
 		map<Unit*, uint8> rage;
@@ -53,6 +54,7 @@ namespace ai
 		int attackerCount;
 		int myAttackerCount;
 		float balancePercent;
+		bool mounted;
 	};
 
 }

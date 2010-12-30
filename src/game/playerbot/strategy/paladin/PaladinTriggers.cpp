@@ -15,3 +15,9 @@ bool SealTrigger::IsActive()
 		!spellManager->HasAura("seal of light", target) &&
 		!spellManager->HasAura("seal of wisdom", target);
 }
+
+bool CrusaderAuraTrigger::IsActive() 
+{
+	Unit* target = GetTarget();
+	return statsManager->IsMounted() && !spellManager->HasAura("crusader aura", target);
+}

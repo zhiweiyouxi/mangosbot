@@ -18,6 +18,10 @@ void GenericPaladinNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &trig
 	triggers.push_back(new TriggerNode(
 		new PartyMemberDeadTrigger(ai),
 		NextAction::array(0, new NextAction("redemption", 30.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new CrusaderAuraTrigger(ai),
+		NextAction::array(0, new NextAction("crusader aura", 40.0f), NULL)));
 }
 
 ActionNode* GenericPaladinNonCombatStrategy::createAction(const char* name)
@@ -32,6 +36,13 @@ ActionNode* GenericPaladinNonCombatStrategy::createAction(const char* name)
 	else if (!strcmp("redemption", name)) 
 	{
 		return new ActionNode (new CastRedemptionAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("crusader aura", name)) 
+	{
+		return new ActionNode (new CastCrusaderAuraAction(ai),  
 			/*P*/ NULL,
 			/*A*/ NULL, 
 			/*C*/ NULL);

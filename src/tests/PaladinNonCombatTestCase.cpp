@@ -27,8 +27,10 @@ protected:
     void buff()
     {
         tick(); 
+		statsManager->mounted = true;
+		tick();
 
-		assertActions(">P:blessing of kings");
+		assertActions(">P:blessing of kings>S:crusader aura");
     }
 
 	void resurrect()
