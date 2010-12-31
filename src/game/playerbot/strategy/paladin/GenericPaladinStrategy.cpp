@@ -56,7 +56,7 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new PartyMemberNeedCureTrigger(ai, "cleanse", DISPEL_DISEASE),
-        NextAction::array(0, new NextAction("cleanse on party", 40.0f), NULL)));
+        NextAction::array(0, new NextAction("cleanse disease on party", 40.0f), NULL)));
 
     triggers.push_back(new TriggerNode(
         new NeedCureTrigger(ai, "cleanse", DISPEL_POISON),
@@ -64,7 +64,15 @@ void GenericPaladinStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         new PartyMemberNeedCureTrigger(ai, "cleanse", DISPEL_POISON),
-        NextAction::array(0, new NextAction("cleanse on party", 40.0f), NULL)));
+        NextAction::array(0, new NextAction("cleanse poison on party", 40.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new NeedCureTrigger(ai, "cleanse", DISPEL_MAGIC),
+		NextAction::array(0, new NextAction("cleanse", 41.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new PartyMemberNeedCureTrigger(ai, "cleanse", DISPEL_MAGIC),
+		NextAction::array(0, new NextAction("cleanse magic on party", 40.0f), NULL)));
 }
 
 
@@ -112,20 +120,41 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }    
-    else if (!strcmp("cleanse on party", name)) 
+    else if (!strcmp("cleanse poison on party", name)) 
     {
-        return new ActionNode (new CastCleanseOnPartyAction(ai),  
+        return new ActionNode (new CastCleansePoisonOnPartyAction(ai),  
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("purify on party"), NULL), 
+            /*A*/ NextAction::array(0, new NextAction("purify poison on party"), NULL), 
             /*C*/ NULL);
     }
-    else if (!strcmp("purify on party", name)) 
+	else if (!strcmp("cleanse disease on party", name)) 
+	{
+		return new ActionNode (new CastCleanseDiseaseOnPartyAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NextAction::array(0, new NextAction("purify disease on party"), NULL), 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("cleanse magic on party", name)) 
+	{
+		return new ActionNode (new CastCleanseMagicOnPartyAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+    else if (!strcmp("purify poison on party", name)) 
     {
-        return new ActionNode (new CastPurifyOnPartyAction(ai),  
+        return new ActionNode (new CastPurifyPoisonOnPartyAction(ai),  
             /*P*/ NULL,
             /*A*/ NULL, 
             /*C*/ NULL);
     }    
+	else if (!strcmp("purify disease on party", name)) 
+	{
+		return new ActionNode (new CastPurifyDiseaseOnPartyAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}    
     else if (!strcmp("seal of wisdom", name)) 
     {
         return new ActionNode (new CastSealOfWisdomAction(ai),  

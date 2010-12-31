@@ -15,7 +15,9 @@ class TankPaladinTestCase : public EngineTestBase
 		CPPUNIT_TEST( stopEnemyMove );
 		CPPUNIT_TEST( buff );
 		CPPUNIT_TEST( bmana );
-		CPPUNIT_TEST( cure );
+		CPPUNIT_TEST( curePoison );
+		CPPUNIT_TEST( cureMagic );
+		CPPUNIT_TEST( cureDisease );
 		CPPUNIT_TEST( interruptSpells );
 		CPPUNIT_TEST( resistances );
     CPPUNIT_TEST_SUITE_END();
@@ -140,13 +142,28 @@ protected:
 		assertActions(">T:hammer of justice>melee");
 	}
 
-    void cure()
+    void cureDisease()
     {
         cureKind(DISPEL_DISEASE);
-        cureKind(DISPEL_POISON);
-    
-        assertActions(">S:cleanse>P:cleanse>S:purify>P:purify>S:cleanse>P:cleanse>S:purify>P:purify");
+		assertActions(">S:cleanse>P:cleanse>S:purify>P:purify");
     }
+
+	void curePoison()
+	{
+		cureKind(DISPEL_POISON);
+		assertActions(">S:cleanse>P:cleanse>S:purify>P:purify");
+	}
+
+	void cureMagic()
+	{
+		spellAvailable("cleanse");
+		tickWithAuraToDispel(DISPEL_MAGIC);
+
+		spellAvailable("cleanse");
+		tickWithPartyAuraToDispel(DISPEL_MAGIC);
+		
+		assertActions(">S:cleanse>P:cleanse");
+	}
 
     void cureKind(DispelType type) 
     {

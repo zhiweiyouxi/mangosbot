@@ -212,13 +212,21 @@ namespace ai
 		CastPurifyAction(AiManagerRegistry* const ai) : CastCureSpellAction(ai, "purify") {}
 	};
 
-    class CastPurifyOnPartyAction : public CurePartyMemberAction
+    class CastPurifyPoisonOnPartyAction : public CurePartyMemberAction
     {
     public:
-        CastPurifyOnPartyAction(AiManagerRegistry* const ai) : CurePartyMemberAction(ai, "purify", DISPEL_POISON) {}
+        CastPurifyPoisonOnPartyAction(AiManagerRegistry* const ai) : CurePartyMemberAction(ai, "purify", DISPEL_POISON) {}
 
-        virtual const char* getName() { return "purify on party"; }
+        virtual const char* getName() { return "purify poison on party"; }
     };
+
+	class CastPurifyDiseaseOnPartyAction : public CurePartyMemberAction
+	{
+	public:
+		CastPurifyDiseaseOnPartyAction(AiManagerRegistry* const ai) : CurePartyMemberAction(ai, "purify", DISPEL_DISEASE) {}
+
+		virtual const char* getName() { return "purify disease on party"; }
+	};
 
 	class CastHandOfReckoningAction : public CastDebuffSpellAction {
 	public:
@@ -230,13 +238,29 @@ namespace ai
 		CastCleanseAction(AiManagerRegistry* const ai) : CastCureSpellAction(ai, "cleanse") {}
 	};
 
-    class CastCleanseOnPartyAction : public CurePartyMemberAction
+    class CastCleansePoisonOnPartyAction : public CurePartyMemberAction
     {
     public:
-        CastCleanseOnPartyAction(AiManagerRegistry* const ai) : CurePartyMemberAction(ai, "cleanse", DISPEL_POISON) {}
+        CastCleansePoisonOnPartyAction(AiManagerRegistry* const ai) : CurePartyMemberAction(ai, "cleanse", DISPEL_POISON) {}
 
-        virtual const char* getName() { return "cleanse on party"; }
+        virtual const char* getName() { return "cleanse poison on party"; }
     };
+
+	class CastCleanseDiseaseOnPartyAction : public CurePartyMemberAction
+	{
+	public:
+		CastCleanseDiseaseOnPartyAction(AiManagerRegistry* const ai) : CurePartyMemberAction(ai, "cleanse", DISPEL_DISEASE) {}
+
+		virtual const char* getName() { return "cleanse disease on party"; }
+	};
+
+	class CastCleanseMagicOnPartyAction : public CurePartyMemberAction
+	{
+	public:
+		CastCleanseMagicOnPartyAction(AiManagerRegistry* const ai) : CurePartyMemberAction(ai, "cleanse", DISPEL_MAGIC) {}
+
+		virtual const char* getName() { return "cleanse magic on party"; }
+	};
 
     BEGIN_SPELL_ACTION(CastAvengersShieldAction, "avenger's shield")
     END_SPELL_ACTION()

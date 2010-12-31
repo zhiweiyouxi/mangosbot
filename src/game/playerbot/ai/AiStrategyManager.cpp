@@ -111,8 +111,10 @@ void AiStrategyManager::DoSpecificAction(const char* name)
 { 
 	if (!combatEngine->ExecuteAction(name) && !nonCombatEngine->ExecuteAction(name))
 	{
-		aiRegistry->GetSocialManager()->TellMaster("Action failed: ");
-		aiRegistry->GetSocialManager()->TellMaster(name);
+		ostringstream out;
+		out << "I cannot do ";
+		out << name;
+		aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
         return;
 	}
 }
