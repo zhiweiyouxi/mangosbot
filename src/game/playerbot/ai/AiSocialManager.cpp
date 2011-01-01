@@ -11,7 +11,7 @@ void AiSocialManager::Emote(uint32 emote)
 
 void AiSocialManager::TellMaster(const char* text)
 {
-	WorldPacket data(SMSG_MESSAGECHAT, 200);
+	WorldPacket data(SMSG_MESSAGECHAT, 1024);
 	bot->BuildPlayerChat(&data, CHAT_MSG_WHISPER, text, LANG_UNIVERSAL);
 	ai->GetMaster()->GetSession()->SendPacket(&data);
 	bot->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
