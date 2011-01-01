@@ -469,35 +469,35 @@ void AiSpellManager::Mount(int32 master_speed1, int32 master_speed2)
 		if (!pSpellInfo)
 			continue;
 
-		if(pSpellInfo->EffectApplyAuraName[0] == SPELL_AURA_MOUNTED)
+		if(pSpellInfo->EffectApplyAuraName[0] != SPELL_AURA_MOUNTED)
+			continue;
+		
+		if(pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
 		{
-			if(pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
+			if(pSpellInfo->EffectBasePoints[1] == master_speed1 && CanCastSpell(spellId, bot))
 			{
-				if(pSpellInfo->EffectBasePoints[1] == master_speed1 && CanCastSpell(spellId, bot))
-				{
-					spellMount = spellId;
-					break;
-				}
+				spellMount = spellId;
+				break;
 			}
-			else if((pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
-				&& (pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+		}
+		else if((pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
+			&& (pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+		{
+			if((pSpellInfo->EffectBasePoints[1] == master_speed1)
+				&& (pSpellInfo->EffectBasePoints[2] == master_speed2) && CanCastSpell(spellId, bot))
 			{
-				if((pSpellInfo->EffectBasePoints[1] == master_speed1)
-					&& (pSpellInfo->EffectBasePoints[2] == master_speed2) && CanCastSpell(spellId, bot))
-				{
-					spellMount = spellId;
-					break;
-				}
+				spellMount = spellId;
+				break;
 			}
-			else if((pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
-				&& (pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+		}
+		else if((pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
+			&& (pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+		{
+			if((pSpellInfo->EffectBasePoints[2] == master_speed2) 
+				&& (pSpellInfo->EffectBasePoints[1] == master_speed1) && CanCastSpell(spellId, bot))
 			{
-				if((pSpellInfo->EffectBasePoints[2] == master_speed2) 
-					&& (pSpellInfo->EffectBasePoints[1] == master_speed1) && CanCastSpell(spellId, bot))
-				{
-					spellMount = spellId;
-					break;
-				}
+				spellMount = spellId;
+				break;
 			}
 		}
 	}

@@ -444,37 +444,6 @@ void AiMoveManager::HandleMasterIncomingPacket(const WorldPacket& packet)
             UseMeetingStone(guid);
             return;
         }
-	case CMSG_MOVE_SET_FLY:
-		{
-			if (!bot->IsMounted())
-				return;
-
-			WorldPacket p(packet);
-			p.rpos(0);
-			ObjectGuid guid;
-			MovementInfo movementInfo;
-
-			p >> guid.ReadAsPacked();
-			p >> movementInfo;
-
-			movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
-
-			WorldPacket packet(CMSG_MOVE_SET_FLY);
-			packet << bot->GetObjectGuid().WriteAsPacked();
-			packet << movementInfo;
-			bot->SetMover(bot);
-			bot->GetSession()->HandleMovementOpcodes(packet);
-
-			
-			bot->m_movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
-			bot->SetSpeedRate(MOVE_FLIGHT, 1.0f, true);
-			bot->SetSpeedRate(MOVE_FLIGHT, ai->GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
-
-			bot->SetSpeedRate(MOVE_RUN, 1.0f, true);
-			bot->SetSpeedRate(MOVE_RUN, ai->GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
-
-			return;
-		}
     }
 }
 
@@ -497,4 +466,28 @@ void AiMoveManager::WaitForReach(float distance)
         delay = GLOBAL_COOLDOWN;
 
     bot->GetPlayerbotAI()->SetNextCheckDelay((uint32)delay);
+}
+
+void AiMoveManager::Update()
+{
+	if (!bot->GetAurasByType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED).empty())
+	{
+		bot->m_movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
+
+		WorldPacket packet(CMSG_MOVE_SET_FLY);
+		packet << bot->GetObjectGuid().WriteAsPacked();
+		packet << bot->m_movementInfo;
+		bot->SetMover(bot);
+		bot->GetSession()->HandleMovementOpcodes(packet);
+	}
+
+	if (bot->IsMounted() && bot->IsFlying())
+	{
+		bot->m_movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
+		bot->SetSpeedRate(MOVE_FLIGHT, 1.0f, true);
+		bot->SetSpeedRate(MOVE_FLIGHT, ai->GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
+
+		bot->SetSpeedRate(MOVE_RUN, 1.0f, true);
+		bot->SetSpeedRate(MOVE_RUN, ai->GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
+	}
 }

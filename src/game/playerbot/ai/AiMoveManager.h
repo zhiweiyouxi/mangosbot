@@ -28,6 +28,7 @@ namespace ai
 		virtual void Revive();
         virtual void Summon();
         virtual bool IsBehind(Unit* target);
+		virtual void Update();
 	
 	public:
 		virtual void HandleCommand(const string& text, Player& fromPlayer);
