@@ -29,48 +29,41 @@ void AiQuestManager::UpdateQuestNeedItems()
 
 void AiQuestManager::ListQuests()
 {
-	std::ostringstream incomout;	
-	std::ostringstream comout;
-	int completeQuestCount = 0, incompleteQuestCount = 0;
-	
+	AiSocialManager* socialManager = aiRegistry->GetSocialManager();
+	socialManager->TellMaster("--- incomplete quests ---");
+	int incompleteCount = ListQuests(false);
+
+	socialManager->TellMaster("--- complete quests ---");
+	int completeCount = ListQuests(true);
+
+	socialManager->TellMaster("--- summary ---");
+	std::ostringstream out;
+	out << "Total: " << (completeCount + incompleteCount) << " / 25 (incomplete: " << incompleteCount << ", complete: " << completeCount << ")";
+	socialManager->TellMaster(out.str().c_str());
+}
+
+int AiQuestManager::ListQuests(bool completed)
+{
+	int count = 0;
 	for (uint16 slot = 0; slot < MAX_QUEST_LOG_SIZE; ++slot)
 	{
-		if(uint32 questId = bot->GetQuestSlotQuestId(slot))
-		{
-			Quest const* pQuest = sObjectMgr.GetQuestTemplate(questId);
-			bool isCompletedQuest = bot->GetQuestStatus(questId) == QUEST_STATUS_COMPLETE;
-			std::ostringstream &stream = isCompletedQuest ? comout : incomout;
-			if (isCompletedQuest)
-				completeQuestCount++;
-			else 
-				incompleteQuestCount++;
+		uint32 questId = bot->GetQuestSlotQuestId(slot);
+		if (!questId)
+			continue;
 
-            stream << " |cFFFFFF00|Hquest:" << questId << ':' << pQuest->GetQuestLevel() << "|h[" << pQuest->GetTitle() << "]|h|r";
-            stream << ", ";
-		}
+		Quest const* pQuest = sObjectMgr.GetQuestTemplate(questId);
+		bool isCompletedQuest = bot->GetQuestStatus(questId) == QUEST_STATUS_COMPLETE;
+		if (completed != isCompletedQuest)
+			continue;
+		
+		count++;
+		
+		std::ostringstream stream;
+		stream << " |cFFFFFF00|Hquest:" << questId << ':' << pQuest->GetQuestLevel() << "|h[" << pQuest->GetTitle() << "]|h|r";
+		aiRegistry->GetSocialManager()->TellMaster(stream.str().c_str());
 	}
 
-    AiSocialManager* socialManager = aiRegistry->GetSocialManager();
-
-	{
-		std::ostringstream out;
-		out << "--- incomplete (" << incompleteQuestCount << ") ---";
-		socialManager->TellMaster(out.str().c_str());
-		socialManager->TellMaster(incomout.str().c_str());
-	}
-
-	{
-		std::ostringstream out;
-		out << "--- complete (" << completeQuestCount << ") ---";
-		socialManager->TellMaster(out.str().c_str());
-		socialManager->TellMaster(comout.str().c_str());
-	}
-
-	{
-		std::ostringstream out;
-		out << "Total: " << (completeQuestCount + incompleteQuestCount);
-		socialManager->TellMaster(out.str().c_str());
-	}
+	return count;
 }
 
 void AiQuestManager::DropQuest(const char* link)

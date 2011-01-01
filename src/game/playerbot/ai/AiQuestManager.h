@@ -17,6 +17,7 @@ namespace ai
 	public:
 		void UpdateQuestNeedItems();
 		void ListQuests();
+		int ListQuests(bool completed);
 		void DropQuest(const char* link);
 		void QuestLocalization(std::string& questTitle, const uint32 questID);
 		map<uint32, uint32> GetQuestItems() { return questNeedItems; }

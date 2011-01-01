@@ -910,7 +910,7 @@ void AiInventoryManager::AcceptTrade()
 bool compare_items(const ItemPrototype *proto1, const ItemPrototype *proto2)
 {
 	if (proto1->Class != proto2->Class)
-		return proto1->Class < proto2->Class;
+		return proto1->Class > proto2->Class;
 
 	if (proto1->SubClass != proto2->SubClass)
 		return proto1->SubClass < proto2->SubClass;
@@ -919,7 +919,7 @@ bool compare_items(const ItemPrototype *proto1, const ItemPrototype *proto2)
 		return proto1->Quality < proto2->Quality;
 
 	if (proto1->ItemLevel != proto2->ItemLevel)
-		return proto1->ItemLevel < proto2->ItemLevel;
+		return proto1->ItemLevel > proto2->ItemLevel;
 
 	return false;
 }
@@ -941,9 +941,6 @@ void AiInventoryManager::BeginTrade()
 	}
 	items.sort(compare_items);
 
-	ostringstream* out = NULL;
-
-	bool first = false;
 	uint32 oldClass = -1;
 	for (list<ItemPrototype const*>::iterator i = items.begin(); i != items.end(); i++)
 	{
@@ -952,35 +949,74 @@ void AiInventoryManager::BeginTrade()
 		if (proto->Class != oldClass)
 		{
 			oldClass = proto->Class;
-			first = true;
-			if (out) 
+			switch (proto->Class)
 			{
-				aiRegistry->GetSocialManager()->TellMaster(out->str().c_str());
-				delete out;
+			case ITEM_CLASS_CONSUMABLE:
+				aiRegistry->GetSocialManager()->TellMaster("--- consumable ---");
+				break;
+			case ITEM_CLASS_CONTAINER:
+				aiRegistry->GetSocialManager()->TellMaster("--- container ---");
+				break;
+			case ITEM_CLASS_WEAPON:
+				aiRegistry->GetSocialManager()->TellMaster("--- weapon ---");
+				break;
+			case ITEM_CLASS_GEM:
+				aiRegistry->GetSocialManager()->TellMaster("--- gem ---");
+				break;
+			case ITEM_CLASS_ARMOR:
+				aiRegistry->GetSocialManager()->TellMaster("--- armor ---");
+				break;
+			case ITEM_CLASS_REAGENT:
+				aiRegistry->GetSocialManager()->TellMaster("--- reagent ---");
+				break;
+			case ITEM_CLASS_PROJECTILE:
+				aiRegistry->GetSocialManager()->TellMaster("--- projectile ---");
+				break;
+			case ITEM_CLASS_TRADE_GOODS:
+				aiRegistry->GetSocialManager()->TellMaster("--- trade goods ---");
+				break;
+			case ITEM_CLASS_GENERIC:
+				aiRegistry->GetSocialManager()->TellMaster("--- generic ---");
+				break;
+			case ITEM_CLASS_RECIPE:
+				aiRegistry->GetSocialManager()->TellMaster("--- recipe ---");
+				break;
+			case ITEM_CLASS_MONEY:
+				aiRegistry->GetSocialManager()->TellMaster("--- money ---");
+				break;
+			case ITEM_CLASS_QUIVER:
+				aiRegistry->GetSocialManager()->TellMaster("--- quiver ---");
+				break;
+			case ITEM_CLASS_QUEST:
+				aiRegistry->GetSocialManager()->TellMaster("--- quest items ---");
+				break;
+			case ITEM_CLASS_KEY:
+				aiRegistry->GetSocialManager()->TellMaster("--- keys ---");
+				break;
+			case ITEM_CLASS_PERMANENT:
+				aiRegistry->GetSocialManager()->TellMaster("--- permanent ---");
+				break;
+			case ITEM_CLASS_MISC:
+				aiRegistry->GetSocialManager()->TellMaster("--- other ---");
+				break;
+			case ITEM_CLASS_GLYPH:
+				aiRegistry->GetSocialManager()->TellMaster("--- glyph ---");
+				break;
 			}
-			out = new ostringstream();
 		}
 
-		if (first) 
-			first = false;
-		else 
-			*out << ", ";
+		ostringstream out;
 
 		char color[32];
 		sprintf(color, "%x", ItemQualityColors[proto->Quality]);
 
-		*out << " |c" << color << "|Hitem:" << proto->ItemId
+		out << " |c" << color << "|Hitem:" << proto->ItemId
 			<< ":0:0:0:0:0:0:0" << "|h[" << proto->Name1
 			<< "]|h|r";
 		int count = visitor.items[proto->ItemId];
 		if (count > 1)
-			*out << "x" << count;
-	}
-
-	if (out) 
-	{
-		aiRegistry->GetSocialManager()->TellMaster(out->str().c_str());
-		delete out;
+			out << "x" << count;
+		aiRegistry->GetSocialManager()->TellMaster(out.str().c_str());
 	}
 }
 
