@@ -52,8 +52,10 @@ protected:
 		tickWithPartyAuraToDispel(DISPEL_CURSE);
 
         tick(); 
+		
+		tickWithTargetAuraToDispel(DISPEL_MAGIC);
 
-		assertActions(">T:frostbolt>S:remove curse>P:remove curse>T:shoot");
+		assertActions(">T:frostbolt>S:remove curse>P:remove curse>T:shoot>T:spellsteal");
     }
 
     void boost() 
@@ -97,7 +99,6 @@ protected:
 
         assertActions(">reach spell>T:shoot>follow>co:-pull");
     }
-
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FrostMageTestCase );

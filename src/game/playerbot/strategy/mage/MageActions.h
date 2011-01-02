@@ -125,4 +125,11 @@ namespace ai
         CastPolymorphAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "polymorph") {}
         virtual Unit* GetTarget();
     };
+
+	class CastSpellstealAction : public CastSpellAction 
+	{
+	public:
+		CastSpellstealAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "spellsteal") {}
+	};
+	
 }

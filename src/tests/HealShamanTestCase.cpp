@@ -13,6 +13,7 @@ class HealShamanTestCase : public EngineTestBase
     CPPUNIT_TEST( healOthers );
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST( interruptSpell );
+	CPPUNIT_TEST( dispel );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -77,6 +78,14 @@ protected:
         
 		assertActions(">T:wind shear");
     }
+
+	void dispel() 
+	{
+		tickInMeleeRange();
+		tickWithTargetAuraToDispel(DISPEL_MAGIC);
+
+		assertActions(">melee>T:purge");
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( HealShamanTestCase );

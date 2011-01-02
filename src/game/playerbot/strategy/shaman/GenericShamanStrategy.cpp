@@ -34,6 +34,10 @@ void GenericShamanStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new InterruptSpellTrigger(ai, "wind shear"), 
         NextAction::array(0, new NextAction("wind shear", 15.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new TargetAuraDispelTrigger(ai, "purge", DISPEL_MAGIC),
+		NextAction::array(0, new NextAction("purge", 10.0f), NULL)));
 }
 
 void GenericShamanStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
@@ -96,6 +100,20 @@ ActionNode* GenericShamanStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("mana tide totem", name)) 
+	{
+		return new ActionNode (new CastManaTideTotemAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
+	else if (!strcmp("healing stream totem", name)) 
+	{
+		return new ActionNode (new CastHealingStreamTotemAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else if (!strcmp("wind shear", name)) 
     {
         return new ActionNode (new CastWindShearAction(ai),  
@@ -138,6 +156,13 @@ ActionNode* GenericShamanStrategy::createAction(const char* name)
             /*A*/ NextAction::array(0, new NextAction("rockbiter weapon"), NULL), 
             /*C*/ NULL);
     }
+	else if (!strcmp("purge", name)) 
+	{
+		return new ActionNode (new CastPurgeAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     return NULL;
 }
 

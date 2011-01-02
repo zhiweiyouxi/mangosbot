@@ -112,6 +112,16 @@ namespace ai
         CastManaSpringTotemAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "mana spring totem") {}
     };
 
+	class CastManaTideTotemAction : public CastBuffSpellAction {
+	public:
+		CastManaTideTotemAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "mana tide totem") {}
+	};
+
+	class CastHealingStreamTotemAction : public CastBuffSpellAction {
+	public:
+		CastHealingStreamTotemAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "healing stream totem") {}
+	};
+
     class CastCleansingTotemAction : public CastBuffSpellAction {
     public:
         CastCleansingTotemAction(AiManagerRegistry* const ai) : CastBuffSpellAction(ai, "cleansing totem") {}
@@ -138,4 +148,10 @@ namespace ai
 		CastAncestralSpiritAction(AiManagerRegistry* const ai) : ResurrectPartyMemberAction(ai, "ancestral spirit") {}
 	};
     
+
+	class CastPurgeAction : public CastSpellAction
+	{
+	public:
+		CastPurgeAction(AiManagerRegistry* const ai) : CastSpellAction(ai, "purge") {}
+	};
 }

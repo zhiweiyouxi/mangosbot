@@ -361,17 +361,22 @@ bool AiSpellManager::IsSpellCasting(Unit* player)
 	return player->IsNonMeleeSpellCasted(true);
 }
 
-bool AiSpellManager::HasAuraToDispel(Unit* player, uint32 dispelType) 
+bool AiSpellManager::HasAuraToDispel(Unit* target, uint32 dispelType) 
 {
 	for (uint32 type = SPELL_AURA_NONE; type < TOTAL_AURAS; ++type)
 	{
-		Unit::AuraList auras = player->GetAurasByType((AuraType)type);
+		Unit::AuraList auras = target->GetAurasByType((AuraType)type);
 		for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
 		{
 			Aura* aura = *itr;
 			const SpellEntry* entry = aura->GetSpellProto();
 			uint32 spellId = entry->Id;
-			if (IsPositiveSpell(spellId))
+			
+			bool isPositiveSpell = IsPositiveSpell(spellId);
+			if (bot->IsFriendlyTo(target) && isPositiveSpell)
+				continue;
+
+			if (bot->IsHostileTo(target) && !isPositiveSpell)
 				continue;
 
 			if (canDispel(entry, dispelType))

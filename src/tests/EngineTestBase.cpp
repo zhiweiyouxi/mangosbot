@@ -199,6 +199,13 @@ void EngineTestBase::tickWithPartyAuraToDispel(uint32 type)
 	spellManager->dispels[MockedTargets::GetPartyMember()] = 0;
 }
 
+void EngineTestBase::tickWithTargetAuraToDispel(uint32 type)
+{
+	spellManager->dispels[MockedTargets::GetCurrentTarget()] = type;
+	tick();
+	spellManager->dispels[MockedTargets::GetCurrentTarget()] = 0;
+}
+
 void EngineTestBase::lowHealth(int amount)
 {
 	statsManager->health[MockedTargets::GetSelf()] = amount;

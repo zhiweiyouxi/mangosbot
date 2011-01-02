@@ -34,6 +34,10 @@ void GenericMageStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     triggers.push_back(new TriggerNode(
         new HasCcTargetTrigger(ai, "polymorph"), 
         NextAction::array(0, new NextAction("polymorph", 30.0f), NULL)));
+
+	triggers.push_back(new TriggerNode(
+		new TargetAuraDispelTrigger(ai, "spellsteal", DISPEL_MAGIC),
+		NextAction::array(0, new NextAction("spellsteal", 40.0f), NULL)));
 }
 
 
@@ -151,5 +155,12 @@ ActionNode* GenericMageStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+	else if (!strcmp("spellsteal", name)) 
+	{
+		return new ActionNode (new CastSpellstealAction(ai),  
+			/*P*/ NULL,
+			/*A*/ NULL, 
+			/*C*/ NULL);
+	}
     else return NULL;
 }
