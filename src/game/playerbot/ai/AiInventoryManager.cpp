@@ -1,6 +1,10 @@
 #include "../../pchdef.h"
 #include "../playerbot.h"
 
+#include "../../GridNotifiers.h"
+#include "../../CellImpl.h"
+#include "../../GridNotifiersImpl.h"
+
 using namespace ai;
 using namespace std;
 
@@ -1077,4 +1081,16 @@ bool AiInventoryManager::TradeItem(const Item& item, int8 slot)
 	return true;
 }
 
+void AiInventoryManager::AddAllLoot()
+{
+    list<GameObject*> objects;
 
+	{
+		MaNGOS::GameObjectRangeCheck check(*bot, BOTLOOT_DISTANCE);
+		MaNGOS::GameObjectListSearcher<MaNGOS::GameObjectRangeCheck> checker(objects, check);
+		Cell::VisitGridObjects(bot, checker, BOTLOOT_DISTANCE);
+	}
+
+	for (list<GameObject*>::iterator i = objects.begin(); i != objects.end(); i++)
+		AddLoot((*i)->GetObjectGuid().GetRawValue());
+}

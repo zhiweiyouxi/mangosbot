@@ -104,6 +104,16 @@ namespace ai
         }
     };
 
+    class LootAllAction : public Action {
+    public:
+        LootAllAction(AiManagerRegistry* const ai) : Action(ai, "loot all") {}
+        virtual void Execute() {
+			AiInventoryManager* manager = ai->GetInventoryManager();
+			manager->AddAllLoot();
+            manager->DoLoot();
+        }
+    };
+
     class EmoteAction : public Action
     {
     public:

@@ -108,6 +108,13 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("loot all", name)) 
+    {
+        return new ActionNode (new LootAllAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else if (!strcmp("shoot", name)) 
     {
         return new ActionNode (new CastShootAction(ai),  

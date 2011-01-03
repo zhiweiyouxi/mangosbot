@@ -97,6 +97,7 @@ namespace ai
         virtual const char* getName() { return "grind"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
 		virtual string GetIncompatibleStrategies() { return "-tank assist,-dps assist,-dps aoe,-tank aoe"; }
+		NextAction** getDefaultActions();
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
