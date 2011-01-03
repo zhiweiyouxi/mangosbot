@@ -13,7 +13,7 @@ Unit* AiTargetManager::GetCurrentTarget()
 		return NULL;
 
 	Unit* unit = sObjectAccessor.GetUnit(*bot, selection);
-	if (!bot->IsWithinLOSInMap(unit))
+	if (unit && !bot->IsWithinLOSInMap(unit))
 		return NULL;
 
 	return unit;
