@@ -2,6 +2,8 @@
 #include "../playerbot.h"
 #include "FindTargetStrategy.h"
 
+#include "../../GridNotifiers.h"
+
 using namespace ai;
 using namespace std;
 
@@ -10,7 +12,11 @@ Unit* AiTargetManager::GetCurrentTarget()
 	if (selection.IsEmpty())
 		return NULL;
 
-	return sObjectAccessor.GetUnit(*bot, selection);
+	Unit* unit = sObjectAccessor.GetUnit(*bot, selection);
+	if (!bot->IsWithinLOSInMap(unit))
+		return NULL;
+
+	return unit;
 }
 
 void AiTargetManager::SetCurrentTarget(Unit* target) 
@@ -299,4 +305,74 @@ Unit* AiTargetManager::GetCurrentCcTarget(const char* spell)
 {
     FindCurrentCcTargetStrategy strategy(aiRegistry, spell);
     return FindTarget(&strategy);
+}
+
+Unit* AiTargetManager::FindTargetForGrinding(int assistCount) 
+{
+    std::list<Unit *> targets;
+
+	float radius = bot->GetMap()->GetVisibilityDistance();
+    MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(bot, bot, radius);
+    MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+    Cell::VisitAllObjects(bot, searcher, radius);
+
+    // remove not LoS targets
+    for(std::list<Unit *>::iterator tIter = targets.begin(); tIter != targets.end();)
+    {
+        if(!bot->IsWithinLOSInMap(*tIter))
+        {
+            std::list<Unit *>::iterator tIter2 = tIter;
+            ++tIter;
+            targets.erase(tIter2);
+        }
+        else
+            ++tIter;
+    }
+
+    if(targets.empty())
+        return NULL;
+
+	float distance = 0;
+	Unit* result = NULL;
+    for(std::list<Unit *>::iterator tIter = targets.begin(); tIter != targets.end(); tIter++)
+    {
+		Unit* unit = *tIter;
+		if (abs(bot->GetPositionZ() - unit->GetPositionZ()) > SPELL_DISTANCE)
+			continue;
+
+		int targeting = 0;
+		Group* group = bot->GetGroup();
+		if (!group)
+			continue;
+		
+		float distanceToPlayers = -1;
+		Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+		for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+		{
+			Player *member = sObjectMgr.GetPlayer(itr->guid);
+			if( !member || !member->isAlive() || member == bot)
+				continue;
+
+			float d = member->GetDistance(unit);
+			if (distanceToPlayers == -1 || d > distanceToPlayers)
+			{
+				distanceToPlayers = d;
+			}
+
+			if (member->GetPlayerbotAI() && member->GetPlayerbotAI()->GetAiRegistry()->GetTargetManager()->GetCurrentTarget() == unit)
+				targeting++;
+		}
+
+		if (targeting > assistCount || distanceToPlayers >= BOT_REACT_DISTANCE)
+			continue;
+
+		float d = bot->GetDistance(unit);
+		if (!result || d < distance)
+		{
+			result = unit;
+			distance = d;
+		}
+	}
+
+	return result;
 }

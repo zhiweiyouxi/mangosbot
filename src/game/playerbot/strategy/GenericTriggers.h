@@ -160,6 +160,9 @@ namespace ai
     BEGIN_TRIGGER(NoAttackersTrigger, Trigger)
     END_TRIGGER()
 
+    BEGIN_TRIGGER(GrindTrigger, Trigger)
+    END_TRIGGER()
+
     class DebuffTrigger : public BuffTrigger
     {
     public:

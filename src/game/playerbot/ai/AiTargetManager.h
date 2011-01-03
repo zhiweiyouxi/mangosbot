@@ -24,6 +24,7 @@ namespace ai
 		virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
 		virtual Unit* FindTargetForTank();
 		virtual Unit* FindTargetForDps();
+		virtual Unit* FindTargetForGrinding(int assistCount);
 		virtual Unit* GetCurrentTarget();
         virtual Unit* FindCcTarget(const char* spell);
         virtual Unit* GetCurrentCcTarget(const char* spell);

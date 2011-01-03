@@ -48,7 +48,7 @@ namespace ai
         DpsAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "dps assist"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
-		virtual string GetIncompatibleStrategies() { return "-tank assist"; }
+		virtual string GetIncompatibleStrategies() { return "-tank assist,-dps aoe,-tank aoe,-grind"; }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -60,6 +60,7 @@ namespace ai
 		DpsAoeStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
 		virtual const char* getName() { return "dps aoe"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
+		virtual string GetIncompatibleStrategies() { return "-tank assist,-dps assist,-tank aoe,-grind"; }
 
 	public:
 		virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -71,7 +72,7 @@ namespace ai
         TankAssistStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
         virtual const char* getName() { return "tank assist"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_TANK; }
-		virtual string GetIncompatibleStrategies() { return "-dps assist"; }
+		virtual string GetIncompatibleStrategies() { return "-dps assist,-dps aoe,-tank aoe,-grind"; }
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
@@ -83,10 +84,23 @@ namespace ai
 		TankAoeStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
 		virtual const char* getName() { return "tank aoe"; }
 		virtual StrategyType GetType() { return STRATEGY_TYPE_TANK; }
+		virtual string GetIncompatibleStrategies() { return "-tank assist,-dps assist,-dps aoe,-grind"; }
 
 	public:
 		virtual void InitTriggers(std::list<TriggerNode*> &triggers);
 	};
+
+    class GrindingStrategy : public GenericNonCombatStrategy
+    {
+    public:
+        GrindingStrategy(AiManagerRegistry* const ai) : GenericNonCombatStrategy(ai) {}
+        virtual const char* getName() { return "grind"; }
+		virtual StrategyType GetType() { return STRATEGY_TYPE_DPS; }
+		virtual string GetIncompatibleStrategies() { return "-tank assist,-dps assist,-dps aoe,-tank aoe"; }
+
+    public:
+        virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+    };
 
     class LootNonCombatStrategy : public Strategy
     {

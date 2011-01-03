@@ -23,12 +23,6 @@ void AiMoveManager::MoveTo(Unit* target, float distance)
     if (!IsMovingAllowed(target))
         return;
 
-    if (distance <= 10.0f)
-    {
-        Follow(target, distance);
-        return;
-    }
-
     float bx = bot->GetPositionX();
     float by = bot->GetPositionY();
     float bz = bot->GetPositionZ();
@@ -39,13 +33,13 @@ void AiMoveManager::MoveTo(Unit* target, float distance)
 
     float distanceToTarget = bot->GetDistance(target);
 
-    float ax = acos((tx - bx) / distanceToTarget);
-    float ay = asin((ty - by) / distanceToTarget);
+	float angle = bot->GetAngle(target);
 
     float destinationDistance = distanceToTarget - distance;
-    float dx = cos(ax) * destinationDistance + bx;
-    float dy = sin(ay) * destinationDistance + by;
+    float dx = cos(angle) * destinationDistance + bx;
+    float dy = sin(angle) * destinationDistance + by;
 
+	bot->UpdateGroundPositionZ(dx, dy, tz);
 	MoveTo(target->GetMapId(), dx, dy, tz);
 }
 
@@ -110,16 +104,13 @@ void AiMoveManager::Follow(Unit* target, float distance)
     if (!IsMovingAllowed(target))
         return;
 
-    float distanceToRun = bot->GetDistance(target) - distance;
-    if (distanceToRun <= 3 && target->IsFriendlyTo(bot))
-        return;
-
 	float angle = GetFollowAngle();
 	if (target->IsFriendlyTo(bot) && bot->IsMounted())
 		distance += angle;
 
     bot->GetMotionMaster()->MoveFollow(target, distance, angle);
 
+    float distanceToRun = abs(bot->GetDistance(target) - distance);
     WaitForReach(distanceToRun);
 
 }
@@ -177,9 +168,6 @@ void AiMoveManager::Attack(Unit* target)
     MotionMaster &mm = *bot->GetMotionMaster();
     if (mm->GetMovementGeneratorType() == FLIGHT_MOTION_TYPE)
         return;
-
-	if (!bot->isInFrontInMap(target, 5.0f))
-		bot->SetInFront(target);
 
 	if (bot->getStandState() != UNIT_STAND_STATE_STAND)
 		bot->SetStandState(UNIT_STAND_STATE_STAND);

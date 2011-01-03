@@ -94,6 +94,13 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("grind", name)) 
+    {
+        return new ActionNode (new GrindAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NULL, 
+            /*C*/ NULL);
+    }
     else if (!strcmp("loot", name)) 
     {
         return new ActionNode (new LootAction(ai),  
@@ -133,6 +140,9 @@ Strategy* ActionFactory::createStrategy(const char* name)
 
 	if (!strcmp("tank aoe", name))
 		return new TankAoeStrategy(ai);
+
+    if (!strcmp("grind", name))
+        return new GrindingStrategy(ai);
 
     if (!strcmp("loot", name))
         return new LootNonCombatStrategy(ai);

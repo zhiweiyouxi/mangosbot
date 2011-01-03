@@ -10,6 +10,8 @@ namespace ai
         
         virtual Unit* GetTarget() = 0;
 
+		virtual bool isPossible() { return GetTarget(); }
+
         virtual void Execute() {
             Unit* target = GetTarget();
             if (target)
@@ -35,5 +37,13 @@ namespace ai
         }
     };   
   
+    class GrindAction : public AttackAction {
+    public:
+        GrindAction(AiManagerRegistry* const ai) : AttackAction(ai, "grind") {}
+        virtual Unit* GetTarget() 
+        {
+            return ai->GetTargetManager()->FindTargetForGrinding(0);
+        }
+    };   
    
 }

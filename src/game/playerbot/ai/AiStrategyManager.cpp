@@ -38,8 +38,10 @@ AiStrategyManager::~AiStrategyManager()
 void AiStrategyManager::ChangeStrategyIfNecessary()
 {
 	Unit* target = aiRegistry->GetTargetManager()->GetCurrentTarget();
-	if (target)
-		bot->SetInFront(target);
+	if (target && !bot->isInFrontInMap(target, BOT_REACT_DISTANCE))
+	{
+		bot->SetFacingTo(bot->GetAngle(target));
+	}
 
 	if (target && target->isAlive() && target->IsHostileTo(bot))
 	{
