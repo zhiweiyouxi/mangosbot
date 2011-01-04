@@ -94,13 +94,6 @@ ActionNode* ActionFactory::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
-    else if (!strcmp("grind", name)) 
-    {
-        return new ActionNode (new GrindAction(ai),  
-            /*P*/ NULL,
-            /*A*/ NULL, 
-            /*C*/ NULL);
-    }
     else if (!strcmp("loot", name)) 
     {
         return new ActionNode (new LootAction(ai),  

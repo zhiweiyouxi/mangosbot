@@ -25,6 +25,9 @@ void LootManager::ClearLoot()
 
 void LootManager::AddLoot(uint64 guid)
 {
+	if (!bot->GetMapId())
+		return;
+
 	GameObject* go = bot->GetMap()->GetGameObject(guid);
 	if (go && go->isSpawned() && !CheckSkill(go->GetGOInfo()->GetLockId()))
 		return;

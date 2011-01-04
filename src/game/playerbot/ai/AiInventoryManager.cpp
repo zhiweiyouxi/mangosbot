@@ -746,6 +746,9 @@ void AiInventoryManager::HandleMasterIncomingPacket(const WorldPacket& packet)
     switch (packet.GetOpcode())
     {
     case CMSG_GAMEOBJ_REPORT_USE:
+		if (bot->GetPlayerbotAI()->GetMaster()->GetMapId() != bot->GetMapId())
+			return;
+
         WorldPacket p(packet);
         p.rpos(0); // reset reader
         uint64 guid;

@@ -24,6 +24,7 @@ namespace ai
 		virtual Unit* GetPartyMemberToDispell(uint32 dispelType);
 		virtual Unit* FindTargetForTank();
 		virtual Unit* FindTargetForDps();
+		virtual Unit* FindTargetForGrinding();
 		virtual Unit* FindTargetForGrinding(int assistCount);
 		virtual Unit* GetCurrentTarget();
         virtual Unit* FindCcTarget(const char* spell);
@@ -47,6 +48,8 @@ namespace ai
 		virtual bool HasAuraToDispel(uint32 dispelType) { return HasAuraToDispel(bot, dispelType); }
 		bool HasAuraToDispel(Unit* player, uint32 dispelType);
 		bool canDispel(const SpellEntry* entry, uint32 dispelType);
+		list<Unit*> FindPossibleTargets();
+		int GetTargetingPlayerCount( Unit* unit );
 
 	private:
 		bool IsHealingSpell(SpellEntry const* spell);

@@ -522,6 +522,12 @@ void AiSpellManager::HandleCommand(const string& text, Player& fromPlayer)
 	{
 		ListSpells();
 	}
+	else if (text.size() > 5 && text.substr(0, 5) == "cast ")
+	{
+		Unit* unit = sObjectAccessor.GetUnit(*bot, ai->GetMaster()->GetSelectionGuid());
+		if (unit)
+			CastSpell(text.substr(text.find(" ") + 1).c_str(), unit);
+	}
 }
 
 void AiSpellManager::HandleBotOutgoingPacket(const WorldPacket& packet)

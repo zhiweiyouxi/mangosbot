@@ -307,70 +307,107 @@ Unit* AiTargetManager::GetCurrentCcTarget(const char* spell)
     return FindTarget(&strategy);
 }
 
+list<Unit*> AiTargetManager::FindPossibleTargets()
+{
+	list<Unit *> targets;
+
+	MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(bot, bot, BOT_REACT_DISTANCE);
+	MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+	Cell::VisitAllObjects(bot, searcher, BOT_REACT_DISTANCE);
+
+	for(list<Unit *>::iterator tIter = targets.begin(); tIter != targets.end();)
+	{
+		if(!bot->IsWithinLOSInMap(*tIter))
+		{
+			list<Unit *>::iterator tIter2 = tIter;
+			++tIter;
+			targets.erase(tIter2);
+		}
+		else
+			++tIter;
+	}
+
+	return targets;
+}
+
+int AiTargetManager::GetTargetingPlayerCount( Unit* unit ) 
+{
+	Group* group = bot->GetGroup();
+	if (!group)
+		return 0;
+	
+	int count = 0;
+	Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
+	for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
+	{
+		Player *member = sObjectMgr.GetPlayer(itr->guid);
+		if( !member || !member->isAlive() || member == bot)
+			continue;
+
+		PlayerbotAI* ai = member->GetPlayerbotAI();
+		if ((ai && ai->GetAiRegistry()->GetTargetManager()->GetCurrentTarget() == unit) ||
+		    (!ai && member->GetSelectionGuid() == unit->GetObjectGuid()))
+			count++;
+	}
+	
+	return count;
+}
+
+Unit* AiTargetManager::FindTargetForGrinding() 
+{
+	Group* group = bot->GetGroup();
+	if (!group)
+		return NULL;
+
+	Unit* target = NULL;
+	int assistCount = 0;
+	while (!target && assistCount < group->GetMembersCount())
+	{
+		target = FindTargetForGrinding(assistCount++);
+	}
+	
+	return target;
+}
+
 Unit* AiTargetManager::FindTargetForGrinding(int assistCount) 
 {
-    std::list<Unit *> targets;
+	Group* group = bot->GetGroup();
+	if (!group)
+		return NULL;
 
-	float radius = bot->GetMap()->GetVisibilityDistance();
-    MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(bot, bot, radius);
-    MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
-    Cell::VisitAllObjects(bot, searcher, radius);
-
-    // remove not LoS targets
-    for(std::list<Unit *>::iterator tIter = targets.begin(); tIter != targets.end();)
-    {
-        if(!bot->IsWithinLOSInMap(*tIter))
-        {
-            std::list<Unit *>::iterator tIter2 = tIter;
-            ++tIter;
-            targets.erase(tIter2);
-        }
-        else
-            ++tIter;
-    }
+	list<Unit *> targets = FindPossibleTargets();
 
     if(targets.empty())
         return NULL;
 
 	float distance = 0;
 	Unit* result = NULL;
-    for(std::list<Unit *>::iterator tIter = targets.begin(); tIter != targets.end(); tIter++)
+    for(list<Unit *>::iterator tIter = targets.begin(); tIter != targets.end(); tIter++)
     {
 		Unit* unit = *tIter;
+
 		if (abs(bot->GetPositionZ() - unit->GetPositionZ()) > SPELL_DISTANCE)
 			continue;
-
-		int targeting = 0;
-		Group* group = bot->GetGroup();
-		if (!group)
-			continue;
 		
-		float distanceToPlayers = -1;
+		if (GetTargetingPlayerCount(unit) > assistCount)
+			continue;
+
 		Group::MemberSlotList const& groupSlot = group->GetMemberSlots();
 		for (Group::member_citerator itr = groupSlot.begin(); itr != groupSlot.end(); itr++)
 		{
 			Player *member = sObjectMgr.GetPlayer(itr->guid);
-			if( !member || !member->isAlive() || member == bot)
+			if( !member || !member->isAlive())
+				continue;
+
+			if (GetMaster()->GetDistance(unit) >= BOT_REACT_DISTANCE)
 				continue;
 
 			float d = member->GetDistance(unit);
-			if (distanceToPlayers == -1 || d > distanceToPlayers)
+			if (!result || d < distance)
 			{
-				distanceToPlayers = d;
+				distance = d;
+				result = unit;
 			}
-
-			if (member->GetPlayerbotAI() && member->GetPlayerbotAI()->GetAiRegistry()->GetTargetManager()->GetCurrentTarget() == unit)
-				targeting++;
-		}
-
-		if (targeting > assistCount || distanceToPlayers >= BOT_REACT_DISTANCE)
-			continue;
-
-		float d = bot->GetDistance(unit);
-		if (!result || d < distance)
-		{
-			result = unit;
-			distance = d;
 		}
 	}
 

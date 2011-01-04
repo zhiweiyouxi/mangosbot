@@ -42,7 +42,7 @@ namespace ai
         GrindAction(AiManagerRegistry* const ai) : AttackAction(ai, "grind") {}
         virtual Unit* GetTarget() 
         {
-            return ai->GetTargetManager()->FindTargetForGrinding(0);
+            return ai->GetTargetManager()->FindTargetForGrinding();
         }
     };   
    

@@ -101,6 +101,7 @@ namespace ai
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);
+		virtual ActionNode* createAction(const char* name);
     };
 
     class LootNonCombatStrategy : public Strategy

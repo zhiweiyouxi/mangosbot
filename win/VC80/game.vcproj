@@ -1730,6 +1730,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\playerbot\playerbotDefs.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\playerbot\PlayerbotMgr.cpp"
 				>
 			</File>
