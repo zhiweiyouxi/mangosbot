@@ -43,29 +43,25 @@ float AiGroupStatsManager::CalculateBalancePercent()
 
 	for (AttackerMapIterator i = v.begin(); i!=v.end(); i++)
 	{  
-		Unit* unit = sObjectAccessor.GetUnit(*master, i->first);
-		if (unit || !unit->isAlive())
+		Creature* creature = sObjectAccessor.GetCreatureInWorld(i->first);
+		if (!creature || !creature->isAlive())
 			continue;
 
-		uint32 level = unit->getLevel();
+		uint32 level = creature->getLevel();
 
-		Creature* creature = sObjectAccessor.GetCreatureInWorld(unit->GetObjectGuid());
-		if (creature)
-		{
-			switch (creature->GetCreatureInfo()->rank) {
-			case CREATURE_ELITE_RARE:
-				level *= 2;
-				break;
-			case CREATURE_ELITE_ELITE:
-				level *= 3;
-				break;
-			case CREATURE_ELITE_RAREELITE:
-				level *= 3;
-				break;
-			case CREATURE_ELITE_WORLDBOSS:
-				level *= 5;
-				break;
-			}
+		switch (creature->GetCreatureInfo()->rank) {
+		case CREATURE_ELITE_RARE:
+			level *= 2;
+			break;
+		case CREATURE_ELITE_ELITE:
+			level *= 3;
+			break;
+		case CREATURE_ELITE_RAREELITE:
+			level *= 3;
+			break;
+		case CREATURE_ELITE_WORLDBOSS:
+			level *= 5;
+			break;
 		}
 		attackerLevel += level;
 	}
