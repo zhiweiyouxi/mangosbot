@@ -211,6 +211,13 @@ ActionNode* GenericPaladinStrategy::createAction(const char* name)
             /*A*/ NULL, 
             /*C*/ NULL);
     }
+    else if (!strcmp("judgement of wisdom", name)) 
+    {
+        return new ActionNode (new CastJudgementOfWisdomAction(ai),  
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("judgement of light"), NULL), 
+            /*C*/ NULL);
+    }
     else if (!strcmp("divine shield", name)) 
     {
         return new ActionNode (new CastDivineShieldAction(ai),  
