@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>ike3/mangos @ GitHub</title>
-	<link rel="stylesheet" type="text/css" href="doc/playerbot/style.css"></link>
+	<link rel="stylesheet" type="text/css" href="style.css"></link>
 </head>
 
 <body>
@@ -27,32 +27,61 @@
       This is a fork of playerbot with completely different AI based on strategies.
     </div>
 
-<h2>Documentation</h2>
-<a href="doc/playerbot/GettingStarted.html">Getting Started</a>
-<br/>
-<a href="doc/playerbot/ControllingBots.html">How to control bots</a>
-<br/>
-<a href="doc/playerbot/Movement.html">Movement</a>
-<br/>
-<a href="doc/playerbot/Attacking.html">Attacking</a>
-<br/>
-<a href="doc/playerbot/Looting.html">Looting</a>
-<br/>
-<a href="doc/playerbot/Interacting.html">Interacting</a>
-<br/>
-<a href="doc/playerbot/ItemsAndTrading.html">Items and Trade</a>
-<br/>
+<h2>Movement</h2>
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/ike3/mangos/zipball/ai">zip</a> or
-      <a href="http://github.com/ike3/mangos/tarball/ai">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/ike3/mangos</pre>
-    </p>
+<p>
+By default bots will stay in place until you command them doing another thing.
+</p>
+
+<p>
+The following non-combat strategies can be used to control bot movement:
+<br/>
+<i>stay</i> - stay in place (default)
+<br/>
+<i>follow</i> - follow master
+<br/>
+<i>passive</i> - don't attack, loot, etc. anything
+</p>
+
+<p>
+If the bot is far away it needs to be teleported to you. If there is a meeting stone nearby, select the bot then right-click the stone. When the summoning portal is open, select the bot you want to teleport then right-click the portal. Bot will be summoned. NOTE: there is no need to another player to summon bots.
+If you are in the instance or raid, but bot is not whisper
+<pre>summon</pre>
+they will be summoned (like a dungeon finder)
+</p>
+
+<p>
+If you take a flight node to somewhere whisper
+<pre>fly</pre>
+no later than 5 secs after the flight is started and bots will fly with you the same node
+</p>
+
+<p>
+<b>HINT</b>: you can there several macros and bind them to action bar or keys:
+</p>
+
+<pre>
+=== Flee ===
+/g reset
+/g nc -stay,+follow,+passive
+/g co +passive
+/g do follow
+</pre>
+
+
+<pre>
+=== Follow ===
+/g nc -stay,+follow,-passive
+/g co -passive
+/g do follow
+</pre>
+
+<pre>
+=== Stay ===
+/g nc -follow,+stay,+passive
+/g co +passive
+/g do stay
+</pre>
 
     <div class="footer">
       get the source code on GitHub : <a href="http://github.com/ike3/mangos">ike3/mangos</a>

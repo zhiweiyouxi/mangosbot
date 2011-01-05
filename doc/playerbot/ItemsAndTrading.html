@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>ike3/mangos @ GitHub</title>
-	<link rel="stylesheet" type="text/css" href="doc/playerbot/style.css"></link>
+	<link rel="stylesheet" type="text/css" href="style.css"></link>
 </head>
 
 <body>
@@ -27,39 +27,42 @@
       This is a fork of playerbot with completely different AI based on strategies.
     </div>
 
-<h2>Documentation</h2>
-<a href="doc/playerbot/GettingStarted.html">Getting Started</a>
-<br/>
-<a href="doc/playerbot/ControllingBots.html">How to control bots</a>
-<br/>
-<a href="doc/playerbot/Movement.html">Movement</a>
-<br/>
-<a href="doc/playerbot/Attacking.html">Attacking</a>
-<br/>
-<a href="doc/playerbot/Looting.html">Looting</a>
-<br/>
-<a href="doc/playerbot/Interacting.html">Interacting</a>
-<br/>
-<a href="doc/playerbot/ItemsAndTrading.html">Items and Trade</a>
+<h2>Items and Trading</h2>
+
+<p>
+You can open a trade window and bot will tell item list they have. You can trade with them, enchant their items etc.
+When you need bot to place and item to the trade, whisper item link to them. If you need gold, whisper a number in format <i>3g7s5c</i> and it will be added to trade.
+</p>
+
+<p>
+Other command are available for items. [item] means an item link created by shift-clicking the item in chat window.
+
+<pre>c [item]</pre>
+Bot will tell how many linked item he has
 <br/>
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/ike3/mangos/zipball/ai">zip</a> or
-      <a href="http://github.com/ike3/mangos/tarball/ai">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/ike3/mangos</pre>
-    </p>
+<pre>q [item]</pre>
+Bot will tell if this item is useful for he (i.e. for a quest)
+<br/>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/ike3/mangos">ike3/mangos</a>
-    </div>
+<pre>e [item]</pre>
+Bot will equip this item
+<br/>
 
-  </div>
+<pre>ue [item]</pre>
+Bot will un-equip this item
+</p>
 
-  
-</body>
-</html>
+<p>
+When you are interacting with vendor whisper
+<pre>s [item]</pre>
+Bot will sell this item to the vendor
+<br/>
+
+<pre>b [item]</pre>
+Bot will buy this item to the vendor
+<br/>
+
+<pre>s *</pre>
+Bot will sell all gray (poor quality) items to the vendor
+</p>
