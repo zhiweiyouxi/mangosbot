@@ -1,0 +1,16 @@
+Beside strategies there is a number of commands can be used to interact with bots in some way.
+
+stats
+Bot will reply about their gold, experience, bag space, repair cost
+
+quests
+Bot will reply with their quest list divided by status (completed/incompleted)
+
+q [quest]
+Bot will tell specified quest status
+
+drop [quest]
+Bot will drop the specified quest status. Note bot must be selected before doing so.
+
+If you pick a quest when bot is in range, he will pick the quest as well. When you turn-in the quest, bot will turn-in it as well (of course if it is completed). 
+You can share shareable quest with the bots - they will accept it.

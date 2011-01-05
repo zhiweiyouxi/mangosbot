@@ -1,0 +1,16 @@
+First, create some characters that you are plan to use as bots. IMPORTANT: Create a guild!
+Note that any character from your guild can be used as bot, nothing special is required. You can pick one to play with while having others as bots. Just remeber that only characters from your guild can be used as bots.
+
+After you've made your characters log in to the world as one of them and type in say window
+.bot add name1,name2,etc
+where name1,name2,etc is comma-separated list of your guild characters you want to be bots.
+
+Invite them to group (party or raid) and start playing.
+
+When you don't require specific bots anymore type:
+.bot remove name1,name2,name3
+And they will log off
+
+You can quickly add/remove in all bots from your group with the commands:
+.bot add *
+.bot remove *

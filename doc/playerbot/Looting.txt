@@ -1,0 +1,23 @@
+Bots can loot corpses, gameobjects, etc. Note: by default this is turned off.
+
+If you want them to loot something, select the loot object and whisper
+d loot
+
+If you want them to loot automatically, apply loot non-combat strategy:
+nc +loot
+
+You can control which items to loot by whispering:
+
+l gray
+They will loot only gray (poor quality) items
+
+l quest
+They will loot only quest items
+
+l normat
+They will loot anything except BOP (bind-on-pickup) items.
+
+l all
+The will loot everything
+
+Hint: you can combine looting with grind strategy. Bots will attack and loot everything they see including corpses, gameobjects, herbs, mining, skinning, etc. You can just stand still and wait they do all the dirty work.

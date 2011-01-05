@@ -1,0 +1,33 @@
+When you have bots in your group you can control them using commands from chat window. Although this guide uses whisper term it can be replaced with party, raid or guild chat. 
+IMPORTANT: bots will obey only its master in case they are in range of 90yards.
+
+When you want bot to do something, type
+do action
+in the chat window replacing word action with specific action you want bot to do, i.e. follow, stay, frostbolt, etc.
+
+Examples:
+do flametoungue totem
+do follow
+do grind
+
+do action is just a basic and quick way to tell them what to do. More efficient is to tell them which strategy to use.
+Basically bots use two kind of strategy category: combat and non-combat depending on combat status. There is a wide range of strategies available under both categories, for instance frost and fire for a mage; cat, bear and caster for a druid, etc.
+By default bots have some strategies configured. To know which are active whisper to the bot
+co ?
+and it will reply with list of combat (co) strategies. For non-combat list
+nc ?
+command must be used.
+
+To change strategy whisper
+co +strategy1,-strategy2,~strategy3
+Any strategy name begins with '+' symbol will be added to bot strategy list, '-' - removed from the list, '~' - toggled (added if there was no such strategy in the list, removed otherwise)
+
+Some strategies are incompatible with the others, e.g. stay and follow. If you add one to the list, all other incompatible strategies will be removed.
+
+For non-combat strategies, co must be replaced with nc.
+
+Examples:
+nc +follow
+nc +stay
+co +dps
+co +tank
