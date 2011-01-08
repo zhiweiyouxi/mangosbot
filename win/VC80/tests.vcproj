@@ -84,7 +84,7 @@
 				OutputFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\tests.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\dep\lib\$(PlatformName)_$(ConfigurationName)&quot;;&quot;.\framework__$(PlatformName)_$(ConfigurationName)&quot;;..\..\dep\cppunit\lib"
+				AdditionalLibraryDirectories="&quot;..\..\dep\lib\$(PlatformName)_$(ConfigurationName)&quot;;&quot;.\framework__$(PlatformName)_$(ConfigurationName)&quot;;..\..\dep\cppunit\lib;&quot;.\game__$(PlatformName)_$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\tests.pdb"
 				GenerateMapFile="true"
