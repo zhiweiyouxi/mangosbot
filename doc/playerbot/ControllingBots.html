@@ -31,7 +31,7 @@
 
 <p>
 When you have bots in your group you can control them using commands from chat window. Although this guide uses whisper term it can be replaced with party, raid or guild chat. 
-<b>IMPORTANT</b>: bots will obey only its master in case they are in range of 90yards.
+<b>IMPORTANT</b>: bots will obey only its master in case they are in range of 90 yards.
 </p>
 
 <p>
@@ -43,7 +43,8 @@ in the chat window replacing word action with specific action you want bot to do
 <p>
 Examples:
 <pre>
-do flametoungue totem
+do flametongue totem
+do frostbolt
 do follow
 do grind
 </pre>
@@ -51,7 +52,23 @@ do grind
 
 <p>
 <i>do action</i> is just a basic and quick way to tell them what to do. More efficient is to tell them which strategy to use.
-Basically bots use two kind of strategy category: combat and non-combat depending on combat status. There is a wide range of strategies available under both categories, for instance frost and fire for a mage; cat, bear and caster for a druid, etc.
+</p>
+<p>
+It is very important to understand how strategies work as this is the main feature of AI Playerbot. Basically the are three entities you must know:
+<br/>
+<i>trigger</i> - triggers when something occured. E.g. target started using some abililty, has some aura, health became critical, etc.
+<br/>
+<i>action</i> - something bot can do. E.g. move, cast a spell, use an item, etc.
+<br/>
+<i>stragegy</i> - tells bot which action to do if some trigger triggers. Basically they usually say, if something happened, add some action to the bot action queue with some priority. E.g., if target health became less than 20%, add hammer of wrath action with priority 50.
+</p>
+<p>
+Bot then will pop from the action queue the most prioritized action and executes (if it is still useful). Then it gets another from the queue and so on. Usually triggers will add something new to the queue, so it will never be empty. Strategies can be combined, so they will merge their effects and add even more actions to the queue. 
+</p>
+<p>
+Bots use two strategy categories: combat and non-combat depending on combat status. There is a wide range of strategies available under both categories, for instance <i>frost</i> and <i>fire</i> for a mage; <i>cat</i>, <i>bear</i> and <i>caster</i> for a druid, etc. Some can be used under both categories, e.g. <i>follow</i> and <i>stay</i>. Basically when bot is out of a combat, it uses the non-combat strategy list, when the combat starts it switches to combat list, returning back to non-combat one when the attack is over.
+</p>
+<p>
 By default bots have some strategies configured. To know which are active whisper to the bot
 <pre>co ?</pre>
 and it will reply with list of combat (co) strategies. For non-combat list
@@ -60,7 +77,7 @@ command must be used.
 </p>
 
 <p>
-To change strategy whisper
+To add/remove/replace some strategy whisper
 <pre>co +strategy1,-strategy2,~strategy3</pre>
 Any strategy name begins with <i>'+'</i> symbol will be added to bot strategy list, <i>'-'</i> - removed from the list, <i>'~'</i> - toggled (added if there was no such strategy in the list, removed otherwise)
 </p>
@@ -81,6 +98,14 @@ nc +stay
 co +dps
 co +tank
 </pre>
+</p>
+
+<p>
+<b>Hint</b>: you can create several macros to change the strategies you find useful often. 
+</p>
+
+<p>
+<a href="http://ike3.github.com/mangos/">Back</a>
 </p>
 
     <div class="footer">
