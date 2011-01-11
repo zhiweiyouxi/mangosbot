@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,7 @@ enum eConfigUInt32Values
     CONFIG_UINT32_START_GM_LEVEL,
     CONFIG_UINT32_GROUP_VISIBILITY,
     CONFIG_UINT32_MAIL_DELIVERY_DELAY,
+    CONFIG_UINT32_MASS_MAILER_SEND_PER_TICK,
     CONFIG_UINT32_UPTIME_UPDATE,
     CONFIG_UINT32_AUCTION_DEPOSIT_MIN,
     CONFIG_UINT32_SKILL_CHANCE_ORANGE,
@@ -268,6 +269,8 @@ enum eConfigFloatValues
     CONFIG_FLOAT_CREATURE_FAMILY_ASSISTANCE_RADIUS,
     CONFIG_FLOAT_GROUP_XP_DISTANCE,
     CONFIG_FLOAT_THREAT_RADIUS,
+    CONFIG_FLOAT_GHOST_RUN_SPEED_WORLD,
+    CONFIG_FLOAT_GHOST_RUN_SPEED_BG,
     CONFIG_FLOAT_VALUE_COUNT
 };
 

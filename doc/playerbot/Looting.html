@@ -30,39 +30,46 @@
 <h2>Looting</h2>
 
 <p>
-Bots can loot corpses, gameobjects, etc. Note: by default this is turned off.
+Bot can loot corpses, gameobjects, use gathering skills etc. Basically bot has a loot list that you can add objects to. Then you instructs the bot to loot ojects from this list based on reachability and usefulness. Also there is a possibility to make bot maintain the list itself based on loot strategies.
 </p>
 
 <p>
-If you want them to loot something, select the loot object and whisper
+If you want bot to loot something, select the loot object and whisper
 <pre>d loot</pre>
+If the object can't be selected (i.e. mineral vein), right-click it even if you don't have the necessary skill.
+</p>
+<p>
+This involves two steps. When you select something (or right-click it) it is being added to the bot loot list. Actual <i>d loot</i> action instrcuts the bot to loot the first object from the list (this almost always will the object you've selected). After looting is done the object will be removed from the loot list.
 <p>
 
 <p>
-If you want them to loot automatically, apply loot non-combat strategy:
+If you want bots to loot automatically, apply <i>loot</i> non-combat strategy:
 <pre>nc +loot</pre>
+Bot will add any creature they kill to its loot list. Although some game objects (e.g. herbs, minerals, etc.) still must be added manually by right-clicking them (but there is no need of <i>do loot</i> action). Note: there is special <i>grind</i> strategy that allows bot to loot everything they see, can be dangerous thought.
 </p>
 
-<br/>
-
 <p>
-You can control which items to loot by whispering:
+By default bots will not loot all items from the list. You can control which items to loot by whispering:
 
 <pre>l gray</pre>
-They will loot only gray (poor quality) items
+They will loot only gray (poor quality) items.
 
 <pre>l quest</pre>
-They will loot only quest items
+They will loot only quest items.
 
 <pre>l normat</pre>
 They will loot anything except BOP (bind-on-pickup) items.
 
 <pre>l all</pre>
-They will loot everything
+They will loot everything.
 </p>
 
 <p>
-Hint: you can combine looting with <i>grind</i> strategy. Bots will attack and loot everything they see including corpses, gameobjects, herbs, mining, skinning, etc. You can just stand still and wait they do all the dirty work.
+<b>Hint</b>: you can combine looting with <i>grind</i> strategy. Bots will attack and loot everything they see including corpses, gameobjects, herbs, mining, skinning, etc. You can just stand still and wait they do all the dirty work. Just make sure they are appropriate level and gear to sustain the combat.
+</p>
+
+<p>
+Although looting is useful it can be dangerous sometimes. Usually it is better to leave it disabled but have <i>do loot</i> action as a macro so you can quickly tell bot when to loot.
 </p>
 
     <div class="footer">
