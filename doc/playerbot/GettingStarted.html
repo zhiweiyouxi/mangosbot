@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>ike3/mangos @ GitHub</title>
-	<link rel="stylesheet" type="text/css" href="doc/playerbot/style.css"></link>
+	<link rel="stylesheet" type="text/css" href="style.css"></link>
 </head>
 
 <body>
@@ -27,32 +27,37 @@
       This is a fork of playerbot with completely different AI based on strategies.
     </div>
 
-<h2>Documentation</h2>
-<a href="doc/playerbot/GettingStarted.html">Getting Started</a>
-<br/>
-<a href="doc/playerbot/ControllingBots.html">How to control bots</a>
-<br/>
-<a href="doc/playerbot/Movement.html">Movement</a>
-<br/>
-<a href="doc/playerbot/Attacking.html">Attacking</a>
-<br/>
-<a href="doc/playerbot/Looting.html">Looting</a>
-<br/>
-<a href="doc/playerbot/Interacting.html">Interacting</a>
-<br/>
-<a href="doc/playerbot/ItemsAndTrading.html">Items and Trade</a>
-<br/>
+<h2>Getting Started</h2>
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/ike3/mangos/zipball/ai">zip</a> or
-      <a href="http://github.com/ike3/mangos/tarball/ai">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/ike3/mangos</pre>
-    </p>
+<p>
+First, create some characters that you wish to use as bots. <b>IMPORTANT: Create a guild!</b>
+<br/>
+Note that any character from your guild can be used as bot, nothing special is required. You can pick one to play with while having others as bots. Just remeber that only characters from your guild can be used as bots.
+</p>
+
+<p>
+After you've made your characters log in to the world as one of them and type in chat window
+<pre>.bot add name1,name2,etc</pre>
+where <i>name1,name2,etc</i> is comma-separated list of your guild characters you want to be bots.
+</p>
+
+<p>
+Invite them to group (party or raid) and start playing.
+</p>
+
+<p>
+When you don't require specific bots anymore type:
+<pre>.bot remove name1,name2,name3</pre>
+And they will log off
+</p>
+
+<p>
+You can quickly add/remove in all bots from your group with the commands:
+<pre>
+.bot add *
+.bot remove *
+</pre>
+</p>
 
     <div class="footer">
       get the source code on GitHub : <a href="http://github.com/ike3/mangos">ike3/mangos</a>
