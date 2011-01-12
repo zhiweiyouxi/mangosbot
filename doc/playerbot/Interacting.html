@@ -30,12 +30,12 @@
 <h2>Interacting</h2>
 
 <p>
-Beside strategies there is a number of commands can be used to interact with bots in some way.
+Beside strategies there is a number of commands can be used to interact with bots in some way. This is usually used to get some information about the bot (i.e. quest status, items, etc.)
 </p>
 
 <p>
 <pre>stats</pre>
-Bot will reply about their gold, experience, bag space, repair cost
+Bot will reply about their gold, experience, bag space, equipped items repair cost.
 </p>
 
 <p>
@@ -50,12 +50,16 @@ Bot will tell specified quest status
 
 <p>
 <pre>drop [quest]</pre>
-Bot will drop the specified quest status. Note bot must be selected before doing so.
+Bot will drop the specified quest status. <b>Note</b>: bot must be selected before doing so.
 </p>
 
 <p>
 If you pick a quest when bot is in range, he will pick the quest as well. When you turn-in the quest, bot will turn-in it as well (of course if it is completed). 
-You can share shareable quest with the bots - they will accept it.
+You can share any shareable quest with the bot - it will accept it if allowed by the game.
+</p>
+
+<p>
+If the bot is on some quest and some items are required to complete it and bot has just looted that that item, he will send you details similar to <i>q [item]</i> command so you will be aware of it.
 </p>
 
 <p>
