@@ -6,6 +6,39 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>ike3/mangos @ GitHub</title>
 	<link rel="stylesheet" type="text/css" href="doc/playerbot/style.css"></link>
+	<style>
+.news .group {
+	font-weight: bold;
+	margin-top: 5px;
+}
+
+.news .group:first-child {
+	margin-top: 0px;
+}
+
+.news .row {
+	margin-left: 10px;
+	clear: both;
+}
+
+.news .row .line {
+	float: left;
+	margin-right: 10px;
+}
+
+.news .row .date {
+}	
+	</style>
+	<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script language="javascript" type="text/javascript" src="http://jtemplates.tpython.com/jTemplates/jquery-jtemplates.js"></script>
+	<script language="javascript" type="text/javascript" src="https://github.com/phstc/jquery-dateFormat/raw/master/jquery.dateFormat-1.0.js"></script>
+	<script language="javascript" type="text/javascript" src="http://aloe.no-ip.biz:8888/news/start/script?name=news/git/playerbot"></script>
+	<script language="javascript" type="text/javascript">
+		$().ready(function() {
+			$("#news").setTemplate($("#reportTableRowTemplate").html());
+			$("#news").processTemplate(repoNews);
+		});
+	</script>
 </head>
 
 <body>
@@ -65,6 +98,20 @@ The main goal of this project is learning and having fun.
 <a href="doc/playerbot/ItemsAndTrading.html">Items and Trade</a>
 <br/>
 
+<h2>News</h2>
+<div id="news" class="news"></div>
+<div style="display: none" id="reportTableRowTemplate">
+{#foreach $T as group}
+<div class="group">{$.format.date(new Date($T.group.date), "MMM yyyy")}</div>
+{#foreach $T.group.items as item}
+<div class="row">
+	<div class="line"><span class="date">{$.format.date(new Date($T.item.commitTime), "dd")}<sup>th</sup> {$.format.date(new Date($T.item.commitTime), "HH:mm")}</span> - {$T.item.shortText}</div>
+</div>
+{#/for}
+{#/for}
+</div>
+
+<br/>
 
 <h2>Thanks</h2>
 <p>
