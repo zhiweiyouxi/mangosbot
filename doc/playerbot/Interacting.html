@@ -30,7 +30,7 @@
 <h2>Interacting</h2>
 
 <p>
-Beside strategies there is a number of commands can be used to interact with bots in some way. This is usually used to get some information about the bot (i.e. quest status, items, etc.)
+Beside strategies there is a number of commands can be used to interact with bots in some way. This is usually used to get some information about the bot (i.e. quest status, items, etc.). Bot can provide some information if you whisper them a item, quest or game object link (i.e. quest status, item usefulness, etc.)
 </p>
 
 <p>
@@ -40,17 +40,22 @@ Bot will reply about their gold, experience, bag space, equipped items repair co
 
 <p>
 <pre>quests</pre>
-Bot will reply with their quest list divided by status (completed/incompleted)
+Bot will reply with their quest summary divided by status (completed/incompleted). Can be enhanced by whispering <i>quests all</i> - full quest report, <i>quests completed</i> - only quests that can be turned in, <i>quests incompleted</i> - only incompleted quests, <i>quests summary</i> - same as <i>quests</i>
 </p>
 
 <p>
 <pre>q [quest]</pre>
-Bot will tell specified quest status
+Bot will tell specified quest status with progress by objectives
 </p>
 
 <p>
 <pre>drop [quest]</pre>
-Bot will drop the specified quest status. <b>Note</b>: bot must be selected before doing so.
+Bot will drop the specified quest
+</p>
+
+<p>
+<pre>accept [quest]</pre>
+Bot will accept the specified quest from the selected quest giver (quest link can be replaced with <i>*</i> so bot will accept all available quests)
 </p>
 
 <p>
@@ -59,7 +64,8 @@ You can share any shareable quest with the bot - it will accept it if allowed by
 </p>
 
 <p>
-If the bot is on some quest and some items are required to complete it and bot has just looted that that item, he will send you details similar to <i>q [item]</i> command so you will be aware of it.
+When turning in a quest with reward selection bot will not select reward by himself. You need to whisper them
+<pre>r [item]</pre> where [item] is reward item link
 </p>
 
 <p>
