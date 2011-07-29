@@ -34,6 +34,11 @@ Bot can loot corpses, gameobjects, use gathering skills etc. Basically bot has a
 </p>
 
 <p>
+By default bot add corpses and game objects to their loot list automatically and loot them if have appropriate non-combat strategies, such as
+<i>gather</i> - gather herbs, minerals and skin mobs if have appropriate skill, <i>loot</i> - do actual corpse looting. NOTE: <i>gather</i> strategy without <i>loot</i> has no effect.
+</p>
+
+<p>
 If you want bot to loot something, select the loot object and whisper
 <pre>d loot</pre>
 If the object can't be selected (i.e. mineral vein), right-click it even if you don't have the necessary skill.
@@ -49,19 +54,30 @@ Bot will add any creature they kill to its loot list. Although some game objects
 </p>
 
 <p>
-By default bots will not loot all items from the list. You can control which items to loot by whispering:
+By default bots will not loot all items from the list. You can control which items to loot by whispering (ll stands for loot list):
 
-<pre>l gray</pre>
+<pre>ll gray</pre>
 They will loot only gray (poor quality) items.
 
-<pre>l quest</pre>
+<pre>ll quest</pre>
 They will loot only quest items.
 
-<pre>l normat</pre>
+<pre>ll skill</pre>
+They will loot items based on their skills (herbalism, mining or skinning)
+
+<pre>ll normat</pre>
 They will loot anything except BOP (bind-on-pickup) items.
 
-<pre>l all</pre>
+<pre>ll all</pre>
 They will loot everything.
+</p>
+
+<p>
+You can specify which items must be always looted or skipped by adding and removing them from bot's loot list. Whisper
+<pre>ll [item]</pre>
+to add an item to the always loot list, or
+<pre>ll -[item]</pre>
+to remove.
 </p>
 
 <p>
