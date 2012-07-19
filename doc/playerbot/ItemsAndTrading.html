@@ -43,12 +43,20 @@ To get information about some item several commands are available. The commands 
 Bot will tell how many of that item he has and how this item is useful for he (i.e. for a quest, including information how many items is still needed)
 <br/>
 
+<pre>u [item]</pre>
+Bot will use this item. Optional [target] link can be appended to this command making the bot use the item against this target (can be any player, npc, game object, etc.)
+<br/>
+
 <pre>e [item]</pre>
 Bot will equip this item in the appropriate slot. If the slot is occupied the existing item will go to the backpack and replaced with given one. <i>[item]</i> link can be replaced with equipment set name so bot will activate the specified equipment set
 <br/>
 
 <pre>ue [item]</pre>
 Bot will un-equip this item from the appropriate slot leaving it empty.
+</p>
+
+<pre>destroy [item]</pre>
+Bot will destroy this item. This cannot be undone.
 </p>
 
 <p>
@@ -59,8 +67,17 @@ Bot will sell this item to the vendor, <i>[item]</i> can be replaced with <i>*</
 
 <pre>b [item]</pre>
 Bot will buy this item to the vendor
+<pre>bank [item]</pre>
+Bot will place this item to the bank
+<pre>bank -[item]</pre>
+Bot will withdraw this item from the bank
 <pre>gb [item]</pre>
-Bot will place this item to the guild bank if it is nearby
+Bot will place this item to the guild bank
+<pre>gb -[item]</pre>
+Bot will withdraw this item from the guild bank
+</p>
+<p>
+For banks and vendors the banker or NPC must be within direct contact with the bot.
 </p>
 
 <p>
