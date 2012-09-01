@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Encoding" value="UTF-8"/>
+        <param name="Threshold" value="INFO"/>
+        <param name="Target" value="System.out" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p: %m [%c]%n" />
+        </layout>
+    </appender>
+    
+    <appender name="output" class="org.apache.log4j.FileAppender">
+        <param name="file" value="${logfile}" />
+        <param name="append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m" />
+        </layout>
+    </appender>
+    
+    <logger name="output">
+        <level value="info"/>
+        <appender-ref ref="output"/>
+    </logger>
+    
+    <logger name="org.playerbot.ai">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+    </logger>
+    
+</log4j:configuration>

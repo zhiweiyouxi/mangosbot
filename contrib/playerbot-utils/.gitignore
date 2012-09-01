@@ -1,0 +1,50 @@
+#
+# Editors / debuggers / other output files
+#
+*~
+*.bak
+*.orig
+*.patch
+callgrind.out.*
+
+#
+# Git stuff
+#
+# stgit directories
+patches-*
+
+#
+# Maven/Java
+#
+target
+bin
+*.class
+test-output
+
+#
+# Generated certificates
+#
+tools/server.*
+
+#
+# Eclipse
+#
+.project
+.classpath
+.settings
+.externalToolBuilders
+.springBeans
+META-INF/MANIFEST.MF
+MANIFEST.MF
+
+cms/core/src/main/java/META-INF/*
+common/core/src/main/java/META-INF/*
+news/git/src/main/java/META-INF/*
+reports/war/src/main/webapp/META-INF/*
+
+#
+# Reporting
+#
+*.rptconfig
+reports/war/src/main/webapp/*.rpt*
+reports/war/src/main/webapp/META-INF/*

@@ -66,6 +66,10 @@ win/*
 *.vsp
 ipch
 *.user
+*.obj
+*.pdb
+*.tlog
+
 
 #
 # CMake temporary files
