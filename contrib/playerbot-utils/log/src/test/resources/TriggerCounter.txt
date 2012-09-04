@@ -1,2 +1,0 @@
-       2 trigger2
-       1 trigger1
