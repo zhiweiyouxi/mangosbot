@@ -77,3 +77,22 @@ bool UseMeetingStoneAction::Execute(Event event)
 
     return true;
 }
+
+
+bool SummonAction::Execute(Event event)
+{
+    if (!master->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING) && master->GetSession()->GetSecurity() < SEC_GAMEMASTER)
+    {
+        ai->TellMaster("You must be in a city or inn to summon me");
+        return false;
+    }
+
+    PlayerbotChatHandler ch(master);
+    if (!ch.teleport(*bot))
+    {
+        ai->TellMaster("You cannot summon me");
+        return false;
+    }
+
+    return true;
+}

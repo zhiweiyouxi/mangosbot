@@ -49,7 +49,7 @@ namespace ai
     class Action : public AiNamedObject
 	{
 	public:
-        Action(PlayerbotAI* ai, string name = "action") : AiNamedObject(ai, name) { }
+        Action(PlayerbotAI* ai, string name = "action") : verbose(verbose), AiNamedObject(ai, name) { }
         virtual ~Action(void) {}
 
     public:
@@ -65,6 +65,10 @@ namespace ai
         virtual Unit* GetTarget();
         virtual Value<Unit*>* GetTargetValue();
         virtual string GetTargetName() { return "self target"; }
+        void MakeVerbose() { verbose = true; }
+
+    protected:
+        bool verbose;
 	};
 
     class ActionNode

@@ -32,6 +32,8 @@ namespace ai
             p << roles_mask;
             bot->GetSession()->HandleGroupAcceptOpcode(p);
 
+            ai->ResetStrategies();
+            ai->TellMaster("Hello");
             return true;
         }
     };

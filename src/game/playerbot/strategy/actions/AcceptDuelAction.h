@@ -23,6 +23,7 @@ namespace ai
             *packet << flagGuid;
             bot->GetSession()->QueuePacket(packet);
 
+            ai->ResetStrategies();
             return true;
         }
     };

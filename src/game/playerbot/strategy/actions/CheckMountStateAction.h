@@ -13,7 +13,7 @@ namespace ai
         virtual bool Execute(Event event);
 
     private:
-        void Mount(int32 master_speed1, int32 master_speed2);
+        bool Mount();
     };
 
 }

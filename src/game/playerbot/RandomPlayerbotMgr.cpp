@@ -212,12 +212,12 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, uint32 mapId, float teleX, 
         WorldLocation loc = locs[index];
         loc.coord_x += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
         loc.coord_y += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
-        loc.coord_z = 0.05f + map->GetTerrain()->GetHeightStatic(loc.coord_x, loc.coord_y, 0, true, MAX_HEIGHT);
+        loc.coord_z = 0.05f + map->GetTerrain()->GetHeightStatic(loc.coord_x, loc.coord_y, 10 + loc.coord_z, true, MAX_HEIGHT);
         bot->TeleportTo(loc);
     }
     else
     {
-        teleZ = 0.05f + map->GetTerrain()->GetHeightStatic(teleX, teleY, 0, true, MAX_HEIGHT);
+        teleZ = 0.05f + map->GetTerrain()->GetHeightStatic(teleX, teleY, teleZ, true, MAX_HEIGHT);
         bot->TeleportTo(mapId, teleX, teleY, teleZ, 0);
     }
 }
@@ -238,7 +238,7 @@ void RandomPlayerbotMgr::Randomize(Player* bot)
 
     index = urand(0, locs.size() - 1);
     GameTele const* tele = locs[index];
-	PlayerbotFactory factory(bot, bot->GetPlayerbotAI()->GetMaster()->getLevel());
+	PlayerbotFactory factory(bot, bot->GetPlayerbotAI()->GetMaster()->getLevel(), urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC));
     factory.RandomizeForZone(tele->mapId, tele->position_x, tele->position_y, tele->position_z);
 
     RandomTeleport(bot, tele->mapId, tele->position_x, tele->position_y, tele->position_z);
@@ -246,6 +246,9 @@ void RandomPlayerbotMgr::Randomize(Player* bot)
 
 void RandomPlayerbotMgr::DoPvpAttack(Player* bot)
 {
+    if (master->IsBeingTeleported())
+        return;
+
 	Player* master = bot->GetPlayerbotAI()->GetMaster();
     uint32 level = master->getLevel();
 
@@ -257,14 +260,14 @@ void RandomPlayerbotMgr::DoPvpAttack(Player* bot)
     {
         float x = loc.coord_x + cos(angle) * distance;
         float y = loc.coord_y + sin(angle) * distance;
-        float z = loc.coord_z;
-        master->UpdateGroundPositionZ(x, y, z);
+        float z = loc.coord_z + 10;
+        master->UpdateAllowedPositionZ(x, y, z);
         if (master->IsWithinLOS(x, y, z))
         {
-            PlayerbotFactory factory(bot, urand(level - 2, level + 2));
+            PlayerbotFactory factory(bot, urand(level - 2, level + 2), urand(ITEM_QUALITY_RARE, ITEM_QUALITY_EPIC));
             factory.Randomize();
             Refresh(bot);
-            bot->TeleportTo(master->GetMapId(), x, y, z, 0);
+            bot->TeleportTo(master->GetMapId(), x, y, z + 0.05f, 0);
             break;
         }
     }

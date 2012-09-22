@@ -7,7 +7,7 @@ using namespace ai;
 
 void ShamanNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    CombatStrategy::InitTriggers(triggers);
+    NonCombatStrategy::InitTriggers(triggers);
 
 	triggers.push_back(new TriggerNode(
 		"party member dead",
@@ -44,6 +44,6 @@ void ShamanNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
 void ShamanNonCombatStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 {
-    CombatStrategy::InitMultipliers(multipliers);
+    NonCombatStrategy::InitMultipliers(multipliers);
 }
 

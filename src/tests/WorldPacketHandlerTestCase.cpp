@@ -31,6 +31,7 @@ class WorldPacketHandlerTestCase : public MockedAiObjectContextTestCase
       CPPUNIT_TEST( party_command );
       CPPUNIT_TEST( taxi_done );
       CPPUNIT_TEST( ready_check );
+      CPPUNIT_TEST( uninvite );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -206,6 +207,14 @@ protected:
         tick();
 
         assertActions(">S:finish ready check");
+    }
+
+    void uninvite()
+    {
+        trigger("uninvite");
+        tick();
+
+        assertActions(">S:uninvite");
     }
 
 };

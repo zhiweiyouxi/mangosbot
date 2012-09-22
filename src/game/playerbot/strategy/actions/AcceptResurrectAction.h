@@ -10,8 +10,6 @@ namespace ai
 
         virtual bool Execute(Event event)
         {
-            
-
             if (bot->isAlive())
                 return false;
 
@@ -25,6 +23,7 @@ namespace ai
             *packet << uint8(1);                        // accept
             bot->GetSession()->QueuePacket(packet);   // queue the packet to get around race condition
 
+            ai->ChangeEngine(BOT_STATE_NON_COMBAT);
             return true;
         }
     };

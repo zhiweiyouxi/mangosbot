@@ -12,7 +12,7 @@ namespace ai
     private:
         void QueryItemsUsage(ItemIds items);
         void QueryItemUsage(ItemPrototype const *item);
-        void QueryQuestItem(uint32 itemId, const Quest *questTemplate, QuestStatusData *questStatus);
+        void QueryQuestItem(uint32 itemId, const Quest *questTemplate, const QuestStatusData *questStatus);
         void QueryQuestItem(uint32 itemId);
 
     };

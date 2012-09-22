@@ -45,6 +45,7 @@
 #include "BankAction.h"
 #include "PositionAction.h"
 #include "TellTargetAction.h"
+#include "UseMeetingStoneAction.h"
 
 namespace ai
 {
@@ -104,9 +105,11 @@ namespace ai
             creators["spirit healer"] = &ChatActionContext::spirit_healer;
             creators["position"] = &ChatActionContext::position;
             creators["tell target"] = &ChatActionContext::tell_target;
+            creators["summon"] = &ChatActionContext::summon;
         }
 
     private:
+        static Action* summon(PlayerbotAI* ai) { return new SummonAction(ai); }
         static Action* tell_target(PlayerbotAI* ai) { return new TellTargetAction(ai); }
         static Action* position(PlayerbotAI* ai) { return new PositionAction(ai); }
         static Action* spirit_healer(PlayerbotAI* ai) { return new SpiritHealerAction(ai); }

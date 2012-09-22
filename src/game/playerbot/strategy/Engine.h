@@ -48,6 +48,15 @@ namespace ai
 
     // -----------------------------------------------------------------------------------------------------------------------
 
+    enum ActionResult
+    {
+        ACTION_RESULT_UNKNOWN,
+        ACTION_RESULT_OK,
+        ACTION_RESULT_IMPOSSIBLE,
+        ACTION_RESULT_USELESS,
+        ACTION_RESULT_FAILED
+    };
+
     class Engine : public PlayerbotAIAware
     {
     public:
@@ -65,7 +74,7 @@ namespace ai
 
     public:
 	    virtual bool DoNextAction(Unit*, int depth = 0);
-        bool ExecuteAction(string name);
+	    ActionResult ExecuteAction(string name);
 
     public:
         void AddActionExecutionListener(ActionExecutionListener* listener)

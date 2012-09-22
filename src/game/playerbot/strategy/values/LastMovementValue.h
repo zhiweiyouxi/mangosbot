@@ -42,17 +42,6 @@ namespace ai
             lastFollow = NULL;
         }
 
-        void Update(Player* bot)
-        {
-            if (lastMoveToX != 0.0f || lastMoveToY != 0.0f || lastMoveToZ != 0.0f)
-            {
-                bot->m_movementInfo.ChangePosition(lastMoveToX, lastMoveToY, lastMoveToZ, lastMoveToOri);
-                bot->SendHeartBeat();
-
-                lastMoveToX = lastMoveToY = lastMoveToZ = lastMoveToOri = 0.0f;
-            }
-        }
-
     public:
         vector<uint32> taxiNodes;
         ObjectGuid taxiMaster;

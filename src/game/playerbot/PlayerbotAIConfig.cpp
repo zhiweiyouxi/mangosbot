@@ -2,6 +2,8 @@
 #include "PlayerbotAIConfig.h"
 #include "Policies/SingletonImp.h"
 #include "playerbot.h"
+#include "RandomPlayerbotFactory.h"
+#include "../AccountMgr.h"
 
 using namespace std;
 
@@ -46,7 +48,7 @@ bool PlayerbotAIConfig::Initialize()
     lowMana = config.GetIntDefault("AiPlayerbot.LowMana", 15);
     mediumMana = config.GetIntDefault("AiPlayerbot.MediumMana", 40);
 
-    randomGearQuality = config.GetIntDefault("AiPlayerbot.RandomGearQuality", ITEM_QUALITY_RARE);
+    randomGearLoweringChance = config.GetFloatDefault("AiPlayerbot.RandomGearLoweringChance", 0.15);
 
     iterationsPerTick = config.GetIntDefault("AiPlayerbot.IterationsPerTick", 10);
 
@@ -90,6 +92,9 @@ bool PlayerbotAIConfig::Initialize()
     splineFacing = config.GetBoolDefault("AiPlayerbot.SplineFacing", true);
 
     sLog.outString("AI Playerbot configuration loaded");
+    if (config.GetBoolDefault("AiPlayerbot.RandomBotAutoCreate", true))
+        CreateRandomBots();
+
     return true;
 }
 
@@ -134,9 +139,6 @@ string PlayerbotAIConfig::GetValue(string name)
     else if (name == "LowMana")
         out << lowMana;
 
-
-    else if (name == "RandomGearQuality")
-        out << randomGearQuality;
     else if (name == "IterationsPerTick")
         out << iterationsPerTick;
 
@@ -178,8 +180,24 @@ void PlayerbotAIConfig::SetValue(string name, string value)
     else if (name == "LowMana")
         out >> lowMana;
 
-    else if (name == "RandomGearQuality")
-        out >> randomGearQuality;
     else if (name == "IterationsPerTick")
         out >> iterationsPerTick;
+}
+
+
+void PlayerbotAIConfig::CreateRandomBots()
+{
+    for (list<uint32>::iterator i = sPlayerbotAIConfig.randomBotAccounts.begin(); i != sPlayerbotAIConfig.randomBotAccounts.end(); i++)
+    {
+        uint32 accountId = *i;
+        int count = sAccountMgr.GetCharactersCount(accountId);
+        if (count >= 10)
+            continue;
+
+        RandomPlayerbotFactory factory(accountId);
+        while (count++ < 10)
+        {
+            factory.CreateRandomBot();
+        }
+    }
 }

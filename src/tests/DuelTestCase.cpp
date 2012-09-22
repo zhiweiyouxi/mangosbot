@@ -12,6 +12,7 @@ class DuelTestCase : public MockedAiObjectContextTestCase
 {
   CPPUNIT_TEST_SUITE( DuelTestCase );
       CPPUNIT_TEST( accept );
+      CPPUNIT_TEST( attack );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -28,6 +29,15 @@ protected:
         tick();
 
         assertActions(">S:accept duel");
+    }
+    void attack()
+    {
+        trigger("no attackers");
+        context->GetValue<Unit*>("duel target")->Set(MockedTargets::GetDuelTarget());
+        tick();
+        context->GetValue<Unit*>("duel target")->Set(NULL);
+
+        assertActions(">S:attack duel opponent");
     }
 };
 

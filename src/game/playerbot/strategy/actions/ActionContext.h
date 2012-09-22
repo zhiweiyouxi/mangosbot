@@ -12,6 +12,7 @@
 #include "ChooseTargetActions.h"
 #include "SuggestWhatToDoAction.h"
 #include "PositionAction.h"
+#include "AttackAction.h"
 
 namespace ai
 {
@@ -62,9 +63,13 @@ namespace ai
             creators["guard"] = &ActionContext::guard;
             creators["move out of enemy contact"] = &ActionContext::move_out_of_enemy_contact;
             creators["set facing"] = &ActionContext::set_facing;
+            creators["attack duel opponent"] = &ActionContext::attack_duel_opponent;
+            creators["drop target"] = &ActionContext::drop_target;
         }
 
     private:
+        static Action* drop_target(PlayerbotAI* ai) { return new DropTargetAction(ai); }
+        static Action* attack_duel_opponent(PlayerbotAI* ai) { return new AttackDuelOpponentAction(ai); }
         static Action* guard(PlayerbotAI* ai) { return new GuardAction(ai); }
         static Action* open_loot(PlayerbotAI* ai) { return new OpenLootAction(ai); }
         static Action* move_to_loot(PlayerbotAI* ai) { return new MoveToLootAction(ai); }

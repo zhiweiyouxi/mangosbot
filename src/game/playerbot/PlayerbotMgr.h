@@ -24,7 +24,7 @@ class MANGOS_DLL_SPEC PlayerbotMgr : public PlayerbotAIBase
 
         void AddPlayerBot(uint64 guid, WorldSession* session);
         void LogoutPlayerBot(uint64 guid);
-        void RandomizePlayerBot(uint64 guid, uint32 level);
+        void RandomizePlayerBot(uint64 guid, uint32 level, uint32 itemQuality);
         Player* GetPlayerBot (uint64 guid) const;
         Player* GetMaster() const { return m_master; };
         PlayerBotMap::const_iterator GetPlayerBotsBegin() const { return m_playerBots.begin(); }

@@ -5,7 +5,7 @@
 
 using namespace ahbot;
 
-int32 Category::GetStackCount(ItemPrototype const* proto)
+uint32 Category::GetStackCount(ItemPrototype const* proto)
 {
     if (proto->Quality > ITEM_QUALITY_UNCOMMON)
         return 1;
@@ -13,12 +13,12 @@ int32 Category::GetStackCount(ItemPrototype const* proto)
     return urand(1, proto->GetMaxStackSize());
 }
 
-int32 Category::GetMaxAllowedItemAuctionCount(ItemPrototype const* proto)
+uint32 Category::GetMaxAllowedItemAuctionCount(ItemPrototype const* proto)
 {
     return 0;
 }
 
-int32 Category::GetMaxAllowedAuctionCount()
+uint32 Category::GetMaxAllowedAuctionCount()
 {
     return sAhBotConfig.GetMaxAllowedAuctionCount(GetName());
 }
@@ -33,7 +33,7 @@ PricingStrategy* Category::GetPricingStrategy()
     return pricingStrategy = PricingStrategyFactory::Create(name, this);
 }
 
-QualityCategoryWrapper::QualityCategoryWrapper(Category* category, uint32 quality) : Category(), quality(quality), category(category) 
+QualityCategoryWrapper::QualityCategoryWrapper(Category* category, uint32 quality) : Category(), quality(quality), category(category)
 {
     ostringstream out; out << category->GetName() << ".";
     switch (quality)
@@ -55,7 +55,7 @@ QualityCategoryWrapper::QualityCategoryWrapper(Category* category, uint32 qualit
         break;
     }
 
-    combinedName = out.str(); 
+    combinedName = out.str();
 }
 
 bool QualityCategoryWrapper::Contains(ItemPrototype const* proto)
@@ -63,8 +63,8 @@ bool QualityCategoryWrapper::Contains(ItemPrototype const* proto)
     return proto->Quality == quality && category->Contains(proto);
 }
 
-int32 QualityCategoryWrapper::GetMaxAllowedAuctionCount()
+uint32 QualityCategoryWrapper::GetMaxAllowedAuctionCount()
 {
-    int32 count = sAhBotConfig.GetMaxAllowedAuctionCount(combinedName);
-    return count > 0 ? count : category->GetMaxAllowedAuctionCount(); 
+    uint32 count = sAhBotConfig.GetMaxAllowedAuctionCount(combinedName);
+    return count > 0 ? count : category->GetMaxAllowedAuctionCount();
 }

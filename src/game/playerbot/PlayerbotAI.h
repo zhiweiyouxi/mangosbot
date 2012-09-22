@@ -82,14 +82,12 @@ public:
 	virtual ~PlayerbotAI();
 
 public:
-	virtual void UpdateAI(uint32 elapsed);
 	virtual void UpdateAIInternal(uint32 elapsed);
     void HandleCommand(uint32 type, const string& text, Player& fromPlayer);
 	void HandleBotOutgoingPacket(const WorldPacket& packet);
     void HandleMasterIncomingPacket(const WorldPacket& packet);
     void HandleMasterOutgoingPacket(const WorldPacket& packet);
 	void HandleTeleportAck();
-    void ChangeActiveEngineIfNecessary();
     void ChangeEngine(BotState type);
     void DoNextAction();
     void DoSpecificAction(string name);
@@ -107,6 +105,7 @@ public:
     void TellMaster(ostringstream &stream) { TellMaster(stream.str()); }
     void TellMaster(string text);
     void TellMaster(LogLevel level, string text);
+    void TellMaster(bool verbose, string text);
     void SpellInterrupted(uint32 spellid);
     int32 CalculateGlobalCooldown(uint32 spellid);
     void InterruptSpell();

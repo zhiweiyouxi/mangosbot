@@ -44,6 +44,9 @@ namespace ahbot
         uint32 GetAvailableMoney(uint32 auctionHouse);
         void CheckCategoryMultipliers();
         void updateMarketPrice(uint32 itemId, double price, uint32 auctionHouse);
+        bool IsBotAuction(uint32 bidder);
+        uint32 GetRandomBidder(uint32 auctionHouse);
+        void LoadRandomBots();
 
     private:
         AvailableItemsBag availableItems;
@@ -53,6 +56,8 @@ namespace ahbot
         time_t nextAICheckTime;
         map<string, double> categoryMultipliers;
         map<string, uint64> categoryMultiplierExpireTimes;
+        map<uint32, vector<uint32> > bidders;
+        set<uint32> allBidders;
     };
 };
 

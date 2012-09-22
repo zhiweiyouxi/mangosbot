@@ -19,31 +19,43 @@ bool AttackAction::Execute(Event event)
 
 bool AttackMyTargetAction::Execute(Event event)
 {
-
     ObjectGuid guid = master->GetSelectionGuid();
     if (!guid)
+    {
+        ai->TellMaster(verbose, "You have no target");
         return false;
+    }
 
-    return Attack(ai->GetCreature(guid));
+    return Attack(ai->GetUnit(guid));
 }
 
 bool AttackAction::Attack(Unit* target)
 {
     MotionMaster &mm = *bot->GetMotionMaster();
     if (mm.GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+    {
+        ai->TellMaster(verbose, "I cannot attack in flight");
         return false;
+    }
 
     if (!target)
+    {
+        ai->TellMaster(verbose, "I have no target");
         return false;
+    }
 
+    ostringstream msg;
+    msg << target->GetName();
     if (bot->IsFriendlyTo(target))
     {
-        ai->TellMaster("Target is friendly");
+        msg << " is friendly to me";
+        ai->TellMaster(verbose, msg.str());
         return false;
     }
     if (!bot->IsWithinLOSInMap(target))
     {
-        ai->TellMaster(LOG_LVL_DEBUG, "Target is not in my sight");
+        msg << " is not on my sight";
+        ai->TellMaster(verbose, msg.str());
         return false;
     }
 
@@ -71,5 +83,16 @@ bool AttackAction::Attack(Unit* target)
     }
 
     bot->Attack(target, true);
+    ai->ChangeEngine(BOT_STATE_COMBAT);
     return true;
+}
+
+bool AttackDuelOpponentAction::isUseful()
+{
+    return AI_VALUE(Unit*, "duel target");
+}
+
+bool AttackDuelOpponentAction::Execute(Event event)
+{
+    return Attack(AI_VALUE(Unit*, "duel target"));
 }

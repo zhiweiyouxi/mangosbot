@@ -50,7 +50,8 @@ bool QueryQuestAction::Execute(Event event)
 void QueryQuestAction::TellObjectives(uint32 questId) 
 {
     Quest const* questTemplate = sObjectMgr.GetQuestTemplate(questId);
-    QuestStatusData questStatus = bot->getQuestStatusMap()[questId];
+    QuestStatusMap &questMap = (QuestStatusMap&)bot->GetQuestStatusMap();
+    QuestStatusData questStatus = questMap[questId];
 
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
     {

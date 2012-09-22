@@ -12,20 +12,14 @@ bool CheckMountStateAction::Execute(Event event)
     p.rpos(0);
     uint64 guid = extractGuid(p);
 
-    if (master->GetRandomPlayerbotMgr()->IsRandomBot(bot) || !bot->GetGroup())
+    if (!bot->GetGroup())
         return false;
 
     if (master->IsMounted() && !bot->IsMounted())
     {
         if (!master->GetAurasByType(SPELL_AURA_MOUNTED).empty())
         {
-            int32 master_speed1 = 0;
-            int32 master_speed2 = 0;
-            master_speed1 = master->GetAurasByType(SPELL_AURA_MOUNTED).front()->GetSpellProto()->EffectBasePoints[1];
-            master_speed2 = master->GetAurasByType(SPELL_AURA_MOUNTED).front()->GetSpellProto()->EffectBasePoints[2];
-
-            Mount(master_speed1, master_speed2);
-            return true;
+            return Mount();
         }
     }
     else if (!master->IsMounted() && bot->IsMounted())
@@ -38,53 +32,47 @@ bool CheckMountStateAction::Execute(Event event)
 }
 
 
-void CheckMountStateAction::Mount(int32 master_speed1, int32 master_speed2)
+bool CheckMountStateAction::Mount()
 {
     ai->RemoveShapeshift();
 
-    uint32 spellMount = 0;
+    const SpellEntry* masterSpell = master->GetAurasByType(SPELL_AURA_MOUNTED).front()->GetSpellProto();
+    int32 masterSpeed = max(masterSpell->EffectBasePoints[1], masterSpell->EffectBasePoints[2]);
+
+    map<uint32, map<int32, vector<uint32> > > allSpells;
     for(PlayerSpellMap::iterator itr = bot->GetSpellMap().begin(); itr != bot->GetSpellMap().end(); ++itr)
     {
         uint32 spellId = itr->first;
         if(itr->second.state == PLAYERSPELL_REMOVED || itr->second.disabled || IsPassiveSpell(spellId))
             continue;
-        const SpellEntry* pSpellInfo = sSpellStore.LookupEntry(spellId);
-        if (!pSpellInfo)
+
+        const SpellEntry* spellInfo = sSpellStore.LookupEntry(spellId);
+        if (!spellInfo || spellInfo->EffectApplyAuraName[0] != SPELL_AURA_MOUNTED)
             continue;
 
-        if(pSpellInfo->EffectApplyAuraName[0] != SPELL_AURA_MOUNTED)
+        int32 effect = max(spellInfo->EffectBasePoints[1], spellInfo->EffectBasePoints[2]);
+        if (effect < masterSpeed)
             continue;
 
-        if(pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
-        {
-            if(pSpellInfo->EffectBasePoints[1] == master_speed1 && ai->CanCastSpell(spellId, bot))
-            {
-                spellMount = spellId;
-                break;
-            }
-        }
-        else if((pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
-            && (pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
-        {
-            if((pSpellInfo->EffectBasePoints[1] == master_speed1)
-                && (pSpellInfo->EffectBasePoints[2] == master_speed2) && ai->CanCastSpell(spellId, bot))
-            {
-                spellMount = spellId;
-                break;
-            }
-        }
-        else if((pSpellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED)
-            && (pSpellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
-        {
-            if((pSpellInfo->EffectBasePoints[2] == master_speed2)
-                && (pSpellInfo->EffectBasePoints[1] == master_speed1) && ai->CanCastSpell(spellId, bot))
-            {
-                spellMount = spellId;
-                break;
-            }
-        }
+        uint32 index = (spellInfo->EffectApplyAuraName[1] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED ||
+                spellInfo->EffectApplyAuraName[2] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED) ? 1 : 0;
+        allSpells[index][effect].push_back(spellId);
     }
 
-    if(spellMount > 0)
-        ai->CastSpell(spellMount, bot);
+    int masterMountType = (masterSpell->EffectApplyAuraName[1] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED ||
+            masterSpell->EffectApplyAuraName[2] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED) ? 1 : 0;
+
+    map<int32, vector<uint32> >& spells = allSpells[masterMountType];
+    for (map<int32,vector<uint32> >::iterator i = spells.begin(); i != spells.end(); ++i)
+    {
+		vector<uint32>& ids = i->second;
+        int index = urand(0, ids.size() - 1);
+        if (index >= ids.size())
+            continue;
+
+        ai->CastSpell(ids[index], bot);
+        return true;
+    }
+
+    return false;
 }

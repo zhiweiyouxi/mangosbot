@@ -79,6 +79,7 @@ WorldPacketHandlerStrategy::WorldPacketHandlerStrategy(PlayerbotAI* ai) : PassTr
     supported.push_back("quest objective completed");
     supported.push_back("party command");
     supported.push_back("ready check");
+    supported.push_back("uninvite");
 }
 
 

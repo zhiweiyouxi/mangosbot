@@ -54,9 +54,11 @@ namespace ai
             creators["accept duel"] = &WorldPacketActionContext::accept_duel;
             creators["ready check"] = &WorldPacketActionContext::ready_check;
             creators["ready check finished"] = &WorldPacketActionContext::ready_check_finished;
+            creators["uninvite"] = &WorldPacketActionContext::uninvite;
         }
 
     private:
+        static Action* uninvite(PlayerbotAI* ai) { return new UninviteAction(ai); }
         static Action* ready_check_finished(PlayerbotAI* ai) { return new FinishReadyCheckAction(ai); }
         static Action* ready_check(PlayerbotAI* ai) { return new ReadyCheckAction(ai); }
         static Action* accept_duel(PlayerbotAI* ai) { return new AcceptDuelAction(ai); }

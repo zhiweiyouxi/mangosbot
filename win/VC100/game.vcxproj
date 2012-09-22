@@ -343,6 +343,17 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\dep\recastnavigation\Detour\win\VC100\Detour.vcxproj">
+      <Project>{72bdf975-4d4a-42c7-b2c4-f9ed90a2abb6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="shared.vcxproj">
+      <Project>{90297c34-f231-4df4-848e-a74bcc0e40ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="g3dlite.vcxproj">
+      <Project>{8072769E-CF10-48BF-B9E1-12752A5DAC6E}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\src\game\AccountMgr.cpp" />
     <ClCompile Include="..\..\src\game\AchievementMgr.cpp" />
     <ClCompile Include="..\..\src\game\AggressorAI.cpp" />
@@ -353,6 +364,7 @@
     <ClCompile Include="..\..\src\game\ahbot\ItemBag.cpp" />
     <ClCompile Include="..\..\src\game\ahbot\PricingStrategy.cpp" />
     <ClCompile Include="..\..\src\game\ahbot\TradeCategory.cpp" />
+    <ClCompile Include="..\..\src\game\AntiCheat.cpp" />
     <ClCompile Include="..\..\src\game\ArenaTeam.cpp" />
     <ClCompile Include="..\..\src\game\ArenaTeamHandler.cpp" />
     <ClCompile Include="..\..\src\game\AuctionHouseBot\AuctionHouseBot.cpp" />
@@ -362,7 +374,6 @@
     <ClCompile Include="..\..\src\game\BattleGround\BattleGround.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundAA.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundAB.cpp" />
-    <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRB.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundAV.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundBE.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundDS.cpp" />
@@ -371,6 +382,7 @@
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundIC.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundMgr.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundNA.cpp" />
+    <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRB.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRL.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRV.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundSA.cpp" />
@@ -385,6 +397,8 @@
     <ClCompile Include="..\..\src\game\CharacterHandler.cpp" />
     <ClCompile Include="..\..\src\game\Chat.cpp" />
     <ClCompile Include="..\..\src\game\ChatHandler.cpp" />
+    <ClCompile Include="..\..\src\game\ChatLexicsCutter.cpp" />
+    <ClCompile Include="..\..\src\game\ChatLog.cpp" />
     <ClCompile Include="..\..\src\game\CombatHandler.cpp" />
     <ClCompile Include="..\..\src\game\ConfusedMovementGenerator.cpp" />
     <ClCompile Include="..\..\src\game\Corpse.cpp" />
@@ -396,6 +410,7 @@
     <ClCompile Include="..\..\src\game\CreatureEventAIMgr.cpp" />
     <ClCompile Include="..\..\src\game\CreatureLinkingMgr.cpp" />
     <ClCompile Include="..\..\src\game\DBCStores.cpp" />
+    <ClCompile Include="..\..\src\game\DBCStructure.cpp" />
     <ClCompile Include="..\..\src\game\debugcmds.cpp" />
     <ClCompile Include="..\..\src\game\DuelHandler.cpp" />
     <ClCompile Include="..\..\src\game\DynamicObject.cpp" />
@@ -427,7 +442,9 @@
     <ClCompile Include="..\..\src\game\Level1.cpp" />
     <ClCompile Include="..\..\src\game\Level2.cpp" />
     <ClCompile Include="..\..\src\game\Level3.cpp" />
+    <ClCompile Include="..\..\src\game\LFG.cpp" />
     <ClCompile Include="..\..\src\game\LFGHandler.cpp" />
+    <ClCompile Include="..\..\src\game\LFGMgr.cpp" />
     <ClCompile Include="..\..\src\game\LootHandler.cpp" />
     <ClCompile Include="..\..\src\game\LootMgr.cpp" />
     <ClCompile Include="..\..\src\game\Mail.cpp" />
@@ -435,6 +452,7 @@
     <ClCompile Include="..\..\src\game\Map.cpp" />
     <ClCompile Include="..\..\src\game\MapManager.cpp" />
     <ClCompile Include="..\..\src\game\MapPersistentStateMgr.cpp" />
+    <ClCompile Include="..\..\src\game\MapUpdater.cpp" />
     <ClCompile Include="..\..\src\game\MassMailMgr.cpp" />
     <ClCompile Include="..\..\src\game\MiscHandler.cpp" />
     <ClCompile Include="..\..\src\game\MotionMaster.cpp" />
@@ -451,21 +469,22 @@
     <ClCompile Include="..\..\src\game\Object.cpp" />
     <ClCompile Include="..\..\src\game\ObjectAccessor.cpp" />
     <ClCompile Include="..\..\src\game\ObjectGridLoader.cpp" />
-    <ClCompile Include="..\..\src\game\ObjectMgr.cpp" />
     <ClCompile Include="..\..\src\game\ObjectGuid.cpp" />
+    <ClCompile Include="..\..\src\game\ObjectMgr.cpp" />
     <ClCompile Include="..\..\src\game\ObjectPosSelector.cpp" />
     <ClCompile Include="..\..\src\game\Opcodes.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvP.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPEP.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPGH.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPHP.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPMgr.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPNA.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPSI.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPTF.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPWG.cpp" />
+    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.cpp" />
     <ClCompile Include="..\..\src\game\PathFinder.cpp" />
-    <ClCompile Include="..\..\src\game\pchdef.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pchdef.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">pchdef.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pchdef.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|X64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|X64'">pchdef.h</PrecompiledHeaderFile>
-    </ClCompile>
+    <ClCompile Include="..\..\src\game\pchdef.cpp" />
     <ClCompile Include="..\..\src\game\Pet.cpp" />
     <ClCompile Include="..\..\src\game\PetAI.cpp" />
     <ClCompile Include="..\..\src\game\PetHandler.cpp" />
@@ -550,14 +569,6 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\actions\UseMeetingStoneAction.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\AiObject.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\AiObjectContext.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\druid\HealDruidStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackRtiStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackWeakStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\CastTimeStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\ChatCommandHandlerStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\CombatStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\ConserveManaStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\DeadStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\druid\BearTankDruidStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\druid\CasterDruidStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\druid\CatDpsDruidStrategy.cpp" />
@@ -568,11 +579,19 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\druid\FeralDruidStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\druid\GenericDruidNonCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\druid\GenericDruidStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\druid\HealDruidStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\Engine.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\Event.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackRtiStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackWeakStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\CastTimeStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\ChatCommandHandlerStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\CombatStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\ConserveManaStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\DeadStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\DpsAoeStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\DpsAssistStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\DuelStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\Engine.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\Event.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\EmoteStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\FleeStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\FollowLineStrategy.cpp" />
@@ -580,9 +599,14 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\FollowMasterStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\GrindingStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\GuardStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\KiteStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\LootNonCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\MeleeCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\NonCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\PassiveStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\PullStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\QuestStrategies.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\RacialsStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\RangedCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\RunawayStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\StayCircleStrategy.cpp" />
@@ -595,6 +619,7 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\ThreatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\UseFoodStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\UsePotionsStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\WorldPacketHandlerStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\hunter\DpsHunterStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\hunter\GenericHunterNonCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\hunter\GenericHunterStrategy.cpp" />
@@ -603,8 +628,6 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\hunter\HunterBuffStrategies.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\hunter\HunterMultipliers.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\hunter\HunterTriggers.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\KiteStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\LootNonCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\mage\ArcaneMageStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\mage\FireMageStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\mage\FrostMageStrategy.cpp" />
@@ -632,11 +655,8 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\PriestMultipliers.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\PriestNonCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\PriestTriggers.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\PullStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\QuestStrategies.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\ShadowPriestStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\Queue.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\RacialsStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\rogue\DpsRogueStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\rogue\GenericRogueNonCombatStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\rogue\RogueActions.cpp" />
@@ -708,7 +728,6 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\warrior\WarriorAiObjectContext.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\warrior\WarriorMultipliers.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\warrior\WarriorTriggers.cpp" />
-    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\WorldPacketHandlerStrategy.cpp" />
     <ClCompile Include="..\..\src\game\PlayerDump.cpp" />
     <ClCompile Include="..\..\src\game\PointMovementGenerator.cpp" />
     <ClCompile Include="..\..\src\game\PoolManager.cpp" />
@@ -719,17 +738,15 @@
     <ClCompile Include="..\..\src\game\ReactorAI.cpp" />
     <ClCompile Include="..\..\src\game\ReputationMgr.cpp" />
     <ClCompile Include="..\..\src\game\ScriptMgr.cpp" />
-    <ClCompile Include="..\..\src\game\SkillExtraItems.cpp" />
     <ClCompile Include="..\..\src\game\SkillHandler.cpp" />
     <ClCompile Include="..\..\src\game\SocialMgr.cpp" />
     <ClCompile Include="..\..\src\game\Spell.cpp" />
     <ClCompile Include="..\..\src\game\SpellAuras.cpp" />
-    <ClCompile Include="..\..\src\game\SQLStorages.cpp" />
-    <ClCompile Include="..\..\src\game\TransportSystem.cpp" />
-    <ClCompile Include="..\..\src\game\UnitAuraProcHandler.cpp" />
     <ClCompile Include="..\..\src\game\SpellEffects.cpp" />
     <ClCompile Include="..\..\src\game\SpellHandler.cpp" />
     <ClCompile Include="..\..\src\game\SpellMgr.cpp" />
+    <ClCompile Include="..\..\src\game\SQLStorages.cpp" />
+    <ClCompile Include="..\..\src\game\StateMgr.cpp" />
     <ClCompile Include="..\..\src\game\StatSystem.cpp" />
     <ClCompile Include="..\..\src\game\TargetedMovementGenerator.cpp" />
     <ClCompile Include="..\..\src\game\TaxiHandler.cpp" />
@@ -739,34 +756,36 @@
     <ClCompile Include="..\..\src\game\TotemAI.cpp" />
     <ClCompile Include="..\..\src\game\TradeHandler.cpp" />
     <ClCompile Include="..\..\src\game\Transports.cpp" />
+    <ClCompile Include="..\..\src\game\TransportSystem.cpp" />
     <ClCompile Include="..\..\src\game\Unit.cpp" />
+    <ClCompile Include="..\..\src\game\UnitAuraProcHandler.cpp" />
     <ClCompile Include="..\..\src\game\UpdateData.cpp" />
+    <ClCompile Include="..\..\src\game\UpdateFieldFlags.cpp" />
     <ClCompile Include="..\..\src\game\Vehicle.cpp" />
     <ClCompile Include="..\..\src\game\VehicleHandler.cpp" />
-    <ClCompile Include="..\..\src\game\VoiceChatHandler.cpp" />
-    <ClCompile Include="..\..\src\game\WaypointManager.cpp" />
-    <ClCompile Include="..\..\src\game\WaypointMovementGenerator.cpp" />
-    <ClCompile Include="..\..\src\game\Weather.cpp" />
-    <ClCompile Include="..\..\src\game\World.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvP.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPEP.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPGH.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPHP.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPMgr.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPNA.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPSI.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPTF.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.cpp" />
-    <ClCompile Include="..\..\src\game\WorldSession.cpp" />
-    <ClCompile Include="..\..\src\game\WorldSocket.cpp" />
-    <ClCompile Include="..\..\src\game\WorldSocketMgr.cpp" />
     <ClCompile Include="..\..\src\game\vmap\BIH.cpp" />
+    <ClCompile Include="..\..\src\game\vmap\DynamicTree.cpp" />
+    <ClCompile Include="..\..\src\game\vmap\GameObjectModel.cpp" />
     <ClCompile Include="..\..\src\game\vmap\MapTree.cpp" />
     <ClCompile Include="..\..\src\game\vmap\ModelInstance.cpp" />
     <ClCompile Include="..\..\src\game\vmap\TileAssembler.cpp" />
     <ClCompile Include="..\..\src\game\vmap\VMapFactory.cpp" />
     <ClCompile Include="..\..\src\game\vmap\VMapManager2.cpp" />
     <ClCompile Include="..\..\src\game\vmap\WorldModel.cpp" />
+    <ClCompile Include="..\..\src\game\VoiceChatHandler.cpp" />
+    <ClCompile Include="..\..\src\game\warden\WardenBase.cpp" />
+    <ClCompile Include="..\..\src\game\warden\WardenDataStorage.cpp" />
+    <ClCompile Include="..\..\src\game\warden\WardenMac.cpp" />
+    <ClCompile Include="..\..\src\game\warden\WardenWin.cpp" />
+    <ClCompile Include="..\..\src\game\WaypointManager.cpp" />
+    <ClCompile Include="..\..\src\game\WaypointMovementGenerator.cpp" />
+    <ClCompile Include="..\..\src\game\Weather.cpp" />
+    <ClCompile Include="..\..\src\game\World.cpp" />
+    <ClCompile Include="..\..\src\game\WorldObjectEvents.cpp" />
+    <ClCompile Include="..\..\src\game\WorldSession.cpp" />
+    <ClCompile Include="..\..\src\game\WorldSocket.cpp" />
+    <ClCompile Include="..\..\src\game\WorldSocketMgr.cpp" />
+    <ClCompile Include="..\..\src\game\WorldStateMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h" />
@@ -779,6 +798,7 @@
     <ClInclude Include="..\..\src\game\ahbot\ItemBag.h" />
     <ClInclude Include="..\..\src\game\ahbot\PricingStrategy.h" />
     <ClInclude Include="..\..\src\game\ahbot\TradeCategory.h" />
+    <ClInclude Include="..\..\src\game\AntiCheat.h" />
     <ClInclude Include="..\..\src\game\ArenaTeam.h" />
     <ClInclude Include="..\..\src\game\AuctionHouseBot\AuctionHouseBot.h" />
     <ClInclude Include="..\..\src\game\AuctionHouseMgr.h" />
@@ -786,7 +806,6 @@
     <ClInclude Include="..\..\src\game\BattleGround\BattleGround.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundAA.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundAB.h" />
-    <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRB.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundAV.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundBE.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundDS.h" />
@@ -794,6 +813,7 @@
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundIC.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundMgr.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundNA.h" />
+    <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRB.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRL.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRV.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundSA.h" />
@@ -806,6 +826,8 @@
     <ClInclude Include="..\..\src\game\ChannelMgr.h" />
     <ClInclude Include="..\..\src\game\CharacterDatabaseCleaner.h" />
     <ClInclude Include="..\..\src\game\Chat.h" />
+    <ClInclude Include="..\..\src\game\ChatLexicsCutter.h" />
+    <ClInclude Include="..\..\src\game\ChatLog.h" />
     <ClInclude Include="..\..\src\game\ConfusedMovementGenerator.h" />
     <ClInclude Include="..\..\src\game\Corpse.h" />
     <ClInclude Include="..\..\src\game\Creature.h" />
@@ -848,6 +870,8 @@
     <ClInclude Include="..\..\src\game\ItemEnchantmentMgr.h" />
     <ClInclude Include="..\..\src\game\ItemPrototype.h" />
     <ClInclude Include="..\..\src\game\Language.h" />
+    <ClInclude Include="..\..\src\game\LFG.h" />
+    <ClInclude Include="..\..\src\game\LFGMgr.h" />
     <ClInclude Include="..\..\src\game\LootMgr.h" />
     <ClInclude Include="..\..\src\game\Mail.h" />
     <ClInclude Include="..\..\src\game\Map.h" />
@@ -855,11 +879,13 @@
     <ClInclude Include="..\..\src\game\MapPersistentStateMgr.h" />
     <ClInclude Include="..\..\src\game\MapReference.h" />
     <ClInclude Include="..\..\src\game\MapRefManager.h" />
+    <ClInclude Include="..\..\src\game\MapUpdater.h" />
     <ClInclude Include="..\..\src\game\MassMailMgr.h" />
     <ClInclude Include="..\..\src\game\MotionMaster.h" />
     <ClInclude Include="..\..\src\game\MoveMap.h" />
     <ClInclude Include="..\..\src\game\MoveMapSharedDefines.h" />
     <ClInclude Include="..\..\src\game\MovementGenerator.h" />
+    <ClInclude Include="..\..\src\game\MovementGeneratorImpl.h" />
     <ClInclude Include="..\..\src\game\movement\MoveSpline.h" />
     <ClInclude Include="..\..\src\game\movement\MoveSplineFlag.h" />
     <ClInclude Include="..\..\src\game\movement\MoveSplineInit.h" />
@@ -872,11 +898,22 @@
     <ClInclude Include="..\..\src\game\NullCreatureAI.h" />
     <ClInclude Include="..\..\src\game\Object.h" />
     <ClInclude Include="..\..\src\game\ObjectAccessor.h" />
-    <ClInclude Include="..\..\src\game\ObjectGuid.h" />
     <ClInclude Include="..\..\src\game\ObjectGridLoader.h" />
+    <ClInclude Include="..\..\src\game\ObjectGuid.h" />
+    <ClInclude Include="..\..\src\game\ObjectLock.h" />
     <ClInclude Include="..\..\src\game\ObjectMgr.h" />
     <ClInclude Include="..\..\src\game\ObjectPosSelector.h" />
     <ClInclude Include="..\..\src\game\Opcodes.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvP.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPEP.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPGH.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPHP.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPMgr.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPNA.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPSI.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPTF.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPWG.h" />
+    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.h" />
     <ClInclude Include="..\..\src\game\Path.h" />
     <ClInclude Include="..\..\src\game\PathFinder.h" />
     <ClInclude Include="..\..\src\game\pchdef.h" />
@@ -894,9 +931,20 @@
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotAIAware.h" />
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotAIBase.h" />
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotAIConfig.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotClassAI.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotDeathKnightAI.h" />
     <ClInclude Include="..\..\src\game\playerbot\playerbotDefs.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotDruidAI.h" />
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotFactory.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotHunterAI.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotMageAI.h" />
     <ClInclude Include="..\..\src\game\playerbot\PlayerbotMgr.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotPaladinAI.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotPriestAI.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotRogueAI.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotShamanAI.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotWarlockAI.h" />
+    <ClInclude Include="..\..\src\game\playerbot\PlayerbotWarriorAI.h" />
     <ClInclude Include="..\..\src\game\playerbot\RandomPlayerbotFactory.h" />
     <ClInclude Include="..\..\src\game\playerbot\RandomPlayerbotMgr.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\Action.h" />
@@ -932,6 +980,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\HelpAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\InventoryAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\InventoryChangeFailureAction.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\actions\InviteToGroupAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\LeaveGroupAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\ListQuestsActions.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\ListSpellsAction.h" />
@@ -947,12 +996,14 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\QueryQuestAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\QuestAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\ReachTargetActions.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\actions\ReadyCheckAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\ReleaseSpiritAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\RememberTaxiAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\RepairAllAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\ResetAiAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\ReviveFromCorpseAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\RewardAction.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\actions\RtiAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\SellAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\SetHomeAction.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\StatsAction.h" />
@@ -976,8 +1027,6 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\actions\WorldPacketActionContext.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\AiObject.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\AiObjectContext.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\ChatCommandHandlerStrategy.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\DeadStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\druid\BearTankDruidStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\druid\CasterDruidStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\druid\CatDpsDruidStrategy.h" />
@@ -992,17 +1041,19 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\druid\GenericDruidNonCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\druid\GenericDruidStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\druid\HealDruidStrategy.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\DuelStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\Engine.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\Event.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\ExternalEventHelper.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\AttackRtiStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\AttackWeakStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\CastTimeStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\ChatCommandHandlerStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\CombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\ConserveManaStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\DeadStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\DpsAoeStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\DpsAssistStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\DuelStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\EmoteStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\FleeStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\FollowLineStrategy.h" />
@@ -1010,10 +1061,15 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\FollowMasterStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\GrindingStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\GuardStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\KiteStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\LootNonCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\MeleeCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\NonCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\PassiveStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\PassTroughStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\PullStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\QuestStrategies.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\RacialsStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\RangedCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\RunawayStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\StayCircleStrategy.h" />
@@ -1026,6 +1082,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\ThreatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\UseFoodStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\UsePotionsStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\WorldPacketHandlerStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\hunter\DpsHunterStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\hunter\GenericHunterNonCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\hunter\GenericHunterStrategy.h" />
@@ -1035,8 +1092,6 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\hunter\HunterMultipliers.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\hunter\HunterTriggers.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\ItemVisitors.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\KiteStrategy.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\LootNonCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\mage\ArcaneMageStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\mage\FireMageStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\mage\FrostMageStrategy.h" />
@@ -1051,6 +1106,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\DpsPaladinStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\GenericPaladinNonCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\GenericPaladinStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\GenericPaladinStrategyActionNodeFactory.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\PaladinActions.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\PaladinAiObjectContext.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\PaladinBuffStrategies.h" />
@@ -1058,8 +1114,8 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\PaladinTriggers.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\paladin\TankPaladinStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\PassiveMultiplier.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\PassTroughStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\GenericPriestStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\priest\GenericPriestStrategyActionNodeFactory.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\HealPriestStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\PriestActions.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\PriestAiObjectContext.h" />
@@ -1069,10 +1125,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\PriestTriggers.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\ShadowPriestStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\ShadowPriestStrategyActionNodeFactory.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\PullStrategy.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\QuestStrategies.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\Queue.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\RacialsStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\rogue\DpsRogueStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\rogue\GenericRogueNonCombatStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\rogue\RogueActions.h" />
@@ -1124,6 +1177,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\HasTotemValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\InvalidTargetValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\IsBehindValue.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\values\IsFacingValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\IsMovingValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\ItemCountValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\ItemForSpellValue.h" />
@@ -1147,6 +1201,8 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\PetTargetValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\PositionValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\PossibleTargetsValue.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\values\RtiTargetValue.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\values\RtiValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\SelfTargetValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\SharedValueContext.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\SpellCastUsefulValue.h" />
@@ -1172,7 +1228,6 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\warrior\WarriorAiObjectContext.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\warrior\WarriorMultipliers.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\warrior\WarriorTriggers.h" />
-    <ClInclude Include="..\..\src\game\playerbot\strategy\WorldPacketHandlerStrategy.h" />
     <ClInclude Include="..\..\src\game\PlayerDump.h" />
     <ClInclude Include="..\..\src\game\PointMovementGenerator.h" />
     <ClInclude Include="..\..\src\game\PoolManager.h" />
@@ -1182,13 +1237,15 @@
     <ClInclude Include="..\..\src\game\ReputationMgr.h" />
     <ClInclude Include="..\..\src\game\ScriptMgr.h" />
     <ClInclude Include="..\..\src\game\SharedDefines.h" />
-    <ClInclude Include="..\..\src\game\SkillExtraItems.h" />
     <ClInclude Include="..\..\src\game\SocialMgr.h" />
     <ClInclude Include="..\..\src\game\Spell.h" />
     <ClInclude Include="..\..\src\game\SpellAuraDefines.h" />
     <ClInclude Include="..\..\src\game\SpellAuras.h" />
+    <ClInclude Include="..\..\src\game\SpellClassMask.h" />
     <ClInclude Include="..\..\src\game\SpellMgr.h" />
     <ClInclude Include="..\..\src\game\SQLStorages.h" />
+    <ClInclude Include="..\..\src\game\StateMgr.h" />
+    <ClInclude Include="..\..\src\game\StateMgrImpl.h" />
     <ClInclude Include="..\..\src\game\TargetedMovementGenerator.h" />
     <ClInclude Include="..\..\src\game\TemporarySummon.h" />
     <ClInclude Include="..\..\src\game\ThreatManager.h" />
@@ -1199,46 +1256,46 @@
     <ClInclude Include="..\..\src\game\Unit.h" />
     <ClInclude Include="..\..\src\game\UnitEvents.h" />
     <ClInclude Include="..\..\src\game\UpdateData.h" />
+    <ClInclude Include="..\..\src\game\UpdateFieldFlags.h" />
     <ClInclude Include="..\..\src\game\UpdateFields.h" />
     <ClInclude Include="..\..\src\game\UpdateMask.h" />
     <ClInclude Include="..\..\src\game\Vehicle.h" />
-    <ClInclude Include="..\..\src\game\WaypointManager.h" />
-    <ClInclude Include="..\..\src\game\WaypointMovementGenerator.h" />
-    <ClInclude Include="..\..\src\game\Weather.h" />
-    <ClInclude Include="..\..\src\game\World.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvP.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPEP.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPGH.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPHP.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPMgr.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPNA.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPSI.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPTF.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.h" />
-    <ClInclude Include="..\..\src\game\WorldSession.h" />
-    <ClInclude Include="..\..\src\game\WorldSocket.h" />
-    <ClInclude Include="..\..\src\game\WorldSocketMgr.h" />
     <ClInclude Include="..\..\src\game\vmap\BIH.h" />
+    <ClInclude Include="..\..\src\game\vmap\BIHWrap.h" />
+    <ClInclude Include="..\..\src\game\vmap\DynamicTree.h" />
+    <ClInclude Include="..\..\src\game\vmap\GameObjectModel.h" />
     <ClInclude Include="..\..\src\game\vmap\IVMapManager.h" />
     <ClInclude Include="..\..\src\game\vmap\MapTree.h" />
     <ClInclude Include="..\..\src\game\vmap\ModelInstance.h" />
+    <ClInclude Include="..\..\src\game\vmap\RegularGrid.h" />
     <ClInclude Include="..\..\src\game\vmap\TileAssembler.h" />
     <ClInclude Include="..\..\src\game\vmap\VMapDefinitions.h" />
     <ClInclude Include="..\..\src\game\vmap\VMapFactory.h" />
     <ClInclude Include="..\..\src\game\vmap\VMapManager2.h" />
     <ClInclude Include="..\..\src\game\vmap\VMapTools.h" />
     <ClInclude Include="..\..\src\game\vmap\WorldModel.h" />
+    <ClInclude Include="..\..\src\game\warden\WardenBase.h" />
+    <ClInclude Include="..\..\src\game\warden\WardenDataStorage.h" />
+    <ClInclude Include="..\..\src\game\warden\WardenMac.h" />
+    <ClInclude Include="..\..\src\game\warden\WardenModuleMac.h" />
+    <ClInclude Include="..\..\src\game\warden\WardenModuleWin.h" />
+    <ClInclude Include="..\..\src\game\warden\WardenWin.h" />
+    <ClInclude Include="..\..\src\game\WaypointManager.h" />
+    <ClInclude Include="..\..\src\game\WaypointMovementGenerator.h" />
+    <ClInclude Include="..\..\src\game\Weather.h" />
+    <ClInclude Include="..\..\src\game\World.h" />
+    <ClInclude Include="..\..\src\game\WorldObjectEvents.h" />
+    <ClInclude Include="..\..\src\game\WorldSession.h" />
+    <ClInclude Include="..\..\src\game\WorldSocket.h" />
+    <ClInclude Include="..\..\src\game\WorldSocketMgr.h" />
+    <ClInclude Include="..\..\src\game\WorldStateMgr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\dep\recastnavigation\Detour\win\VC100\Detour.vcxproj">
-      <Project>{72bdf975-4d4a-42c7-b2c4-f9ed90a2abb6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="shared.vcxproj">
-      <Project>{90297c34-f231-4df4-848e-a74bcc0e40ed}</Project>
-    </ProjectReference>
-    <ProjectReference Include="g3dlite.vcxproj">
-      <Project>{8072769E-CF10-48BF-B9E1-12752A5DAC6E}</Project>
-    </ProjectReference>
+    <None Include="..\..\src\game\CMakeLists.txt" />
+    <None Include="..\..\src\game\Mail.cpp.orig" />
+    <None Include="..\..\src\game\Makefile.in" />
+    <None Include="..\..\src\game\Player.cpp.orig" />
+    <None Include="..\..\src\game\Player.h.orig" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

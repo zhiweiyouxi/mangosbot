@@ -114,13 +114,13 @@ void PlayerbotMgr::LogoutPlayerBot(uint64 guid)
     }
 }
 
-void PlayerbotMgr::RandomizePlayerBot(uint64 guid, uint32 level)
+void PlayerbotMgr::RandomizePlayerBot(uint64 guid, uint32 level, uint32 itemQuality)
 {
     Player* bot = GetPlayerBot(guid);
     if (!bot)
         return;
 
-    PlayerbotFactory factory(bot, level);
+    PlayerbotFactory factory(bot, level, itemQuality);
     factory.Randomize();
 }
 
@@ -182,9 +182,24 @@ bool processBotCommand(WorldSession* session, string cmd, ObjectGuid guid)
         if (!bot)
             return false;
 
-        if (cmd == "init")
+        if (cmd == "init=white" || cmd == "init=common")
         {
-            mgr->RandomizePlayerBot(guid.GetRawValue(), session->GetPlayer()->getLevel());
+            mgr->RandomizePlayerBot(guid.GetRawValue(), session->GetPlayer()->getLevel(), ITEM_QUALITY_NORMAL);
+            return true;
+        }
+        else if (cmd == "init=green" || cmd == "init=uncommon")
+        {
+            mgr->RandomizePlayerBot(guid.GetRawValue(), session->GetPlayer()->getLevel(), ITEM_QUALITY_UNCOMMON);
+            return true;
+        }
+        else if (cmd == "init=blue" || cmd == "init=rare")
+        {
+            mgr->RandomizePlayerBot(guid.GetRawValue(), session->GetPlayer()->getLevel(), ITEM_QUALITY_RARE);
+            return true;
+        }
+        else if (cmd == "init=epic" || cmd == "init=purple")
+        {
+            mgr->RandomizePlayerBot(guid.GetRawValue(), session->GetPlayer()->getLevel(), ITEM_QUALITY_EPIC);
             return true;
         }
         else if (cmd == "pvp")

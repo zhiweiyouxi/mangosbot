@@ -115,8 +115,8 @@ void QueryItemUsageAction::QueryItemsUsage(ItemIds items)
 void QueryItemUsageAction::QueryQuestItem(uint32 itemId)
 {
     Player *bot = ai->GetBot();
-    QuestStatusMap& questMap = bot->getQuestStatusMap();
-    for (QuestStatusMap::iterator i = questMap.begin(); i != questMap.end(); i++)
+    QuestStatusMap const& questMap = bot->GetQuestStatusMap();
+    for (QuestStatusMap::const_iterator i = questMap.begin(); i != questMap.end(); i++)
     {
         const Quest *questTemplate = sObjectMgr.GetQuestTemplate( i->first );
         if( !questTemplate )
@@ -126,13 +126,13 @@ void QueryItemUsageAction::QueryQuestItem(uint32 itemId)
         if (status != QUEST_STATUS_INCOMPLETE)
             continue;
 
-        QuestStatusData *questStatus = &i->second;
-        QueryQuestItem(itemId, questTemplate, questStatus);
+        QuestStatusData const& questStatus = i->second;
+        QueryQuestItem(itemId, questTemplate, &questStatus);
     }
 }
 
 
-void QueryItemUsageAction::QueryQuestItem(uint32 itemId, const Quest *questTemplate, QuestStatusData *questStatus)
+void QueryItemUsageAction::QueryQuestItem(uint32 itemId, const Quest *questTemplate, const QuestStatusData *questStatus)
 {
     for (int i = 0; i < QUEST_OBJECTIVES_COUNT; i++)
     {

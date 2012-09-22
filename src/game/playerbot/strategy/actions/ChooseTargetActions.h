@@ -36,4 +36,17 @@ namespace ai
         virtual string GetTargetName() { return "rti target"; }
     };
 
+    class DropTargetAction : public Action {
+    public:
+        DropTargetAction(PlayerbotAI* ai) : Action(ai, "drop target") {}
+
+        virtual bool Execute(Event event)
+        {
+            context->GetValue<Unit*>("current target")->Set(NULL);
+            bot->SetSelectionGuid(ObjectGuid());
+            ai->ChangeEngine(BOT_STATE_NON_COMBAT);
+			return true;
+        }
+    };
+
 }

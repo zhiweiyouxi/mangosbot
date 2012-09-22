@@ -65,9 +65,11 @@ namespace ai
             creators["runaway"] = &ChatTriggerContext::runaway;
             creators["warning"] = &ChatTriggerContext::warning;
             creators["position"] = &ChatTriggerContext::position;
+            creators["summon"] = &ChatTriggerContext::summon;
         }
 
     private:
+        static Trigger* summon(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "summon"); }
         static Trigger* position(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "position"); }
         static Trigger* runaway(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "runaway"); }
         static Trigger* warning(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "warning"); }

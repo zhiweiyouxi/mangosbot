@@ -138,4 +138,5 @@ ChatCommandHandlerStrategy::ChatCommandHandlerStrategy(PlayerbotAI* ai) : PassTr
     supported.push_back("spell");
     supported.push_back("rti");
     supported.push_back("position");
+    supported.push_back("summon");
 }

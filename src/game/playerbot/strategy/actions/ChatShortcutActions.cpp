@@ -7,6 +7,7 @@ using namespace ai;
 
 bool FollowChatShortcutAction::Execute(Event event)
 {
+    ai->Reset();
     ai->ChangeStrategy("+follow master,-passive", BOT_STATE_NON_COMBAT);
     ai->ChangeStrategy("-follow master,-passive", BOT_STATE_COMBAT);
     if (bot->GetMapId() != master->GetMapId() || bot->GetDistance(master) > sPlayerbotAIConfig.sightDistance)
@@ -20,6 +21,7 @@ bool FollowChatShortcutAction::Execute(Event event)
 
 bool StayChatShortcutAction::Execute(Event event)
 {
+    ai->Reset();
     ai->ChangeStrategy("+stay,-passive", BOT_STATE_NON_COMBAT);
     ai->ChangeStrategy("-follow master,-passive", BOT_STATE_COMBAT);
     ai->TellMaster("Staying");
@@ -28,6 +30,7 @@ bool StayChatShortcutAction::Execute(Event event)
 
 bool FleeChatShortcutAction::Execute(Event event)
 {
+    ai->Reset();
     ai->ChangeStrategy("+follow master,+passive", BOT_STATE_NON_COMBAT);
     ai->ChangeStrategy("+follow master,+passive", BOT_STATE_COMBAT);
     if (bot->GetMapId() != master->GetMapId() || bot->GetDistance(master) > sPlayerbotAIConfig.sightDistance)
@@ -41,6 +44,7 @@ bool FleeChatShortcutAction::Execute(Event event)
 
 bool GoawayChatShortcutAction::Execute(Event event)
 {
+    ai->Reset();
     ai->ChangeStrategy("+runaway", BOT_STATE_NON_COMBAT);
     ai->ChangeStrategy("+runaway", BOT_STATE_COMBAT);
     ai->TellMaster("Running away");
@@ -49,6 +53,7 @@ bool GoawayChatShortcutAction::Execute(Event event)
 
 bool GrindChatShortcutAction::Execute(Event event)
 {
+    ai->Reset();
     ai->ChangeStrategy("+grind,-passive", BOT_STATE_NON_COMBAT);
     ai->TellMaster("Grinding");
     return true;

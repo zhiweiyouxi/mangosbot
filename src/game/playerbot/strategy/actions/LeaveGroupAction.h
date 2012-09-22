@@ -10,11 +10,14 @@ namespace ai
 
         virtual bool Execute(Event event)
         {
+            ai->TellMaster("Goodbue");
+
             WorldPacket p;
             string member = bot->GetName();
             p << uint32(PARTY_OP_LEAVE) << member << uint32(0);
             bot->GetSession()->HandleGroupDisbandOpcode(p);
 
+            ai->ResetStrategies();
             return true;
         }
     };
@@ -37,6 +40,25 @@ namespace ai
                 return false;
 
             if (member == master->GetName())
+                return LeaveGroupAction::Execute(event);
+
+            return false;
+        }
+    };
+
+    class UninviteAction : public LeaveGroupAction {
+    public:
+        UninviteAction(PlayerbotAI* ai) : LeaveGroupAction(ai, "party command") {}
+
+        virtual bool Execute(Event event)
+        {
+            WorldPacket& p = event.getPacket();
+            p.rpos(0);
+            ObjectGuid guid;
+
+            p >> guid;
+
+            if (bot->GetObjectGuid() == guid)
                 return LeaveGroupAction::Execute(event);
 
             return false;

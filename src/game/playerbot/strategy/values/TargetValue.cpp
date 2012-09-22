@@ -7,7 +7,7 @@ using namespace ai;
 
 Unit* TargetValue::FindTarget(FindTargetStrategy* strategy)
 {
-    
+
     Group* group = bot->GetGroup();
     if (!group)
     {
@@ -15,7 +15,7 @@ Unit* TargetValue::FindTarget(FindTargetStrategy* strategy)
         return strategy->GetResult();
     }
 
-    for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next()) 
+    for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
     {
         Player* member = gref->getSource();
         if (!member || !member->isAlive() || !member->IsWithinLOSInMap(member))
@@ -35,10 +35,13 @@ void FindTargetStrategy::CheckAttackers(Player* bot, Player* player)
         ThreatManager* threatManager = ref->getSource();
         Unit *attacker = threatManager->getOwner();
         if (attacker && alreadyChecked.find(attacker) == alreadyChecked.end() &&
-            !attacker->isDead() && 
-            !attacker->IsPolymorphed() && 
-            !attacker->isFrozen() && 
-            !attacker->IsFriendlyTo(bot) && 
+            !attacker->isDead() &&
+            !attacker->IsPolymorphed() &&
+            !attacker->isFrozen() &&
+            !attacker->isCharmed() &&
+            !attacker->isFeared() &&
+            !attacker->hasUnitState(UNIT_STAT_ISOLATED) &&
+            !attacker->IsFriendlyTo(bot) &&
             bot->IsWithinLOSInMap(attacker))
         {
             CheckAttacker(bot, player, threatManager);

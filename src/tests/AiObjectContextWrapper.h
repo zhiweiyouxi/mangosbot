@@ -128,6 +128,7 @@ namespace ai
             creators["grind target"] = &MockValueContext::mock;
             creators["least hp target"] = &MockValueContext::mock;
             creators["rti target"] = &MockValueContext::mock;
+            creators["duel target"] = &MockValueContext::mock;
 
             creators["health"] = &MockValueContext::stats;
             creators["rage"] = &MockValueContext::stats;
@@ -153,6 +154,7 @@ namespace ai
             creators["item for spell"] = &MockValueContext::item;
             creators["spell cast useful"] = &MockValueContext::always_true;
             creators["can loot"] = &MockValueContext::logical;
+            creators["invalid target"] = &MockValueContext::logical;
 
             creators["possible targets"] = &MockValueContext::units;
             creators["nearest adds"] = &MockValueContext::units;

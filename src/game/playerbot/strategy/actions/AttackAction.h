@@ -24,4 +24,13 @@ namespace ai
     public:
         virtual bool Execute(Event event);
     };
+
+    class AttackDuelOpponentAction : public AttackAction {
+    public:
+        AttackDuelOpponentAction(PlayerbotAI* ai, string name = "attack duel opponent") : AttackAction(ai, name) {}
+
+    public:
+        virtual bool Execute(Event event);
+        virtual bool isUseful();
+    };
 }

@@ -1,14 +1,14 @@
 #pragma once
 
 #include "../Strategy.h"
-#include "../generic/CombatStrategy.h"
+#include "../generic/NonCombatStrategy.h"
 
 namespace ai
 {
-    class ShamanNonCombatStrategy : public CombatStrategy
+    class ShamanNonCombatStrategy : public NonCombatStrategy
     {
     public:
-        ShamanNonCombatStrategy(PlayerbotAI* ai) : CombatStrategy(ai) {}
+        ShamanNonCombatStrategy(PlayerbotAI* ai) : NonCombatStrategy(ai) {}
 
     public:
         virtual void InitTriggers(std::list<TriggerNode*> &triggers);

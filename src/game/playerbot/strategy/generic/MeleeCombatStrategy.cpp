@@ -7,6 +7,8 @@ using namespace ai;
 
 void MeleeCombatStrategy::InitTriggers(list<TriggerNode*> &triggers)
 {
+    CombatStrategy::InitTriggers(triggers);
+
     triggers.push_back(new TriggerNode(
         "not facing target",
         NextAction::array(0, new NextAction("set facing", ACTION_NORMAL + 7), NULL)));

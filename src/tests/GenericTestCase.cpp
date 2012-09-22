@@ -15,6 +15,7 @@ class GenericTestCase : public EngineTestBase
 	CPPUNIT_TEST( guard );
 	CPPUNIT_TEST( threat );
 	CPPUNIT_TEST( facing );
+	CPPUNIT_TEST( drop_target );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -120,6 +121,16 @@ protected:
 
 		assertActions(">S:set facing");
 	}
+
+    void drop_target()
+    {
+        set<bool>("invalid target", "current target", true);
+        tick();
+        set<bool>("invalid target", "current target", false);
+
+        assertActions(">S:drop target");
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( GenericTestCase );

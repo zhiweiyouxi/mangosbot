@@ -45,6 +45,8 @@
 #include "RtiValue.h"
 #include "PositionValue.h"
 #include "ThreatValues.h"
+#include "DuelTargetValue.h"
+#include "InvalidTargetValue.h"
 
 namespace ai
 {
@@ -75,6 +77,7 @@ namespace ai
             creators["old target"] = &ValueContext::old_target;
             creators["grind target"] = &ValueContext::grind_target;
             creators["rti target"] = &ValueContext::rti_target;
+            creators["duel target"] = &ValueContext::duel_target;
             creators["party member to dispel"] = &ValueContext::party_member_to_dispel;
             creators["health"] = &ValueContext::health;
             creators["rage"] = &ValueContext::rage;
@@ -119,9 +122,11 @@ namespace ai
 
             creators["balance"] = &ValueContext::balance;
             creators["attackers"] = &ValueContext::attackers;
+            creators["invalid target"] = &ValueContext::invalid_target;
         }
 
     private:
+        static UntypedValue* invalid_target(PlayerbotAI* ai) { return new InvalidTargetValue(ai); }
         static UntypedValue* balance(PlayerbotAI* ai) { return new BalancePercentValue(ai); }
         static UntypedValue* attackers(PlayerbotAI* ai) { return new AttackersValue(ai); }
 
@@ -185,6 +190,7 @@ namespace ai
         static UntypedValue* pet_target(PlayerbotAI* ai) { return new PetTargetValue(ai); }
         static UntypedValue* grind_target(PlayerbotAI* ai) { return new GrindTargetValue(ai); }
         static UntypedValue* rti_target(PlayerbotAI* ai) { return new RtiTargetValue(ai); }
+        static UntypedValue* duel_target(PlayerbotAI* ai) { return new DuelTargetValue(ai); }
         static UntypedValue* has_totem(PlayerbotAI* ai) { return new HasTotemValue(ai); }
         static UntypedValue* threat(PlayerbotAI* ai) { return new ThreatValue(ai); }
     };

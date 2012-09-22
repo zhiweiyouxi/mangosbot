@@ -19,6 +19,7 @@ namespace ai
 		static Unit* GetLeastHpTarget() { return (Unit*)15; }
 		static Unit* GetLeastHpPartyMember() { return (Unit*)16; }
 		static Unit* GetRtiTarget() { return (Unit*)17; }
+		static Unit* GetDuelTarget() { return (Unit*)18; }
 
         static void Append(string &buffer, Unit* unit)
         {
@@ -44,6 +45,8 @@ namespace ai
                 buffer.append("LeastHp");
             if (unit == GetRtiTarget())
                 buffer.append("Rti");
+            if (unit == GetDuelTarget())
+                buffer.append("Duel");
         }
    };
 

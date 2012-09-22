@@ -24,6 +24,10 @@ list<ObjectGuid> AttackersValue::Calculate()
     list<ObjectGuid> result;
 	for (set<Unit*>::iterator i = targets.begin(); i != targets.end(); i++)
 		result.push_back((*i)->GetObjectGuid());
+
+    if (bot->duel && bot->duel->opponent)
+        result.push_back(bot->duel->opponent->GetObjectGuid());
+
 	return result;
 }
 
@@ -77,5 +81,5 @@ bool AttackersValue::hasRealThreat(Unit *attacker)
         !attacker->isFrozen() &&
         !attacker->isInRoots() &&
         !attacker->IsFriendlyTo(master) &&
-        attacker->getThreatManager().getCurrentVictim();
+        (attacker->getThreatManager().getCurrentVictim() || attacker->GetObjectGuid().IsPlayer());
 }
