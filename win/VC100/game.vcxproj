@@ -484,7 +484,9 @@
     <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPWG.cpp" />
     <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.cpp" />
     <ClCompile Include="..\..\src\game\PathFinder.cpp" />
-    <ClCompile Include="..\..\src\game\pchdef.cpp" />
+    <ClCompile Include="..\..\src\game\pchdef.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\src\game\Pet.cpp" />
     <ClCompile Include="..\..\src\game\PetAI.cpp" />
     <ClCompile Include="..\..\src\game\PetHandler.cpp" />

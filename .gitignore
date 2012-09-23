@@ -53,7 +53,9 @@ patches-*
 # VS binaries output
 #
 bin/*
-win/*
+*win32_Debug*
+*win32_Release*
+win/*/*.log
 
 #
 # VS temporary files
