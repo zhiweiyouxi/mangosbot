@@ -13,6 +13,20 @@ PlayerbotAIConfig::PlayerbotAIConfig()
 {
 }
 
+template <class T>
+void LoadList(string value, T &list)
+{
+    vector<string> ids = split(value, ',');
+    for (vector<string>::iterator i = ids.begin(); i != ids.end(); i++)
+    {
+        uint32 id = atoi((*i).c_str());
+        if (!id)
+            continue;
+
+        list.push_back(id);
+    }
+}
+
 bool PlayerbotAIConfig::Initialize()
 {
     sLog.outString("Initializing AI Playerbot by ike3, based on the original Playerbot by blueboy");
@@ -53,25 +67,10 @@ bool PlayerbotAIConfig::Initialize()
     iterationsPerTick = config.GetIntDefault("AiPlayerbot.IterationsPerTick", 10);
 
     allowGuildBots = config.GetBoolDefault("AiPlayerbot.AllowGuildBots", true);
-    string accountStr = config.GetStringDefault("AiPlayerbot.RandomBotAccounts", "");
-    vector<string> accounts = split(accountStr, ',');
-    for (vector<string>::iterator i = accounts.begin(); i != accounts.end(); i++)
-    {
-        uint32 id = atoi((*i).c_str());
-        if (!id)
-            continue;
-        randomBotAccounts.push_back(id);
-    }
 
-    string mapStr = config.GetStringDefault("AiPlayerbot.RandomBotMaps", "0,1,530,571");
-    vector<string> maps = split(mapStr, ',');
-    for (vector<string>::iterator i = maps.begin(); i != maps.end(); i++)
-    {
-        uint32 id = atoi((*i).c_str());
-        if (!id)
-            continue;
-        randomBotMaps.push_back(id);
-    }
+    LoadList<list<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotAccounts", ""), randomBotAccounts);
+    LoadList<vector<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotMaps", "0,1,530,571"), randomBotMaps);
+    LoadList<list<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotQuestItems", "6948,5175,5176,5177,5178"), randomBotQuestItems);
 
     randomBotAutologin = config.GetBoolDefault("AiPlayerbot.RandomBotAutologin", false);
     minRandomBots = config.GetIntDefault("AiPlayerbot.MinRandomBots", 1);
@@ -102,6 +101,11 @@ bool PlayerbotAIConfig::Initialize()
 bool PlayerbotAIConfig::IsInRandomAccountList(uint32 id)
 {
     return find(randomBotAccounts.begin(), randomBotAccounts.end(), id) != randomBotAccounts.end();
+}
+
+bool PlayerbotAIConfig::IsInRandomQuestItemList(uint32 id)
+{
+    return find(randomBotQuestItems.begin(), randomBotQuestItems.end(), id) != randomBotQuestItems.end();
 }
 
 string PlayerbotAIConfig::GetValue(string name)

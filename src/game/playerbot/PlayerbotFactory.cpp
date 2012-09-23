@@ -171,18 +171,39 @@ class DestroyItemsVisitor : public IterateItemsVisitor
 public:
     DestroyItemsVisitor(Player* bot) : IterateItemsVisitor(), bot(bot) {}
 
-    Player* bot;
-
     virtual bool Visit(Item* item)
     {
         uint32 id = item->GetProto()->ItemId;
-        ItemPrototype const* proto = sItemStorage.LookupEntry<ItemPrototype>(id);
-        if (proto->Class == ITEM_CLASS_MISC && (proto->SubClass == ITEM_SUBCLASS_JUNK_REAGENT || proto->SubClass == ITEM_SUBCLASS_JUNK))
+        if (CanKeep(id))
+        {
+            keep.insert(id);
             return true;
+        }
 
         bot->DestroyItem(item->GetBagSlot(), item->GetSlot(), true);
         return true;
     }
+
+private:
+    bool CanKeep(uint32 id)
+    {
+        if (keep.find(id) != keep.end())
+            return false;
+
+        if (sPlayerbotAIConfig.IsInRandomQuestItemList(id))
+            return true;
+
+        ItemPrototype const* proto = sItemStorage.LookupEntry<ItemPrototype>(id);
+        if (proto->Class == ITEM_CLASS_MISC && (proto->SubClass == ITEM_SUBCLASS_JUNK_REAGENT || proto->SubClass == ITEM_SUBCLASS_JUNK))
+            return true;
+
+        return false;
+    }
+
+private:
+    Player* bot;
+    set<uint32> keep;
+
 };
 
 bool PlayerbotFactory::CanEquipArmor(ItemPrototype const* proto, uint8 slot)

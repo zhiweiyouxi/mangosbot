@@ -14,6 +14,7 @@ public:
 public:
     bool Initialize();
     bool IsInRandomAccountList(uint32 id);
+    bool IsInRandomQuestItemList(uint32 id);
 
     bool enabled;
     bool allowGuildBots;
@@ -25,6 +26,7 @@ public:
     bool randomBotAutologin;
     std::list<uint32> randomBotAccounts;
     std::vector<uint32> randomBotMaps;
+    std::list<uint32> randomBotQuestItems;
     uint32 randomBotTeleportDistance;
     float randomGearLoweringChance;
     uint32 minRandomBots, maxRandomBots;
