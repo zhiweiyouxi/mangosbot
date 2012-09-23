@@ -273,6 +273,12 @@ bool ChatHandler::HandlePlayerbotCommand(char* args)
 
     Player* player = m_session->GetPlayer();
     PlayerbotMgr* mgr = player->GetPlayerbotMgr();
+    if (!mgr)
+    {
+        PSendSysMessage("you cannot control bots yet");
+        SetSentErrorMessage(true);
+        return false;
+    }
 
     set<string> bots;
     if (charnameStr == "*")
