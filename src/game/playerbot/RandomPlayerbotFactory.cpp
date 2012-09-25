@@ -103,7 +103,7 @@ string RandomPlayerbotFactory::CreateRandomBotName()
 
     uint32 id = urand(0, maxId);
     result = CharacterDatabase.PQuery("SELECT n.name FROM ai_playerbot_names n "
-            "LEFT OUTER JOIN wotlk_characters.characters e ON e.name = n.name "
+            "LEFT OUTER JOIN characters e ON e.name = n.name "
             "WHERE e.guid IS NULL AND n.name_id >= '%u' LIMIT 1", id);
     if (!result)
     {
