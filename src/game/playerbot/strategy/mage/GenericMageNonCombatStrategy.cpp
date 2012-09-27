@@ -38,14 +38,14 @@ private:
     }
 };
 
-GenericMageNonCombatStrategy::GenericMageNonCombatStrategy(PlayerbotAI* ai) : GenericMageStrategy(ai)
+GenericMageNonCombatStrategy::GenericMageNonCombatStrategy(PlayerbotAI* ai) : NonCombatStrategy(ai)
 {
     actionNodeFactories.Add(new GenericMageNonCombatStrategyActionNodeFactory());
 }
 
 void GenericMageNonCombatStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
-    GenericMageStrategy::InitTriggers(triggers);
+    NonCombatStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
         "arcane intellect",
