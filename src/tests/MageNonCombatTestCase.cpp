@@ -12,7 +12,6 @@ class MageNonCombatTestCase : public EngineTestBase
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST( bdps );
     CPPUNIT_TEST( bmana );
-    CPPUNIT_TEST( low_mana );
     CPPUNIT_TEST( dispel );
     CPPUNIT_TEST_SUITE_END();
 
@@ -67,25 +66,6 @@ protected:
         tick();
 
         assertActions(">S:molten armor>S:mage armor>S:ice armor>S:frost armor");
-    }
-
-    void low_mana()
-    {
-        engine->addStrategy("flee");
-        addAura("arcane intellect");
-        addPartyAura("arcane intellect");
-        addAura("mage armor");
-
-        tickWithLowMana(5);
-        tickWithLowMana(5);
-
-        set<uint8>("item count", "drink", 0);
-        set<float>("distance", "current target", 5);
-        tickWithLowMana(5);
-        tickWithLowMana(5);
-        tickWithLowMana(5);
-
-        assertActions(">S:evocation>S:drink>T:frost nova>S:flee>S:flee");
     }
 
     void dispel()

@@ -16,6 +16,7 @@ class FrostMageTestCase : public EngineTestBase
   CPPUNIT_TEST( cc );
   CPPUNIT_TEST( aoe );
   CPPUNIT_TEST( incompatibles );
+  CPPUNIT_TEST( low_mana );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -106,6 +107,24 @@ protected:
 
         CPPUNIT_ASSERT(engine->ListStrategies() == "Strategies: fire");
    	}
+
+    void low_mana()
+    {
+        engine->addStrategy("flee");
+        addAura("arcane intellect");
+        addPartyAura("arcane intellect");
+        addAura("mage armor");
+
+        tickWithLowMana(5);
+
+        set<uint8>("item count", "drink", 0);
+        set<float>("distance", "current target", 5);
+        tickWithLowMana(5);
+        tickWithLowMana(5);
+
+        assertActions(">S:evocation>T:frost nova>S:flee");
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FrostMageTestCase );
