@@ -141,7 +141,7 @@ void AvailableItemsBag::Load()
           delete results;
       }
 
-      for (uint32 itemId = 0; itemId < sItemStorage.MaxEntry; ++itemId)
+      for (uint32 itemId = 0; itemId < sItemStorage.GetMaxEntry(); ++itemId)
       {
           if (vendorItems.find(itemId) != vendorItems.end())
               continue;
