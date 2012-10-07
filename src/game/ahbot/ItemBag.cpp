@@ -9,6 +9,7 @@
 #include "../../shared/Database/DatabaseEnv.h"
 #include "../../shared/Database/SQLStorage.h"
 #include "../../shared/Database/DBCStore.h"
+#include "../SQLStorages.h"
 #include "../AuctionHouseMgr.h"
 #include "../ObjectMgr.h"
 
