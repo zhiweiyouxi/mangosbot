@@ -199,7 +199,7 @@ void PlayerbotAI::HandleCommand(uint32 type, const string& text, Player& fromPla
     if (fromPlayer.GetObjectGuid() != GetMaster()->GetObjectGuid())
     {
         WorldPacket data(SMSG_MESSAGECHAT, 1024);
-        bot->BuildPlayerChat(&data, CHAT_MSG_WHISPER, "Sorry I'm kind of busy", LANG_UNIVERSAL);
+        bot->BuildPlayerChat(&data, CHAT_MSG_WHISPER, "I'm kind of busy now", LANG_UNIVERSAL);
         GetMaster()->GetSession()->SendPacket(&data);
         return;
     }
