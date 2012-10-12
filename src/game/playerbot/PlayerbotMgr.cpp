@@ -103,7 +103,7 @@ void PlayerbotMgr::LogoutPlayerBot(uint64 guid)
     Player* bot = GetPlayerBot(guid);
     if (bot)
     {
-        bot->GetPlayerbotAI()->TellMaster("Goodbue!");
+        bot->GetPlayerbotAI()->TellMaster("Goodbye!");
 
         ResetSharedAi();
 

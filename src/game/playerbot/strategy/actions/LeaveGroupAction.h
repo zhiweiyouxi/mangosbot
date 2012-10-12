@@ -10,7 +10,7 @@ namespace ai
 
         virtual bool Execute(Event event)
         {
-            ai->TellMaster("Goodbue");
+            ai->TellMaster("Goodbye!");
 
             WorldPacket p;
             string member = bot->GetName();
