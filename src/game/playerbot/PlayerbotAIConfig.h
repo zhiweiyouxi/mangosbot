@@ -38,7 +38,6 @@ public:
     uint32 randomBotEnemyPercent;
 
     uint32 iterationsPerTick;
-    bool splineFacing;
 
     std::string GetValue(std::string name);
     void SetValue(std::string name, std::string value);

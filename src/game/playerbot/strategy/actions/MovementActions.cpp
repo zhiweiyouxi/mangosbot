@@ -322,14 +322,7 @@ bool SetFacingTargetAction::Execute(Event event)
     if (!target)
         return false;
 
-    if (sPlayerbotAIConfig.splineFacing)
-    {
-        bot->SetFacingTo(bot->GetAngle(target));
-    }
-    else
-    {
-        bot->SetInFront(target);
-    }
+    bot->SetFacingTo(bot->GetAngle(target));
     return true;
 }
 

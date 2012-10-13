@@ -88,8 +88,6 @@ bool PlayerbotAIConfig::Initialize()
     maxRandomBotsPerInterval = config.GetIntDefault("AiPlayerbot.MaxRandomBotsPerInterval", 5);
     randomBotEnemyPercent = config.GetIntDefault("AiPlayerbot.RandomBotEnemyPercent", 30);
 
-    splineFacing = config.GetBoolDefault("AiPlayerbot.SplineFacing", true);
-
     sLog.outString("AI Playerbot configuration loaded");
     if (config.GetBoolDefault("AiPlayerbot.RandomBotAutoCreate", true))
         CreateRandomBots();
