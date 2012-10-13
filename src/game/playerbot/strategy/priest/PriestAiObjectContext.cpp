@@ -7,6 +7,7 @@
 #include "../generic/PullStrategy.h"
 #include "PriestTriggers.h"
 #include "../NamedObjectContext.h"
+#include "HolyPriestStrategy.h"
 
 using namespace ai;
 
@@ -39,11 +40,13 @@ namespace ai
                 creators["heal"] = &priest::CombatStrategyFactoryInternal::heal;
                 creators["shadow"] = &priest::CombatStrategyFactoryInternal::dps;
                 creators["dps"] = &priest::CombatStrategyFactoryInternal::dps;
+                creators["holy"] = &priest::CombatStrategyFactoryInternal::holy;
             }
 
         private:
             static Strategy* heal(PlayerbotAI* ai) { return new HealPriestStrategy(ai); }
             static Strategy* dps(PlayerbotAI* ai) { return new ShadowPriestStrategy(ai); }
+            static Strategy* holy(PlayerbotAI* ai) { return new HolyPriestStrategy(ai); }
         };
     };
 };

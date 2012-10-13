@@ -433,6 +433,7 @@
     <ClCompile Include="..\..\src\game\AggressorAI.cpp" />
     <ClCompile Include="..\..\src\game\AchievementMgr.cpp" />
     <ClCompile Include="..\..\src\game\AccountMgr.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\priest\HolyPriestStrategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\ahbot\AhBot.h" />
@@ -936,6 +937,7 @@
     <ClInclude Include="..\..\src\game\AggressorAI.h" />
     <ClInclude Include="..\..\src\game\AchievementMgr.h" />
     <ClInclude Include="..\..\src\game\AccountMgr.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\priest\HolyPriestStrategy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\game\Player.h.orig" />

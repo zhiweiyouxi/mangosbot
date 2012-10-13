@@ -190,6 +190,9 @@
     <ClCompile Include="..\..\src\tests\DpsPriestTestCase.cpp">
       <Filter>Priest</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\tests\HolyPriestTestCase.cpp">
+      <Filter>Priest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\tests\EngineTestBase.h">

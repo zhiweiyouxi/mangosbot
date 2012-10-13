@@ -652,6 +652,7 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\PassiveMultiplier.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\GenericPriestStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\HealPriestStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\priest\HolyPriestStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\PriestActions.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\PriestAiObjectContext.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\PriestMultipliers.cpp" />
@@ -1119,6 +1120,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\GenericPriestStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\GenericPriestStrategyActionNodeFactory.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\HealPriestStrategy.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\priest\HolyPriestStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\PriestActions.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\PriestAiObjectContext.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\PriestMultipliers.h" />
