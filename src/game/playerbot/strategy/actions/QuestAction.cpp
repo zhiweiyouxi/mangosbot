@@ -1,13 +1,14 @@
 #include "../../../pchdef.h"
 #include "../../playerbot.h"
 #include "QuestAction.h"
+#include "../../PlayerbotAIConfig.h"
 
 using namespace ai;
 
 bool QuestAction::Execute(Event event)
 {
     ObjectGuid guid = event.getObject();
-    
+
     if (!guid)
         guid = master->GetSelectionGuid();
 
@@ -40,6 +41,7 @@ bool QuestAction::ProcessQuests(WorldObject* questGiver)
         return false;
     }
 
+    bot->SetFacingTo(bot->GetAngle(questGiver));
     bot->SetSelectionGuid(guid);
     bot->PrepareQuestMenu(guid);
     QuestMenu& questMenu = bot->PlayerTalkClass->GetQuestMenu();
@@ -57,7 +59,7 @@ bool QuestAction::ProcessQuests(WorldObject* questGiver)
     return true;
 }
 
-bool QuestAction::AcceptQuest(Quest const* quest, uint64 questGiver) 
+bool QuestAction::AcceptQuest(Quest const* quest, uint64 questGiver)
 {
     std::ostringstream out;
 
@@ -66,7 +68,7 @@ bool QuestAction::AcceptQuest(Quest const* quest, uint64 questGiver)
     if (bot->GetQuestStatus(questId) == QUEST_STATUS_COMPLETE)
         out << "Already completed";
     else if (! bot->CanTakeQuest(quest, false))
-    {                    	
+    {
         if (! bot->SatisfyQuestStatus(quest, false))
             out << "Already on";
         else
@@ -92,7 +94,7 @@ bool QuestAction::AcceptQuest(Quest const* quest, uint64 questGiver)
             return true;
         }
     }
-    
+
     out << " " << chat->formatQuest(quest);
     ai->TellMaster(out);
     return false;
