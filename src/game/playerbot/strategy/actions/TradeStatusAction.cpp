@@ -3,6 +3,7 @@
 #include "TradeStatusAction.h"
 
 #include "../ItemVisitors.h"
+#include "../../PlayerbotAIConfig.h"
 
 using namespace ai;
 
@@ -10,8 +11,23 @@ using namespace ai;
 
 bool TradeStatusAction::Execute(Event event)
 {
-    if (!bot->GetTrader())
+    Player* trader = bot->GetTrader();
+    if (!trader)
         return false;
+
+    if (trader != master)
+    {
+        WorldPacket data(SMSG_MESSAGECHAT, 1024);
+        bot->BuildPlayerChat(&data, CHAT_MSG_WHISPER, "I'm kind of busy now", LANG_UNIVERSAL);
+        trader->GetSession()->SendPacket(&data);
+        return false;
+    }
+
+    if (!bot->GetGroup() && !master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
+    {
+        ai->TellMaster("I'm kind of busy now");
+        return false;
+    }
 
     WorldPacket p(event.getPacket());
     p.rpos(0);
@@ -28,10 +44,11 @@ bool TradeStatusAction::Execute(Event event)
     }
     else if (status == TRADE_STATUS_BEGIN_TRADE)
     {
+        bot->SetFacingToObject(trader);
         BeginTrade();
         return true;
     }
-    
+
     return false;
 }
 
