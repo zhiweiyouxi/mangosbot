@@ -19,6 +19,7 @@ class NonCombatEngineTestCase : public EngineTestBase
       CPPUNIT_TEST( attackWeak );
       CPPUNIT_TEST( attackRti );
       CPPUNIT_TEST( loot );
+      CPPUNIT_TEST( loot_failed );
       CPPUNIT_TEST( gather );
       CPPUNIT_TEST( runaway );
       CPPUNIT_TEST( passive );
@@ -147,6 +148,26 @@ protected:
         tick();
 
         assertActions(">S:loot>S:move to loot>S:open loot>S:stay");
+    }
+
+    void loot_failed()
+    {
+		engine->addStrategy("follow master");
+		engine->addStrategy("loot");
+
+		tickWithLootAvailable();
+
+        set<float>("distance", "loot target", 15.0f);
+        tick();
+        set<float>("distance", "loot target", 0.0f);
+
+        set<bool>("can loot", true);
+        tick();
+
+        spellAvailable("open loot");
+        tick();
+
+        assertActions(">S:loot>S:move to loot>S:open loot>S:open loot");
     }
 
     void gather()

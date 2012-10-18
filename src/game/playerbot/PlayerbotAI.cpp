@@ -927,7 +927,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target)
         {
             WorldPacket* const packetgouse = new WorldPacket(CMSG_GAMEOBJ_REPORT_USE, 8);
             *packetgouse << loot.guid;
-            bot->GetSession()->QueuePacket(packetgouse);  // queue the packet to get around race condition
+            bot->GetSession()->QueuePacket(packetgouse);
             targets.setGOTarget(go);
             faceTo = go;
         }

@@ -65,7 +65,7 @@ private:
     {
         return new ActionNode ("move to loot",
             /*P*/ NULL,
-            /*A*/ NextAction::array(0, new NextAction("follow master"), NULL),
+            /*A*/ NULL,
             /*C*/ NULL);
     }
     static ActionNode* food(PlayerbotAI* ai)

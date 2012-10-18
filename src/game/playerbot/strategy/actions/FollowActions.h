@@ -23,7 +23,8 @@ namespace ai
 
         virtual bool isUseful()
         {
-            return AI_VALUE2(float, "distance", "master target") > sPlayerbotAIConfig.followDistance;
+            return AI_VALUE2(float, "distance", "master target") > sPlayerbotAIConfig.followDistance &&
+                    !AI_VALUE(bool, "can loot");
         }
 	};
 

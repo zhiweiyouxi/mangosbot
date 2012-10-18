@@ -41,10 +41,11 @@ bool OpenLootAction::Execute(Event event)
 {
     LootObject lootObject = AI_VALUE(LootObject, "loot target");
     bool result = DoLoot(lootObject);
-    if (!result)
+    if (result)
+    {
         AI_VALUE(LootObjectStack*, "available loot")->Remove(lootObject.guid);
-
-    context->GetValue<LootObject>("loot target")->Set(LootObject());
+        context->GetValue<LootObject>("loot target")->Set(LootObject());
+    }
     return result;
 }
 
@@ -54,8 +55,12 @@ bool OpenLootAction::DoLoot(LootObject& lootObject)
         return false;
 
     Creature* creature = ai->GetCreature(lootObject.guid);
+    if (creature && bot->GetDistance(creature) > INTERACTION_DISTANCE)
+        return false;
+
     if (creature && creature->HasFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE))
     {
+        bot->GetMotionMaster()->Clear();
         WorldPacket* const packet = new WorldPacket(CMSG_LOOT, 8);
         *packet << lootObject.guid;
         bot->GetSession()->QueuePacket(packet);
@@ -71,6 +76,7 @@ bool OpenLootAction::DoLoot(LootObject& lootObject)
         if (!CanOpenLock(skill, ReqValue))
             return false;
 
+        bot->GetMotionMaster()->Clear();
         switch (skill)
         {
         case SKILL_ENGINEERING:
@@ -84,6 +90,11 @@ bool OpenLootAction::DoLoot(LootObject& lootObject)
         }
     }
 
+    GameObject* go = ai->GetGameObject(lootObject.guid);
+    if (go && bot->GetDistance(go) > INTERACTION_DISTANCE)
+        return false;
+
+    bot->GetMotionMaster()->Clear();
     if (lootObject.skillId == SKILL_MINING && bot->HasSkill(SKILL_MINING))
         return ai->CastSpell(MINING, bot);
 
