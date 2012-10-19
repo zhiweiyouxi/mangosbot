@@ -656,10 +656,11 @@ GameObject* PlayerbotAI::GetGameObject(ObjectGuid guid)
 
 void PlayerbotAI::TellMaster(string text)
 {
+    Player* master = GetMaster();
     LogLevel logLevel = *aiObjectContext->GetValue<LogLevel>("log level");
-    if (GetMaster()->GetSession()->GetSecurity() < SEC_GAMEMASTER)
+    if (master->GetSession()->GetSecurity() < SEC_GAMEMASTER)
     {
-        if (IsOpposing(GetMaster()) && logLevel != LOG_LVL_DEBUG)
+        if (IsOpposing(master) && logLevel != LOG_LVL_DEBUG)
             return;
 
         if (sPlayerbotAIConfig.IsInRandomAccountList(accountId) && logLevel != LOG_LVL_DEBUG && !bot->GetGroup())
@@ -668,9 +669,15 @@ void PlayerbotAI::TellMaster(string text)
 
     WorldPacket data(SMSG_MESSAGECHAT, 1024);
     bot->BuildPlayerChat(&data, *aiObjectContext->GetValue<ChatMsg>("chat"), text, LANG_UNIVERSAL);
-    GetMaster()->GetSession()->SendPacket(&data);
-    bot->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
+    master->GetSession()->SendPacket(&data);
 
+    if (!bot->isMoving() && !bot->IsInCombat() && bot->GetMapId() == master->GetMapId())
+    {
+        if (!bot->isInFront(master, sPlayerbotAIConfig.reactDistance, M_PI / 2))
+            bot->SetFacingTo(bot->GetAngle(master));
+
+        bot->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
+    }
 }
 
 void PlayerbotAI::TellMaster(LogLevel level, string text)
