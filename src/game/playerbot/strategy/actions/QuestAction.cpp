@@ -41,7 +41,9 @@ bool QuestAction::ProcessQuests(WorldObject* questGiver)
         return false;
     }
 
-    bot->SetFacingTo(bot->GetAngle(questGiver));
+    if (!bot->isInFront(questGiver, sPlayerbotAIConfig.spellDistance, M_PI / 2))
+        bot->SetFacingTo(bot->GetAngle(questGiver));
+
     bot->SetSelectionGuid(guid);
     bot->PrepareQuestMenu(guid);
     QuestMenu& questMenu = bot->PlayerTalkClass->GetQuestMenu();
