@@ -1000,9 +1000,6 @@ void PlayerbotAI::InterruptSpell()
     for (int type = CURRENT_MELEE_SPELL; type < CURRENT_CHANNELED_SPELL; type++)
         bot->InterruptSpell((CurrentSpellTypes)type);
 
-    for (int type = CURRENT_MELEE_SPELL; type < CURRENT_CHANNELED_SPELL; type++)
-        bot->GetMover()->InterruptSpell((CurrentSpellTypes)type);
-
     SpellInterrupted(lastSpell.id);
 }
 
