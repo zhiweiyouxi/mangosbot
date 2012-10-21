@@ -47,8 +47,17 @@ void LootTargetList::shrink(time_t fromTime)
 LootObject::LootObject(Player* bot, ObjectGuid guid)
 	: guid(), skillId(SKILL_NONE), reqSkillValue(0), reqItem(NULL)
 {
-	PlayerbotAI* ai = bot->GetPlayerbotAI();
+    Refresh(bot, guid);
+}
 
+void LootObject::Refresh(Player* bot, ObjectGuid guid)
+{
+    skillId = SKILL_NONE;
+    reqSkillValue = 0;
+    reqItem = NULL;
+    this->guid = ObjectGuid();
+
+    PlayerbotAI* ai = bot->GetPlayerbotAI();
     Creature *creature = ai->GetCreature(guid);
     if (creature && creature->getDeathState() == CORPSE)
     {
@@ -111,6 +120,8 @@ LootObject::LootObject(Player* bot, ObjectGuid guid)
 
 WorldObject* LootObject::GetWorldObject(Player* bot)
 {
+    Refresh(bot, guid);
+
     PlayerbotAI* ai = bot->GetPlayerbotAI();
 
     Creature *creature = ai->GetCreature(guid);
@@ -166,9 +177,6 @@ bool LootObject::IsLootPossible(Player* bot)
 
     return true;
 }
-
-
-
 
 bool LootObjectStack::Add(ObjectGuid guid)
 {
