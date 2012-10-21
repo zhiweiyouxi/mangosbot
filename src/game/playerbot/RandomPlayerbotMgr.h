@@ -36,6 +36,7 @@ class MANGOS_DLL_SPEC RandomPlayerbotMgr : public PlayerbotAIBase
         void ScheduleRandomize(uint32 bot, uint32 time);
         void RandomTeleport(Player* bot, uint32 mapId, float teleX, float teleY, float teleZ);
         void Refresh(Player* bot);
+        uint32 GetZoneLevel(uint32 mapId, float teleX, float teleY, float teleZ);
 
     private:
         Player* const master;

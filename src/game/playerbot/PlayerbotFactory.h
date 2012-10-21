@@ -17,7 +17,6 @@ public:
 
     static ObjectGuid GetRandomBot();
     void Randomize();
-    void RandomizeForZone(uint32 mapId, float teleX, float teleY, float teleZ);
 
 private:
     void InitSecondEquipmentSet();

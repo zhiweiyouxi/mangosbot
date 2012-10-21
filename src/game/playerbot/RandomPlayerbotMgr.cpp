@@ -82,7 +82,7 @@ uint32 RandomPlayerbotMgr::AddRandomBot(bool opposing)
     SetEventValue(bot, "pvp", 1, urand(sPlayerbotAIConfig.minRandomBotPvpTime, sPlayerbotAIConfig.maxRandomBotPvpTime));
     uint32 randomTime = 30 + urand(sPlayerbotAIConfig.randomBotUpdateInterval, sPlayerbotAIConfig.randomBotUpdateInterval * 3);
     ScheduleRandomize(bot, randomTime);
-    sLog.outBasic("Bot %d added for account %d", bot, account);
+    sLog.outDetail("Bot %d added for account %d", bot, account);
     return bot;
 }
 
@@ -224,24 +224,60 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, uint32 mapId, float teleX, 
 
 void RandomPlayerbotMgr::Randomize(Player* bot)
 {
-    int index = urand(0, sPlayerbotAIConfig.randomBotMaps.size() - 1);
-    uint32 mapId = sPlayerbotAIConfig.randomBotMaps[index];
-
-    vector<GameTele const*> locs;
-    GameTeleMap const & teleMap = sObjectMgr.GetGameTeleMap();
-    for(GameTeleMap::const_iterator itr = teleMap.begin(); itr != teleMap.end(); ++itr)
+    uint32 maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
+    for (int attempt = 0; attempt < 100; ++attempt)
     {
-        GameTele const* tele = &itr->second;
-        if (tele->mapId == mapId)
-            locs.push_back(tele);
+        int index = urand(0, sPlayerbotAIConfig.randomBotMaps.size() - 1);
+        uint32 mapId = sPlayerbotAIConfig.randomBotMaps[index];
+
+        vector<GameTele const*> locs;
+        GameTeleMap const & teleMap = sObjectMgr.GetGameTeleMap();
+        for(GameTeleMap::const_iterator itr = teleMap.begin(); itr != teleMap.end(); ++itr)
+        {
+            GameTele const* tele = &itr->second;
+            if (tele->mapId == mapId)
+                locs.push_back(tele);
+        }
+
+        index = urand(0, locs.size() - 1);
+        GameTele const* tele = locs[index];
+        uint32 level = GetZoneLevel(tele->mapId, tele->position_x, tele->position_y, tele->position_z);
+        if (level > maxLevel + 5)
+            continue;
+
+        PlayerbotFactory factory(bot, min(level, maxLevel), urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC));
+        factory.Randomize();
+        RandomTeleport(bot, tele->mapId, tele->position_x, tele->position_y, tele->position_z);
+        break;
+    }
+}
+
+uint32 RandomPlayerbotMgr::GetZoneLevel(uint32 mapId, float teleX, float teleY, float teleZ)
+{
+	uint32 level;
+    QueryResult *results = WorldDatabase.PQuery("select avg(t.minlevel) minlevel, avg(t.maxlevel) maxlevel from creature c "
+            "inner join creature_template t on c.id = t.entry "
+            "where map = '%u' and minlevel > 1 and abs(position_x - '%f') < '%u' and abs(position_y - '%f') < '%u'",
+            mapId, teleX, sPlayerbotAIConfig.randomBotTeleportDistance / 2, teleY, sPlayerbotAIConfig.randomBotTeleportDistance / 2);
+
+    if (results)
+    {
+        Field* fields = results->Fetch();
+        uint32 minLevel = fields[0].GetUInt32();
+        uint32 maxLevel = fields[1].GetUInt32();
+        level = urand(minLevel, maxLevel);
+        if (level < 10)
+            level = urand(master->getLevel() - 5, master->getLevel());
+        if (level > 80)
+            level = 80;
+        delete results;
+    }
+    else
+    {
+        level = urand(master->getLevel() - 5, master->getLevel());
     }
 
-    index = urand(0, locs.size() - 1);
-    GameTele const* tele = locs[index];
-	PlayerbotFactory factory(bot, bot->GetPlayerbotAI()->GetMaster()->getLevel(), urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC));
-    factory.RandomizeForZone(tele->mapId, tele->position_x, tele->position_y, tele->position_z);
-
-    RandomTeleport(bot, tele->mapId, tele->position_x, tele->position_y, tele->position_z);
+    return level;
 }
 
 void RandomPlayerbotMgr::DoPvpAttack(Player* bot)
