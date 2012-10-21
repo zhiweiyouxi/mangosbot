@@ -290,7 +290,7 @@ bool Item::Create(uint32 guidlow, uint32 itemId, Player const* owner)
     {
         if (!GetOwner())
             return true;
-        GetOwner()->CreateWowarmoryFeed(2, itemid, guidlow, itemProto->Quality);
+		GetOwner()->CreateWowarmoryFeed(2, itemProto->ItemId, guidlow, itemProto->Quality);
     }
     // wow armory end
     return true;

@@ -16658,14 +16658,6 @@ void Player::_LoadInventory(QueryResult* result, uint32 timediff)
             if (!item->LoadSoulboundTradeableDataFromDB(this))
                 DEBUG_LOG("Player::_LoadInventory: %s has item (GUID: %u, Entry: %u) with soulbound tradeable flag, but without data in item_soulbound_trade_data, remove flag.", GetGuidStr().c_str(), itemLowGuid, itemId);
         }
-        else if (proto->HolidayId)
-        {
-            if (!IsHolidayActive(HolidayIds(proto->HolidayId)))
-            {
-                DEBUG_LOG("Player::_LoadInventory: %s has item (GUID: %u, Entry: %u) with not active HolidayId (%u), deleted.", GetGuidStr().c_str(), itemId, itemLowGuid, proto->HolidayId);
-                removeItem = true;
-            }
-        }
 
         if (removeItem)
         {
