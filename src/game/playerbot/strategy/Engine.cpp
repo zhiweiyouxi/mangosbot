@@ -225,6 +225,9 @@ bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool sk
                 InitializeAction(action);
 
                 float k = nextAction->getRelevance();
+                if (forceRelevance > 0.0f)
+                    k = forceRelevance;
+
                 for (list<Multiplier*>::iterator i = multipliers.begin(); i!= multipliers.end(); i++)
                 {
                     Multiplier* multiplier = *i;
@@ -232,11 +235,9 @@ bool Engine::MultiplyAndPush(NextAction** actions, float forceRelevance, bool sk
                     if (!k)
                     {
                         LogAction("Multiplier %s made action %s useless", multiplier->getName().c_str(), action->getName().c_str());
+                        break;
                     }
                 }
-
-                if (forceRelevance > 0.0f)
-                    k = forceRelevance;
 
                 if (k > 0)
                 {
