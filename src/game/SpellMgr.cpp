@@ -766,8 +766,8 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
                 case 52748:                                 // Voracious Appetite
                 case 54044:                                 // Carrion Feeder
                     return false;
+                case 18153:                                 // Kodo Kombobulator
                 case 48021:                                 // support for quest 12173
-                    return true;
                 case 49634:                                 // Sergeant's Flare
                 case 54530:                                 // Opening
                 case 62105:                                 // To'kini's Blowgun
@@ -783,6 +783,8 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
         case SPELL_EFFECT_HEAL_PCT:
         case SPELL_EFFECT_ENERGIZE_PCT:
         case SPELL_EFFECT_QUEST_COMPLETE:
+        case SPELL_EFFECT_KILL_CREDIT_PERSONAL:
+        case SPELL_EFFECT_KILL_CREDIT_GROUP:
             return true;
 
         case SPELL_EFFECT_SCHOOL_DAMAGE:

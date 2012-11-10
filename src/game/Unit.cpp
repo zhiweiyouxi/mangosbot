@@ -4735,7 +4735,8 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolderPtr holder)
         {
             if (iter->second == holder)
             {
-                DEBUG_LOG("Unit::AddSpellAuraHolder cannot add SpellAuraHolder (spell %u), holder already added!", holder->GetId());
+                sLog.outError("Unit::AddSpellAuraHolder cannot add SpellAuraHolder %u, to %s due to holder already added!", 
+                    holder->GetId(),GetObjectGuid().GetString().c_str());
                 return false;
             }
         }
@@ -4754,9 +4755,11 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolderPtr holder)
 
     if (holder->GetTarget() != this)
     {
-        sLog.outError("Holder (spell %u) add to spell aura holder list of %s (lowguid: %u) but spell aura holder target is %s (lowguid: %u)",
-            holder->GetId(),(GetTypeId()==TYPEID_PLAYER?"player":"creature"),GetGUIDLow(),
-            (holder->GetTarget()->GetTypeId()==TYPEID_PLAYER?"player":"creature"),holder->GetTarget()->GetGUIDLow());
+        sLog.outError("Unit::AddSpellAuraHolder cannot add SpellAuraHolder %u, caster %s, to %s, due to different target (%s)!",
+            holder->GetId(),
+            holder->GetCaster() ? holder->GetCaster()->GetObjectGuid().GetString().c_str() : "<none>",
+            GetObjectGuid().GetString().c_str(),
+            holder->GetTarget() ? holder->GetTarget()->GetObjectGuid().GetString().c_str() : "<none>");
         return false;
     }
 
@@ -7249,12 +7252,16 @@ Pet* Unit::GetPet() const
         {
             if (Pet* pet = GetMap()->GetPet(pet_guid))
                 return pet;
+            else
+            {
+                sLog.outError("Unit::GetPet: %s not exist.", pet_guid.GetString().c_str());
+                const_cast<Unit*>(this)->SetPet(NULL);
+            }
         }
 
         sLog.outError("Unit::GetPet: %s not exist.", pet_guid.GetString().c_str());
-        const_cast<Unit*>(this)->SetPet(0);
+        const_cast<Unit*>(this)->SetPet(NULL);
     }
-
     return NULL;
 }
 
@@ -7321,7 +7328,8 @@ void Unit::SetPet(Pet* pet)
 {
     if (pet)
     {
-        SetPetGuid(pet->GetObjectGuid()) ;  //Using last pet guid for player
+        if (!pet->GetPetCounter())
+            SetPetGuid(pet->GetObjectGuid()) ;  //Using last pet guid for player
         AddPetToList(pet);
     }
     else
@@ -11005,15 +11013,6 @@ void Unit::SetLevel(uint32 lvl)
     if ((GetTypeId() == TYPEID_PLAYER) && ((Player*)this)->GetGroup())
         ((Player*)this)->SetGroupUpdateFlag(GROUP_UPDATE_FLAG_LEVEL);
 }
-
-
-uint8 Unit::getRace() const
-{
-    return GetTypeId() == TYPEID_UNIT ?
-        ((Creature*)this)->getRace() :
-        GetByteValue(UNIT_FIELD_BYTES_0, 0);
-}
-
 
 void Unit::SetHealth(uint32 val)
 {
