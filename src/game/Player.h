@@ -1286,7 +1286,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         {
             return StoreItem(dest, pItem, update);
         }
-        Item* BankItem(uint16 pos, Item *pItem, bool update);
         void RemoveItem(uint8 bag, uint8 slot, bool update);
         void MoveItemFromInventory(uint8 bag, uint8 slot, bool update);
                                                             // in trade, auction, guild bank, mail....
@@ -2310,9 +2309,9 @@ class MANGOS_DLL_SPEC Player : public Unit
         float  m_recallO;
         void   SaveRecallPosition();
 
-        void SetHomebindToLocation(WorldLocation const& loc, uint32 area_id);
-        void RelocateToHomebind() { SetLocationMapId(m_homebindMapId); Relocate(m_homebindX, m_homebindY, m_homebindZ); }
-        bool TeleportToHomebind(uint32 options = TELE_TO_CHECKED) { return TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, GetOrientation(), options); }
+        void SetHomebindToLocation(WorldLocation const& loc);
+        void RelocateToHomebind() { SetLocationMapId(m_homebind.GetMapId()); Relocate(m_homebind); }
+        bool TeleportToHomebind(uint32 options = TELE_TO_CHECKED) { return TeleportTo(m_homebind, options); }
 
         Object* GetObjectByTypeMask(ObjectGuid guid, TypeMask typemask);
 
@@ -2327,7 +2326,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void UpdateVisibilityOf(WorldObject const* viewPoint, WorldObject* target);
 
         template<class T>
-            void UpdateVisibilityOf(WorldObject const* viewPoint,T* target, UpdateData& data, std::set<WorldObject*>& visibleNow);
+            void UpdateVisibilityOf(WorldObject const* viewPoint,T* target, UpdateData& data, WorldObjectSet& visibleNow);
 
         // Stealth detection system
         void HandleStealthedUnitsDetection();
@@ -2490,10 +2489,10 @@ class MANGOS_DLL_SPEC Player : public Unit
         float GetCollisionHeight(bool mounted);
 
         // Parent objects (items currently) update system
-        Object* GetDependentObject(ObjectGuid const& guid) override;
+        virtual Object* GetDependentObject(ObjectGuid const& guid) override;
         virtual GuidSet const* GetObjectsUpdateQueue() override { return &i_objectsToClientUpdate; };
-        void AddUpdateObject(ObjectGuid const& guid) override;
-        void RemoveUpdateObject(ObjectGuid const& guid) override;
+        virtual void AddUpdateObject(ObjectGuid const& guid) override;
+        virtual void RemoveUpdateObject(ObjectGuid const& guid) override;
 
     protected:
 
@@ -2789,11 +2788,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         RandomPlayerbotMgr* m_randomPlayerbotMgr;
 
         // Homebind coordinates
-        uint32 m_homebindMapId;
-        uint16 m_homebindAreaId;
-        float m_homebindX;
-        float m_homebindY;
-        float m_homebindZ;
+        WorldLocation m_homebind;
 
         uint32 m_lastFallTime;
         float  m_lastFallZ;
