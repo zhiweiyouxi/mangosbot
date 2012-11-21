@@ -320,7 +320,7 @@ void RandomPlayerbotMgr::Refresh(Player* bot)
             bot->BuildPlayerRepop();
             Corpse *corpse = bot->GetCorpse();
             const WorldLocation& loc = corpse->GetPosition();
-            bot->TeleportTo( loc.mapid, loc.coord_x, loc.coord_y, loc.coord_z, bot->GetOrientation() );
+            bot->TeleportTo( loc.GetMapId(), loc.coord_x, loc.coord_y, loc.coord_z, bot->GetOrientation() );
         }
         else
         {

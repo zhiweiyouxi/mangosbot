@@ -434,6 +434,7 @@
     <ClCompile Include="..\..\src\game\AchievementMgr.cpp" />
     <ClCompile Include="..\..\src\game\AccountMgr.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\HolyPriestStrategy.cpp" />
+    <ClCompile Include="..\..\src\game\WorldLocation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\ahbot\AhBot.h" />
@@ -938,6 +939,7 @@
     <ClInclude Include="..\..\src\game\AchievementMgr.h" />
     <ClInclude Include="..\..\src\game\AccountMgr.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\priest\HolyPriestStrategy.h" />
+    <ClInclude Include="..\..\src\game\WorldLocation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\game\Player.h.orig" />
