@@ -3348,6 +3348,23 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                   unitTarget->CastSpell(unitTarget, 62295, true);
                   return;
                 }
+                case 63820:                                 // Summon Scrap Bot Trigger (Ulduar - Mimiron) for Scrap Bots
+                case 64425:                                 // Summon Scrap Bot Trigger (Ulduar - Mimiron) for Assault Bots
+                case 64620:                                 // Summon Fire Bot Trigger  (Ulduar - Mimiron) for Fire Bots
+                {
+                    if (!unitTarget)
+                        return;
+
+                    uint32 triggerSpell = 0;
+                    switch (m_spellInfo->Id)
+                    {
+                        case 63820: triggerSpell = 64398; break;
+                        case 64425: triggerSpell = 64426; break;
+                        case 64620: triggerSpell = 64621; break;
+                    }
+                    unitTarget->CastSpell(unitTarget, triggerSpell, false);
+                    return;
+                }
                 case 63984:                                 // Hate to Zero (Ulduar - Yogg Saron)
                 {
                     if (!unitTarget)
@@ -9420,6 +9437,12 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     unitTarget->CastSpell(unitTarget, 54522, true);
                     break;
                 }
+                case 52124:                                 // Sky Darkener Assault
+                {
+                    if (unitTarget && unitTarget != m_caster)
+                        m_caster->CastSpell(unitTarget, 52125, false);
+                    break;
+                }
                 case 52357:                                 // Into the realm of shadows
                 {
                     if (!unitTarget)
@@ -9430,18 +9453,23 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                 }
                 case 52479:                                 // The Gift That Keeps On Giving
                 {
-                    if (!m_caster || !unitTarget)
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER || !unitTarget)
                         return;
 
-                    m_caster->CastSpell(m_caster, roll_chance_i(75) ? 52505 : m_spellInfo->CalculateSimpleValue(eff_idx), true);
-                    ((Creature*)unitTarget)->ForcedDespawn();
-                    break;
+                    // Each ghoul casts 52500 onto player, so use number of auras as check
+                    Unit::SpellAuraHolderConstBounds bounds = m_caster->GetSpellAuraHolderBounds(52500);
+                    uint32 summonedGhouls = std::distance(bounds.first, bounds.second);
+
+                    m_caster->CastSpell(unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ(), urand(0, 2) || summonedGhouls >= 5 ? 52505 : m_spellInfo->CalculateSimpleValue(eff_idx), true);
+                    return;
                 }
-                case 52124:                                 // Sky Darkener Assault
+                case 52555:                                 // Dispel Scarlet Ghoul Credit Counter
                 {
-                    if (unitTarget && unitTarget != m_caster)
-                        m_caster->CastSpell(unitTarget, 52125, false);
-                    break;
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->RemoveAurasByCasterSpell(m_spellInfo->CalculateSimpleValue(eff_idx), m_caster->GetObjectGuid());
+                    return;
                 }
                 case 52694:                                 // Recall Eye of Acherus
                 {
@@ -12607,6 +12635,7 @@ void Spell::EffectBind(SpellEffectIndex eff_idx)
 
     Player* player = (Player*)unitTarget;
 
+    uint32 area_id;
     WorldLocation loc;
     if (m_spellInfo->EffectImplicitTargetA[eff_idx] == TARGET_TABLE_X_Y_Z_COORDINATES ||
         m_spellInfo->EffectImplicitTargetB[eff_idx] == TARGET_TABLE_X_Y_Z_COORDINATES)
@@ -12618,30 +12647,34 @@ void Spell::EffectBind(SpellEffectIndex eff_idx)
             return;
         }
 
-        loc.SetMapId(st->target_mapId);
+        loc.mapid       = st->target_mapId;
         loc.coord_x     = st->target_X;
         loc.coord_y     = st->target_Y;
         loc.coord_z     = st->target_Z;
-        loc.SetOrientation(st->target_Orientation);
+        loc.orientation = st->target_Orientation;
+        area_id = sTerrainMgr.GetAreaId(loc.mapid, loc.coord_x, loc.coord_y, loc.coord_z);
     }
     else
-        loc = player->GetPosition();
+    {
+        player->GetPosition(loc);
+        area_id = player->GetAreaId();
+    }
 
-    player->SetHomebindToLocation(loc);
-    uint32 area_id = loc.GetAreaId();
+    player->SetHomebindToLocation(loc,area_id);
+
     // binding
     WorldPacket data( SMSG_BINDPOINTUPDATE, (4+4+4+4+4) );
     data << float(loc.coord_x);
     data << float(loc.coord_y);
     data << float(loc.coord_z);
-    data << uint32(loc.GetMapId());
+    data << uint32(loc.mapid);
     data << uint32(area_id);
     player->SendDirectMessage( &data );
 
     DEBUG_LOG("New Home Position X is %f", loc.coord_x);
     DEBUG_LOG("New Home Position Y is %f", loc.coord_y);
     DEBUG_LOG("New Home Position Z is %f", loc.coord_z);
-    DEBUG_LOG("New Home MapId is %u", loc.GetMapId());
+    DEBUG_LOG("New Home MapId is %u", loc.mapid);
     DEBUG_LOG("New Home AreaId is %u", area_id);
 
     // zone update

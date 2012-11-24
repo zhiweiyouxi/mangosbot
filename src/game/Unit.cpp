@@ -3650,10 +3650,7 @@ SpellMissInfo Unit::SpellResistResult(Unit* pVictim, SpellEntry const* spell)
     // Spell hit will not reduce this chance. It is assumed that this percentage is exactly the damage reduction percentage given above."
 
     // Get base resistance values
-    uint32 targetResistance = pVictim->GetObjectGuid().IsPlayerOrPet() ? 
-                                  pVictim->GetResistance(SpellSchoolMask(spell->SchoolMask)) :
-                                  // FIXME - Creatures also have resistances!
-                                  0;
+    uint32 targetResistance = pVictim->GetResistance(SpellSchoolMask(spell->SchoolMask));
 
     uint32 ignoreTargetResistance = GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_TARGET_RESISTANCE, spell->SchoolMask);
     if (targetResistance < ignoreTargetResistance)
@@ -3665,7 +3662,6 @@ SpellMissInfo Unit::SpellResistResult(Unit* pVictim, SpellEntry const* spell)
 
     uint32 effectiveRR = targetResistance + std::max(((int)pVictim->GetLevelForTarget(this) - (int)GetLevelForTarget(pVictim)) * 5, 0) - std::min(targetResistance, spellPenetration);
     uint32 drp = uint32(100.0f * ((float)effectiveRR / (((pVictim->GetLevelForTarget(this) > 80) ? 510.0f : 400.0f) + (float)effectiveRR)));
-
 
     DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Unit::SpellResistResult  calculation part 2 (damage reduction percentage): caster %s, target %s, spell %u, targetResistance:%i, penetration:%u, effectiveRR:%u, DRP:%u",
         GetObjectGuid().GetString().c_str(),
@@ -11856,7 +11852,7 @@ void Unit::DoPetCastSpell(Unit* target, uint32 spellId)
 
 }
 
-void Unit::DoPetCastSpell(Player *owner, uint8 cast_count, SpellCastTargets* targets, SpellEntry const* spellInfo )
+void Unit::DoPetCastSpell(Player* owner, uint8 cast_count, SpellCastTargets* targets, SpellEntry const* spellInfo )
 {
     if (!IsInWorld())
         return;
@@ -11997,10 +11993,8 @@ void Unit::DoPetCastSpell(Player *owner, uint8 cast_count, SpellCastTargets* tar
     }
     else if (pet)
     {
-        if (owner && HasAuraType(SPELL_AURA_MOD_POSSESS))
-            Spell::SendCastResult(owner,spellInfo,0,result);
-        else
-            SendPetCastFail(spellInfo->Id, result);
+        if (owner)
+            Spell::SendCastResult(owner,spellInfo,0,result, true);
 
         if (owner && !((Creature*)this)->HasSpellCooldown(spellInfo->Id) && !triggered)
             owner->SendClearCooldown(spellInfo->Id, pet);
@@ -12299,34 +12293,7 @@ Player* Unit::GetSpellModOwner() const
 }
 
 ///----------Pet responses methods-----------------
-void Unit::SendPetCastFail(uint32 spellid, SpellCastResult msg)
-{
-    if (msg == SPELL_CAST_OK)
-        return;
-
-    Unit *owner = GetCharmerOrOwner();
-    if(!owner || owner->GetTypeId() != TYPEID_PLAYER)
-        return;
-
-    WorldPacket data(SMSG_PET_CAST_FAILED, 1 + 4 + 1);
-    data << uint8(0);                                       // cast count?
-    data << uint32(spellid);
-    data << uint8(msg);
-
-    // More cases exist, see Spell::SendCastResult (can possibly be unified)
-    switch(msg)
-    {
-        case SPELL_FAILED_NOT_READY:
-            data << uint32(0);                              // unknown
-            break;
-        default:
-            break;
-    }
-
-    ((Player*)owner)->GetSession()->SendPacket(&data);
-}
-
-void Unit::SendPetActionFeedback (uint8 msg)
+void Unit::SendPetActionFeedback(uint8 msg)
 {
     Unit* owner = GetOwner();
     if(!owner || owner->GetTypeId() != TYPEID_PLAYER)
@@ -13871,7 +13838,7 @@ bool Unit::IsVisibleTargetForSpell(WorldObject const* caster, SpellEntry const* 
     {
         DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Unit::IsVisibleTargetForSpell check LOS for spell %u, caster %s, location %f %f %f, target %s", 
             spellInfo->Id, caster->GetObjectGuid().GetString().c_str(), location->x, location->y, location->z, GetObjectGuid().GetString().c_str());
-        return ((GetMapId() == location->GetMapId()) && IsWithinLOS(location->x, location->y, location->z));
+        return ((GetMapId() == location->mapid) && IsWithinLOS(location->x, location->y, location->z));
     }
     else
     {
@@ -14012,10 +13979,12 @@ uint32 Unit::GetResistance(SpellSchoolMask schoolMask) const
     {
         if (schoolMask & (1 << i))
         {
-            int32 schoolRes = floor((float)GetResistance(SpellSchools(i)) + GetResistanceBuffMods(SpellSchools(i), true) - GetResistanceBuffMods(SpellSchools(i), false));
+            int32 schoolRes = (GetObjectGuid().IsPlayer() || (GetObjectGuid().IsPet() && GetOwner() && GetOwner()->GetObjectGuid().IsPlayer())) ?
+                              GetResistance(SpellSchools(i)) : 
+                              floor(GetResistanceBuffMods(SpellSchools(i), true) - GetResistanceBuffMods(SpellSchools(i), false));
             if (resistance < schoolRes)
                 resistance = schoolRes;
-                // by some sources, may be resistance +=, but i not sure (/dev/rsa)
+            // Use maximal resistance from mask (not lower then 0)
         }
     }
     return (resistance >= 0) ? (uint32)resistance : 0;
