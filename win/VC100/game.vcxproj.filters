@@ -434,7 +434,6 @@
     <ClCompile Include="..\..\src\game\AchievementMgr.cpp" />
     <ClCompile Include="..\..\src\game\AccountMgr.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\priest\HolyPriestStrategy.cpp" />
-    <ClCompile Include="..\..\src\game\WorldLocation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\ahbot\AhBot.h" />

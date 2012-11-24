@@ -288,7 +288,8 @@ void RandomPlayerbotMgr::DoPvpAttack(Player* bot)
 	Player* master = bot->GetPlayerbotAI()->GetMaster();
     uint32 level = master->getLevel();
 
-    const WorldLocation& loc = master->GetPosition();
+    WorldLocation loc;
+	master->GetPosition(loc);
     float followAngle = frand(0, 2 * M_PI);
     float distance = sPlayerbotAIConfig.grindDistance - frand(sPlayerbotAIConfig.grindDistance / 10, sPlayerbotAIConfig.grindDistance / 5);
     for (float angle = followAngle - M_PI; angle <= followAngle + M_PI; angle += M_PI / 4)
@@ -319,8 +320,9 @@ void RandomPlayerbotMgr::Refresh(Player* bot)
             bot->SetBotDeathTimer();
             bot->BuildPlayerRepop();
             Corpse *corpse = bot->GetCorpse();
-            const WorldLocation& loc = corpse->GetPosition();
-            bot->TeleportTo( loc.GetMapId(), loc.coord_x, loc.coord_y, loc.coord_z, bot->GetOrientation() );
+            WorldLocation loc;
+			corpse->GetPosition(loc);
+            bot->TeleportTo( loc.mapid, loc.coord_x, loc.coord_y, loc.coord_z, bot->GetOrientation() );
         }
         else
         {
