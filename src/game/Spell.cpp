@@ -131,6 +131,10 @@ SpellCastTargets::~SpellCastTargets()
 
 void SpellCastTargets::setUnitTarget(Unit* target)
 {
+
+    if (target && !(target->isType(TYPEMASK_UNIT)))
+        return;
+
     if (target && !(m_targetMask & TARGET_FLAG_DEST_LOCATION))
     {
         m_destX = target->GetPositionX();
@@ -1159,7 +1163,7 @@ void Spell::AddItemTarget(Item* pitem, SpellEffectIndex effIndex)
     m_UniqueItemInfo.push_back(target);
 }
 
-void Spell::DoAllEffectOnTarget(TargetInfo *target)
+void Spell::DoAllEffectOnTarget(TargetInfo* target)
 {
     if (!target || target->processed)                       // Check target
         return;
@@ -1169,7 +1173,10 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
     // Get mask of effects for target
     uint32 mask = target->effectMask;
 
-    Unit* unit = m_caster->GetObjectGuid() == target->targetGUID ? m_caster : ObjectAccessor::GetUnit(*m_caster, target->targetGUID);
+    Unit* unit = (m_caster->GetObjectGuid() == target->targetGUID) ? 
+                    m_caster : 
+                    m_caster->GetMap()->GetUnit(target->targetGUID);
+
     if (!unit)
         return;
 
@@ -1204,7 +1211,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
     }
 
     // Speed possible inherited from triggering spell
-    float speed_proto = GetBaseSpellSpeed();
+    // float speed_proto = GetBaseSpellSpeed();
 
     if (m_spellInfo->speed > M_NULL_F || GetDelayStart())
     {
@@ -1421,15 +1428,15 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
         ((Creature*)real_caster)->AI()->SpellHitTarget(unit, m_spellInfo);
 }
 
-void Spell::DoSpellHitOnUnit(Unit *unit, uint32 effectMask)
+void Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask)
 {
-    if (!unit || (!effectMask && !damage))
+    if (!unit || !unit->isType(TYPEMASK_UNIT) || (!effectMask && !damage))
         return;
 
     Unit* realCaster = GetAffectiveCaster();
 
     // Speed possible inherited from triggering spell
-    float speed_proto = GetBaseSpellSpeed();
+    // float speed_proto = GetBaseSpellSpeed();
 
     // Recheck effect immune (only for delayed spells)
     if (m_spellInfo->speed > M_NULL_F)
@@ -2205,6 +2212,8 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                     case 38028:                                             // Watery Grave
                     case 40618:                                             // Insignificance
                     case 41376:                                             // Spite
+                    case 62166:                                             // Stone Grip nh
+                    case 63981:                                             // Stone Grip h
                         if (Unit* pVictim = m_caster->getVictim())
                             targetUnitMap.remove(pVictim);
                         break;
@@ -3766,7 +3775,7 @@ void Spell::cast(bool skipCheck)
 
     InitializeDamageMultipliers();
 
-    Unit *procTarget = m_targets.getUnitTarget();
+    Unit* procTarget = m_targets.getUnitTarget();
     if (!procTarget)
         procTarget = m_caster;
 
@@ -7960,6 +7969,11 @@ bool Spell::CheckTarget(Unit* target, SpellEffectIndex eff )
             if (target->GetTypeId() != TYPEID_PLAYER || target->IsInWater())
                 return false;
             break;
+        case 68921:                                         // Soulstorm (FoS), only targets farer than 10 away
+        case 69049:                                         // Soulstorm            - = -
+            if (m_caster->IsWithinDist(target, 10.0f, false))
+                return false;
+            break;
         default:
             break;
     }
@@ -8641,22 +8655,6 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex i, UnitList &targetUnitMap)
                 targetUnitMap.push_back((Unit*)m_caster);
             break;
         }
-        case 62166: // Stone Grip (Kologarn)
-        case 63342: // Focused Eyebeam Summon Trigger (Kologarn)
-        case 63981: // Stone Grip (Kologarn)
-        {
-            if (m_caster->getVictim())
-                targetUnitMap.push_back(m_caster->getVictim());
-            else
-            {
-                FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_AOE_DAMAGE);
-                targetUnitMap.sort(TargetDistanceOrderNear(m_caster));
-                targetUnitMap.resize(1);
-            }
-            if (!targetUnitMap.empty())
-                return true;
-            break;
-        }
         case 62343: // Heat (remove all except active iron constructs)
         {
             UnitList tempTargetUnitMap;
@@ -8785,18 +8783,6 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex i, UnitList &targetUnitMap)
             }
             break;
         }
-        case 68921: // Soulstorm (Forge of Souls - Bronjahm)
-        case 69049:
-        {
-            UnitList tmpUnitMap;
-            FillAreaTargets(tmpUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_AOE_DAMAGE);
-            for (UnitList::const_iterator itr = tmpUnitMap.begin(); itr != tmpUnitMap.end(); ++itr)
-            {
-                if (*itr && !(*itr)->IsWithinDistInMap(m_caster, 10.0f))
-                    targetUnitMap.push_back(*itr);
-            }
-            break;
-        }
         case 66862: // Radiance (Trial of the Champion - Eadric the Pure)
         case 67681:
         {
@@ -8878,24 +8864,24 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex i, UnitList &targetUnitMap)
                     oozesMap.push_back((*iter));
             }
 
-            UnitList::iterator i;
+            UnitList::iterator itr;
 
             // 2 random targets
             if (!oozesMap.empty())
             {
-                i = oozesMap.begin();
-                std::advance(i, urand(0, oozesMap.size() - 1));
+                itr = oozesMap.begin();
+                std::advance(itr, urand(0, oozesMap.size() - 1));
 
                 // first Ooze Flood
-                targetUnitMap.push_back(*i);
-                oozesMap.remove(*i);
+                targetUnitMap.push_back(*itr);
+                oozesMap.remove(*itr);
 
                 // now find the second - closest one
                 if (!oozesMap.empty())
                 {
-                    oozesMap.sort(TargetDistanceOrderNear(*i));
-                    i = oozesMap.begin();
-                    targetUnitMap.push_back(*i);
+                    oozesMap.sort(TargetDistanceOrderNear(*itr));
+                    itr = oozesMap.begin();
+                    targetUnitMap.push_back(*itr);
                 }
 
                 return true;
