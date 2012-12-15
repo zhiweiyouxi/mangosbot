@@ -9,6 +9,7 @@
 #include "PlayerbotAI.h"
 #include "../Player.h"
 #include "RandomPlayerbotFactory.h"
+#include "SystemConfig.h"
 
 bool RandomPlayerbotFactory::CreateRandomBot()
 {
