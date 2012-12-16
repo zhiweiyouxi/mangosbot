@@ -10,7 +10,7 @@
 using namespace ai;
 using namespace std;
 
-void PlayerbotFactory::Randomize()
+void PlayerbotFactory::Randomize(bool incremental)
 {
     bot->ClearInCombat();
     bot->SetLevel(level);
@@ -25,7 +25,7 @@ void PlayerbotFactory::Randomize()
     InitSkills();
     InitQuests();
     InitAvailableSpells();
-    InitEquipment();
+    InitEquipment(incremental);
     InitPet();
 
     // quest rewards boost bot level, so reduce back
@@ -398,7 +398,7 @@ bool PlayerbotFactory::CanEquipItem(ItemPrototype const* proto, uint32 desiredQu
     return true;
 }
 
-void PlayerbotFactory::InitEquipment()
+void PlayerbotFactory::InitEquipment(bool incremental)
 {
     DestroyItemsVisitor visitor(bot);
     IterateItems(&visitor, ITERATE_ALL_ITEMS);
@@ -472,6 +472,10 @@ void PlayerbotFactory::InitEquipment()
             uint32 index = urand(0, ids.size() - 1);
             uint32 newItemId = ids[index];
 
+            if (incremental && !IsDesiredReplacement(bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot))) {
+                continue;
+            }
+
             uint16 dest;
             if (!CanEquipUnseenItem(slot, dest, newItemId))
                 continue;
@@ -486,6 +490,16 @@ void PlayerbotFactory::InitEquipment()
             }
         }
     }
+}
+
+bool PlayerbotFactory::IsDesiredReplacement(Item* item)
+{
+    if (!item)
+        return true;
+
+    ItemPrototype const* proto = item->GetProto();
+    int delta = 1 + (80 - bot->getLevel()) / 10;
+    return (int)bot->getLevel() - (int)proto->RequiredLevel > delta;
 }
 
 void PlayerbotFactory::InitSecondEquipmentSet()

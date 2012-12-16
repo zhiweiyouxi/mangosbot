@@ -25,6 +25,7 @@ public:
 
     bool randomBotAutologin;
     std::list<uint32> randomBotAccounts;
+    std::string randomBotMapsAsString;
     std::vector<uint32> randomBotMaps;
     std::list<uint32> randomBotQuestItems;
     uint32 randomBotTeleportDistance;

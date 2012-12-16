@@ -69,7 +69,8 @@ bool PlayerbotAIConfig::Initialize()
     allowGuildBots = config.GetBoolDefault("AiPlayerbot.AllowGuildBots", true);
 
     LoadList<list<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotAccounts", ""), randomBotAccounts);
-    LoadList<vector<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotMaps", "0,1,530,571"), randomBotMaps);
+    randomBotMapsAsString = config.GetStringDefault("AiPlayerbot.RandomBotMaps", "0,1,530,571");
+    LoadList<vector<uint32> >(randomBotMapsAsString, randomBotMaps);
     LoadList<list<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotQuestItems", "6948,5175,5176,5177,5178"), randomBotQuestItems);
 
     randomBotAutologin = config.GetBoolDefault("AiPlayerbot.RandomBotAutologin", false);

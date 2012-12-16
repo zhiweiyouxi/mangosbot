@@ -181,6 +181,44 @@ bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
 }
 
 
+void RandomPlayerbotMgr::RandomTeleportForLevel(Player* bot)
+{
+    vector<WorldLocation> locs;
+    QueryResult* results = WorldDatabase.PQuery("select map, position_x, position_y, position_z "
+        "from (select map, position_x, position_y, position_z, avg(t.maxlevel), avg(t.minlevel), "
+        "(avg(t.maxlevel) + avg(t.minlevel)) / 2 - %u delta "
+        "from creature c inner join creature_template t on c.id = t.entry group by t.entry) q "
+        "where delta >= 0 and delta <= 1 and map in (%s)",
+        bot->getLevel(), sPlayerbotAIConfig.randomBotMapsAsString.c_str());
+    if (results)
+    {
+        do
+        {
+            Field* fields = results->Fetch();
+            uint32 mapId = fields[0].GetUInt32();
+            float x = fields[1].GetFloat();
+            float y = fields[2].GetFloat();
+            float z = fields[3].GetFloat();
+            WorldLocation loc(mapId, x, y, z, 0);
+            locs.push_back(loc);
+        } while (results->NextRow());
+        delete results;
+    }
+
+    if (locs.size() > 0)
+    {
+        int index = urand(0, locs.size() - 1);
+        WorldLocation loc = locs[index];
+        loc.coord_x += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
+        loc.coord_y += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
+        Map* map = sMapMgr.FindMap(loc.mapid);
+        if (!map)
+            map = sMapMgr.CreateMap(loc.mapid, bot);
+        loc.coord_z = 0.05f + map->GetTerrain()->GetHeightStatic(loc.coord_x, loc.coord_y, 10 + loc.coord_z, true, MAX_HEIGHT);
+        bot->TeleportTo(loc);
+    }
+}
+
 void RandomPlayerbotMgr::RandomTeleport(Player* bot, uint32 mapId, float teleX, float teleY, float teleZ)
 {
     Refresh(bot);
@@ -224,6 +262,23 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, uint32 mapId, float teleX, 
 
 void RandomPlayerbotMgr::Randomize(Player* bot)
 {
+    if (bot->getLevel() == 1)
+        RandomizeFirst(bot);
+    else
+        IncreaseLevel(bot);
+}
+
+void RandomPlayerbotMgr::IncreaseLevel(Player* bot)
+{
+    uint32 maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
+    uint32 level = min(bot->getLevel() + 1, maxLevel);
+    PlayerbotFactory factory(bot, level, urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC));
+    factory.Randomize(true);
+    RandomTeleportForLevel(bot);
+}
+
+void RandomPlayerbotMgr::RandomizeFirst(Player* bot)
+{
     uint32 maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
     for (int attempt = 0; attempt < 100; ++attempt)
     {
@@ -246,7 +301,7 @@ void RandomPlayerbotMgr::Randomize(Player* bot)
             continue;
 
         PlayerbotFactory factory(bot, min(level, maxLevel), urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC));
-        factory.Randomize();
+        factory.Randomize(false);
         RandomTeleport(bot, tele->mapId, tele->position_x, tele->position_y, tele->position_z);
         break;
     }
@@ -288,6 +343,9 @@ void RandomPlayerbotMgr::DoPvpAttack(Player* bot)
 	Player* master = bot->GetPlayerbotAI()->GetMaster();
     uint32 level = master->getLevel();
 
+    if (abs((int)bot->getLevel() - (int)level) > 4)
+        return;
+
     WorldLocation loc;
 	master->GetPosition(loc);
     float followAngle = frand(0, 2 * M_PI);
@@ -300,8 +358,6 @@ void RandomPlayerbotMgr::DoPvpAttack(Player* bot)
         master->UpdateAllowedPositionZ(x, y, z);
         if (master->IsWithinLOS(x, y, z))
         {
-            PlayerbotFactory factory(bot, urand(level - 2, level + 2), urand(ITEM_QUALITY_RARE, ITEM_QUALITY_EPIC));
-            factory.Randomize();
             Refresh(bot);
             bot->TeleportTo(master->GetMapId(), x, y, z + 0.05f, 0);
             break;

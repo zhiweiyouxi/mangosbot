@@ -16,11 +16,11 @@ public:
         bot(bot), level(level), itemQuality(itemQuality), InventoryAction(bot->GetPlayerbotAI(), "factory") {}
 
     static ObjectGuid GetRandomBot();
-    void Randomize();
+    void Randomize(bool incremental);
 
 private:
     void InitSecondEquipmentSet();
-    void InitEquipment();
+    void InitEquipment(bool incremental);
     bool CanEquipItem(ItemPrototype const* proto, uint32 desiredQuality);
     bool CanEquipUnseenItem(uint8 slot, uint16 &dest, uint32 item);
     void InitSkills();
@@ -42,6 +42,7 @@ private:
     void AddItemStats(uint32 mod, uint8 &sp, uint8 &ap, uint8 &tank);
     bool CheckItemStats(uint8 sp, uint8 ap, uint8 tank);
     void CancelAuras();
+    bool IsDesiredReplacement(Item* item);
 
 private:
     Player* bot;

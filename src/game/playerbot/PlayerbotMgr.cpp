@@ -121,7 +121,7 @@ void PlayerbotMgr::RandomizePlayerBot(uint64 guid, uint32 level, uint32 itemQual
         return;
 
     PlayerbotFactory factory(bot, level, itemQuality);
-    factory.Randomize();
+    factory.Randomize(false);
 }
 
 Player* PlayerbotMgr::GetPlayerBot(uint64 playerGuid) const
