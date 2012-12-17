@@ -102,9 +102,6 @@ bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
 		Player* player = mgr->GetPlayerBot(bot);
 		if (!player || !player->GetGroup())
 		{
-			if (mgr->GetPlayerBot(bot))
-				mgr->LogoutPlayerBot(bot);
-
 			sLog.outBasic("Bot %d expired for account %d", bot, account);
 			SetEventValue(bot, "add", 0, 0);
 		}
