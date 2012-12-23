@@ -24,6 +24,7 @@ public:
     uint32 lowMana, mediumMana;
 
     bool randomBotAutologin;
+    bool randomBotGrinding;
     std::list<uint32> randomBotAccounts;
     std::string randomBotMapsAsString;
     std::vector<uint32> randomBotMaps;

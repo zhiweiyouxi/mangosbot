@@ -74,6 +74,7 @@ bool PlayerbotAIConfig::Initialize()
     LoadList<list<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotQuestItems", "6948,5175,5176,5177,5178"), randomBotQuestItems);
 
     randomBotAutologin = config.GetBoolDefault("AiPlayerbot.RandomBotAutologin", false);
+    randomBotGrinding = config.GetBoolDefault("AiPlayerbot.RandomBotGrinding", true);
     minRandomBots = config.GetIntDefault("AiPlayerbot.MinRandomBots", 1);
     maxRandomBots = config.GetIntDefault("AiPlayerbot.MaxRandomBots", 10);
     randomBotUpdateInterval = config.GetIntDefault("AiPlayerbot.RandomBotUpdateInterval", 60);
