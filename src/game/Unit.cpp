@@ -3015,17 +3015,16 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit *pVictim, WeaponAttack
     int32 victimDefenseSkill = pVictim->GetDefenseSkillValue(this);
 
     // bonus from skills is 0.04%
-    int32    skillBonus  = 4 * ( attackerWeaponSkill - victimMaxSkillValueForLevel );
-    int32    sum = 0, tmp = 0;
-    int32    roll = urand (0, 10000);
+    int32 skillBonus  = 4 * (attackerWeaponSkill - victimMaxSkillValueForLevel);
+    int32 sum = 0;
+    int32 roll = urand(0, 10000);
+    int32 tmp = miss_chance;
 
     DEBUG_FILTER_LOG(LOG_FILTER_COMBAT, "RollMeleeOutcomeAgainst: skill bonus of %d for attacker", skillBonus);
     DEBUG_FILTER_LOG(LOG_FILTER_COMBAT, "RollMeleeOutcomeAgainst: rolled %d, miss %d, dodge %d, parry %d, block %d, crit %d",
         roll, miss_chance, dodge_chance, parry_chance, block_chance, crit_chance);
 
-    tmp = miss_chance;
-
-    if (tmp > 0 && roll < (sum += tmp ))
+    if (tmp > 0 && roll < (sum += tmp))
     {
         DEBUG_FILTER_LOG(LOG_FILTER_COMBAT, "RollMeleeOutcomeAgainst: MISS");
         return MELEE_HIT_MISS;
@@ -3570,7 +3569,7 @@ SpellMissInfo Unit::SpellResistResult(Unit* pVictim, SpellEntry const* spell)
         return SPELL_MISS_NONE;
 
     // Spell this type can't be resisted
-    if ((spell->SchoolMask & SPELL_SCHOOL_MASK_NORMAL) && spell->HasAttribute(SPELL_ATTR_EX3_CANT_MISS))
+    if ((spell->SchoolMask & SPELL_SCHOOL_MASK_NORMAL) || spell->HasAttribute(SPELL_ATTR_EX3_CANT_MISS))
         return SPELL_MISS_NONE;
 
     // Impossible resist friendly spells
