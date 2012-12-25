@@ -63,7 +63,7 @@ bool PlayerbotAIConfig::Initialize()
     lowMana = config.GetIntDefault("AiPlayerbot.LowMana", 15);
     mediumMana = config.GetIntDefault("AiPlayerbot.MediumMana", 40);
 
-    randomGearLoweringChance = config.GetFloatDefault("AiPlayerbot.RandomGearLoweringChance", 0.15);
+    randomGearLoweringChance = config.GetFloatDefault("AiPlayerbot.RandomGearLoweringChance", 0.25);
 
     iterationsPerTick = config.GetIntDefault("AiPlayerbot.IterationsPerTick", 10);
 
@@ -193,6 +193,25 @@ void PlayerbotAIConfig::CreateRandomBots()
 {
     string randomBotAccountPrefix = config.GetStringDefault("AiPlayerbot.RandomBotAccountPrefix", "rndbot");
     uint32 randomBotAccountCount = config.GetIntDefault("AiPlayerbot.RandomBotAccountCount", 50);
+
+    if (config.GetBoolDefault("AiPlayerbot.DeleteRandomBotAccounts", false))
+    {
+        sLog.outBasic("Deleting random bot accounts...");
+        QueryResult *results = LoginDatabase.PQuery("SELECT id FROM account where username like '%s%%'", randomBotAccountPrefix.c_str());
+        if (results)
+        {
+            do
+            {
+                Field* fields = results->Fetch();
+                sAccountMgr.DeleteAccount(fields[0].GetUInt32());
+            } while (results->NextRow());
+
+            delete results;
+        }
+
+        CharacterDatabase.Execute("DELETE FROM ai_playerbot_random_bots");
+        sLog.outBasic("Random bot accounts deleted");
+    }
 
     for (int accountNumber = 0; accountNumber < randomBotAccountCount; ++accountNumber)
     {

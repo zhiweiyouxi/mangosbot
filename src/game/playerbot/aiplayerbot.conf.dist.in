@@ -56,6 +56,9 @@ AiPlayerbot.MaxRandomBots = 10
 AiPlayerbot.RandomBotAccountPrefix = "rndbot"
 AiPlayerbot.RandomBotAccountCount = 50
 
+# Delete all random bot accounts
+AiPlayerbot.DeleteRandomBotAccounts = 0
+
 # Maps to teleport random bots
 AiPlayerbot.RandomBotMaps = "0,1"
 
