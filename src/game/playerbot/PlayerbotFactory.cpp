@@ -25,6 +25,7 @@ void PlayerbotFactory::Randomize(bool incremental)
     InitSkills();
     InitQuests();
     InitAvailableSpells();
+    InitSpecialSpells();
     InitEquipment(incremental);
     InitPet();
 
@@ -777,6 +778,15 @@ void PlayerbotFactory::InitAvailableSpells()
             else
                 ai->CastSpell(tSpell->spell, bot);
         }
+    }
+}
+
+void PlayerbotFactory::InitSpecialSpells()
+{
+    for (list<uint32>::iterator i = sPlayerbotAIConfig.randomBotSpellIds.begin(); i != sPlayerbotAIConfig.randomBotSpellIds.end(); ++i)
+    {
+        uint32 spellId = *i;
+        bot->learnSpell(spellId, false);
     }
 }
 

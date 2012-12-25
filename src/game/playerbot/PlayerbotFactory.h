@@ -28,6 +28,7 @@ private:
     void InitSpells();
     void ClearSpells();
     void InitAvailableSpells();
+    void InitSpecialSpells();
     void InitTalents();
     void InitTalents(uint32 specNo);
     void InitQuests();

@@ -29,6 +29,7 @@ public:
     std::vector<uint32> randomBotMaps;
     std::list<uint32> randomBotQuestItems;
     std::list<uint32> randomBotAccounts;
+    std::list<uint32> randomBotSpellIds;
     uint32 randomBotTeleportDistance;
     float randomGearLoweringChance;
     uint32 minRandomBots, maxRandomBots;
