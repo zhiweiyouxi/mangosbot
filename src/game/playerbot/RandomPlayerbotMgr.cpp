@@ -268,7 +268,7 @@ void RandomPlayerbotMgr::IncreaseLevel(Player* bot)
 {
     uint32 maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
     uint32 level = min(bot->getLevel() + 1, maxLevel);
-    PlayerbotFactory factory(bot, level, urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC));
+    PlayerbotFactory factory(bot, level);
     factory.Randomize(true);
     RandomTeleportForLevel(bot);
 }
@@ -296,7 +296,7 @@ void RandomPlayerbotMgr::RandomizeFirst(Player* bot)
         if (level > maxLevel + 5)
             continue;
 
-        PlayerbotFactory factory(bot, min(level, maxLevel), urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC));
+        PlayerbotFactory factory(bot, min(level, maxLevel));
         factory.Randomize(false);
         RandomTeleport(bot, tele->mapId, tele->position_x, tele->position_y, tele->position_z);
         break;

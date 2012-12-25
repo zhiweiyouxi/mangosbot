@@ -12,6 +12,20 @@ using namespace std;
 
 void PlayerbotFactory::Randomize(bool incremental)
 {
+    if (!itemQuality)
+    {
+        if (level <= 10)
+            itemQuality = urand(ITEM_QUALITY_NORMAL, ITEM_QUALITY_UNCOMMON);
+        else if (level <= 20)
+            itemQuality = urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_RARE);
+        else if (level <= 40)
+            itemQuality = urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC);
+        else if (level < 60)
+            itemQuality = urand(ITEM_QUALITY_UNCOMMON, ITEM_QUALITY_EPIC);
+        else
+            itemQuality = urand(ITEM_QUALITY_RARE, ITEM_QUALITY_EPIC);
+    }
+
     bot->ClearInCombat();
     bot->SetLevel(level);
     bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
@@ -39,6 +53,7 @@ void PlayerbotFactory::Randomize(bool incremental)
     InitMounts();
     InitPotions();
     InitSecondEquipmentSet();
+    bot->SaveToDB();
 }
 
 void PlayerbotFactory::InitPet()
@@ -396,6 +411,15 @@ bool PlayerbotFactory::CanEquipItem(ItemPrototype const* proto, uint32 desiredQu
             (!requiredLevel || requiredLevel > level || requiredLevel < level - 10))
         return false;
 
+    if (!requiredLevel)
+        return true;
+
+    for (uint32 gap = 60; gap <= 80; gap += 10)
+    {
+        if (level > gap && requiredLevel <= gap)
+            return false;
+    }
+
     return true;
 }
 
@@ -411,7 +435,7 @@ void PlayerbotFactory::InitEquipment(bool incremental)
             continue;
 
         uint32 desiredQuality = itemQuality;
-        while (urand(0, 100) < 100 * sPlayerbotAIConfig.randomGearLoweringChance && desiredQuality > ITEM_QUALITY_NORMAL) {
+        if (urand(0, 100) < 100 * sPlayerbotAIConfig.randomGearLoweringChance && desiredQuality > ITEM_QUALITY_NORMAL) {
             desiredQuality--;
         }
 

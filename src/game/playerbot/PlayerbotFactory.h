@@ -12,7 +12,7 @@ using ai::InventoryAction;
 class PlayerbotFactory : public InventoryAction
 {
 public:
-    PlayerbotFactory(Player* bot, uint32 level, uint32 itemQuality) :
+    PlayerbotFactory(Player* bot, uint32 level, uint32 itemQuality = 0) :
         bot(bot), level(level), itemQuality(itemQuality), InventoryAction(bot->GetPlayerbotAI(), "factory") {}
 
     static ObjectGuid GetRandomBot();
