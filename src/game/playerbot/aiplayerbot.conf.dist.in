@@ -52,8 +52,9 @@ AiPlayerbot.RandomBotAutoCreate = true
 AiPlayerbot.MinRandomBots = 1
 AiPlayerbot.MaxRandomBots = 10
 
-# Accounts to use as random bots
-AiPlayerbot.RandomBotAccounts = ""
+# Accounts to create for random bots
+AiPlayerbot.RandomBotAccountPrefix = "rndbot"
+AiPlayerbot.RandomBotAccountCount = 50
 
 # Maps to teleport random bots
 AiPlayerbot.RandomBotMaps = "0,1"

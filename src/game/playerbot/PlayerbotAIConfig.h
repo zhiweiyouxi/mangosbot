@@ -25,10 +25,10 @@ public:
 
     bool randomBotAutologin;
     bool randomBotGrinding;
-    std::list<uint32> randomBotAccounts;
     std::string randomBotMapsAsString;
     std::vector<uint32> randomBotMaps;
     std::list<uint32> randomBotQuestItems;
+    std::list<uint32> randomBotAccounts;
     uint32 randomBotTeleportDistance;
     float randomGearLoweringChance;
     uint32 minRandomBots, maxRandomBots;
