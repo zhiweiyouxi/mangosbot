@@ -496,8 +496,9 @@ void PlayerbotFactory::InitEquipment(bool incremental)
         {
             uint32 index = urand(0, ids.size() - 1);
             uint32 newItemId = ids[index];
+            Item* oldItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
 
-            if (incremental && !IsDesiredReplacement(bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot))) {
+            if (incremental && !IsDesiredReplacement(oldItem)) {
                 continue;
             }
 
@@ -505,10 +506,17 @@ void PlayerbotFactory::InitEquipment(bool incremental)
             if (!CanEquipUnseenItem(slot, dest, newItemId))
                 continue;
 
-            Item* newItem = bot->EquipNewItem(dest, newItemId, false);
+            if (oldItem)
+            {
+                bot->RemoveItem(INVENTORY_SLOT_BAG_0, slot, true);
+                oldItem->DestroyForPlayer(bot, false);
+            }
+
+            Item* newItem = bot->EquipNewItem(dest, newItemId, true);
             if (newItem)
             {
                 newItem->AddToWorld();
+                newItem->AddToUpdateQueueOf(bot);
                 bot->AutoUnequipOffhandIfNeed();
                 EnchantItem(newItem);
                 break;
@@ -614,6 +622,7 @@ void PlayerbotFactory::InitSecondEquipmentSet()
             {
                 EnchantItem(newItem);
                 newItem->AddToWorld();
+                newItem->AddToUpdateQueueOf(bot);
                 break;
             }
         }
@@ -873,7 +882,7 @@ void PlayerbotFactory::InitTalents(uint32 specNo)
             int index = urand(0, ids.size() - 1);
             uint32 spellId = ids[index];
             ids.erase(ids.begin() + index);
-            bot->learnSpell(spellId, true);
+            bot->learnSpell(spellId, false);
             bot->UpdateFreeTalentPoints(false);
         }
 
@@ -946,6 +955,9 @@ void PlayerbotFactory::InitQuests()
                     !bot->SatisfyQuestStatus(quest, false))
                 continue;
 
+            if (quest->IsDailyOrWeekly() || quest->IsRepeatable() || quest->IsMonthly())
+                continue;
+
             bot->SetQuestStatus(questId, QUEST_STATUS_COMPLETE);
             bot->RewardQuest(quest, 0, bot, false);
             ClearInventory();
@@ -993,7 +1005,11 @@ void PlayerbotFactory::InitAmmo()
     {
         uint32 entry = fields[0].GetUInt32();
         for (int i = 0; i < 5; i++)
-            bot->StoreNewItemInInventorySlot(entry, 1000);
+        {
+            Item* newItem = bot->StoreNewItemInInventorySlot(entry, 1000);
+            if (newItem)
+                newItem->AddToUpdateQueueOf(bot);
+        }
         bot->SetAmmo(entry);
     }
 
@@ -1090,7 +1106,9 @@ void PlayerbotFactory::InitPotions()
 
         uint32 itemId = ids[index];
         ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
-        bot->StoreNewItemInInventorySlot(itemId, urand(1, proto->GetMaxStackSize()));
+        Item* newItem = bot->StoreNewItemInInventorySlot(itemId, urand(1, proto->GetMaxStackSize()));
+        if (newItem)
+            newItem->AddToUpdateQueueOf(bot);
    }
 }
 
