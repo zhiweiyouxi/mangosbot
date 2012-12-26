@@ -296,7 +296,12 @@ void RandomPlayerbotMgr::RandomizeFirst(Player* bot)
         if (level > maxLevel + 5)
             continue;
 
-        PlayerbotFactory factory(bot, min(level, maxLevel));
+        level = min(level, maxLevel);
+
+        if (urand(0, 100) < 100 * sPlayerbotAIConfig.randomBotMaxLevelChance)
+            level = maxLevel;
+
+        PlayerbotFactory factory(bot, level);
         factory.Randomize(false);
         RandomTeleport(bot, tele->mapId, tele->position_x, tele->position_y, tele->position_z);
         break;

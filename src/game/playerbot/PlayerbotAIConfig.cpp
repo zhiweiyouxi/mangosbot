@@ -64,6 +64,7 @@ bool PlayerbotAIConfig::Initialize()
     mediumMana = config.GetIntDefault("AiPlayerbot.MediumMana", 40);
 
     randomGearLoweringChance = config.GetFloatDefault("AiPlayerbot.RandomGearLoweringChance", 0.25);
+    randomBotMaxLevelChance = config.GetFloatDefault("AiPlayerbot.RandomBotMaxLevelChance", 0.25);
 
     iterationsPerTick = config.GetIntDefault("AiPlayerbot.IterationsPerTick", 10);
 

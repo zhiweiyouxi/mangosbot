@@ -63,7 +63,10 @@ AiPlayerbot.DeleteRandomBotAccounts = 0
 AiPlayerbot.RandomBotMaps = "0,1"
 
 # Change random bot has lower gear
-AiPlayerbot.RandomGearLoweringChance = 0.15
+AiPlayerbot.RandomGearLoweringChance = 0.25
+
+# Chance random bot has max level on first randomize
+AiPlayerbot.RandomBotMaxLevelChance = 0.25
 
 # Quest items to leave (do not destroy)
 AiPlayerbot.RandomBotQuestItems = "6948,5175,5176,5177,5178"

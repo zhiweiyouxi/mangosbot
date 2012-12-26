@@ -32,6 +32,7 @@ public:
     std::list<uint32> randomBotSpellIds;
     uint32 randomBotTeleportDistance;
     float randomGearLoweringChance;
+    float randomBotMaxLevelChance;
     uint32 minRandomBots, maxRandomBots;
     uint32 randomBotUpdateInterval, randomBotCountChangeInterval;
     uint32 minRandomBotInWorldTime, maxRandomBotInWorldTime;
