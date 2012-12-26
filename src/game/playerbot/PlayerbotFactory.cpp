@@ -6,6 +6,7 @@
 #include "PlayerbotAIConfig.h"
 #include "../AccountMgr.h"
 #include "../../shared/Database/DBCStore.h"
+#include "../SharedDefines.h"
 
 using namespace ai;
 using namespace std;
@@ -877,7 +878,7 @@ void PlayerbotFactory::InitTalents(uint32 specNo)
         }
 
         int attemptCount = 0;
-        while (!ids.empty() && freePoints - bot->GetFreeTalentPoints() < 5 && attemptCount++ < 3)
+        while (!ids.empty() && (int)freePoints - (int)bot->GetFreeTalentPoints() < 5 && attemptCount++ < 3 && bot->GetFreeTalentPoints())
         {
             int index = urand(0, ids.size() - 1);
             uint32 spellId = ids[index];
@@ -887,6 +888,14 @@ void PlayerbotFactory::InitTalents(uint32 specNo)
         }
 
         freePoints = bot->GetFreeTalentPoints();
+    }
+
+    for (uint32 i = 0; i < MAX_TALENT_SPEC_COUNT; ++i)
+    {
+        for (PlayerTalentMap::iterator itr = bot->GetTalentMap(i).begin(); itr != bot->GetTalentMap(i).end(); ++itr)
+        {
+            itr->second.state = PLAYERSPELL_CHANGED;
+        }
     }
 }
 
