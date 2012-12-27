@@ -60,6 +60,15 @@ void PlayerbotMgr::UpdateAIInternal(uint32 elapsed)
     SetNextCheckDelay(sPlayerbotAIConfig.reactDelay);
 }
 
+void PlayerbotMgr::HandleCommand(uint32 type, const string& text)
+{
+    for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
+    {
+        Player* const bot = it->second;
+        bot->GetPlayerbotAI()->HandleCommand(type, text, *GetMaster());
+    }
+}
+
 void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
 {
     for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
