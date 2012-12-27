@@ -47,7 +47,8 @@ void PacketHandlingHelper::Handle(ExternalEventHelper &helper)
 
 void PacketHandlingHelper::AddPacket(const WorldPacket& packet)
 {
-    queue.push(WorldPacket(packet));
+	if (handlers.find(packet.GetOpcode()) != handlers.end())
+        queue.push(WorldPacket(packet));
 }
 
 
