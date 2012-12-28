@@ -177,6 +177,43 @@ bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
     return false;
 }
 
+void RandomPlayerbotMgr::RandomTeleport(Player* bot, vector<WorldLocation> &locs)
+{
+    if (bot->IsBeingTeleported())
+        return;
+
+    if (locs.empty())
+    {
+        sLog.outError("Cannot teleport bot %s - no locations available", bot->GetName());
+        return;
+    }
+
+    for (int attemtps = 0; attemtps < 10; ++attemtps)
+    {
+        int index = urand(0, locs.size() - 1);
+        WorldLocation loc = locs[index];
+        float x = loc.coord_x + urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
+        float y = loc.coord_y + urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
+        float z = loc.coord_z;
+
+        Map* map = sMapMgr.FindMap(loc.mapid);
+        if (!map)
+            continue;
+
+        const TerrainInfo * terrain = map->GetTerrain();
+        if (!terrain->IsOutdoors(x, y, z) ||
+                terrain->IsAboveWater(x, y, z) ||
+                terrain->IsUnderWater(x, y, z) ||
+                terrain->IsInWater(x, y, z))
+            continue;
+
+        z = 0.05f + map->GetTerrain()->GetHeightStatic(x, y, 0.05f + z, true, MAX_HEIGHT);
+        bot->TeleportTo(loc.mapid, x, y, z, 0);
+        return;
+    }
+
+    sLog.outError("Cannot teleport bot %s - no locations available", bot->GetName());
+}
 
 void RandomPlayerbotMgr::RandomTeleportForLevel(Player* bot)
 {
@@ -202,17 +239,7 @@ void RandomPlayerbotMgr::RandomTeleportForLevel(Player* bot)
         delete results;
     }
 
-    if (locs.size() > 0)
-    {
-        int index = urand(0, locs.size() - 1);
-        WorldLocation loc = locs[index];
-        loc.coord_x += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
-        loc.coord_y += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
-        Map* map = sMapMgr.FindMap(loc.mapid);
-        if (map)
-            loc.coord_z = 0.05f + map->GetTerrain()->GetHeightStatic(loc.coord_x, loc.coord_y, 10 + loc.coord_z, true, MAX_HEIGHT);
-        bot->TeleportTo(loc);
-    }
+    RandomTeleport(bot, locs);
 }
 
 void RandomPlayerbotMgr::RandomTeleport(Player* bot, uint32 mapId, float teleX, float teleY, float teleZ)
@@ -236,24 +263,7 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, uint32 mapId, float teleX, 
         delete results;
     }
 
-    Map* map = sMapMgr.FindMap(mapId);
-
-    if (locs.size() > 0)
-    {
-        int index = urand(0, locs.size() - 1);
-        WorldLocation loc = locs[index];
-        loc.coord_x += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
-        loc.coord_y += urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
-        if (map)
-            loc.coord_z = 0.05f + map->GetTerrain()->GetHeightStatic(loc.coord_x, loc.coord_y, 10 + loc.coord_z, true, MAX_HEIGHT);
-        bot->TeleportTo(loc);
-    }
-    else
-    {
-        if (map)
-            teleZ = 0.05f + map->GetTerrain()->GetHeightStatic(teleX, teleY, teleZ, true, MAX_HEIGHT);
-        bot->TeleportTo(mapId, teleX, teleY, teleZ, 0);
-    }
+    RandomTeleport(bot, locs);
 }
 
 void RandomPlayerbotMgr::Randomize(Player* bot)
@@ -372,20 +382,8 @@ void RandomPlayerbotMgr::Refresh(Player* bot)
 
     if (bot->isDead())
     {
-        if (!bot->GetCorpse())
-        {
-            bot->SetBotDeathTimer();
-            bot->BuildPlayerRepop();
-            Corpse *corpse = bot->GetCorpse();
-            WorldLocation loc;
-			corpse->GetPosition(loc);
-            bot->TeleportTo( loc.mapid, loc.coord_x, loc.coord_y, loc.coord_z, bot->GetOrientation() );
-        }
-        else
-        {
-            PlayerbotChatHandler ch(bot->GetPlayerbotAI()->GetMaster());
-            ch.revive(*bot);
-        }
+        PlayerbotChatHandler ch(bot->GetPlayerbotAI()->GetMaster());
+        ch.revive(*bot);
     }
 
     bot->DurabilityRepairAll(false, 1.0f, false);
