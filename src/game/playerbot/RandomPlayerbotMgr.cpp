@@ -38,7 +38,7 @@ void RandomPlayerbotMgr::UpdateAIInternal(uint32 elapsed)
     list<uint32> bots = GetBots();
     int botCount = bots.size();
     int maxEnemyBots = maxAllowedBotCount * sPlayerbotAIConfig.randomBotEnemyPercent / 100;
-    while (botCount++ < maxEnemyBots)
+    while (botCount++ < maxEnemyBots && botCount < maxAllowedBotCount)
     {
         uint32 bot = AddRandomBot(true);
         if (bot)
