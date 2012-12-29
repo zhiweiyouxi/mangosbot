@@ -23,11 +23,8 @@ bool TradeStatusAction::Execute(Event event)
         return false;
     }
 
-    if (!bot->GetGroup() && !master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
-    {
-        ai->TellMaster("I'm kind of busy now");
+    if (!ai->GetSecurity()->CheckLevelFor(PLAYERBOT_SECURITY_ALLOW_ALL))
         return false;
-    }
 
     WorldPacket p(event.getPacket());
     p.rpos(0);

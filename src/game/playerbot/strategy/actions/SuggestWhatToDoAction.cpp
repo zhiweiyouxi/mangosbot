@@ -30,7 +30,7 @@ bool SuggestWhatToDoAction::Execute(Event event)
 void SuggestWhatToDoAction::instance()
 {
     if (bot->getLevel() > 15)
-        ai->TellMaster("I would like to do an instance");
+        ai->TellMaster("I would like to do an instance. Would you like to join me?", PLAYERBOT_SECURITY_INVITE);
 }
 
 vector<uint32> SuggestWhatToDoAction::GetIncompletedQuests()
@@ -61,40 +61,40 @@ void SuggestWhatToDoAction::specificQuest()
 
     Quest const* quest = sObjectMgr.GetQuestTemplate(quests[index]);
     ostringstream out; out << "We could do some quest, for instance " << chat->formatQuest(quest);
-    ai->TellMaster(out);
+    ai->TellMaster(out, PLAYERBOT_SECURITY_INVITE);
 }
 
 void SuggestWhatToDoAction::newQuest()
 {
     vector<uint32> quests = GetIncompletedQuests();
     if (quests.size() < MAX_QUEST_LOG_SIZE - 5)
-        ai->TellMaster("I would like to pick up and do a new quest");
+        ai->TellMaster("I would like to pick up and do a new quest. Would you like to join me?", PLAYERBOT_SECURITY_INVITE);
 }
 
 void SuggestWhatToDoAction::grindMaterials()
 {
     if (bot->getLevel() > 5)
-        ai->TellMaster("I think we could grind some materials for our group tradeskill");
+        ai->TellMaster("I think we should grind some materials for our group tradeskill", PLAYERBOT_SECURITY_TALK);
 }
 
 void SuggestWhatToDoAction::grindReputation()
 {
     if (bot->getLevel() > 50)
-        ai->TellMaster("I think we should do something to improve our reputation with several factions");
+        ai->TellMaster("I think we should do something to improve our reputation", PLAYERBOT_SECURITY_TALK);
 }
 
 void SuggestWhatToDoAction::nothing()
 {
-    ai->TellMaster("I don't want to do anything. Can I log off?");
+    ai->TellMaster("I don't want to do anything", PLAYERBOT_SECURITY_TALK);
 }
 
 void SuggestWhatToDoAction::relax()
 {
-    ai->TellMaster("It is so boring... We could have some relaxing...");
+    ai->TellMaster("It is so boring... We could relax a bit", PLAYERBOT_SECURITY_TALK);
 }
 
 void SuggestWhatToDoAction::achievement()
 {
     if (bot->getLevel() > 15)
-        ai->TellMaster("I would like to do some achievement");
+        ai->TellMaster("I would like to do some achievement. Would you like to join me?", PLAYERBOT_SECURITY_INVITE);
 }
