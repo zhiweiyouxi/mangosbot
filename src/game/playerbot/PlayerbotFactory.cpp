@@ -42,6 +42,7 @@ void PlayerbotFactory::Randomize(bool incremental)
     InitAvailableSpells();
     InitSpecialSpells();
     InitEquipment(incremental);
+    InitBags();
     InitPet();
 
     // quest rewards boost bot level, so reduce back
@@ -622,6 +623,50 @@ void PlayerbotFactory::InitSecondEquipmentSet()
             if (newItem)
             {
                 EnchantItem(newItem);
+                newItem->AddToWorld();
+                newItem->AddToUpdateQueueOf(bot);
+                break;
+            }
+        }
+    }
+}
+
+void PlayerbotFactory::InitBags()
+{
+    vector<uint32> ids;
+
+    for (uint32 itemId = 0; itemId < sItemStorage.GetMaxEntry(); ++itemId)
+    {
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
+        if (!proto || proto->Class != ITEM_CLASS_CONTAINER)
+            continue;
+
+        if (!CanEquipItem(proto, ITEM_QUALITY_NORMAL))
+            continue;
+
+        ids.push_back(itemId);
+    }
+
+    if (ids.empty())
+    {
+        sLog.outError("%s: no bags found", bot->GetName());
+        return;
+    }
+
+    for (uint8 slot = INVENTORY_SLOT_BAG_START; slot < INVENTORY_SLOT_BAG_END; ++slot)
+    {
+        for (int attempts = 0; attempts < 15; attempts++)
+        {
+            uint32 index = urand(0, ids.size() - 1);
+            uint32 newItemId = ids[index];
+
+            uint16 dest;
+            if (!CanEquipUnseenItem(slot, dest, newItemId))
+                continue;
+
+            Item* newItem = bot->EquipNewItem(dest, newItemId, true);
+            if (newItem)
+            {
                 newItem->AddToWorld();
                 newItem->AddToUpdateQueueOf(bot);
                 break;
