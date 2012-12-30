@@ -71,8 +71,6 @@ void PlayerbotFactory::InitPet()
         if (!map)
             return;
 
-        pet = new Pet(HUNTER_PET);
-
 		vector<uint32> ids;
         for (uint32 id = 0; id < sCreatureStorage.GetMaxEntry(); ++id)
         {
@@ -90,27 +88,30 @@ void PlayerbotFactory::InitPet()
 
             uint32 guid = map->GenerateLocalLowGuid(HIGHGUID_PET);
             CreatureCreatePos pos(map, bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), bot->GetPhaseMask());
+            pet = new Pet(HUNTER_PET);
             if (!pet->Create(guid, pos, co, 0, bot))
+            {
+                delete pet;
+                pet = NULL;
                 continue;
+            }
 
             pet->SetOwnerGuid(bot->GetObjectGuid());
             pet->SetCreatorGuid(bot->GetObjectGuid());
             pet->setFaction(bot->getFaction());
-            pet->InitStatsForLevel(bot->getLevel());
-            pet->GetCharmInfo()->SetPetNumber(sObjectMgr.GeneratePetNumber(), true);
-            pet->AIM_Initialize();
-            pet->InitPetCreateSpells();
-            pet->InitLevelupSpellsForLevel();
-            pet->InitTalentForLevel();
-            pet->SetHealth(pet->GetMaxHealth());
             pet->SetLevel(bot->getLevel());
-            Map* map = bot->GetMap();
-            if (map) map->Add((Creature*)pet);
             bot->SetPet(pet);
+
+            pet->Summon();
             pet->SavePetToDB(PET_SAVE_AS_CURRENT);
-            bot->PetSpellInitialize();
             break;
         }
+    }
+
+    if (!pet)
+    {
+        sLog.outError("Cannot create pet for bot %s", bot->GetName());
+        return;
     }
 
     for (PetSpellMap::const_iterator itr = pet->m_spells.begin(); itr != pet->m_spells.end(); ++itr)
@@ -681,6 +682,9 @@ void PlayerbotFactory::EnchantItem(Item* item)
     if (urand(0, 100) < 100 * sPlayerbotAIConfig.randomGearLoweringChance)
         return;
 
+    ItemPrototype const* proto = item->GetProto();
+    int32 itemLevel = proto->ItemLevel;
+
     vector<uint32> ids;
     for (int id = 0; id < sSpellStore.GetNumRows(); ++id)
     {
@@ -688,8 +692,8 @@ void PlayerbotFactory::EnchantItem(Item* item)
         if (!entry)
             continue;
 
-        uint32 requiredLevel = entry->baseLevel;
-        if (requiredLevel && (requiredLevel > item->GetProto()->ItemLevel || requiredLevel < item->GetProto()->ItemLevel - 35))
+        int32 requiredLevel = (int32)entry->baseLevel;
+        if (requiredLevel && (requiredLevel > itemLevel || requiredLevel < itemLevel - 35))
             continue;
 
         if (entry->maxLevel && level > entry->maxLevel)

@@ -208,6 +208,7 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, vector<WorldLocation> &locs
                 terrain->IsInWater(x, y, z))
             continue;
 
+        sLog.outDetail("Random teleporting bot %s to %u %f,%f,%f", bot->GetName(), loc.mapid, x, y, z);
         z = 0.05f + map->GetTerrain()->GetHeightStatic(x, y, 0.05f + z, true, MAX_HEIGHT);
         bot->TeleportTo(loc.mapid, x, y, z, 0);
         return;
@@ -557,6 +558,10 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
 
                     sLog.outDetail("Randomizing bot %s for account %u", bot->GetName(), account);
                     mgr.RandomizeFirst(bot);
+                    uint32 randomTime = urand(sPlayerbotAIConfig.minRandomBotRandomizeTime, sPlayerbotAIConfig.maxRandomRandomizeTime);
+                    CharacterDatabase.PExecute("update ai_playerbot_random_bots set validIn = '%u' where event = 'randomize' and bot = '%u'",
+                            randomTime, bot->GetGUIDLow());
+                    CharacterDatabase.PExecute("delete from ai_playerbot_random_bots where event = 'logout' and bot = '%u'", bot->GetGUIDLow());
                 } while (results->NextRow());
 
                 delete results;
