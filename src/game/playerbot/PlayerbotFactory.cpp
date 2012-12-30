@@ -35,10 +35,10 @@ void PlayerbotFactory::Randomize(bool incremental)
     ClearSpells();
     ClearInventory();
 
-    InitTalents();
     InitSpells();
     InitSkills();
     InitQuests();
+    InitTalents();
     InitAvailableSpells();
     InitSpecialSpells();
     InitEquipment(incremental);
