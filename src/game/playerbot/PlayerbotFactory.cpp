@@ -55,6 +55,7 @@ void PlayerbotFactory::Randomize(bool incremental)
     InitMounts();
     InitPotions();
     InitSecondEquipmentSet();
+    InitInventory();
     bot->SaveToDB();
 }
 
@@ -1170,4 +1171,45 @@ void PlayerbotFactory::InitPotions()
 void PlayerbotFactory::CancelAuras()
 {
     bot->RemoveAllAuras();
+}
+
+void PlayerbotFactory::InitInventory()
+{
+    vector<uint32> ids;
+    for (uint32 itemId = 0; itemId < sItemStorage.GetMaxEntry(); ++itemId)
+    {
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
+        if (!proto)
+            continue;
+
+        if (proto->Class != ITEM_CLASS_TRADE_GOODS || proto->Bonding != NO_BIND)
+            continue;
+
+        if (bot->getLevel() >= 40 && proto->Quality < ITEM_QUALITY_RARE)
+            continue;
+
+        if (bot->getLevel() >= 20 && proto->Quality < ITEM_QUALITY_UNCOMMON)
+            continue;
+
+        ids.push_back(itemId);
+    }
+
+    int maxCount = urand(0, 3);
+    int count = 0;
+    for (int attempts = 0; attempts < 15; attempts++)
+    {
+        uint32 index = urand(0, ids.size() - 1);
+        if (index >= ids.size())
+            continue;
+
+        uint32 itemId = ids[index];
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
+        Item* newItem = bot->StoreNewItemInInventorySlot(itemId, urand(1, proto->GetMaxStackSize()));
+        if (newItem)
+        {
+            newItem->AddToUpdateQueueOf(bot);
+            if (count++ >= maxCount)
+                break;
+        }
+   }
 }

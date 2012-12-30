@@ -45,6 +45,7 @@ private:
     void CancelAuras();
     bool IsDesiredReplacement(Item* item);
     void InitBags();
+    void InitInventory();
 
 private:
     Player* bot;
