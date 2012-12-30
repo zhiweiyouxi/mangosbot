@@ -126,7 +126,7 @@ int32 TradeStatusAction::CalculateCost(TradeData* data)
         if (!item)
             continue;
 
-        sum += auctionbot.GetSellPrice(item->GetProto());
+        sum += item->GetCount() * auctionbot.GetSellPrice(item->GetProto());
     }
 
     return sum;
