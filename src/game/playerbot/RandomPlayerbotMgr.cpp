@@ -511,3 +511,29 @@ uint32 RandomPlayerbotMgr::SetEventValue(uint32 bot, string event, uint32 value,
 
     return value;
 }
+
+bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
+{
+    if(sConfig.GetBoolDefault("PlayerbotAI.DisableBots", false))
+    {
+        sLog.outError("Playerbot system is currently disabled!");
+        return false;
+    }
+
+    if (!args || !*args)
+    {
+        sLog.outError("Usage: rndbot reset");
+        return false;
+    }
+
+    string cmd = args;
+
+    if (cmd == "reset")
+    {
+        CharacterDatabase.PExecute("delete from ai_playerbot_random_bots");
+        sLog.outBasic("Random bots were reset for all players");
+        return true;
+    }
+
+    return false;
+}
