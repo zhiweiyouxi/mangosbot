@@ -134,6 +134,9 @@ void SuggestWhatToDoAction::trade()
         return;
 
     uint32 price = auctionbot.GetSellPrice(item->GetProto());
+    if (!price)
+        return;
+
     ostringstream out; out << "Selling " << chat->formatItem(item->GetProto(), item->GetCount()) << " for " << chat->formatMoney(price);
     ai->TellMaster(out, PLAYERBOT_SECURITY_INVITE);
 }
