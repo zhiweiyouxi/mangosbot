@@ -45,14 +45,14 @@ PlayerbotSecurityLevel PlayerbotSecurity::LevelFor(Player* from)
         if (!bot->GetGroup())
             return PLAYERBOT_SECURITY_INVITE;
 
-        Group* group = bot->GetGroup();
+        Group* group = master->GetGroup();
         for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
         {
             Player* player = gref->getSource();
-            if(player == bot)
+            if(player == master)
                 continue;
 
-            if (player == master)
+            if (player == bot)
                 return PLAYERBOT_SECURITY_ALLOW_ALL;
         }
 
