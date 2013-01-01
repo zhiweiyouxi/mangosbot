@@ -27,7 +27,7 @@ namespace ai
         static ChatMsg parseChat(string& text);
         static string formatChat(ChatMsg chat);
 
-        static string formatClass(uint8 cls, int spec, int talentCount);
+        static string formatClass(Player* player, int spec);
 
         static uint32 parseItemQuality(string text);
         static bool parseItemClass(string text, uint32 *itemClass, uint32 *itemSubClass);
