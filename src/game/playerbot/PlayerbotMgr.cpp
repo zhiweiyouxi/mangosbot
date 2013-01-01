@@ -238,6 +238,12 @@ bool processBotCommand(WorldSession* session, string cmd, ObjectGuid guid)
             mgr->RandomizePlayerBot(guid.GetRawValue(), session->GetPlayer()->getLevel(), ITEM_QUALITY_EPIC);
             return true;
         }
+        else if (cmd == "update")
+        {
+            PlayerbotFactory factory(bot, bot->getLevel());
+            factory.Randomize(true);
+            return true;
+        }
         else if (cmd == "pvp")
         {
             mgr->GetMaster()->GetRandomPlayerbotMgr()->DoPvpAttack(bot);
