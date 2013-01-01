@@ -395,9 +395,18 @@ bool ChatHelper::parseable(string text)
 string ChatHelper::formatClass(Player* player, int spec)
 {
     uint8 cls = player->getClass();
+
     ostringstream out;
-    out << specs[cls][spec] << " ("
-            << (int)player->GetTalentsCount(0) << "/" << (int)player->GetTalentsCount(1) << "/" << (int)player->GetTalentsCount(2)
-            << ") " << classes[cls];
+    out << specs[cls][spec] << " (";
+
+    int c0 = (int)player->GetTalentsCount(0);
+    int c1 = (int)player->GetTalentsCount(1);
+    int c2 = (int)player->GetTalentsCount(2);
+
+    out << (c0 ? "|h|cff00ff00" : "") << c0 << "|h|cffffffff/";
+    out << (c1 ? "|h|cff00ff00" : "") << c1 << "|h|cffffffff/";
+    out << (c2 ? "|h|cff00ff00" : "") << c2 << "|h|cffffffff";
+
+    out <<  ") " << classes[cls];
     return out.str();
 }
