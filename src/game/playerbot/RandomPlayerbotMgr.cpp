@@ -93,6 +93,11 @@ void RandomPlayerbotMgr::ScheduleRandomize(uint32 bot, uint32 time)
     SetEventValue(bot, "logout", 1, time + 30 + urand(sPlayerbotAIConfig.randomBotUpdateInterval, sPlayerbotAIConfig.randomBotUpdateInterval * 3));
 }
 
+void RandomPlayerbotMgr::ScheduleTeleport(uint32 bot)
+{
+    SetEventValue(bot, "teleport", 1, 60 + urand(sPlayerbotAIConfig.randomBotUpdateInterval, sPlayerbotAIConfig.randomBotUpdateInterval * 3));
+}
+
 bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
 {
     PlayerbotMgr* mgr = master->GetPlayerbotMgr();
@@ -135,6 +140,13 @@ bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
         return false;
     }
 
+    if (player->isDead())
+    {
+        sLog.outBasic("Random teleporting dead bot %d for account %d", bot, account);
+        RandomTeleport(player, player->GetMapId(), player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+        return true;
+    }
+
     uint32 randomize = GetEventValue(bot, "randomize");
     if (!randomize)
     {
@@ -154,10 +166,11 @@ bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
         return true;
     }
 
-    if (player->isDead())
+    uint32 teleport = GetEventValue(bot, "teleport");
+    if (!teleport)
     {
-        sLog.outBasic("Random teleporting dead bot %d for account %d", bot, account);
-        RandomTeleport(player, player->GetMapId(), player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+        sLog.outBasic("Random teleporting bot %d for account %d", bot, account);
+        RandomTeleportForLevel(ai->GetBot());
         return true;
     }
 
