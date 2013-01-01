@@ -171,6 +171,7 @@ bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
     {
         sLog.outBasic("Random teleporting bot %d for account %d", bot, account);
         RandomTeleportForLevel(ai->GetBot());
+        SetEventValue(bot, "teleport", 1, sPlayerbotAIConfig.maxRandomBotInWorldTime);
         return true;
     }
 
