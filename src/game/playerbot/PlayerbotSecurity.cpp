@@ -56,6 +56,9 @@ PlayerbotSecurityLevel PlayerbotSecurity::LevelFor(Player* from)
         if (botGS && bot->getLevel() > 15 && 100 * (botGS - fromGS) / botGS >= (10 + (91 - (int)bot->getLevel()) / 4))
             return PLAYERBOT_SECURITY_TALK;
 
+        if (bot->isDead())
+            return PLAYERBOT_SECURITY_TALK;
+
         if (!group)
             return PLAYERBOT_SECURITY_INVITE;
 
