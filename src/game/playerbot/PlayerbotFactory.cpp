@@ -27,35 +27,47 @@ void PlayerbotFactory::Randomize(bool incremental)
             itemQuality = urand(ITEM_QUALITY_RARE, ITEM_QUALITY_EPIC);
     }
 
+    if (bot->isDead())
+    {
+        PlayerbotChatHandler ch(bot->GetPlayerbotAI()->GetMaster());
+        ch.revive(*bot);
+    }
+
     bot->ClearInCombat();
     bot->SetLevel(level);
     bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
     bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK);
 
+    bot->resetTalents(true, true);
     ClearSpells();
     ClearInventory();
+    bot->SaveToDB();
 
-    InitSpells();
-    InitSkills();
     InitQuests();
-    InitTalents();
-    InitAvailableSpells();
-    InitSpecialSpells();
-    InitEquipment(incremental);
-    InitBags();
-    InitPet();
-
     // quest rewards boost bot level, so reduce back
     bot->SetLevel(level);
     ClearInventory();
     bot->SetUInt32Value(PLAYER_XP, 0);
     CancelAuras();
+    bot->SaveToDB();
 
-    InitAmmo();
+    InitAvailableSpells();
+    InitSkills();
+    InitTalents();
+    InitAvailableSpells();
+    InitSpecialSpells();
     InitMounts();
+    bot->SaveToDB();
+
+    InitEquipment(incremental);
+    InitBags();
+    InitAmmo();
     InitPotions();
     InitSecondEquipmentSet();
     InitInventory();
+    bot->SaveToDB();
+
+    InitPet();
     bot->SaveToDB();
 }
 
@@ -153,9 +165,11 @@ void PlayerbotFactory::InitSpells()
 
 void PlayerbotFactory::InitTalents()
 {
-    bot->resetTalents(true, true);
     uint32 specNo = urand(0, 2);
     InitTalents(specNo);
+
+    if (bot->GetFreeTalentPoints())
+        InitTalents(2 - specNo);
 }
 
 
@@ -944,7 +958,8 @@ void PlayerbotFactory::InitTalents(uint32 specNo)
     {
         for (PlayerTalentMap::iterator itr = bot->GetTalentMap(i).begin(); itr != bot->GetTalentMap(i).end(); ++itr)
         {
-            itr->second.state = PLAYERSPELL_CHANGED;
+            if (itr->second.state != PLAYERSPELL_REMOVED)
+                itr->second.state = PLAYERSPELL_CHANGED;
         }
     }
 }

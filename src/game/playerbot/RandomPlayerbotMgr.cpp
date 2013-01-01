@@ -584,7 +584,8 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
                     uint32 randomTime = urand(sPlayerbotAIConfig.minRandomBotRandomizeTime, sPlayerbotAIConfig.maxRandomRandomizeTime);
                     CharacterDatabase.PExecute("update ai_playerbot_random_bots set validIn = '%u' where event = 'randomize' and bot = '%u'",
                             randomTime, bot->GetGUIDLow());
-                    CharacterDatabase.PExecute("delete from ai_playerbot_random_bots where event = 'logout' and bot = '%u'", bot->GetGUIDLow());
+                    CharacterDatabase.PExecute("update ai_playerbot_random_bots set validIn = '%u' where event = 'logout' and bot = '%u'",
+                            sPlayerbotAIConfig.maxRandomBotInWorldTime, bot->GetGUIDLow());
                 } while (results->NextRow());
 
                 delete results;
