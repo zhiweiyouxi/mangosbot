@@ -392,9 +392,9 @@ bool ChatHelper::parseable(string text)
             parseMoney(text) > 0;
 }
 
-string ChatHelper::formatClass(uint8 cls, uint8 spec)
+string ChatHelper::formatClass(uint8 cls, int spec, int talentCount)
 {
     ostringstream out;
-    out << specs[cls][spec] << " " << classes[cls];
+    out << specs[cls][spec] << " (" << talentCount << ") " << classes[cls];
     return out.str();
 }

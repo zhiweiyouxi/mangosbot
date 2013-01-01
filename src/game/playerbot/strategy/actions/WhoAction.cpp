@@ -28,7 +28,8 @@ bool WhoAction::Execute(Event event)
 {
     ostringstream out;
 
-    out << "|h|cffffffff" << chat->formatClass(bot->getClass(), AiFactory::GetPlayerSpecTab(bot));
+    int spec = AiFactory::GetPlayerSpecTab(bot);
+    out << "|h|cffffffff" << chat->formatClass(bot->getClass(), spec, bot->GetTalentsCount(spec));
     out << " |h|cff00ff00" << bot->getLevel() << "|h|cffffffff lvl ";
 
     ItemCountByQuality visitor;
