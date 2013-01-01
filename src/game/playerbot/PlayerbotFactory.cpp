@@ -28,12 +28,9 @@ void PlayerbotFactory::Randomize(bool incremental)
     }
 
     if (bot->isDead())
-    {
-        PlayerbotChatHandler ch(bot->GetPlayerbotAI()->GetMaster());
-        ch.revive(*bot);
-    }
+        bot->ResurrectPlayer(1.0f, false);
 
-    bot->ClearInCombat();
+    bot->CombatStop(true);
     bot->SetLevel(level);
     bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
     bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK);
@@ -892,7 +889,7 @@ void PlayerbotFactory::InitTalents(uint32 specNo)
 {
     uint32 classMask = bot->getClassMask();
 
-    map<uint32, vector<uint32> > spells;
+    map<uint32, vector<TalentEntry const*> > spells;
     for (uint32 i = 0; i < sTalentStore.GetNumRows(); ++i)
     {
         TalentEntry const *talentInfo = sTalentStore.LookupEntry(i);
@@ -906,49 +903,33 @@ void PlayerbotFactory::InitTalents(uint32 specNo)
         if( (classMask & talentTabInfo->ClassMask) == 0 )
             continue;
 
-        // search highest talent rank
-        uint32 spellid = 0;
-
-        for(int rank = MAX_TALENT_RANK-1; rank >= 0; --rank)
-        {
-            if(talentInfo->RankID[rank]!=0)
-            {
-                spellid = talentInfo->RankID[rank];
-                break;
-            }
-        }
-
-        if(!spellid)                                        // ??? none spells in talent
-            continue;
-
-        SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid);
-        if(!spellInfo)
-            continue;
-
-        if (bot->HasSpell(spellid))
-            continue;
-
-        spells[talentInfo->Row].push_back(spellid);
+        spells[talentInfo->Row].push_back(talentInfo);
     }
 
     uint32 freePoints = bot->GetFreeTalentPoints();
-    for (map<uint32, vector<uint32> >::iterator i = spells.begin(); i != spells.end(); ++i)
+    for (map<uint32, vector<TalentEntry const*> >::iterator i = spells.begin(); i != spells.end(); ++i)
     {
-        vector<uint32> &ids = i->second;
-        if (ids.empty())
+        vector<TalentEntry const*> &spells = i->second;
+        if (spells.empty())
         {
             sLog.outError("%s: No spells for talent row %d", bot->GetName(), i->first);
             continue;
         }
 
         int attemptCount = 0;
-        while (!ids.empty() && (int)freePoints - (int)bot->GetFreeTalentPoints() < 5 && attemptCount++ < 3 && bot->GetFreeTalentPoints())
+        while (!spells.empty() && (int)freePoints - (int)bot->GetFreeTalentPoints() < 5 && attemptCount++ < 3 && bot->GetFreeTalentPoints())
         {
-            int index = urand(0, ids.size() - 1);
-            uint32 spellId = ids[index];
-            ids.erase(ids.begin() + index);
-            bot->learnSpell(spellId, false);
-            bot->UpdateFreeTalentPoints(false);
+            int index = urand(0, spells.size() - 1);
+            TalentEntry const *talentInfo = spells[index];
+            for (int rank = 0; rank < MAX_TALENT_RANK && bot->GetFreeTalentPoints(); ++rank)
+            {
+                uint32 spellId = talentInfo->RankID[rank];
+                if (!spellId)
+                    continue;
+                bot->learnSpell(spellId, false);
+                bot->UpdateFreeTalentPoints(false);
+            }
+			spells.erase(spells.begin() + index);
         }
 
         freePoints = bot->GetFreeTalentPoints();
