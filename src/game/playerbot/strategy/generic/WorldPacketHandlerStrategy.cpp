@@ -14,7 +14,7 @@ void WorldPacketHandlerStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         "group set leader",
-        NextAction::array(0, new NextAction("pass leadership to master", relevance), NULL)));
+        NextAction::array(0, new NextAction("leader", relevance), NULL)));
 
     triggers.push_back(new TriggerNode(
         "not enough money",

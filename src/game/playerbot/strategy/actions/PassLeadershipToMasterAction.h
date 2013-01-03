@@ -6,7 +6,7 @@ namespace ai
 {
     class PassLeadershipToMasterAction : public Action {
     public:
-        PassLeadershipToMasterAction(PlayerbotAI* ai) : Action(ai, "pass leadership to master") {}
+        PassLeadershipToMasterAction(PlayerbotAI* ai) : Action(ai, "leader") {}
 
         virtual bool Execute(Event event)
         {

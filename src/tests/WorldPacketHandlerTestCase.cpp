@@ -57,7 +57,7 @@ protected:
         trigger("group set leader");
         tick();
 
-        assertActions(">S:pass leadership to master");
+        assertActions(">S:leader");
     }
     void notEnoughMoney()
     {

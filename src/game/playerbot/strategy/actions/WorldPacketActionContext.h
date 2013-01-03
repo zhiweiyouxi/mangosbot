@@ -30,7 +30,7 @@ namespace ai
         WorldPacketActionContext()
         {
             creators["accept invitation"] = &WorldPacketActionContext::accept_invitation;
-            creators["pass leadership to master"] = &WorldPacketActionContext::pass_leadership_to_master;
+            creators["leader"] = &WorldPacketActionContext::pass_leadership_to_master;
             creators["tell not enough money"] = &WorldPacketActionContext::tell_not_enough_money;
             creators["tell not enough reputation"] = &WorldPacketActionContext::tell_not_enough_reputation;
             creators["tell cannot equip"] = &WorldPacketActionContext::tell_cannot_equip;
