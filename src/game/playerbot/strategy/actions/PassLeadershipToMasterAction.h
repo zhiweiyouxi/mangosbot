@@ -10,21 +10,12 @@ namespace ai
 
         virtual bool Execute(Event event)
         {
-            
-            
-            WorldPacket &p = event.getPacket();
-
-            string name;
-            p >> name;
-            if (bot->GetGroup() && name == bot->GetName())
+            if (bot->GetGroup() && bot->GetGroup()->IsMember(master->GetObjectGuid()))
             {
-                if (bot->GetGroup()->IsMember(master->GetObjectGuid()))
-                {
-                    p.resize(8);
-                    p << master->GetObjectGuid();
-                    bot->GetSession()->HandleGroupSetLeaderOpcode(p);
-                    return true;
-                }
+                WorldPacket p(SMSG_GROUP_SET_LEADER, 8);
+                p << master->GetObjectGuid();
+                bot->GetSession()->HandleGroupSetLeaderOpcode(p);
+                return true;
             }
 
             return false;

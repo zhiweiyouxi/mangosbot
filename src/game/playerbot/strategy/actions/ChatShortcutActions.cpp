@@ -58,3 +58,15 @@ bool GrindChatShortcutAction::Execute(Event event)
     ai->TellMaster("Grinding");
     return true;
 }
+
+bool TankAttackChatShortcutAction::Execute(Event event)
+{
+    if (!ai->IsTank(bot))
+        return false;
+
+    ai->Reset();
+    ai->ChangeStrategy("-passive", BOT_STATE_NON_COMBAT);
+    ai->ChangeStrategy("-passive", BOT_STATE_COMBAT);
+    ai->TellMaster("Attacking");
+    return true;
+}
