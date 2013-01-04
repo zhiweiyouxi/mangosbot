@@ -87,6 +87,10 @@ void PlayerbotFactory::InitPet()
             if (!co || !co->isTameable(false))
                 continue;
 
+			PetLevelInfo const* petInfo = sObjectMgr.GetPetLevelInfo(co->Entry, bot->getLevel());
+            if (!petInfo)
+                continue;
+
 			ids.push_back(id);
 		}
 
