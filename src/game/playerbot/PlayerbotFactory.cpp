@@ -59,6 +59,7 @@ void PlayerbotFactory::Randomize(bool incremental)
     InitEquipment(incremental);
     InitBags();
     InitAmmo();
+    InitFood();
     InitPotions();
     InitSecondEquipmentSet();
     InitInventory();
@@ -1159,6 +1160,50 @@ void PlayerbotFactory::InitPotions()
     {
         uint32 effect = effects[i];
         vector<uint32>& ids = items[effect];
+        uint32 index = urand(0, ids.size() - 1);
+        if (index >= ids.size())
+            continue;
+
+        uint32 itemId = ids[index];
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
+        Item* newItem = bot->StoreNewItemInInventorySlot(itemId, urand(1, proto->GetMaxStackSize()));
+        if (newItem)
+            newItem->AddToUpdateQueueOf(bot);
+   }
+}
+
+void PlayerbotFactory::InitFood()
+{
+    map<uint32, vector<uint32> > items;
+    for (uint32 itemId = 0; itemId < sItemStorage.GetMaxEntry(); ++itemId)
+    {
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
+        if (!proto)
+            continue;
+
+        if (proto->Class != ITEM_CLASS_CONSUMABLE ||
+            proto->SubClass != ITEM_SUBCLASS_FOOD ||
+            (proto->Spells[0].SpellCategory != 11 && proto->Spells[0].SpellCategory != 59) ||
+            proto->Bonding != NO_BIND)
+            continue;
+
+        if (proto->RequiredLevel > bot->getLevel() || proto->RequiredLevel < bot->getLevel() - 10)
+            continue;
+
+        if (proto->RequiredSkill && !bot->HasSkill(proto->RequiredSkill))
+            continue;
+
+        if (proto->Area || proto->Map || proto->RequiredCityRank || proto->RequiredHonorRank)
+            continue;
+
+        items[proto->Spells[0].SpellCategory].push_back(itemId);
+    }
+
+    uint32 categories[] = { 11, 59 };
+    for (int i = 0; i < sizeof(categories) / sizeof(uint32); ++i)
+    {
+        uint32 category = categories[i];
+        vector<uint32>& ids = items[category];
         uint32 index = urand(0, ids.size() - 1);
         if (index >= ids.size())
             continue;
