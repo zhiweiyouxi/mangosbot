@@ -62,10 +62,14 @@ void PlayerbotMgr::UpdateAIInternal(uint32 elapsed)
 
 void PlayerbotMgr::HandleCommand(uint32 type, const string& text)
 {
+    Player *master = GetMaster();
+    if (!master)
+        return;
+
     for (PlayerBotMap::const_iterator it = GetPlayerBotsBegin(); it != GetPlayerBotsEnd(); ++it)
     {
         Player* const bot = it->second;
-        bot->GetPlayerbotAI()->HandleCommand(type, text, *GetMaster());
+        bot->GetPlayerbotAI()->HandleCommand(type, text, *master);
     }
 }
 
@@ -189,7 +193,7 @@ bool processBotCommand(WorldSession* session, string cmd, ObjectGuid guid)
         return false;
 
     PlayerbotMgr* mgr = session->GetPlayer()->GetPlayerbotMgr();
-    bool isRandomBot = mgr->GetMaster()->GetRandomPlayerbotMgr()->IsRandomBot(guid);
+    bool isRandomBot = mgr->GetMaster() && mgr->GetMaster()->GetRandomPlayerbotMgr()->IsRandomBot(guid);
     bool isRandomAccount = sPlayerbotAIConfig.IsInRandomAccountList(sObjectMgr.GetPlayerAccountIdByGUID(guid));
 
     if (isRandomAccount && !isRandomBot && session->GetSecurity() < SEC_GAMEMASTER)
@@ -244,12 +248,12 @@ bool processBotCommand(WorldSession* session, string cmd, ObjectGuid guid)
             factory.Randomize(true);
             return true;
         }
-        else if (cmd == "pvp")
+        else if (cmd == "pvp" && mgr->GetMaster())
         {
             mgr->GetMaster()->GetRandomPlayerbotMgr()->DoPvpAttack(bot);
             return true;
         }
-        else if (cmd == "random")
+        else if (cmd == "random" && mgr->GetMaster())
         {
             mgr->GetMaster()->GetRandomPlayerbotMgr()->Randomize(bot);
             return true;
@@ -422,7 +426,7 @@ uint32 PlayerbotMgr::GetAccountId(string name)
 bool PlayerbotMgr::ProcessBot(string name, string cmdStr)
 {
     ObjectGuid member = sObjectMgr.GetPlayerGuidByName(name);
-	if (member != GetMaster()->GetObjectGuid())
+	if (GetMaster() && member != GetMaster()->GetObjectGuid())
     {
 		return processBotCommand(GetMaster()->GetSession(), cmdStr, member);
     }

@@ -21,6 +21,9 @@ bool LfgUpdateAction::Execute(Event event)
     if (bot->isDead())
         return false;
 
+    if (!master)
+        return false;
+
     if (!master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
         return false;
 

@@ -10,7 +10,7 @@ namespace ai
 
         virtual bool Execute(Event event)
         {
-            if (bot->GetGroup() && bot->GetGroup()->IsMember(master->GetObjectGuid()))
+            if (master && bot->GetGroup() && bot->GetGroup()->IsMember(master->GetObjectGuid()))
             {
                 WorldPacket p(SMSG_GROUP_SET_LEADER, 8);
                 p << master->GetObjectGuid();

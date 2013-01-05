@@ -364,7 +364,7 @@ uint32 RandomPlayerbotMgr::GetZoneLevel(uint32 mapId, float teleX, float teleY, 
 
 void RandomPlayerbotMgr::DoPvpAttack(Player* bot)
 {
-    if (master->IsBeingTeleported())
+    if (!master || master->IsBeingTeleported())
         return;
 
 	Player* master = bot->GetPlayerbotAI()->GetMaster();
@@ -398,7 +398,7 @@ void RandomPlayerbotMgr::Refresh(Player* bot)
 
     if (bot->isDead())
     {
-        PlayerbotChatHandler ch(bot->GetPlayerbotAI()->GetMaster());
+        PlayerbotChatHandler ch(bot);
         ch.revive(*bot);
     }
 

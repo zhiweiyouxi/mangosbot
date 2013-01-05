@@ -26,6 +26,9 @@ public:
 
 bool WhoAction::Execute(Event event)
 {
+    if (!master)
+        return false;
+
     ostringstream out;
 
     int spec = AiFactory::GetPlayerSpecTab(bot);

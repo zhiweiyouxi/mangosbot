@@ -126,7 +126,7 @@ public:
 
 void SuggestWhatToDoAction::trade()
 {
-    if (!master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
+    if (!master || !master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
         return;
 
     FindTradeItemsVisitor visitor;

@@ -22,7 +22,7 @@ namespace ai
 
             ai->ResetStrategies();
 
-            if (master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
+            if (master && master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
                 master->GetRandomPlayerbotMgr()->ScheduleTeleport(bot->GetGUIDLow());
 
             return true;

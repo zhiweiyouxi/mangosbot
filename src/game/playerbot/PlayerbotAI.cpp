@@ -376,10 +376,9 @@ void PlayerbotAI::ChangeEngine(BotState type)
 
 void PlayerbotAI::DoNextAction()
 {
-    if (bot->IsBeingTeleported() || GetMaster()->IsBeingTeleported())
+    if (bot->IsBeingTeleported() || (GetMaster() && GetMaster()->IsBeingTeleported()))
         return;
 
-    Player* master = GetMaster();
     bot->UpdateUnderwaterState(bot->GetMap(), bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ());
     bot->CheckAreaExploreAndOutdoor();
 
@@ -396,14 +395,20 @@ void PlayerbotAI::DoNextAction()
         bot->GetSession()->HandleMovementOpcodes(packet);
     }
 
+    Player* master = GetMaster();
     if (bot->IsMounted() && bot->IsFlying())
     {
         bot->m_movementInfo.SetMovementFlags((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_CAN_FLY));
-        bot->SetSpeedRate(MOVE_FLIGHT, 1.0f, true);
-        bot->SetSpeedRate(MOVE_FLIGHT, GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
 
+        bot->SetSpeedRate(MOVE_FLIGHT, 1.0f, true);
         bot->SetSpeedRate(MOVE_RUN, 1.0f, true);
-        bot->SetSpeedRate(MOVE_RUN, GetMaster()->GetSpeedRate(MOVE_FLIGHT), true);
+
+        if (master)
+        {
+            bot->SetSpeedRate(MOVE_FLIGHT, master->GetSpeedRate(MOVE_FLIGHT), true);
+            bot->SetSpeedRate(MOVE_RUN, master->GetSpeedRate(MOVE_FLIGHT), true);
+        }
+
     }
 
     if (currentEngine != engines[BOT_STATE_DEAD] && !bot->isAlive())
@@ -645,6 +650,9 @@ void PlayerbotAI::TellMaster(string text, PlayerbotSecurityLevel securityLevel)
         return;
 
     Player* master = GetMaster();
+
+    if (!master)
+        return;
 
     WorldPacket data(SMSG_MESSAGECHAT, 1024);
     bot->BuildPlayerChat(&data, *aiObjectContext->GetValue<ChatMsg>("chat"), text, LANG_UNIVERSAL);
