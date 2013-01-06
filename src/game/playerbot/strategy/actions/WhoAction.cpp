@@ -26,7 +26,8 @@ public:
 
 bool WhoAction::Execute(Event event)
 {
-    if (!master)
+    Player* owner = event.getOwner();
+    if (!owner)
         return false;
 
     ostringstream out;
@@ -68,6 +69,6 @@ bool WhoAction::Execute(Event event)
     // ignore random bot chat filter
     WorldPacket data(SMSG_MESSAGECHAT, 1024);
     bot->BuildPlayerChat(&data, CHAT_MSG_WHISPER, out.str(), LANG_UNIVERSAL);
-    master->GetSession()->SendPacket(&data);
+    owner->GetSession()->SendPacket(&data);
     return true;
 }

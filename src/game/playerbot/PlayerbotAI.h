@@ -75,6 +75,25 @@ private:
     stack<WorldPacket> queue;
 };
 
+class ChatCommandHolder
+{
+public:
+    ChatCommandHolder(string command, Player* owner = NULL) : command(command), owner(owner) {}
+    ChatCommandHolder(ChatCommandHolder const& other)
+    {
+        this->command = other.command;
+        this->owner = other.owner;
+    }
+
+public:
+    string GetCommand() { return command; }
+    Player* GetOwner() { return owner; }
+
+private:
+    string command;
+    Player* owner;
+};
+
 class PlayerbotAI : public PlayerbotAIBase
 {
 public:
@@ -144,7 +163,7 @@ protected:
     Engine* currentEngine;
     Engine* engines[BOT_STATE_MAX];
     ChatHelper chatHelper;
-    stack<string> chatCommands;
+    stack<ChatCommandHolder> chatCommands;
     PacketHandlingHelper botOutgoingPacketHandlers;
     PacketHandlingHelper masterIncomingPacketHandlers;
     PacketHandlingHelper masterOutgoingPacketHandlers;
