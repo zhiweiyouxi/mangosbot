@@ -97,7 +97,7 @@ void PlayerbotFactory::InitPet()
 
 		for (int i = 0; i < 100; i++)
 		{
-			int index = urand(0, ids.size());
+			int index = urand(0, ids.size() - 1);
 			CreatureInfo const* co = sCreatureStorage.LookupEntry<CreatureInfo>(ids[index]);
 
             uint32 guid = map->GenerateLocalLowGuid(HIGHGUID_PET);
