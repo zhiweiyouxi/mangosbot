@@ -6,7 +6,7 @@
 #include "PlayerbotAI.h"
 #include "ChatHelper.h"
 
-PlayerbotSecurity::PlayerbotSecurity(Player* const master, Player* const bot) : master(master), bot(bot)
+PlayerbotSecurity::PlayerbotSecurity(Player* const bot) : bot(bot)
 {
     if (bot)
         account = sObjectMgr.GetPlayerAccountIdByGUID(bot->GetObjectGuid());
@@ -14,19 +14,14 @@ PlayerbotSecurity::PlayerbotSecurity(Player* const master, Player* const bot) : 
 
 PlayerbotSecurityLevel PlayerbotSecurity::LevelFor(Player* from)
 {
-    if (!from)
-        from = master;
-
-    if (from != master)
-        return PLAYERBOT_SECURITY_DENY_ALL;
+    if (from->GetSession()->GetSecurity() >= SEC_GAMEMASTER)
+        return PLAYERBOT_SECURITY_ALLOW_ALL;
 
     if (from->GetPlayerbotAI())
         return PLAYERBOT_SECURITY_DENY_ALL;
 
-    if (master->GetSession()->GetSecurity() >= SEC_GAMEMASTER)
-        return PLAYERBOT_SECURITY_ALLOW_ALL;
-
-    if (sPlayerbotAIConfig.IsInRandomAccountList(account))
+    Player* master = bot->GetPlayerbotAI()->GetMaster();
+    if (master && sPlayerbotAIConfig.IsInRandomAccountList(account))
     {
         if (!from->GetRandomPlayerbotMgr() || !from->GetRandomPlayerbotMgr()->IsRandomBot(bot))
             return PLAYERBOT_SECURITY_DENY_ALL;
@@ -73,15 +68,16 @@ PlayerbotSecurityLevel PlayerbotSecurity::LevelFor(Player* from)
 
 bool PlayerbotSecurity::CheckLevelFor(PlayerbotSecurityLevel level, bool silent, Player* from)
 {
-    if (!from)
-        from = master;
-
     PlayerbotSecurityLevel realLevel = LevelFor(from);
     if (realLevel >= level)
         return true;
 
     if (silent || from->GetPlayerbotAI())
         return false;
+
+    Player* master = bot->GetPlayerbotAI()->GetMaster();
+    if (!master)
+        return PLAYERBOT_SECURITY_TALK;
 
     if (bot->GetPlayerbotAI() && bot->GetPlayerbotAI()->IsOpposing(master) && master->GetSession()->GetSecurity() < SEC_GAMEMASTER)
         return false;

@@ -98,7 +98,7 @@ class PlayerbotAI : public PlayerbotAIBase
 {
 public:
 	PlayerbotAI();
-	PlayerbotAI(PlayerbotMgr* mgr, Player* bot, NamedObjectContext<UntypedValue>* sharedValues);
+	PlayerbotAI(Player* bot);
 	virtual ~PlayerbotAI();
 
 public:
@@ -148,7 +148,8 @@ public:
 
 public:
 	Player* GetBot() { return bot; }
-    Player* GetMaster() { return mgr ? mgr->GetMaster() : NULL; }
+    Player* GetMaster() { return master; }
+    void SetMaster(Player* master) { this->master = master; }
     AiObjectContext* GetAiObjectContext() { return aiObjectContext; }
     ChatHelper* GetChatHelper() { return &chatHelper; }
     bool IsOpposing(Player* player);
@@ -157,7 +158,7 @@ public:
 
 protected:
 	Player* bot;
-	PlayerbotMgr* mgr;
+	Player* master;
 	uint32 accountId;
     AiObjectContext* aiObjectContext;
     Engine* currentEngine;

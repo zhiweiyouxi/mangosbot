@@ -53,23 +53,21 @@ void PacketHandlingHelper::AddPacket(const WorldPacket& packet)
 }
 
 
-PlayerbotAI::PlayerbotAI() : PlayerbotAIBase(), bot(NULL), mgr(NULL), aiObjectContext(NULL),
-    currentEngine(NULL), chatHelper(this), chatFilter(this), accountId(0), security(NULL, NULL)
+PlayerbotAI::PlayerbotAI() : PlayerbotAIBase(), bot(NULL), aiObjectContext(NULL),
+    currentEngine(NULL), chatHelper(this), chatFilter(this), accountId(0), security(NULL), master(NULL)
 {
     for (int i = 0 ; i < BOT_STATE_MAX; i++)
         engines[i] = NULL;
 }
 
-PlayerbotAI::PlayerbotAI(PlayerbotMgr* mgr, Player* bot, NamedObjectContext<UntypedValue>* sharedValues) :
-    PlayerbotAIBase(), chatHelper(this), chatFilter(this), security(mgr->GetMaster(), bot)
+PlayerbotAI::PlayerbotAI(Player* bot) :
+    PlayerbotAIBase(), chatHelper(this), chatFilter(this), security(bot), master(NULL)
 {
-	this->mgr = mgr;
 	this->bot = bot;
 
 	accountId = sObjectMgr.GetPlayerAccountIdByGUID(bot->GetObjectGuid());
 
     aiObjectContext = AiFactory::createAiObjectContext(bot, this);
-    aiObjectContext->AddShared(sharedValues);
 
     engines[BOT_STATE_COMBAT] = AiFactory::createCombatEngine(bot, this, aiObjectContext);
     engines[BOT_STATE_NON_COMBAT] = AiFactory::createNonCombatEngine(bot, this, aiObjectContext);
@@ -648,12 +646,11 @@ GameObject* PlayerbotAI::GetGameObject(ObjectGuid guid)
 
 void PlayerbotAI::TellMaster(string text, PlayerbotSecurityLevel securityLevel)
 {
-    if (!GetSecurity()->CheckLevelFor(securityLevel, true))
+    Player* master = GetMaster();
+    if (!master)
         return;
 
-    Player* master = GetMaster();
-
-    if (!master)
+    if (!GetSecurity()->CheckLevelFor(securityLevel, true, master))
         return;
 
     WorldPacket data(SMSG_MESSAGECHAT, 1024);

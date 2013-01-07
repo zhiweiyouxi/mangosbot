@@ -1,7 +1,6 @@
 #include "Config/Config.h"
 #include "../pchdef.h"
 #include "playerbot.h"
-#include "strategy/values/SharedValueContext.h"
 #include "PlayerbotAIConfig.h"
 #include "PlayerbotFactory.h"
 #include "../AccountMgr.h"

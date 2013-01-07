@@ -219,7 +219,7 @@ class CharacterHandler
 
 // Playerbot mod. Can't easily reuse HandlePlayerLoginOpcode for logging in bots because it assumes
 // a WorldSession exists for the bot. The WorldSession for a bot is created after the character is loaded.
-void PlayerbotMgr::AddPlayerBot(uint64 playerGuid, WorldSession* session)
+void PlayerbotHolder::AddPlayerBot(uint64 playerGuid, WorldSession* session)
 {
     // has bot already been added?
     if (sObjectMgr.GetPlayer(ObjectGuid(playerGuid)))

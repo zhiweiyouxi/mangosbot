@@ -23,7 +23,7 @@ bool TradeStatusAction::Execute(Event event)
         trader->GetSession()->SendPacket(&data);
     }
 
-    if (trader != master || !ai->GetSecurity()->CheckLevelFor(PLAYERBOT_SECURITY_ALLOW_ALL))
+    if (trader != master || !ai->GetSecurity()->CheckLevelFor(PLAYERBOT_SECURITY_ALLOW_ALL, true, master))
     {
         WorldPacket p;
         uint32 status = 0;

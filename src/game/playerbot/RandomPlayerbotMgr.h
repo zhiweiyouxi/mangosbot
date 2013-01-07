@@ -48,4 +48,6 @@ class MANGOS_DLL_SPEC RandomPlayerbotMgr : public PlayerbotAIBase
         uint32 account;
 };
 
+#define sRandomPlayerbotMgr MaNGOS::Singleton<ai::RandomPlayerbotMgr>::Instance()
+
 #endif
