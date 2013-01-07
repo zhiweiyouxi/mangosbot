@@ -96,7 +96,7 @@ bool MovementAction::MoveTo(Unit* target, float distance)
 
 float MovementAction::GetFollowAngle()
 {
-    Group* group = bot->GetGroup();
+    Group* group = master ? master->GetGroup() : bot->GetGroup();
     if (!group)
         return 0.0f;
 

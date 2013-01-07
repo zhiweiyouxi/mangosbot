@@ -18,7 +18,7 @@ public:
     PlayerbotHolder();
     virtual ~PlayerbotHolder();
 
-    void AddPlayerBot(uint64 guid, WorldSession* session);
+    void AddPlayerBot(uint64 guid, uint32 masterAccountId);
     void LogoutPlayerBot(uint64 guid);
     Player* GetPlayerBot (uint64 guid) const;
     PlayerBotMap::const_iterator GetPlayerBotsBegin() const { return playerBots.begin(); }

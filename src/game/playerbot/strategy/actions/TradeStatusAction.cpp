@@ -5,6 +5,7 @@
 #include "../ItemVisitors.h"
 #include "../../PlayerbotAIConfig.h"
 #include "../../../ahbot/AhBot.h"
+#include "../../RandomPlayerbotMgr.h"
 
 using namespace ai;
 
@@ -75,7 +76,7 @@ void TradeStatusAction::BeginTrade()
 
 bool TradeStatusAction::CheckTrade()
 {
-    if (!master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
+    if (!sRandomPlayerbotMgr.IsRandomBot(bot))
         return true;
 
     if (!bot->GetTradeData() || !master->GetTradeData())

@@ -4,6 +4,7 @@
 #include "../../AiFactory.h"
 #include "../../PlayerbotAIConfig.h"
 #include "../ItemVisitors.h"
+#include "../../RandomPlayerbotMgr.h"
 
 using namespace ai;
 
@@ -15,21 +16,7 @@ bool LfgJoinAction::Execute(Event event)
     if (bot->isDead())
         return false;
 
-    if (!master)
-        return false;
-
-    if (!master->GetRandomPlayerbotMgr()->IsRandomBot(bot))
-        return false;
-
-    if (ai->GetSecurity()->LevelFor(master) < PLAYERBOT_SECURITY_INVITE)
-        return false;
-
-    if (abs((int)master->getLevel() - (int)bot->getLevel()) > 2)
-        return false;
-
-    int botGS = (int)bot->GetEquipGearScore(false, false);
-    int masterGS = (int)master->GetEquipGearScore(false, false);
-    if (masterGS && bot->getLevel() > 15 && 100 * (masterGS - botGS) / masterGS >= (20 + (91 - (int)master->getLevel()) / 4))
+    if (!sRandomPlayerbotMgr.IsRandomBot(bot))
         return false;
 
     if (sLFGMgr.GetQueueInfo(bot->GetObjectGuid()))
@@ -109,17 +96,17 @@ bool LfgJoinAction::JoinProposal()
 
     if (random)
 	{
-		sLog.outBasic("Bot %s joined to LFG_TYPE_RANDOM_DUNGEON", bot->GetName());
+		sLog.outDetail("Bot %s joined to LFG_TYPE_RANDOM_DUNGEON", bot->GetName());
         state->SetType(LFG_TYPE_RANDOM_DUNGEON);
 	}
     else if (heroic)
 	{
-		sLog.outBasic("Bot %s joined to LFG_TYPE_HEROIC_DUNGEON", bot->GetName());
+		sLog.outDetail("Bot %s joined to LFG_TYPE_HEROIC_DUNGEON", bot->GetName());
         state->SetType(LFG_TYPE_HEROIC_DUNGEON);
 	}
     else
 	{
-		sLog.outBasic("Bot %s joined to LFG_TYPE_DUNGEON", bot->GetName());
+		sLog.outDetail("Bot %s joined to LFG_TYPE_DUNGEON", bot->GetName());
         state->SetType(LFG_TYPE_DUNGEON);
 	}
 

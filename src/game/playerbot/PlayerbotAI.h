@@ -15,6 +15,8 @@ class ChatHandler;
 using namespace std;
 using namespace ai;
 
+bool IsAlliance(uint8 race);
+
 class PlayerbotChatHandler: protected ChatHandler
 {
 public:

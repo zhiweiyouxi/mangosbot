@@ -196,9 +196,12 @@ void PlayerbotAI::HandleCommand(uint32 type, const string& text, Player& fromPla
     for (string::const_iterator i = text.begin(); i != text.end(); i++)
     {
         char symbol = *i;
-        if (symbol < 32 || symbol > 127)
+        if (symbol < 32 || symbol > 127 || symbol == '$' || symbol == '%')
             return;
     }
+
+    if (type == CHAT_MSG_ADDON)
+        return;
 
     string filtered = chatFilter.Filter(trim((string&)text));
     if (filtered.empty())
@@ -1074,7 +1077,7 @@ bool PlayerbotAI::canDispel(const SpellEntry* entry, uint32 dispelType)
         strcmpi((const char*)entry->SpellName[0], "ice armor"));
 }
 
-inline bool IsAlliance(uint8 race)
+bool IsAlliance(uint8 race)
 {
     return race == RACE_HUMAN || race == RACE_DWARF || race == RACE_NIGHTELF ||
             race == RACE_GNOME || race == RACE_DRAENEI;

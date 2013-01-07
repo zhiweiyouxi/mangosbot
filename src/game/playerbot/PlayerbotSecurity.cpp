@@ -20,26 +20,29 @@ PlayerbotSecurityLevel PlayerbotSecurity::LevelFor(Player* from)
     if (from->GetPlayerbotAI())
         return PLAYERBOT_SECURITY_DENY_ALL;
 
-    Player* master = bot->GetPlayerbotAI()->GetMaster();
-    if (master && sPlayerbotAIConfig.IsInRandomAccountList(account))
+    if (bot->GetPlayerbotAI()->IsOpposing(from))
+        return PLAYERBOT_SECURITY_DENY_ALL;
+
+    if (sPlayerbotAIConfig.IsInRandomAccountList(account))
     {
-        if (!from->GetRandomPlayerbotMgr() || !from->GetRandomPlayerbotMgr()->IsRandomBot(bot))
-            return PLAYERBOT_SECURITY_DENY_ALL;
-
-        if (bot->GetPlayerbotAI()->IsOpposing(master))
-            return PLAYERBOT_SECURITY_DENY_ALL;
-
-        Group* group = master->GetGroup();
-        if (group)
+        Player* master = bot->GetPlayerbotAI()->GetMaster();
+        if (master)
         {
-            for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
-            {
-                Player* player = gref->getSource();
-                if(player == master)
-                    continue;
+            if (bot->GetPlayerbotAI()->IsOpposing(master))
+                return PLAYERBOT_SECURITY_DENY_ALL;
 
-                if (player == bot)
-                    return PLAYERBOT_SECURITY_ALLOW_ALL;
+            Group* group = master->GetGroup();
+            if (group)
+            {
+                for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
+                {
+                    Player* player = gref->getSource();
+                    if(player == master)
+                        continue;
+
+                    if (player == bot)
+                        return PLAYERBOT_SECURITY_ALLOW_ALL;
+                }
             }
         }
 
@@ -54,6 +57,7 @@ PlayerbotSecurityLevel PlayerbotSecurity::LevelFor(Player* from)
         if (bot->isDead())
             return PLAYERBOT_SECURITY_TALK;
 
+        Group* group = bot->GetGroup();
         if (!group)
             return PLAYERBOT_SECURITY_INVITE;
 

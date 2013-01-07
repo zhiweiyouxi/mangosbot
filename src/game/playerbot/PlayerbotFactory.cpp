@@ -100,6 +100,10 @@ void PlayerbotFactory::InitPet()
 			int index = urand(0, ids.size() - 1);
 			CreatureInfo const* co = sCreatureStorage.LookupEntry<CreatureInfo>(ids[index]);
 
+            PetLevelInfo const* petInfo = sObjectMgr.GetPetLevelInfo(co->Entry, bot->getLevel());
+            if (!petInfo)
+                continue;
+
             uint32 guid = map->GenerateLocalLowGuid(HIGHGUID_PET);
             CreatureCreatePos pos(map, bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ(), bot->GetOrientation(), bot->GetPhaseMask());
             pet = new Pet(HUNTER_PET);
@@ -508,7 +512,7 @@ void PlayerbotFactory::InitEquipment(bool incremental)
         vector<uint32>& ids = items[slot];
         if (ids.empty())
         {
-            sLog.outError("%s: no items to equip for slot %d", bot->GetName(), slot);
+            sLog.outDetail("%s: no items to equip for slot %d", bot->GetName(), slot);
             continue;
         }
 
@@ -628,7 +632,7 @@ void PlayerbotFactory::InitSecondEquipmentSet()
         vector<uint32>& ids = i->second;
         if (ids.empty())
         {
-            sLog.outError("%s: no items to make second equipment set for slot %d", bot->GetName(), i->first);
+            sLog.outDetail("%s: no items to make second equipment set for slot %d", bot->GetName(), i->first);
             continue;
         }
 

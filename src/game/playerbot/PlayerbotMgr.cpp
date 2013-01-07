@@ -4,6 +4,7 @@
 #include "PlayerbotAIConfig.h"
 #include "PlayerbotFactory.h"
 #include "../AccountMgr.h"
+#include "RandomPlayerbotMgr.h"
 
 
 class LoginQueryHolder;
@@ -65,43 +66,40 @@ void PlayerbotHolder::OnBotLogin(Player * const bot)
     playerBots[bot->GetObjectGuid().GetRawValue()] = bot;
 
     Player* master = ai->GetMaster();
-    ObjectGuid masterGuid = master->GetObjectGuid();
-    if (master && master->GetGroup() &&
-        ! master->GetGroup()->IsLeader(masterGuid))
-        master->GetGroup()->ChangeLeader(masterGuid);
-
-    bool botFound = false;
-
     if (master)
     {
-        Group* group = master->GetGroup();
-        if (group)
-        {
-            for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
-            {
-                Player* player = gref->getSource();
-                if(player == master)
-                    continue;
+        ObjectGuid masterGuid = master->GetObjectGuid();
+        if (master->GetGroup() &&
+            ! master->GetGroup()->IsLeader(masterGuid))
+            master->GetGroup()->ChangeLeader(masterGuid);
+    }
 
-                if (player == bot)
-                {
-                    botFound = true;
-                    break;
-                }
+    Group *group = bot->GetGroup();
+    if (group)
+    {
+        bool groupValid = false;
+        Group::MemberSlotList const& slots = group->GetMemberSlots();
+        for (Group::MemberSlotList::const_iterator i = slots.begin(); i != slots.end(); ++i)
+        {
+            ObjectGuid member = i->guid;
+            uint32 account = sAccountMgr.GetPlayerAccountIdByGUID(member);
+            if (!sPlayerbotAIConfig.IsInRandomAccountList(account))
+            {
+                groupValid = true;
+                break;
             }
+        }
+
+        if (!groupValid)
+        {
+            WorldPacket p;
+            string member = bot->GetName();
+            p << uint32(PARTY_OP_LEAVE) << member << uint32(0);
+            bot->GetSession()->HandleGroupDisbandOpcode(p);
         }
     }
 
-    if (!botFound && bot->GetGroup())
-    {
-        WorldPacket p;
-        string member = bot->GetName();
-        p << uint32(PARTY_OP_LEAVE) << member << uint32(0);
-        bot->GetSession()->HandleGroupDisbandOpcode(p);
-
-        ai->ResetStrategies();
-    }
-
+    ai->ResetStrategies();
     ai->TellMaster("Hello!");
 }
 
@@ -111,7 +109,7 @@ bool processBotCommand(WorldSession* session, string cmd, ObjectGuid guid)
         return false;
 
     PlayerbotMgr* mgr = session->GetPlayer()->GetPlayerbotMgr();
-    bool isRandomBot = mgr->GetMaster() && mgr->GetMaster()->GetRandomPlayerbotMgr()->IsRandomBot(guid);
+    bool isRandomBot = sRandomPlayerbotMgr.IsRandomBot(guid);
     bool isRandomAccount = sPlayerbotAIConfig.IsInRandomAccountList(sObjectMgr.GetPlayerAccountIdByGUID(guid));
 
     if (isRandomAccount && !isRandomBot && session->GetSecurity() < SEC_GAMEMASTER)
@@ -122,7 +120,7 @@ bool processBotCommand(WorldSession* session, string cmd, ObjectGuid guid)
         if (sObjectMgr.GetPlayer(guid, true))
             return false;
 
-        mgr->AddPlayerBot(guid.GetRawValue(), session);
+        mgr->AddPlayerBot(guid.GetRawValue(), session->GetAccountId());
         return true;
     }
     else if (cmd == "remove" || cmd == "logout" || cmd == "rm")
@@ -166,14 +164,9 @@ bool processBotCommand(WorldSession* session, string cmd, ObjectGuid guid)
             factory.Randomize(true);
             return true;
         }
-        else if (cmd == "pvp" && mgr->GetMaster())
-        {
-            mgr->GetMaster()->GetRandomPlayerbotMgr()->DoPvpAttack(bot);
-            return true;
-        }
         else if (cmd == "random" && mgr->GetMaster())
         {
-            mgr->GetMaster()->GetRandomPlayerbotMgr()->Randomize(bot);
+            sRandomPlayerbotMgr.Randomize(bot);
             return true;
         }
     }
@@ -351,6 +344,13 @@ void PlayerbotMgr::HandleCommand(uint32 type, const string& text)
         Player* const bot = it->second;
         bot->GetPlayerbotAI()->HandleCommand(type, text, *master);
     }
+
+    for (PlayerBotMap::const_iterator it = sRandomPlayerbotMgr.GetPlayerBotsBegin(); it != sRandomPlayerbotMgr.GetPlayerBotsEnd(); ++it)
+    {
+        Player* const bot = it->second;
+        if (bot->GetPlayerbotAI()->GetMaster() == master)
+            bot->GetPlayerbotAI()->HandleCommand(type, text, *master);
+    }
 }
 
 void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
@@ -359,6 +359,13 @@ void PlayerbotMgr::HandleMasterIncomingPacket(const WorldPacket& packet)
     {
         Player* const bot = it->second;
         bot->GetPlayerbotAI()->HandleMasterIncomingPacket(packet);
+    }
+
+    for (PlayerBotMap::const_iterator it = sRandomPlayerbotMgr.GetPlayerBotsBegin(); it != sRandomPlayerbotMgr.GetPlayerBotsEnd(); ++it)
+    {
+        Player* const bot = it->second;
+        if (bot->GetPlayerbotAI()->GetMaster() == GetMaster())
+            bot->GetPlayerbotAI()->HandleMasterIncomingPacket(packet);
     }
 
     switch (packet.GetOpcode())
@@ -377,6 +384,13 @@ void PlayerbotMgr::HandleMasterOutgoingPacket(const WorldPacket& packet)
     {
         Player* const bot = it->second;
         bot->GetPlayerbotAI()->HandleMasterOutgoingPacket(packet);
+    }
+
+    for (PlayerBotMap::const_iterator it = sRandomPlayerbotMgr.GetPlayerBotsBegin(); it != sRandomPlayerbotMgr.GetPlayerBotsEnd(); ++it)
+    {
+        Player* const bot = it->second;
+        if (bot->GetPlayerbotAI()->GetMaster() == GetMaster())
+            bot->GetPlayerbotAI()->HandleMasterOutgoingPacket(packet);
     }
 }
 
@@ -421,6 +435,12 @@ void PlayerbotMgr::SaveToDB()
     {
         Player* const bot = it->second;
         bot->SaveToDB();
+    }
+    for (PlayerBotMap::const_iterator it = sRandomPlayerbotMgr.GetPlayerBotsBegin(); it != sRandomPlayerbotMgr.GetPlayerBotsEnd(); ++it)
+    {
+        Player* const bot = it->second;
+        if (bot->GetPlayerbotAI()->GetMaster() == GetMaster())
+            bot->SaveToDB();
     }
 }
 

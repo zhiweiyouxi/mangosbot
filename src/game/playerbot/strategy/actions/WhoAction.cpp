@@ -49,6 +49,8 @@ bool WhoAction::Execute(Event event)
         out << " gear (|h|cff00ff00" << bot->GetEquipGearScore(false, false) << "|h|cffffffff GS)";
     }
 
+    if (bot->GetGroup())
+        out << " invited";
 
     // ignore random bot chat filter
     WorldPacket data(SMSG_MESSAGECHAT, 1024);
