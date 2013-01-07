@@ -588,9 +588,9 @@ void RandomPlayerbotMgr::OnPlayerLogin(Player* player)
         for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
         {
             Player* member = gref->getSource();
-            if (member == player)
+            PlayerbotAI* ai = bot->GetPlayerbotAI();
+            if (member == player && (!ai->GetMaster() || ai->GetMaster()->GetPlayerbotAI()))
             {
-                PlayerbotAI* ai = bot->GetPlayerbotAI();
                 ai->SetMaster(player);
                 ai->ResetStrategies();
                 ai->TellMaster("Hello");
