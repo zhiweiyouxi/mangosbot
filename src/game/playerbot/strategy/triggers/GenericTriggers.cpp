@@ -198,6 +198,13 @@ bool NotLeastHpTargetActiveTrigger::IsActive()
     return leastHp && target != leastHp;
 }
 
+bool EnemyPlayerIsAttacking::IsActive()
+{
+    Unit* enemyPlayer = AI_VALUE(Unit*, "enemy player target");
+    Unit* target = AI_VALUE(Unit*, "current target");
+    return enemyPlayer && target != enemyPlayer;
+}
+
 bool IsSwimmingTrigger::IsActive()
 {
     return AI_VALUE2(bool, "swimming", "self target");

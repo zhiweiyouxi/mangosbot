@@ -129,6 +129,7 @@ namespace ai
             creators["least hp target"] = &MockValueContext::mock;
             creators["rti target"] = &MockValueContext::mock;
             creators["duel target"] = &MockValueContext::mock;
+            creators["enemy player target"] = &MockValueContext::mock;
 
             creators["health"] = &MockValueContext::stats;
             creators["rage"] = &MockValueContext::stats;
@@ -199,6 +200,7 @@ namespace ai
               GetValue<Unit*>("pet target")->Set(MockedTargets::GetPet());
               GetValue<Unit*>("least hp target")->Set(MockedTargets::GetLeastHpTarget());
               GetValue<Unit*>("rti target")->Set(MockedTargets::GetRtiTarget());
+              GetValue<Unit*>("enemy player target")->Set(MockedTargets::GetEnemyPlayer());
 
               GetValue<uint8>("health", "self target")->Set(100);
               GetValue<uint8>("health", "current target")->Set(100);

@@ -589,6 +589,7 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\druid\HealDruidStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\Engine.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\Event.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackEnemyPlayersStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackRtiStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackWeakStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\CastTimeStrategy.cpp" />
@@ -696,6 +697,7 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\CurrentTargetValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\DpsTargetValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\DuelTargetValue.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\values\EnemyPlayerValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\GrindTargetValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\InvalidTargetValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\ItemCountValue.cpp" />
@@ -1055,6 +1057,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\Engine.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\Event.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\ExternalEventHelper.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\generic\AttackEnemyPlayersStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\AttackRtiStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\AttackWeakStrategy.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\generic\CastTimeStrategy.h" />
@@ -1184,6 +1187,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\DistanceValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\DpsTargetValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\DuelTargetValue.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\values\EnemyPlayerValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\GrindTargetValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\HasAvailableLootValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\HasTotemValue.h" />

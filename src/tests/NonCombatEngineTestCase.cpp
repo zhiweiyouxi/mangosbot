@@ -29,6 +29,7 @@ class NonCombatEngineTestCase : public EngineTestBase
       CPPUNIT_TEST( assistStrategies );
       CPPUNIT_TEST( out_of_react );
       CPPUNIT_TEST( tell_target );
+      CPPUNIT_TEST( pvp );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -130,6 +131,22 @@ protected:
 		tick();
 
 		assertActions(">S:stay>LeastHp:attack least hp target>LeastHp:attack least hp target");
+	}
+
+	void pvp()
+	{
+		engine->addStrategy("stay");
+		engine->addStrategy("pvp");
+
+        set<Unit*>("current target", MockedTargets::GetEnemyPlayer());
+		tick();
+
+		tickWithNoTarget();
+
+		set<Unit*>("current target", MockedTargets::GetCurrentTarget()); // means any other
+		tick();
+
+		assertActions(">S:stay>Enemy:attack enemy player>Enemy:attack enemy player");
 	}
 
     void loot()

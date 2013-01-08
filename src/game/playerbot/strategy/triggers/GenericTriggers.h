@@ -463,6 +463,15 @@ namespace ai
         virtual bool IsActive();
     };
 
+    class EnemyPlayerIsAttacking : public Trigger
+    {
+    public:
+        EnemyPlayerIsAttacking(PlayerbotAI* ai) : Trigger(ai, "enemy player is attacking") {}
+
+    public:
+        virtual bool IsActive();
+    };
+
     class IsSwimmingTrigger : public Trigger
     {
     public:
