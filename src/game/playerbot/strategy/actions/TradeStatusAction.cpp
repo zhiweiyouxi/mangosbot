@@ -14,6 +14,7 @@ using namespace ai;
 bool TradeStatusAction::Execute(Event event)
 {
     Player* trader = bot->GetTrader();
+    Player* master = GetMaster();
     if (!trader)
         return false;
 
@@ -79,6 +80,7 @@ bool TradeStatusAction::CheckTrade()
     if (!sRandomPlayerbotMgr.IsRandomBot(bot))
         return true;
 
+    Player* master = GetMaster();
     if (!bot->GetTradeData() || !master->GetTradeData())
         return false;
 

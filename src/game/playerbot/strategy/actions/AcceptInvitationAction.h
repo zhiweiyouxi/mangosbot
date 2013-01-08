@@ -10,6 +10,8 @@ namespace ai
 
         virtual bool Execute(Event event)
         {
+            Player* master = GetMaster();
+
             Group* grp = bot->GetGroupInvite();
             if (!grp)
                 return false;

@@ -96,18 +96,20 @@ bool MovementAction::MoveTo(Unit* target, float distance)
 
 float MovementAction::GetFollowAngle()
 {
+    Player* master = GetMaster();
     Group* group = master ? master->GetGroup() : bot->GetGroup();
     if (!group)
         return 0.0f;
 
-    GroupReference *gref = group->GetFirstMember();
     int index = 1;
-    while( gref )
+    for (GroupReference *ref = group->GetFirstMember(); ref; ref = ref->next())
     {
-        if( gref->getSource() == bot)
+        if( ref->getSource() == master)
+            continue;
+
+        if( ref->getSource() == bot)
             return 2 * M_PI / (group->GetMembersCount() -1) * index;
 
-        gref = gref->next();
         index++;
     }
     return 0;
@@ -204,6 +206,7 @@ void MovementAction::WaitForReach(float distance)
 
 bool MovementAction::Flee(Unit *target)
 {
+    Player* master = GetMaster();
     if (!target)
         target = master;
 

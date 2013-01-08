@@ -28,6 +28,7 @@ Unit* GrindTargetValue::FindTargetForGrinding(int assistCount)
 {
     uint32 memberCount = 1;
     Group* group = bot->GetGroup();
+    Player* master = GetMaster();
 
     list<ObjectGuid> targets = *context->GetValue<list<ObjectGuid> >("possible targets");
 

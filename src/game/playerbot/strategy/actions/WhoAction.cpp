@@ -49,8 +49,35 @@ bool WhoAction::Execute(Event event)
         out << " gear (|h|cff00ff00" << bot->GetEquipGearScore(false, false) << "|h|cffffffff GS)";
     }
 
-    if (bot->GetGroup())
-        out << " invited";
+    Player* master = GetMaster();
+    Group* group = master ? master->GetGroup() : bot->GetGroup();
+    if (group)
+    {
+        out << " in " << (int)group->GetMembersCount() <<  "-party with (";
+        int index = 1, followIndex = -1;
+        for (GroupReference *ref = group->GetFirstMember(); ref; ref = ref->next())
+        {
+            Player* player = ref->getSource();
+            if (!player)
+                out << "?";
+            else if (player == master)
+                out << "!" << player->GetName() << "!";
+            else
+                out << player->GetName();
+
+            if (ref->next())
+                out << ", ";
+
+            if(ref->getSource() == master)
+                continue;
+
+            if(ref->getSource() == bot)
+                followIndex = index;
+
+            index++;
+        }
+        out << ") " << followIndex << "th";
+    }
 
     // ignore random bot chat filter
     WorldPacket data(SMSG_MESSAGECHAT, 1024);

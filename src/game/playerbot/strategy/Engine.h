@@ -106,7 +106,6 @@ namespace ai
 	    Queue queue;
 	    std::list<TriggerNode*> triggers;
         std::list<Multiplier*> multipliers;
-	    Player* master;
 	    Player* bot;
         AiObjectContext* aiObjectContext;
         std::map<string, Strategy*> strategies;
