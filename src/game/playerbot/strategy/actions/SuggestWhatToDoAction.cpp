@@ -39,7 +39,7 @@ bool SuggestWhatToDoAction::Execute(Event event)
 void SuggestWhatToDoAction::instance()
 {
     if (bot->getLevel() > 15)
-        ai->TellMaster("I would like to do an instance. Would you like to join me?", PLAYERBOT_SECURITY_ALLOW_ALL);
+        spam("I would like to do an instance. Would you like to join me?");
 }
 
 vector<uint32> SuggestWhatToDoAction::GetIncompletedQuests()
@@ -70,20 +70,20 @@ void SuggestWhatToDoAction::specificQuest()
 
     Quest const* quest = sObjectMgr.GetQuestTemplate(quests[index]);
     ostringstream out; out << "We could do some quest, for instance " << chat->formatQuest(quest);
-    ai->TellMaster(out, PLAYERBOT_SECURITY_ALLOW_ALL);
+    spam(out.str());
 }
 
 void SuggestWhatToDoAction::newQuest()
 {
     vector<uint32> quests = GetIncompletedQuests();
     if (quests.size() < MAX_QUEST_LOG_SIZE - 5)
-        ai->TellMaster("I would like to pick up and do a new quest. Would you like to join me?", PLAYERBOT_SECURITY_ALLOW_ALL);
+        spam("I would like to pick up and do a new quest. Would you like to join me?");
 }
 
 void SuggestWhatToDoAction::grindMaterials()
 {
     if (bot->getLevel() > 5)
-        ai->TellMaster("I think we should grind some materials for our group tradeskill", PLAYERBOT_SECURITY_ALLOW_ALL);
+        spam("I am going to grind some trade materials. Would you like to join me?");
 }
 
 void SuggestWhatToDoAction::grindReputation()
@@ -105,7 +105,7 @@ void SuggestWhatToDoAction::relax()
 void SuggestWhatToDoAction::achievement()
 {
     if (bot->getLevel() > 15)
-        ai->TellMaster("I would like to do some achievement. Would you like to join me?", PLAYERBOT_SECURITY_ALLOW_ALL);
+        spam("I would like to do some achievement. Would you like to join me?");
 }
 
 class FindTradeItemsVisitor : public IterateItemsVisitor
@@ -150,13 +150,14 @@ void SuggestWhatToDoAction::trade()
 
 void SuggestWhatToDoAction::spam(string msg)
 {
-    if (ChannelMgr* cMgr = channelMgr(bot->GetTeam()))
-    {
-        for (ChannelMgr::ChannelMap::iterator i = cMgr->channels.begin(); i != cMgr->channels.end(); ++i)
-        {
-            Channel* chn = i->second;
-            if (chn->GetFlags() & 0x18)
-                chn->Say(bot->GetObjectGuid(), msg.c_str(), LANG_UNIVERSAL);
-        }
-    }
+    Player* player = sRandomPlayerbotMgr.GetRandomPlayer();
+    if (!player || !player->IsInWorld())
+        return;
+
+    if (!ai->GetSecurity()->CheckLevelFor(PLAYERBOT_SECURITY_TALK, true, player))
+        return;
+
+    WorldPacket data(SMSG_MESSAGECHAT, 1024);
+    bot->BuildPlayerChat(&data, *ai->GetAiObjectContext()->GetValue<ChatMsg>("chat"), msg, LANG_UNIVERSAL);
+    player->GetSession()->SendPacket(&data);
 }

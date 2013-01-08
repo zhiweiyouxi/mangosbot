@@ -571,6 +571,13 @@ void RandomPlayerbotMgr::OnPlayerLogout(Player* player)
             ai->ResetStrategies();
         }
     }
+
+    if (!player->GetPlayerbotAI())
+    {
+        vector<Player*>::iterator i = find(players.begin(), players.end(), player);
+        if (i != players.end())
+            players.erase(i);
+    }
 }
 
 void RandomPlayerbotMgr::OnPlayerLogin(Player* player)
@@ -598,4 +605,16 @@ void RandomPlayerbotMgr::OnPlayerLogin(Player* player)
             }
         }
     }
+
+    if (!player->GetPlayerbotAI())
+        players.push_back(player);
+}
+
+Player* RandomPlayerbotMgr::GetRandomPlayer()
+{
+    if (players.empty())
+        return NULL;
+
+    uint32 index = urand(0, players.size() - 1);
+    return players[index];
 }
