@@ -143,7 +143,9 @@ bool MovementAction::IsMovingAllowed()
 {
     if (bot->isFrozen() || bot->IsPolymorphed() ||
             (bot->isDead() && !bot->GetCorpse()) ||
-            bot->IsBeingTeleported() || bot->isInRoots() || bot->HasAuraType(SPELL_AURA_MOD_CONFUSE) || bot->isCharmed())
+            bot->IsBeingTeleported() || bot->isInRoots() ||
+            bot->HasAuraType(SPELL_AURA_MOD_CONFUSE) || bot->isCharmed() ||
+            bot->HasAuraType(SPELL_AURA_MOD_STUN))
         return false;
 
     MotionMaster &mm = *bot->GetMotionMaster();
