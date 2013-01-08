@@ -439,6 +439,7 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\actions\LfgActions.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\generic\AttackEnemyPlayersStrategy.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\EnemyPlayerValue.cpp" />
+    <ClCompile Include="..\..\src\game\WorldLocation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\ahbot\AhBot.h" />

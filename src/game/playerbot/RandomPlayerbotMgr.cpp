@@ -195,7 +195,7 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, vector<WorldLocation> &locs
         float y = loc.coord_y + urand(0, sPlayerbotAIConfig.grindDistance) - sPlayerbotAIConfig.grindDistance / 2;
         float z = loc.coord_z;
 
-        Map* map = sMapMgr.FindMap(loc.mapid);
+        Map* map = sMapMgr.FindMap(loc.GetMapId());
         if (!map)
             continue;
 
@@ -206,9 +206,9 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, vector<WorldLocation> &locs
                 terrain->IsInWater(x, y, z))
             continue;
 
-        sLog.outDetail("Random teleporting bot %s to %u %f,%f,%f", bot->GetName(), loc.mapid, x, y, z);
+        sLog.outDetail("Random teleporting bot %s to %u %f,%f,%f", bot->GetName(), loc.GetMapId(), x, y, z);
         z = 0.05f + map->GetTerrain()->GetHeightStatic(x, y, 0.05f + z, true, MAX_HEIGHT);
-        bot->TeleportTo(loc.mapid, x, y, z, 0);
+        bot->TeleportTo(loc.GetMapId(), x, y, z, 0);
         return;
     }
 
