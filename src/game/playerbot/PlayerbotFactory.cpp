@@ -88,12 +88,21 @@ void PlayerbotFactory::InitPet()
             if (!co || !co->isTameable(false))
                 continue;
 
+            if (co->minlevel > bot->getLevel())
+                continue;
+
 			PetLevelInfo const* petInfo = sObjectMgr.GetPetLevelInfo(co->Entry, bot->getLevel());
             if (!petInfo)
                 continue;
 
 			ids.push_back(id);
 		}
+
+        if (ids.empty())
+        {
+            sLog.outError("No pets available for bot %s (%d level)", bot->GetName(), bot->getLevel());
+            return;
+        }
 
 		for (int i = 0; i < 100; i++)
 		{
@@ -120,6 +129,7 @@ void PlayerbotFactory::InitPet()
             pet->SetLevel(bot->getLevel());
             bot->SetPet(pet);
 
+            sLog.outDetail("Bot %s: assign pet %d (%d level)", bot->GetName(), co->Entry, bot->getLevel());
             pet->Summon();
             pet->SavePetToDB(PET_SAVE_AS_CURRENT);
             break;

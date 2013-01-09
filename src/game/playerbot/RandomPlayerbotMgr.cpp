@@ -307,6 +307,7 @@ void RandomPlayerbotMgr::RandomizeFirst(Player* bot)
             continue;
 
         level = min(level, maxLevel);
+        if (!level) level = 1;
 
         if (urand(0, 100) < 100 * sPlayerbotAIConfig.randomBotMaxLevelChance)
             level = maxLevel;
