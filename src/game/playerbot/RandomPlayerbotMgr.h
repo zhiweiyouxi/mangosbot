@@ -32,6 +32,7 @@ class MANGOS_DLL_SPEC RandomPlayerbotMgr : public PlayerbotHolder
         void OnPlayerLogout(Player* player);
         void OnPlayerLogin(Player* player);
         Player* GetRandomPlayer();
+        void PrintStats();
 
 	protected:
 	    virtual void OnBotLoginInternal(Player * const bot) {}

@@ -491,7 +491,7 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
 
     if (!args || !*args)
     {
-        sLog.outError("Usage: rndbot reset/init/update");
+        sLog.outError("Usage: rndbot stats/reset/init/update");
         return false;
     }
 
@@ -504,9 +504,14 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
         return true;
     }
 
+    if (cmd == "stats")
+    {
+        sRandomPlayerbotMgr.PrintStats();
+        return true;
+    }
+
     if (cmd == "init" || cmd == "update")
     {
-		RandomPlayerbotMgr mgr;
 		sLog.outString("Randomizing bots for %d accounts", sPlayerbotAIConfig.randomBotAccounts.size());
         BarGoLink bar(sPlayerbotAIConfig.randomBotAccounts.size());
         for (list<uint32>::iterator i = sPlayerbotAIConfig.randomBotAccounts.begin(); i != sPlayerbotAIConfig.randomBotAccounts.end(); ++i)
@@ -526,13 +531,13 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
                     if (cmd == "init")
                     {
                         sLog.outDetail("Randomizing bot %s for account %u", bot->GetName(), account);
-                        mgr.RandomizeFirst(bot);
+                        sRandomPlayerbotMgr.RandomizeFirst(bot);
                     }
                     else
                     {
                         sLog.outDetail("Updating bot %s for account %u", bot->GetName(), account);
                         bot->SetLevel(bot->getLevel() - 1);
-                        mgr.IncreaseLevel(bot);
+                        sRandomPlayerbotMgr.IncreaseLevel(bot);
                     }
                     uint32 randomTime = urand(sPlayerbotAIConfig.minRandomBotRandomizeTime, sPlayerbotAIConfig.maxRandomRandomizeTime);
                     CharacterDatabase.PExecute("update ai_playerbot_random_bots set validIn = '%u' where event = 'randomize' and bot = '%u'",
@@ -617,4 +622,37 @@ Player* RandomPlayerbotMgr::GetRandomPlayer()
 
     uint32 index = urand(0, players.size() - 1);
     return players[index];
+}
+
+void RandomPlayerbotMgr::PrintStats()
+{
+    sLog.outString("%d Random Bots online:", playerBots.size());
+
+    map<uint32, int> alliance, horde;
+    for (uint32 i = 0; i < 10; ++i)
+    {
+        alliance[i] = 0;
+        horde[i] = 0;
+    }
+
+    for (PlayerBotMap::iterator i = playerBots.begin(); i != playerBots.end(); ++i)
+    {
+        Player* bot = i->second;
+        if (IsAlliance(bot->getRace()))
+            alliance[bot->getLevel() / 10]++;
+        else
+            horde[bot->getLevel() / 10]++;
+    }
+
+    uint32 maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
+    for (uint32 i = 0; i < 10; ++i)
+    {
+        if (!alliance[i] && !horde[i])
+            continue;
+
+        uint32 from = i*10;
+        uint32 to = min(from + 9, maxLevel);
+        if (!from) from = 1;
+        sLog.outString("%d..%d: %d alliance, %d horde", from, to, alliance[i], horde[i]);
+    }
 }
