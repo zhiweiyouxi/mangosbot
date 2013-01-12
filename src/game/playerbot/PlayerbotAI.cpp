@@ -418,6 +418,23 @@ void PlayerbotAI::DoNextAction()
     {
         ChangeEngine(BOT_STATE_DEAD);
     }
+
+    Group *group = bot->GetGroup();
+    if (!master && group)
+    {
+        for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
+        {
+            Player* member = gref->getSource();
+            PlayerbotAI* ai = bot->GetPlayerbotAI();
+            if (member && member->IsInWorld() && !member->GetPlayerbotAI() && (!master || master->GetPlayerbotAI()))
+            {
+                ai->SetMaster(member);
+                ai->ResetStrategies();
+                ai->TellMaster("Hello");
+                break;
+            }
+        }
+    }
 }
 
 void PlayerbotAI::ReInitCurrentEngine()
