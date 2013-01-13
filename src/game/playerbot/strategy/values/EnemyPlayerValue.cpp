@@ -14,14 +14,14 @@ public:
     }
 
 protected:
-    virtual void CheckAttacker(Player* bot, Player* player, ThreatManager* threatManager)
+    virtual void CheckAttacker(Player* player, Unit* attacker, ThreatManager* threatManager)
     {
-        Unit* unit = threatManager->getOwner();
-        if (!unit)
-            return;
-
-        if (!result || unit->GetObjectGuid().IsPlayer())
-            result = unit;
+        if (!result || attacker->GetObjectGuid().IsPlayer())
+        {
+            Player* player = dynamic_cast<Player*>(attacker);
+            if (player && ai->IsOpposing(player))
+                result = attacker;
+        }
     }
 
 };
