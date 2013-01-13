@@ -11,7 +11,6 @@ class DpsWarriorTestCase : public EngineTestBase
     CPPUNIT_TEST_SUITE( DpsWarriorTestCase );
     CPPUNIT_TEST( buff );
     CPPUNIT_TEST( combatVsMelee );
-    CPPUNIT_TEST( warriorMustHoldAggro );
     CPPUNIT_TEST( aoe );
     CPPUNIT_TEST( boost );
     CPPUNIT_TEST( execute );
@@ -52,15 +51,6 @@ protected:
 		tickWithAttackerCount(3);
 
 		assertActions(">S:battle stance>T:cleave>T:thunder clap>T:demoralizing shout");
-    }
-
-    void warriorMustHoldAggro()
-    {
-        tickInMeleeRange(); // melee
-
-		tickWithNoAggro();
-
-		assertActions(">S:battle stance>T:mocking blow");
     }
 
     void combatVsMelee()

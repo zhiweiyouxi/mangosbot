@@ -88,8 +88,9 @@ protected:
         addAura("defensive stance");
 
 		tickWithNoAggro();
+		tickWithNoAggro();
 
-		assertActions(">T:taunt");
+		assertActions(">T:taunt>T:mocking blow");
     }
 
     void startMeleeCombat()

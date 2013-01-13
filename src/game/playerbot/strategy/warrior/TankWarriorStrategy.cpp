@@ -16,6 +16,7 @@ public:
         creators["revenge"] = &revenge;
         creators["devastate"] = &devastate;
         creators["shockwave"] = &shockwave;
+        creators["taunt"] = &taunt;
     }
 private:
     static ActionNode* melee(PlayerbotAI* ai)
@@ -58,6 +59,13 @@ private:
         return new ActionNode ("shockwave",
             /*P*/ NULL,
             /*A*/ NextAction::array(0, new NextAction("cleave"), NULL),
+            /*C*/ NULL);
+    }
+    static ActionNode* taunt(PlayerbotAI* ai)
+    {
+        return new ActionNode ("taunt",
+            /*P*/ NULL,
+            /*A*/ NextAction::array(0, new NextAction("mocking blow"), NULL),
             /*C*/ NULL);
     }
 };

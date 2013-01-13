@@ -101,10 +101,6 @@ void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
     GenericWarriorStrategy::InitTriggers(triggers);
 
     triggers.push_back(new TriggerNode(
-        "lose aggro",
-        NextAction::array(0, new NextAction("mocking blow", ACTION_HIGH + 2), NULL)));
-
-    triggers.push_back(new TriggerNode(
         "target critical health",
         NextAction::array(0, new NextAction("execute", ACTION_HIGH + 4), NULL)));
 
