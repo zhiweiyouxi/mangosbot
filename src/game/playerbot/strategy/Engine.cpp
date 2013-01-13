@@ -471,6 +471,10 @@ void Engine::LogAction(const char* format, ...)
     }
     else
     {
-        sLog.outDebug("%s %s", ai->GetBot()->GetName(), buf);
+        Player* bot = ai->GetBot();
+        if (sPlayerbotAIConfig.logInGroupOnly && !bot->GetGroup())
+            return;
+
+        sLog.outDebug("%s %s", bot->GetName(), buf);
     }
 }

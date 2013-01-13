@@ -94,4 +94,4 @@ AiPlayerbot.RandomBotTeleportDistance = 400
 
 # Debug switches
 AiPlayerbot.SpellDump = false
-
+AiPlayerbot.LogInGroupOnly = true
