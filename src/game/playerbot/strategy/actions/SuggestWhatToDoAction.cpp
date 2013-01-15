@@ -3,6 +3,7 @@
 #include "SuggestWhatToDoAction.h"
 #include "../../../ahbot/AhBot.h"
 #include "../../../ChannelMgr.h"
+#include "../../PlayerbotAIConfig.h"
 
 using namespace ai;
 
@@ -155,6 +156,11 @@ void SuggestWhatToDoAction::spam(string msg)
         return;
 
     if (!ai->GetSecurity()->CheckLevelFor(PLAYERBOT_SECURITY_TALK, true, player))
+        return;
+
+    if (sPlayerbotAIConfig.whisperDistance && !bot->GetGroup() && sRandomPlayerbotMgr.IsRandomBot(bot) &&
+            player->GetSession()->GetSecurity() < SEC_GAMEMASTER &&
+            (bot->GetMapId() != player->GetMapId() || bot->GetDistance(player) > sPlayerbotAIConfig.whisperDistance))
         return;
 
     WorldPacket data(SMSG_MESSAGECHAT, 1024);

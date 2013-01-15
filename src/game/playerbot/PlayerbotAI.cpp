@@ -673,6 +673,11 @@ void PlayerbotAI::TellMaster(string text, PlayerbotSecurityLevel securityLevel)
     if (!GetSecurity()->CheckLevelFor(securityLevel, true, master))
         return;
 
+    if (sPlayerbotAIConfig.whisperDistance && !bot->GetGroup() && sRandomPlayerbotMgr.IsRandomBot(bot) &&
+            master->GetSession()->GetSecurity() < SEC_GAMEMASTER &&
+            (bot->GetMapId() != master->GetMapId() || bot->GetDistance(master) > sPlayerbotAIConfig.whisperDistance))
+        return;
+
     WorldPacket data(SMSG_MESSAGECHAT, 1024);
     bot->BuildPlayerChat(&data, *aiObjectContext->GetValue<ChatMsg>("chat"), text, LANG_UNIVERSAL);
     master->GetSession()->SendPacket(&data);

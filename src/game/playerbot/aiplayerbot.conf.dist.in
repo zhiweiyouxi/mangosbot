@@ -24,15 +24,16 @@ AiPlayerbot.TeleportDelay = 10000
 AiPlayerbot.ReactDelay = 100
 
 # Distances
-AiPlayerbot.SightDistance = 50.0f
-AiPlayerbot.SpellDistance = 25.0f
-AiPlayerbot.ReactDistance = 100.0f
-AiPlayerbot.GrindDistance = 75.0f
-AiPlayerbot.LootDistance = 20.0f
-AiPlayerbot.FleeDistance = 15.0f
-AiPlayerbot.TooCloseDistance = 7.0f
-AiPlayerbot.MeleeDistance = 2.0f
-AiPlayerbot.FollowDistance = 2.0f
+AiPlayerbot.SightDistance = 50.0
+AiPlayerbot.SpellDistance = 25.0
+AiPlayerbot.ReactDistance = 100.0
+AiPlayerbot.GrindDistance = 75.0
+AiPlayerbot.LootDistance = 20.0
+AiPlayerbot.FleeDistance = 15.0
+AiPlayerbot.TooCloseDistance = 7.0
+AiPlayerbot.MeleeDistance = 2.0
+AiPlayerbot.FollowDistance = 2.0
+AiPlayerbot.WhisperDistance = 0.0
 
 # Health/Mana levels
 AiPlayerbot.CriticalHealth = 25
@@ -43,24 +44,24 @@ AiPlayerbot.LowMana = 15
 AiPlayerbot.MediumMana = 40
 
 # Enable random bot system
-AiPlayerbot.RandomBotAutologin = false
+AiPlayerbot.RandomBotAutologin = 0
 
 # Create random bot characters automatically
-AiPlayerbot.RandomBotAutoCreate = true
+AiPlayerbot.RandomBotAutoCreate = 1
 
 # Random bot count
 AiPlayerbot.MinRandomBots = 50
 AiPlayerbot.MaxRandomBots = 200
 
 # Accounts to create for random bots
-AiPlayerbot.RandomBotAccountPrefix = "rndbot"
+AiPlayerbot.RandomBotAccountPrefix = rndbot
 AiPlayerbot.RandomBotAccountCount = 50
 
 # Delete all random bot accounts
 AiPlayerbot.DeleteRandomBotAccounts = 0
 
 # Maps to teleport random bots
-AiPlayerbot.RandomBotMaps = "0,1"
+AiPlayerbot.RandomBotMaps = 0,1
 
 # Change random bot has lower gear
 AiPlayerbot.RandomGearLoweringChance = 0.15
@@ -69,7 +70,7 @@ AiPlayerbot.RandomGearLoweringChance = 0.15
 AiPlayerbot.RandomBotMaxLevelChance = 0.4
 
 # Quest items to leave (do not destroy)
-AiPlayerbot.RandomBotQuestItems = "6948,5175,5176,5177,5178"
+AiPlayerbot.RandomBotQuestItems = 6948,5175,5176,5177,5178
 
 # Spells every random bot will learn on randomize (54197 - cold weather flying)
 AiPlayerbot.RandomBotSpellIds = 54197
@@ -79,13 +80,13 @@ AiPlayerbot.RandomBotJoinLfg = 0
 
 # Intervals
 AiPlayerbot.RandomBotUpdateInterval = 60
-AiPlayerbot.RandomBotCountChangeInterval = 5 * 24 * 3600
-AiPlayerbot.MinRandomBotInWorldTime = 2 * 3600
-AiPlayerbot.MaxRandomBotInWorldTime = 14 * 24 * 3600
-AiPlayerbot.MinRandomBotRandomizeTime = 2 * 3600
-AiPlayerbot.MaxRandomRandomizeTime = 14 * 24 * 3600
+AiPlayerbot.RandomBotCountChangeInterval = 432000
+AiPlayerbot.MinRandomBotInWorldTime = 7200
+AiPlayerbot.MaxRandomBotInWorldTime = 1209600
+AiPlayerbot.MinRandomBotRandomizeTime = 7200
+AiPlayerbot.MaxRandomRandomizeTime = 1209600
 AiPlayerbot.MinRandomBotPvpTime = 120
-AiPlayerbot.MaxRandomBotPvpTime = 3 * 3600
+AiPlayerbot.MaxRandomBotPvpTime = 10800
 AiPlayerbot.MinRandomBotsPerInterval = 50
 AiPlayerbot.MaxRandomBotsPerInterval = 100
 
