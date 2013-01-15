@@ -746,6 +746,9 @@ void PlayerbotFactory::EnchantItem(Item* item)
             if (!enchant || enchant->slot != PERM_ENCHANTMENT_SLOT)
                 continue;
 
+            if (enchant->requiredLevel && enchant->requiredLevel > level)
+                continue;
+
             uint8 sp = 0, ap = 0, tank = 0;
             for (int i = 0; i < 3; ++i)
             {
@@ -776,6 +779,11 @@ void PlayerbotFactory::EnchantItem(Item* item)
 
     int index = urand(0, ids.size() - 1);
     uint32 id = ids[index];
+
+    SpellItemEnchantmentEntry const* enchant = sSpellItemEnchantmentStore.LookupEntry(id);
+    if (!enchant)
+        return;
+
     bot->ApplyEnchantment(item, PERM_ENCHANTMENT_SLOT, false);
     item->SetEnchantment(PERM_ENCHANTMENT_SLOT, id, 0, 0);
     bot->ApplyEnchantment(item, PERM_ENCHANTMENT_SLOT, true);
