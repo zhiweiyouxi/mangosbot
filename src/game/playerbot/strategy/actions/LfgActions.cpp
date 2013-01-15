@@ -59,6 +59,8 @@ bool LfgJoinAction::SetRoles()
             state->SetRoles(LFG_ROLE_MASK_TANK);
         break;
     }
+
+	return true;
 }
 
 bool LfgJoinAction::JoinProposal()
