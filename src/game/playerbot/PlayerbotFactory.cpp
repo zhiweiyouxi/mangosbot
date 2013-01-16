@@ -831,35 +831,49 @@ void PlayerbotFactory::InitTradeSkills()
         bot->SetSkill(tradeSkills[i], 0, 0);
     }
 
-    switch (urand(0, 6))
+    vector<uint32> firstSkills;
+    vector<uint32> secondSkills;
+    switch (bot->getClass())
+    {
+    case CLASS_WARRIOR:
+    case CLASS_PALADIN:
+        firstSkills.push_back(SKILL_MINING);
+        secondSkills.push_back(SKILL_BLACKSMITHING);
+        secondSkills.push_back(SKILL_ENGINEERING);
+        break;
+    case CLASS_SHAMAN:
+    case CLASS_DRUID:
+    case CLASS_HUNTER:
+    case CLASS_ROGUE:
+        firstSkills.push_back(SKILL_SKINNING);
+        secondSkills.push_back(SKILL_LEATHERWORKING);
+        break;
+    default:
+        firstSkills.push_back(SKILL_TAILORING);
+        secondSkills.push_back(SKILL_ENCHANTING);
+    }
+
+    SetRandomSkill(SKILL_FIRST_AID);
+    SetRandomSkill(SKILL_FISHING);
+    SetRandomSkill(SKILL_COOKING);
+
+    switch (urand(0, 3))
     {
     case 0:
         SetRandomSkill(SKILL_HERBALISM);
         SetRandomSkill(SKILL_ALCHEMY);
         break;
     case 1:
-        SetRandomSkill(SKILL_TAILORING);
-        SetRandomSkill(SKILL_ENCHANTING);
+        SetRandomSkill(SKILL_HERBALISM);
+        SetRandomSkill(SKILL_INSCRIPTION);
         break;
     case 2:
-        SetRandomSkill(SKILL_SKINNING);
-        SetRandomSkill(SKILL_LEATHERWORKING);
-        break;
-    case 3:
-        SetRandomSkill(SKILL_MINING);
-        SetRandomSkill(SKILL_BLACKSMITHING);
-        break;
-    case 4:
         SetRandomSkill(SKILL_MINING);
         SetRandomSkill(SKILL_JEWELCRAFTING);
         break;
-    case 5:
-        SetRandomSkill(SKILL_MINING);
-        SetRandomSkill(SKILL_ENGINEERING);
-        break;
-    case 6:
-        SetRandomSkill(SKILL_HERBALISM);
-        SetRandomSkill(SKILL_INSCRIPTION);
+    case 3:
+        SetRandomSkill(firstSkills[urand(0, firstSkills.size() - 1)]);
+        SetRandomSkill(secondSkills[urand(0, secondSkills.size() - 1)]);
         break;
     }
 }
