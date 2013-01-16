@@ -526,7 +526,7 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
                     Field* fields = results->Fetch();
                     ObjectGuid guid = ObjectGuid(fields[0].GetUInt64());
                     Player* bot = sObjectMgr.GetPlayer(guid, true);
-                    if (!bot || bot->GetGroup())
+                    if (!bot)
                         continue;
 
                     if (cmd == "init")
