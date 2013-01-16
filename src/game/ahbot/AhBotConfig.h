@@ -20,7 +20,7 @@ public:
     uint32 alwaysAvailableMoney;
     float priceMultiplier, priceQualityMultiplier;
     uint32 defaultMinPrice;
-    uint32 maxItemLevel;
+    uint32 maxItemLevel, maxRequiredLevel;
     float underPriceProbability;
     float buyProbability;
     float sellProbability;

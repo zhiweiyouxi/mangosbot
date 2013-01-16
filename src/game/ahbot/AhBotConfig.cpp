@@ -33,6 +33,7 @@ bool AhBotConfig::Initialize()
     priceMultiplier = config.GetFloatDefault("AhBot.PriceMultiplier", 1.0f);
     defaultMinPrice = config.GetIntDefault("AhBot.DefaultMinPrice", 20);
     maxItemLevel = config.GetIntDefault("AhBot.MaxItemLevel", 300);
+    maxRequiredLevel = config.GetIntDefault("AhBot.MaxRequiredLevel", 80);
     priceQualityMultiplier = config.GetFloatDefault("AhBot.PriceQualityMultiplier", 1.0f);
     underPriceProbability = config.GetFloatDefault("AhBot.UnderPriceProbability", 0.05f);
     buyProbability = config.GetFloatDefault("AhBot.BuyProbability", 0.25f);
