@@ -11,6 +11,24 @@
 using namespace ai;
 using namespace std;
 
+uint32 PlayerbotFactory::tradeSkills[] =
+{
+    SKILL_ALCHEMY,
+    SKILL_ENCHANTING,
+    SKILL_SKINNING,
+    SKILL_JEWELCRAFTING,
+    SKILL_INSCRIPTION,
+    SKILL_TAILORING,
+    SKILL_LEATHERWORKING,
+    SKILL_ENGINEERING,
+    SKILL_HERBALISM,
+    SKILL_MINING,
+    SKILL_BLACKSMITHING,
+    SKILL_COOKING,
+    SKILL_FIRST_AID,
+    SKILL_FISHING
+};
+
 void PlayerbotFactory::Randomize(bool incremental)
 {
     if (!itemQuality)
@@ -50,10 +68,12 @@ void PlayerbotFactory::Randomize(bool incremental)
 
     InitAvailableSpells();
     InitSkills();
+    InitTradeSkills();
     InitTalents();
     InitAvailableSpells();
     InitSpecialSpells();
     InitMounts();
+    UpdateTradeSkills();
     bot->SaveToDB();
 
     InitEquipment(incremental);
@@ -804,6 +824,54 @@ bool PlayerbotFactory::CanEquipUnseenItem(uint8 slot, uint16 &dest, uint32 item)
     return false;
 }
 
+void PlayerbotFactory::InitTradeSkills()
+{
+    for (int i = 0; i < sizeof(tradeSkills) / sizeof(uint32); ++i)
+    {
+        bot->SetSkill(tradeSkills[i], 0, 0);
+    }
+
+    switch (urand(0, 6))
+    {
+    case 0:
+        SetRandomSkill(SKILL_HERBALISM);
+        SetRandomSkill(SKILL_ALCHEMY);
+        break;
+    case 1:
+        SetRandomSkill(SKILL_TAILORING);
+        SetRandomSkill(SKILL_ENCHANTING);
+        break;
+    case 2:
+        SetRandomSkill(SKILL_SKINNING);
+        SetRandomSkill(SKILL_LEATHERWORKING);
+        break;
+    case 3:
+        SetRandomSkill(SKILL_MINING);
+        SetRandomSkill(SKILL_BLACKSMITHING);
+        break;
+    case 4:
+        SetRandomSkill(SKILL_MINING);
+        SetRandomSkill(SKILL_JEWELCRAFTING);
+        break;
+    case 5:
+        SetRandomSkill(SKILL_MINING);
+        SetRandomSkill(SKILL_ENGINEERING);
+        break;
+    case 6:
+        SetRandomSkill(SKILL_HERBALISM);
+        SetRandomSkill(SKILL_INSCRIPTION);
+        break;
+    }
+}
+
+void PlayerbotFactory::UpdateTradeSkills()
+{
+    for (int i = 0; i < sizeof(tradeSkills) / sizeof(uint32); ++i)
+    {
+        if (bot->GetSkillValue(tradeSkills[i]) == 1)
+            bot->SetSkill(tradeSkills[i], 0, 0);
+    }
+}
 
 void PlayerbotFactory::InitSkills()
 {
@@ -865,7 +933,13 @@ void PlayerbotFactory::InitAvailableSpells()
     for (uint32 id = 0; id < sCreatureStorage.GetMaxEntry(); ++id)
     {
         CreatureInfo const* co = sCreatureStorage.LookupEntry<CreatureInfo>(id);
-        if (!co ||co->trainer_type != TRAINER_TYPE_CLASS || co->trainer_class != bot->getClass())
+        if (!co)
+            continue;
+
+        if (co->trainer_type != TRAINER_TYPE_TRADESKILLS && co->trainer_type != TRAINER_TYPE_CLASS)
+            continue;
+
+        if (co->trainer_type == TRAINER_TYPE_CLASS && co->trainer_class != bot->getClass())
             continue;
 
         uint32 trainerId = co->trainerId;
