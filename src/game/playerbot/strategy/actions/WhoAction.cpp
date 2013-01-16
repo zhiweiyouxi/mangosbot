@@ -6,7 +6,7 @@
 
 using namespace ai;
 
-
+map<uint32, string> WhoAction::skills;
 
 bool WhoAction::Execute(Event event)
 {
@@ -47,6 +47,44 @@ bool WhoAction::Execute(Event event)
     if (needSlash)
     {
         out << " gear (|h|cff00ff00" << bot->GetEquipGearScore(false, false) << "|h|cffffffff GS)";
+    }
+
+    if (skills.empty())
+    {
+        skills[SKILL_ALCHEMY] = "Alchemy";
+        skills[SKILL_ENCHANTING] = "Enchanting";
+        skills[SKILL_SKINNING] = "Skinning";
+        skills[SKILL_JEWELCRAFTING] = "Jewelcrafting";
+        skills[SKILL_INSCRIPTION] = "Inscription";
+        skills[SKILL_TAILORING] = "Tailoring";
+        skills[SKILL_LEATHERWORKING] = "Leatherworking";
+        skills[SKILL_ENGINEERING] = "Engineering";
+        skills[SKILL_HERBALISM] = "Herbalism";
+        skills[SKILL_MINING] = "Mining";
+        skills[SKILL_BLACKSMITHING] = "Blacksmithing";
+        skills[SKILL_COOKING] = "Cooking";
+        skills[SKILL_FIRST_AID] = "First Aid";
+        skills[SKILL_FISHING] = "Fishing";
+    }
+
+    ObjectGuid guid = bot->GetObjectGuid();
+    for (map<uint32, string>::iterator i = skills.begin(); i != skills.end(); ++i)
+    {
+        uint16 skill = i->first;
+        if (!bot->HasSkill(skill))
+            continue;
+
+        string skillName = i->second;
+        uint32 spellId = AI_VALUE2(uint32, "spell id", skillName);
+        uint16 value = bot->GetSkillValue(skill);
+        uint16 maxSkill = bot->GetMaxSkillValue(skill);
+		string data = "0";
+        out << " |cFFFFFF00|Htrade:" << spellId << ":" << value << ":" << maxSkill << ":"
+                << std::hex << std::uppercase << guid.GetRawValue()
+                << std::nouppercase << std::dec << ":" << data
+                << "|h[" << skills[skill] << "]|h|r"
+                << " |h|cff00ff00" << value << "|h|cffffffff/"
+                << "|h|cff00ff00" << maxSkill < "|h|cffffffff ";
     }
 
     Player* master = GetMaster();
