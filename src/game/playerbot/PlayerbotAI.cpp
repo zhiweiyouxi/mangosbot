@@ -763,7 +763,7 @@ bool PlayerbotAI::HasAura(string name, Unit* unit)
 
     for (uint32 auraType = SPELL_AURA_BIND_SIGHT; auraType < TOTAL_AURAS; auraType++)
     {
-        Unit::AuraList auras = unit->GetAurasByType((AuraType)auraType);
+        Unit::AuraList& auras = unit->GetAurasByType((AuraType)auraType);
         for (Unit::AuraList::iterator i = auras.begin(); i != auras.end(); i++)
         {
             AuraPair aura = *i;
@@ -1055,7 +1055,7 @@ bool PlayerbotAI::HasAuraToDispel(Unit* target, uint32 dispelType)
 {
     for (uint32 type = SPELL_AURA_NONE; type < TOTAL_AURAS; ++type)
     {
-        Unit::AuraList auras = target->GetAurasByType((AuraType)type);
+        Unit::AuraList& auras = target->GetAurasByType((AuraType)type);
         for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
         {
             const AuraPair aura = *itr;
