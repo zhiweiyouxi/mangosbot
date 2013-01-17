@@ -39,7 +39,7 @@ void RandomPlayerbotMgr::UpdateAIInternal(uint32 elapsed)
     int botCount = bots.size();
     int botsWere = botCount, allianceNewBots = 0, hordeNewBots = 0;
     int randomBotsPerInterval = (int)urand(sPlayerbotAIConfig.minRandomBotsPerInterval, sPlayerbotAIConfig.maxRandomBotsPerInterval);
-    while (botCount++ < maxAllowedBotCount && botCount < randomBotsPerInterval)
+    while (botCount++ < maxAllowedBotCount)
     {
         bool alliance = botCount % 2;
         uint32 bot = AddRandomBot(alliance);
