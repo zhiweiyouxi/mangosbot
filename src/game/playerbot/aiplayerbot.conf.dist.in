@@ -35,6 +35,9 @@ AiPlayerbot.MeleeDistance = 2.0
 AiPlayerbot.FollowDistance = 2.0
 AiPlayerbot.WhisperDistance = 0.0
 
+# Bot can flee for enemy
+AiPlayerbot.FleeingEnabled = 1
+
 # Health/Mana levels
 AiPlayerbot.CriticalHealth = 25
 AiPlayerbot.LowHealth = 45

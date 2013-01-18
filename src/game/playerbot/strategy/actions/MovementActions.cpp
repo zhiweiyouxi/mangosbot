@@ -215,6 +215,9 @@ bool MovementAction::Flee(Unit *target)
     if (!target)
         return false;
 
+    if (!sPlayerbotAIConfig.fleeingEnabled)
+        return false;
+
     if (!IsMovingAllowed())
         return false;
 

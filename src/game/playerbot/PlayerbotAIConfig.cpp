@@ -92,6 +92,7 @@ bool PlayerbotAIConfig::Initialize()
     maxRandomBotsPerInterval = config.GetIntDefault("AiPlayerbot.MaxRandomBotsPerInterval", 100);
     randomBotJoinLfg = config.GetBoolDefault("AiPlayerbot.RandomBotJoinLfg", false);
     logInGroupOnly = config.GetBoolDefault("AiPlayerbot.LogInGroupOnly", true);
+    fleeingEnabled = config.GetBoolDefault("AiPlayerbot.FleeingEnabled", true);
 
     CreateRandomBots();
     sLog.outString("AI Playerbot configuration loaded");

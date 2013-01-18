@@ -42,6 +42,7 @@ public:
     uint32 minRandomBotsPerInterval, maxRandomBotsPerInterval;
     bool randomBotJoinLfg;
     bool logInGroupOnly;
+    bool fleeingEnabled;
 
     uint32 iterationsPerTick;
 
