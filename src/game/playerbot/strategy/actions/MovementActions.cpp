@@ -283,7 +283,7 @@ bool MoveRandomAction::Execute(Event event)
         }
     }
 
-    float distance = sPlayerbotAIConfig.tooCloseDistance + sPlayerbotAIConfig.fleeDistance * urand(1, 10) / 10.0f;
+    float distance = sPlayerbotAIConfig.tooCloseDistance + sPlayerbotAIConfig.grindDistance * urand(3, 10) / 10.0f;
 
     if (target)
     {
