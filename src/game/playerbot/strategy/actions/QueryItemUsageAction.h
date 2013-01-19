@@ -16,5 +16,8 @@ namespace ai
         void QueryQuestItem(uint32 itemId, const Quest *questTemplate, const QuestStatusData *questStatus);
         void QueryQuestItem(uint32 itemId);
 
+    private:
+        ostringstream out;
+
     };
 }

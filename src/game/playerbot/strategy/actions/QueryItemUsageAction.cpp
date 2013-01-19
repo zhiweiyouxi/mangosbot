@@ -112,6 +112,9 @@ void QueryItemUsageAction::QueryItemPrice(ItemPrototype const *item)
     if (!sRandomPlayerbotMgr.IsRandomBot(bot))
         return;
 
+    if (item->Bonding == BIND_WHEN_PICKED_UP)
+        return;
+
     int32 price = auctionbot.GetSellPrice(item);
     if (price)
     {
