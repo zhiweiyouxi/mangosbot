@@ -71,6 +71,7 @@ namespace ai
         void toggleStrategy(string name);
         std::string ListStrategies();
 		bool ContainsStrategy(StrategyType type);
+		void ChangeStrategy(string names);
 
     public:
 	    virtual bool DoNextAction(Unit*, int depth = 0);

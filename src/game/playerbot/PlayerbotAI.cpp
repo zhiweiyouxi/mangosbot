@@ -449,26 +449,7 @@ void PlayerbotAI::ChangeStrategy(string names, BotState type)
     if (!e)
         return;
 
-    vector<string> splitted = split(names, ',');
-    for (vector<string>::iterator i = splitted.begin(); i != splitted.end(); i++)
-    {
-        const char* name = i->c_str();
-        switch (name[0])
-        {
-        case '+':
-            e->addStrategy(name+1);
-            break;
-        case '-':
-            e->removeStrategy(name+1);
-            break;
-        case '~':
-            e->toggleStrategy(name+1);
-            break;
-        case '?':
-            TellMaster(e->ListStrategies());
-            break;
-        }
-    }
+    e->ChangeStrategy(names);
 }
 
 void PlayerbotAI::DoSpecificAction(string name)

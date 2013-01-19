@@ -25,7 +25,6 @@ public:
     uint32 lowMana, mediumMana;
 
     bool randomBotAutologin;
-    bool randomBotGrinding;
     std::string randomBotMapsAsString;
     std::vector<uint32> randomBotMaps;
     std::list<uint32> randomBotQuestItems;
@@ -43,6 +42,7 @@ public:
     bool randomBotJoinLfg;
     bool logInGroupOnly;
     bool fleeingEnabled;
+    std::string randomBotCombatStrategies, randomBotNonCombatStrategies;
 
     uint32 iterationsPerTick;
 

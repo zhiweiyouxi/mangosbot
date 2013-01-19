@@ -478,3 +478,27 @@ void Engine::LogAction(const char* format, ...)
         sLog.outDebug("%s %s", bot->GetName(), buf);
     }
 }
+
+void Engine::ChangeStrategy(string names)
+{
+    vector<string> splitted = split(names, ',');
+    for (vector<string>::iterator i = splitted.begin(); i != splitted.end(); i++)
+    {
+        const char* name = i->c_str();
+        switch (name[0])
+        {
+        case '+':
+            addStrategy(name+1);
+            break;
+        case '-':
+            removeStrategy(name+1);
+            break;
+        case '~':
+            toggleStrategy(name+1);
+            break;
+        case '?':
+            ai->TellMaster(ListStrategies());
+            break;
+        }
+    }
+}
