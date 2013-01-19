@@ -288,7 +288,7 @@ protected:
         set<uint8>("mana", "self target", 100);
         tickWithNoTarget();
 
-        assertActions(">S:stay>S:add all loot>S:add all loot>Grind:attack anything");
+        assertActions(">S:stay>S:check mount state>S:check mount state>Grind:attack anything");
     }
 
     void grindIfNoMana()
