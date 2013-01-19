@@ -16,6 +16,7 @@ namespace ai
             creators["timer"] = &TriggerContext::Timer;
             creators["random"] = &TriggerContext::Random;
             creators["seldom"] = &TriggerContext::seldom;
+            creators["often"] = &TriggerContext::often;
 
             creators["target critical health"] = &TriggerContext::TargetCriticalHealth;
 
@@ -134,6 +135,7 @@ namespace ai
         static Trigger* enemy_player_is_attacking(PlayerbotAI* ai) { return new EnemyPlayerIsAttacking(ai); }
         static Trigger* Random(PlayerbotAI* ai) { return new RandomTrigger(ai); }
         static Trigger* seldom(PlayerbotAI* ai) { return new SeldomTrigger(ai); }
+        static Trigger* often(PlayerbotAI* ai) { return new OftenTrigger(ai); }
         static Trigger* EnemyOutOfMelee(PlayerbotAI* ai) { return new EnemyOutOfMeleeTrigger(ai); }
         static Trigger* EnemyOutOfSpell(PlayerbotAI* ai) { return new EnemyOutOfSpellRangeTrigger(ai); }
         static Trigger* enemy_too_close_for_spell(PlayerbotAI* ai) { return new EnemyTooCloseForSpellTrigger(ai); }

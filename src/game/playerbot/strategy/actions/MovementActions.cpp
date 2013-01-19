@@ -253,19 +253,15 @@ bool MoveRandomAction::Execute(Event event)
     if (!(rand() % 3))
     {
         list<ObjectGuid> npcs = AI_VALUE(list<ObjectGuid>, "nearest npcs");
-        if (!npcs.empty())
+        for (list<ObjectGuid>::iterator i = npcs.begin(); i != npcs.end(); i++)
         {
-            size_t pos = rand() % npcs.size();
-            for (list<ObjectGuid>::iterator i = npcs.begin(); i != npcs.end() && pos; i++)
-            {
-                target = ai->GetUnit(*i);
-                pos--;
+            target = ai->GetUnit(*i);
 
-                if (target && !pos)
-                {
-                    ostringstream out; out << "I will check " << target->GetName();
-                    ai->TellMaster(out);
-                }
+            if (target && bot->GetDistance(target) > sPlayerbotAIConfig.tooCloseDistance)
+            {
+                ostringstream out; out << "I will check " << target->GetName();
+                ai->TellMaster(out);
+                break;
             }
         }
     }
@@ -273,38 +269,44 @@ bool MoveRandomAction::Execute(Event event)
     if (!target || !(rand() % 3))
     {
         list<ObjectGuid> gos = AI_VALUE(list<ObjectGuid>, "nearest game objects");
-        if (!gos.empty())
+        for (list<ObjectGuid>::iterator i = gos.begin(); i != gos.end(); i++)
         {
-            size_t pos = rand() % gos.size();
-            for (list<ObjectGuid>::iterator i = gos.begin(); i != gos.end() && pos; i++)
-            {
-                target = ai->GetGameObject(*i);
-                pos--;
+            target = ai->GetGameObject(*i);
 
-                if (target && !pos)
-                {
-                    AI_VALUE(LootObjectStack*, "available loot")->Add(target->GetObjectGuid());
-                    ostringstream out; out << "I will check " << chat->formatGameobject((GameObject*)target);
-                    ai->TellMaster(out);
-                }
+            if (target && bot->GetDistance(target) > sPlayerbotAIConfig.tooCloseDistance)
+            {
+                AI_VALUE(LootObjectStack*, "available loot")->Add(target->GetObjectGuid());
+                ostringstream out; out << "I will check " << chat->formatGameobject((GameObject*)target);
+                ai->TellMaster(out);
+                break;
             }
         }
     }
 
-    float distance = (rand() % 15) / 10.0f;
+    float distance = sPlayerbotAIConfig.tooCloseDistance + sPlayerbotAIConfig.fleeDistance * urand(1, 10) / 10.0f;
 
-    if (!target || !(rand() % 3))
+    if (target)
+    {
+        return MoveNear(target);
+    }
+
+    for (int i = 0; i < 10; ++i)
     {
         float x = bot->GetPositionX();
         float y = bot->GetPositionY();
         float z = bot->GetPositionZ();
-        x += urand(0, sPlayerbotAIConfig.sightDistance) - sPlayerbotAIConfig.sightDistance / 2;
-        y += urand(0, sPlayerbotAIConfig.sightDistance) - sPlayerbotAIConfig.sightDistance / 2;
+        x += urand(0, distance) - distance / 2;
+        y += urand(0, distance) - distance / 2;
         bot->UpdateGroundPositionZ(x, y, z);
-        return MoveNear(bot->GetMapId(), x, y, z, distance);
+        bool moved = MoveNear(bot->GetMapId(), x, y, z);
+        if (moved)
+        {
+            ai->TellMaster("I will check out there");
+            return true;
+        }
     }
 
-    return MoveNear(target);
+    return false;
 }
 
 bool MoveToLootAction::Execute(Event event)

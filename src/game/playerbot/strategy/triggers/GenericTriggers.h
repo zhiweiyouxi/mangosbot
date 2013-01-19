@@ -303,6 +303,13 @@ namespace ai
         virtual string getName() { return "seldom"; }
     };
 
+    class OftenTrigger : public RandomTrigger
+    {
+    public:
+        OftenTrigger(PlayerbotAI* ai) : RandomTrigger(ai, 2) {}
+        virtual string getName() { return "often"; }
+    };
+
     class AndTrigger : public Trigger
     {
     public:
