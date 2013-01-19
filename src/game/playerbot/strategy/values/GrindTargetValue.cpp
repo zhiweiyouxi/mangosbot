@@ -52,7 +52,11 @@ Unit* GrindTargetValue::FindTargetForGrinding(int assistCount)
 		if (master && master->GetDistance(unit) >= sPlayerbotAIConfig.grindDistance && !sRandomPlayerbotMgr.IsRandomBot(bot))
             continue;
 
-		if ((int)unit->getLevel() - (int)bot->getLevel() > 7)
+		if ((int)unit->getLevel() - (int)bot->getLevel() > 3)
+		    continue;
+
+		Creature* creature = dynamic_cast<Creature*>(unit);
+		if (creature && creature->GetCreatureInfo() && creature->GetCreatureInfo()->rank > CREATURE_ELITE_NORMAL)
 		    continue;
 
         if (group)
