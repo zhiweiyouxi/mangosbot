@@ -17,8 +17,8 @@ AiPlayerbot.AllowGuildBots = true
 # Delay between two short-time spells cast
 AiPlayerbot.GlobalCooldown = 500
 
-# Delay before following master to a dungeon portal
-AiPlayerbot.TeleportDelay = 10000
+# Max wait time when moving
+AiPlayerbot.MaxWaitForMove = 5000
 
 # Delay between two bot actions
 AiPlayerbot.ReactDelay = 100

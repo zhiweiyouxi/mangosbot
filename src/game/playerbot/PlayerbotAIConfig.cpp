@@ -42,7 +42,7 @@ bool PlayerbotAIConfig::Initialize()
         sLog.outString("AI Playerbot is Disabled in aiplayerbot.conf");
 
     globalCoolDown = (uint32) config.GetIntDefault("AiPlayerbot.GlobalCooldown", 500);
-    teleportDelay = config.GetIntDefault("AiPlayerbot.TeleportDelay", 10000);
+    maxWaitForMove = config.GetIntDefault("AiPlayerbot.MaxWaitForMove", 5000);
     reactDelay = (uint32) config.GetIntDefault("AiPlayerbot.ReactDelay", 100);
 
     sightDistance = config.GetFloatDefault("AiPlayerbot.SightDistance", 50.0f);
@@ -119,8 +119,6 @@ string PlayerbotAIConfig::GetValue(string name)
 
     if (name == "GlobalCooldown")
         out << globalCoolDown;
-    else if (name == "TeleportDelay")
-        out << teleportDelay;
     else if (name == "ReactDelay")
         out << reactDelay;
 
@@ -160,8 +158,6 @@ void PlayerbotAIConfig::SetValue(string name, string value)
 
     if (name == "GlobalCooldown")
         out >> globalCoolDown;
-    else if (name == "TeleportDelay")
-        out >> teleportDelay;
     else if (name == "ReactDelay")
         out >> reactDelay;
 
