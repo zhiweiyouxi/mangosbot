@@ -80,7 +80,7 @@ protected:
 		tickWithAttackerCount(2);
 		tickWithAttackerCount(2);
 
-        assertActions(">T:cleave>T:thunder clap>T:demoralizing shout>T:shockwave>T:cleave");
+        assertActions(">T:shockwave>T:thunder clap>T:demoralizing shout>T:cleave>T:devastate");
     }
 
     void warriorMustHoldAggro()
