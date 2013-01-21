@@ -267,6 +267,15 @@ namespace ai
         virtual bool IsActive();
     };
 
+    class DebuffOnAttackerTrigger : public DebuffTrigger
+    {
+    public:
+        DebuffOnAttackerTrigger(PlayerbotAI* ai, string spell) : DebuffTrigger(ai, spell) {}
+    public:
+        virtual Value<Unit*>* GetTargetValue();
+        virtual string getName() { return spell + " on attacker"; }
+    };
+
 	class BoostTrigger : public BuffTrigger
 	{
 	public:

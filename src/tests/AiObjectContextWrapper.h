@@ -111,6 +111,7 @@ namespace ai
     public:
         MockValueContext() : NamedObjectContext<UntypedValue>()
         {
+            creators["attacker without aura"] = &MockValueContext::mock;
             creators["party member without aura"] = &MockValueContext::party_member_without_aura;
             creators["party member to heal"] = &MockValueContext::party_member_to_heal;
             creators["party member to dispel"] = &MockValueContext::party_member_to_dispel;
@@ -159,6 +160,7 @@ namespace ai
 
             creators["possible targets"] = &MockValueContext::units;
             creators["nearest adds"] = &MockValueContext::units;
+            creators["attackers"] = &MockValueContext::units;
             creators["has totem"] = &MockValueContext::logical;
             creators["aoe heal"] = &MockValueContext::stats;
 
@@ -201,6 +203,7 @@ namespace ai
               GetValue<Unit*>("least hp target")->Set(MockedTargets::GetLeastHpTarget());
               GetValue<Unit*>("rti target")->Set(MockedTargets::GetRtiTarget());
               GetValue<Unit*>("enemy player target")->Set(MockedTargets::GetEnemyPlayer());
+              GetValue<Unit*>("attacker without aura")->Set(NULL);
 
               GetValue<uint8>("health", "self target")->Set(100);
               GetValue<uint8>("health", "current target")->Set(100);

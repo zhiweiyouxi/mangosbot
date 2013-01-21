@@ -692,6 +692,7 @@
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\AoeHealValues.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\AttackerCountValues.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\AttackersValue.cpp" />
+    <ClCompile Include="..\..\src\game\playerbot\strategy\values\AttackerWithoutAuraTargetValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\CcTargetValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\CurrentCcTargetValue.cpp" />
     <ClCompile Include="..\..\src\game\playerbot\strategy\values\CurrentTargetValue.cpp" />
@@ -1180,6 +1181,7 @@
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\AoeHealValues.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\AttackerCountValues.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\AttackersValue.h" />
+    <ClInclude Include="..\..\src\game\playerbot\strategy\values\AttackerWithoutAuraTargetValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\AvailableLootValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\CcTargetValue.h" />
     <ClInclude Include="..\..\src\game\playerbot\strategy\values\ChatValue.h" />

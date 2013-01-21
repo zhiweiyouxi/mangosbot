@@ -22,6 +22,7 @@ namespace ai
 		static Unit* GetDuelTarget() { return (Unit*)18; }
 		static Unit* GetGridTarget() { return (Unit*)19; }
 		static Unit* GetEnemyPlayer() { return (Unit*)20; }
+		static Unit* GetAttackerWithoutAura() { return (Unit*)21; }
 
         static void Append(string &buffer, Unit* unit)
         {
@@ -53,6 +54,8 @@ namespace ai
                 buffer.append("Grind");
             if (unit == GetEnemyPlayer())
                 buffer.append("Enemy");
+            if (unit == GetAttackerWithoutAura())
+                buffer.append("A");
         }
    };
 
