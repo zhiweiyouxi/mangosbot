@@ -62,4 +62,8 @@ void DpsAoeWarlockStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
         "light aoe",
         NextAction::array(0, new NextAction("shadowfury", 29.0f), NULL)));
 
+    triggers.push_back(new TriggerNode(
+        "corruption on attacker",
+        NextAction::array(0, new NextAction("corruption on attacker", 28.0f), NULL)));
+
 }

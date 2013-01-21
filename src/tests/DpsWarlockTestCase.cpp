@@ -72,7 +72,13 @@ protected:
         tickWithAttackerCount(3);
         tickWithAttackerCount(4);
 
-		assertActions(">T:shadowfury>T:seed of corruption>T:rain of fire");
+        set<Unit*>("attacker without aura", "corruption", MockedTargets::GetAttackerWithoutAura());
+        tick();
+
+        set<Unit*>("attacker without aura", "corruption", NULL);
+        tick();
+
+		assertActions(">T:shadowfury>T:seed of corruption>T:rain of fire>A:corruption on attacker>T:immolate");
     }
 };
 
