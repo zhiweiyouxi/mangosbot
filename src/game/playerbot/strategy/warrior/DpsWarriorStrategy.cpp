@@ -18,16 +18,8 @@ public:
         creators["mocking blow"] = &mocking_blow;
         creators["death wish"] = &death_wish;
         creators["execute"] = &execute;
-        creators["reach melee"] = &reach_melee;
     }
 private:
-    static ActionNode* reach_melee(PlayerbotAI* ai)
-    {
-        return new ActionNode ("reach melee",
-            /*P*/ NextAction::array(0, new NextAction("charge"), NULL),
-            /*A*/ NULL,
-            /*C*/ NULL);
-    }
     static ActionNode* overpower(PlayerbotAI* ai)
     {
         return new ActionNode ("overpower",
@@ -99,6 +91,10 @@ NextAction** DpsWarriorStrategy::getDefaultActions()
 void DpsWarriorStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 {
     GenericWarriorStrategy::InitTriggers(triggers);
+
+    triggers.push_back(new TriggerNode(
+        "enemy out of melee",
+        NextAction::array(0, new NextAction("charge", ACTION_NORMAL + 9), NULL)));
 
     triggers.push_back(new TriggerNode(
         "target critical health",
