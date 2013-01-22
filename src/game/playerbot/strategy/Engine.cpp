@@ -109,6 +109,8 @@ void Engine::Init()
 bool Engine::DoNextAction(Unit* unit, int depth)
 {
     LogAction("--- AI Tick ---");
+    if (sPlayerbotAIConfig.logValuesPerTick)
+        LogValues();
 
     bool actionExecuted = false;
     ActionBasket* basket = NULL;
@@ -501,4 +503,14 @@ void Engine::ChangeStrategy(string names)
             break;
         }
     }
+}
+
+void Engine::LogValues()
+{
+    Player* bot = ai->GetBot();
+    if (sPlayerbotAIConfig.logInGroupOnly && !bot->GetGroup())
+        return;
+
+    string text = ai->GetAiObjectContext()->FormatValues();
+    sLog.outDebug("Values for %s: %s", bot->GetName(), text.c_str());
 }

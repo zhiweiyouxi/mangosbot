@@ -102,12 +102,12 @@ namespace ai
 
     private:
         void LogAction(const char* format, ...);
+        void LogValues();
 
     protected:
 	    Queue queue;
 	    std::list<TriggerNode*> triggers;
         std::list<Multiplier*> multipliers;
-	    Player* bot;
         AiObjectContext* aiObjectContext;
         std::map<string, Strategy*> strategies;
         float lastRelevance;

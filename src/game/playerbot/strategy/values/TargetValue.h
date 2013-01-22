@@ -30,10 +30,10 @@ namespace ai
         set<Unit*> alreadyChecked;
     };
 
-    class TargetValue : public CalculatedValue<Unit*>
+    class TargetValue : public UnitCalculatedValue
 	{
 	public:
-        TargetValue(PlayerbotAI* ai) : CalculatedValue<Unit*>(ai) {}
+        TargetValue(PlayerbotAI* ai) : UnitCalculatedValue(ai) {}
 
     protected:
         Unit* FindTarget(FindTargetStrategy* strategy);

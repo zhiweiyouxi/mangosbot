@@ -3,11 +3,11 @@
 
 namespace ai
 {
-    class AttackerWithoutAuraTargetValue : public CalculatedValue<Unit*>, public Qualified
+    class AttackerWithoutAuraTargetValue : public UnitCalculatedValue, public Qualified
 	{
 	public:
         AttackerWithoutAuraTargetValue(PlayerbotAI* ai) :
-            CalculatedValue<Unit*>(ai, "attacker without aura") {}
+            UnitCalculatedValue(ai, "attacker without aura") {}
 
     protected:
         virtual Unit* Calculate();

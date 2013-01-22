@@ -6,13 +6,13 @@
 ConfVersion=2010102201
 
 # Enable or disable AI Playerbot
-AiPlayerbot.Enabled = true
+AiPlayerbot.Enabled = 1
 
 # Max AI iterations per tick
 AiPlayerbot.IterationsPerTick = 10
 
 # Allow/deny bots from your guild
-AiPlayerbot.AllowGuildBots = true
+AiPlayerbot.AllowGuildBots = 1
 
 # Delay between two short-time spells cast
 AiPlayerbot.GlobalCooldown = 500
@@ -101,5 +101,6 @@ AiPlayerbot.MaxRandomBotsPerInterval = 100
 AiPlayerbot.RandomBotTeleportDistance = 400
 
 # Debug switches
-AiPlayerbot.SpellDump = false
-AiPlayerbot.LogInGroupOnly = true
+AiPlayerbot.SpellDump = 0
+AiPlayerbot.LogInGroupOnly = 1
+AiPlayerbot.LogValuesPerTick = 0

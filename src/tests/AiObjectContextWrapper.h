@@ -45,17 +45,17 @@ namespace ai
         MockLogicalValue(PlayerbotAI* const ai) : ManualSetValue<bool>(ai, false) {}
     };
 
-    class AlwaysTrueValue : public CalculatedValue<bool>, public Qualified
+    class AlwaysTrueValue : public BoolCalculatedValue, public Qualified
     {
     public:
-        AlwaysTrueValue(PlayerbotAI* const ai) : CalculatedValue<bool>(ai) {}
+        AlwaysTrueValue(PlayerbotAI* const ai) : BoolCalculatedValue(ai) {}
         virtual bool Calculate() { return true; }
     };
 
-    class MockPartyMemberWithoutAuraValue : public CalculatedValue<Unit*>, public Qualified
+    class MockPartyMemberWithoutAuraValue : public UnitCalculatedValue, public Qualified
     {
     public:
-        MockPartyMemberWithoutAuraValue(PlayerbotAI* const ai) : CalculatedValue<Unit*>(ai) {}
+        MockPartyMemberWithoutAuraValue(PlayerbotAI* const ai) : UnitCalculatedValue(ai) {}
 
         virtual Unit* Calculate()
         {
@@ -65,10 +65,10 @@ namespace ai
         }
     };
 
-    class MockPartyMemberToHeal : public CalculatedValue<Unit*>
+    class MockPartyMemberToHeal : public UnitCalculatedValue
     {
     public:
-        MockPartyMemberToHeal(PlayerbotAI* const ai) : CalculatedValue<Unit*>(ai) {}
+        MockPartyMemberToHeal(PlayerbotAI* const ai) : UnitCalculatedValue(ai) {}
 
         virtual Unit* Calculate()
         {
@@ -77,10 +77,10 @@ namespace ai
         }
     };
 
-    class MockPartyMemberToDispel : public CalculatedValue<Unit*>, public Qualified
+    class MockPartyMemberToDispel : public UnitCalculatedValue, public Qualified
     {
     public:
-        MockPartyMemberToDispel(PlayerbotAI* const ai) : CalculatedValue<Unit*>(ai) {}
+        MockPartyMemberToDispel(PlayerbotAI* const ai) : UnitCalculatedValue(ai) {}
 
         virtual Unit* Calculate()
         {
