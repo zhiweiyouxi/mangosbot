@@ -13,12 +13,14 @@ Engine::Engine(PlayerbotAI* ai, AiObjectContext *factory) : PlayerbotAIAware(ai)
     testMode = false;
 }
 
-void ActionExecutionListeners::Before(Action* action, Event event)
+bool ActionExecutionListeners::Before(Action* action, Event event)
 {
+    bool result = true;
     for (list<ActionExecutionListener*>::iterator i = listeners.begin(); i!=listeners.end(); i++)
     {
-        (*i)->Before(action, event);
+        result &= (*i)->Before(action, event);
     }
+    return result;
 }
 
 void ActionExecutionListeners::After(Action* action, Event event)
@@ -29,12 +31,12 @@ void ActionExecutionListeners::After(Action* action, Event event)
     }
 }
 
-bool ActionExecutionListeners::OverrideResult(bool executed, Event event)
+bool ActionExecutionListeners::OverrideResult(Action* action, bool executed, Event event)
 {
-    bool result = true;
+    bool result = executed;
     for (list<ActionExecutionListener*>::iterator i = listeners.begin(); i!=listeners.end(); i++)
     {
-        result &= (*i)->OverrideResult(executed, event);
+        result = (*i)->OverrideResult(action, result, event);
     }
     return result;
 }
@@ -120,10 +122,11 @@ bool Engine::DoNextAction(Unit* unit, int depth)
     ProcessTriggers();
 
     int iterations = 0;
+    int iterationsPerTick = queue.Size() * sPlayerbotAIConfig.iterationsPerTick;
     do {
         basket = queue.Peek();
         if (basket) {
-            if (++iterations > sPlayerbotAIConfig.iterationsPerTick)
+            if (++iterations > iterationsPerTick)
                 break;
 
             float relevance = basket->getRelevance(); // just for reference
@@ -441,18 +444,15 @@ Action* Engine::InitializeAction(ActionNode* actionNode)
 
 bool Engine::ListenAndExecute(Action* action, Event event)
 {
-    bool actionExecuted = true;
+    bool actionExecuted = false;
 
-    actionExecutionListeners.Before(action, event);
+    if (actionExecutionListeners.Before(action, event))
+    {
+        actionExecuted = actionExecutionListeners.AllowExecution(action, event) ? action->Execute(event) : true;
+        actionExecutionListeners.After(action, event);
+    }
 
-    if (actionExecutionListeners.AllowExecution(action, event))
-        actionExecuted = action->Execute(event);
-    else
-        actionExecuted = true;
-
-    actionExecutionListeners.After(action, event);
-
-    return actionExecuted;
+    return actionExecutionListeners.OverrideResult(action, actionExecuted, event);
 }
 
 void Engine::LogAction(const char* format, ...)
