@@ -87,7 +87,8 @@ AiPlayerbot.RandomBotJoinLfg = 0
 
 # Intervals
 AiPlayerbot.RandomBotUpdateInterval = 60
-AiPlayerbot.RandomBotCountChangeInterval = 432000
+AiPlayerbot.RandomBotCountChangeMinInterval = 86400
+AiPlayerbot.RandomBotCountChangeMaxInterval = 259200
 AiPlayerbot.MinRandomBotInWorldTime = 7200
 AiPlayerbot.MaxRandomBotInWorldTime = 1209600
 AiPlayerbot.MinRandomBotRandomizeTime = 7200

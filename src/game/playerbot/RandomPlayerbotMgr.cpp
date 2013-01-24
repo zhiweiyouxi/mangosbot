@@ -32,7 +32,8 @@ void RandomPlayerbotMgr::UpdateAIInternal(uint32 elapsed)
     if (!maxAllowedBotCount)
     {
         maxAllowedBotCount = urand(sPlayerbotAIConfig.minRandomBots, sPlayerbotAIConfig.maxRandomBots);
-        SetEventValue(0, "bot_count", maxAllowedBotCount, sPlayerbotAIConfig.randomBotCountChangeInterval);
+        SetEventValue(0, "bot_count", maxAllowedBotCount,
+                urand(sPlayerbotAIConfig.randomBotCountChangeMinInterval, sPlayerbotAIConfig.randomBotCountChangeMaxInterval));
     }
 
     list<uint32> bots = GetBots();
