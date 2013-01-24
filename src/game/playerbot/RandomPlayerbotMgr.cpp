@@ -81,7 +81,6 @@ uint32 RandomPlayerbotMgr::AddRandomBot(bool alliance)
     int index = urand(0, bots.size() - 1);
     uint32 bot = bots[index];
     SetEventValue(bot, "add", 1, urand(sPlayerbotAIConfig.minRandomBotInWorldTime, sPlayerbotAIConfig.maxRandomBotInWorldTime));
-    SetEventValue(bot, "pvp", 1, urand(sPlayerbotAIConfig.minRandomBotPvpTime, sPlayerbotAIConfig.maxRandomBotPvpTime));
     uint32 randomTime = 30 + urand(sPlayerbotAIConfig.randomBotUpdateInterval, sPlayerbotAIConfig.randomBotUpdateInterval * 3);
     ScheduleRandomize(bot, randomTime);
     sLog.outDetail("Random bot %d added", bot);
@@ -119,7 +118,6 @@ bool RandomPlayerbotMgr::ProcessBot(uint32 bot)
         AddPlayerBot(bot, 0);
         if (!GetEventValue(bot, "online"))
         {
-            SetEventValue(bot, "pvp", 1, urand(sPlayerbotAIConfig.minRandomBotPvpTime, sPlayerbotAIConfig.maxRandomBotPvpTime));
             SetEventValue(bot, "online", 1, sPlayerbotAIConfig.minRandomBotInWorldTime);
         }
         return true;
