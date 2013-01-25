@@ -171,19 +171,12 @@ struct SortByPricePredicate
     }
 };
 
-void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
+vector<AuctionEntry*> AhBot::LoadAuctions(const AuctionHouseObject::AuctionEntryMap& auctionEntryMap,
+        Category*& category, int& auction)
 {
-    AuctionHouseEntry const* ahEntry = sAuctionHouseStore.LookupEntry(auctionIds[auction]);
-    if(!ahEntry)
-        return;
-
-    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
-    AuctionHouseObject::AuctionEntryMap const& auctionEntryMap = auctionHouse->GetAuctions();
-
-    int64 availableMoney = GetAvailableMoney(auctionIds[auction]);
-
     vector<AuctionEntry*> entries;
-    for (AuctionHouseObject::AuctionEntryMap::const_iterator itr = auctionEntryMap.begin(); itr != auctionEntryMap.end(); ++itr)
+    for (AuctionHouseObject::AuctionEntryMap::const_iterator itr = auctionEntryMap.begin();
+            itr != auctionEntryMap.end(); ++itr)
     {
         AuctionEntry *entry = itr->second;
         if (IsBotAuction(entry->owner) || IsBotAuction(entry->bidder))
@@ -193,29 +186,87 @@ void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
         if (!item)
             continue;
 
+        if (!category->Contains(item->GetProto()))
+            continue;
+
         uint32 price = category->GetPricingStrategy()->GetBuyPrice(item->GetProto(), auctionIds[auction]);
         if (!price || !item->GetCount())
+        {
+            sLog.outDetail("%s (x%d) in auction %d: price cannot be determined",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction]);
             continue;
+        }
 
         entries.push_back(entry);
     }
-
     sort(entries.begin(), entries.end(), SortByPricePredicate());
+    return entries;
+}
 
+void AhBot::FindMinPrice(const AuctionHouseObject::AuctionEntryMap& auctionEntryMap, AuctionEntry*& entry, Item*& item, uint32* minBid,
+        uint32* minBuyout)
+{
+    *minBid = 0;
+    *minBuyout = 0;
+    for (AuctionHouseObject::AuctionEntryMap::const_iterator itr = auctionEntryMap.begin();
+            itr != auctionEntryMap.end(); ++itr)
+    {
+        AuctionEntry *other = itr->second;
+        if (other->owner == entry->owner)
+            continue;
+
+        Item *otherItem = sAuctionMgr.GetAItem(other->itemGuidLow);
+        if (!otherItem || !otherItem->GetCount() || otherItem->GetProto()->ItemId != item->GetProto()->ItemId)
+            continue;
+
+        uint32 startbid = other->startbid / otherItem->GetCount() * item->GetCount();
+        uint32 bid = other->bid / otherItem->GetCount() * item->GetCount();
+        uint32 buyout = other->buyout / otherItem->GetCount() * item->GetCount();
+
+        if (!bid && startbid && (!*minBid || *minBid > startbid))
+            *minBid = startbid;
+
+        if (bid && (*minBid || *minBid > bid))
+            *minBid = bid;
+
+        if (buyout && (!*minBuyout || *minBuyout > buyout))
+            *minBuyout = buyout;
+    }
+}
+
+void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
+{
+    const AuctionHouseEntry* ahEntry = sAuctionHouseStore.LookupEntry(auctionIds[auction]);
+    if (!ahEntry)
+        return;
+
+    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
+    const AuctionHouseObject::AuctionEntryMap& auctionEntryMap = auctionHouse->GetAuctions();
+    int64 availableMoney = GetAvailableMoney(auctionIds[auction]);
+
+    vector<AuctionEntry*> entries = LoadAuctions(auctionEntryMap, category, auction);
     for (vector<AuctionEntry*>::iterator itr = entries.begin(); itr != entries.end(); ++itr)
     {
         AuctionEntry *entry = *itr;
 
-        if (urand(0, 100) > sAhBotConfig.buyProbability * 100)
+        Item *item = sAuctionMgr.GetAItem(entry->itemGuidLow);
+        if (!item || !item->GetCount())
             continue;
 
-        Item *item = sAuctionMgr.GetAItem(entry->itemGuidLow);
-        if (!item)
+        if (urand(0, 100) > sAhBotConfig.buyProbability * 100)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: under buy probability",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction]);
             continue;
-        
+        }
+
         uint32 price = category->GetPricingStrategy()->GetBuyPrice(item->GetProto(), auctionIds[auction]);
-        if (!price || !item->GetCount())
+        if (!price)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: cannot determine price",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction]);
             continue;
+        }
 
         uint32 bidPrice = item->GetCount() * price;
         uint32 buyoutPrice = item->GetCount() * urand(price, 4 * price / 3);
@@ -225,10 +276,35 @@ void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
         if (!curPrice) curPrice = entry->buyout;
 
         if (curPrice > buyoutPrice)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: price %d > %d (buyout price)",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction], curPrice, buyoutPrice);
             continue;
+        }
 
         if (availableMoney < curPrice)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: price %d > %d (available money)",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction], curPrice, availableMoney);
             continue;
+        }
+
+        uint32 minBid = 0, minBuyout = 0;
+        FindMinPrice(auctionEntryMap, entry, item, &minBid, &minBuyout);
+
+        if (minBid && entry->bid && minBid < entry->bid)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: %d (bid) > %d (minBid)",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction], entry->bid, minBid);
+            continue;
+        }
+
+        if (minBid && entry->startbid && minBid < entry->startbid)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: %d (startbid) > %d (minBid)",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction], entry->startbid, minBid);
+            continue;
+        }
 
         if (entry->bidder && !IsBotAuction(entry->bidder))
             player->GetSession()->SendAuctionOutbiddedMail(entry);
@@ -240,16 +316,19 @@ void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
 
         updateMarketPrice(item->GetProto()->ItemId, entry->buyout / item->GetCount(), auctionIds[auction]);
 
-        if (entry->buyout && (entry->bid >= entry->buyout || 100 * (entry->buyout - entry->bid) / price < 25))
+        if ((entry->buyout && (entry->bid >= entry->buyout || 100 * (entry->buyout - entry->bid) / price < 25)) &&
+                !(minBuyout && entry->buyout && minBuyout < entry->buyout))
         {
-            sLog.outDetail("AhBot %d won %s in auction %d for %d", bidder, item->GetProto()->Name1, auctionIds[auction], entry->buyout);
+            sLog.outDetail("AhBot %d won %s (x%d) in auction %d for %d",
+                    bidder, item->GetProto()->Name1, item->GetCount(), auctionIds[auction], entry->buyout);
 
             entry->bid = entry->buyout;
             entry->AuctionBidWinning(NULL);
         }
         else
         {
-            sLog.outDetail("AhBot %d placed bid %d for %s in auction %d", bidder, entry->bid, item->GetProto()->Name1, auctionIds[auction]);
+            sLog.outDetail("AhBot %d placed bid %d for %s (x%d) in auction %d",
+                    bidder, entry->bid, item->GetProto()->Name1, item->GetCount(), auctionIds[auction]);
 
             CharacterDatabase.PExecute("UPDATE auction SET buyguid = '%u',lastbid = '%u' WHERE id = '%u'",
                 entry->bidder, entry->bid, entry->Id);

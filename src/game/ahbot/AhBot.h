@@ -29,25 +29,35 @@ namespace ahbot
         void ForceUpdate();
         void HandleCommand(string command);
         void Won(AuctionEntry* entry) { AddToHistory(entry); }
-        void Expired(AuctionEntry* entry) { /* do nothing */ }
-        double GetCategoryMultiplier(string category) { return categoryMultipliers[category]; }
-        int32 GetSellPrice(ItemPrototype const* proto);
+        void Expired(AuctionEntry* entry) {
+    }
 
-    private:
-        void Update(int auction, ItemBag* inAuction);
-        void Update(int auction, Category* category, ItemBag* inAuctionItems);
-        void Answer(int auction, Category* category, ItemBag* inAuctionItems);
-        void AddAuctions(int auction, Category* category, ItemBag* inAuctionItems);
-        void AddAuction(int auction, Category* category, ItemPrototype const* proto);
-        void Expire(int auction);
-        void AddToHistory(AuctionEntry* entry);
-        void CleanupHistory();
-        uint32 GetAvailableMoney(uint32 auctionHouse);
-        void CheckCategoryMultipliers();
-        void updateMarketPrice(uint32 itemId, double price, uint32 auctionHouse);
-        bool IsBotAuction(uint32 bidder);
-        uint32 GetRandomBidder(uint32 auctionHouse);
-        void LoadRandomBots();
+    double GetCategoryMultiplier(string category)
+    {
+        return categoryMultipliers[category];
+    }
+
+    int32 GetSellPrice(const ItemPrototype* proto);
+
+private:
+    void Update(int auction, ItemBag* inAuction);
+    void Update(int auction, Category* category, ItemBag* inAuctionItems);
+    void Answer(int auction, Category* category, ItemBag* inAuctionItems);
+    void AddAuctions(int auction, Category* category, ItemBag* inAuctionItems);
+    void AddAuction(int auction, Category* category, const ItemPrototype* proto);
+    void Expire(int auction);
+    void AddToHistory(AuctionEntry* entry);
+    void CleanupHistory();
+    uint32 GetAvailableMoney(uint32 auctionHouse);
+    void CheckCategoryMultipliers();
+    void updateMarketPrice(uint32 itemId, double price, uint32 auctionHouse);
+    bool IsBotAuction(uint32 bidder);
+    uint32 GetRandomBidder(uint32 auctionHouse);
+    void LoadRandomBots();
+    vector<AuctionEntry*> LoadAuctions(const AuctionHouseObject::AuctionEntryMap& auctionEntryMap, Category*& category,
+            int& auction);
+    void FindMinPrice(const AuctionHouseObject::AuctionEntryMap& auctionEntryMap, AuctionEntry*& entry, Item*& item, uint32* minBid,
+            uint32* minBuyout);
 
     private:
         AvailableItemsBag availableItems;
