@@ -160,6 +160,17 @@ void AhBot::Update(int auction, Category* category, ItemBag* inAuctionItems)
     AddAuctions(auction, category, inAuctionItems);
 }
 
+struct SortByPricePredicate
+{
+    bool operator()(AuctionEntry* const & a, AuctionEntry* const & b) const
+    {
+        if (a->startbid == b->startbid)
+            return a->buyout < b->buyout;
+
+        return a->startbid < b->startbid;
+    }
+};
+
 void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
 {
     AuctionHouseEntry const* ahEntry = sAuctionHouseStore.LookupEntry(auctionIds[auction]);
@@ -173,15 +184,27 @@ void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
 
     vector<AuctionEntry*> entries;
     for (AuctionHouseObject::AuctionEntryMap::const_iterator itr = auctionEntryMap.begin(); itr != auctionEntryMap.end(); ++itr)
-        entries.push_back(itr->second);
+    {
+        AuctionEntry *entry = itr->second;
+        if (IsBotAuction(entry->owner) || IsBotAuction(entry->bidder))
+            continue;
 
-    Shuffle(entries);
+        Item *item = sAuctionMgr.GetAItem(entry->itemGuidLow);
+        if (!item)
+            continue;
+
+        uint32 price = category->GetPricingStrategy()->GetBuyPrice(item->GetProto(), auctionIds[auction]);
+        if (!price || !item->GetCount())
+            continue;
+
+        entries.push_back(entry);
+    }
+
+    sort(entries.begin(), entries.end(), SortByPricePredicate());
 
     for (vector<AuctionEntry*>::iterator itr = entries.begin(); itr != entries.end(); ++itr)
     {
         AuctionEntry *entry = *itr;
-        if (IsBotAuction(entry->owner) || IsBotAuction(entry->bidder))
-            continue;
 
         if (urand(0, 100) > sAhBotConfig.buyProbability * 100)
             continue;
@@ -189,7 +212,7 @@ void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
         Item *item = sAuctionMgr.GetAItem(entry->itemGuidLow);
         if (!item)
             continue;
-
+        
         uint32 price = category->GetPricingStrategy()->GetBuyPrice(item->GetProto(), auctionIds[auction]);
         if (!price || !item->GetCount())
             continue;
