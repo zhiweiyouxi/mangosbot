@@ -7,7 +7,7 @@
 #include "../ObjectGuid.h"
 #include "../WorldSession.h"
 
-#define MAX_AUCTIONS 3
+#define MAX_AUCTIONS 7
 #define AHBOT_WON_EXPIRE 0
 #define AHBOT_WON_PLAYER 1
 #define AHBOT_WON_SELF 2
@@ -60,9 +60,12 @@ namespace ahbot
         void FindMinPrice(const AuctionHouseObject::AuctionEntryMap& auctionEntryMap, AuctionEntry*& entry, Item*& item, uint32* minBid,
                 uint32* minBuyout);
 
+    public:
+        static uint32 auctionIds[MAX_AUCTIONS];
+        static map<uint32, uint32> factions;
+
     private:
         AvailableItemsBag availableItems;
-        static uint32 auctionIds[MAX_AUCTIONS];
         WorldSession* session;
         Player* player;
         time_t nextAICheckTime;
