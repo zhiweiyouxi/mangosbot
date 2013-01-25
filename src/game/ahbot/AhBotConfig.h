@@ -16,7 +16,7 @@ public:
     uint32 account;
     uint64 guid;
     uint32 updateInterval;
-    uint32 historyDays;
+    uint32 historyDays, itemBuyInterval;
     uint32 alwaysAvailableMoney;
     float priceMultiplier, priceQualityMultiplier;
     uint32 defaultMinPrice;
