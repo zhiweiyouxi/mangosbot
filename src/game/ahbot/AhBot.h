@@ -12,6 +12,7 @@
 #define AHBOT_WON_PLAYER 1
 #define AHBOT_WON_SELF 2
 #define AHBOT_WON_BID 3
+#define AHBOT_WON_DELAY 4
 
 namespace ahbot
 {
@@ -59,6 +60,7 @@ namespace ahbot
                 int& auction);
         void FindMinPrice(const AuctionHouseObject::AuctionEntryMap& auctionEntryMap, AuctionEntry*& entry, Item*& item, uint32* minBid,
                 uint32* minBuyout);
+        uint32 GetBuyTime(uint32 itemId, uint32 auctionHouse, string category);
 
     public:
         static uint32 auctionIds[MAX_AUCTIONS];

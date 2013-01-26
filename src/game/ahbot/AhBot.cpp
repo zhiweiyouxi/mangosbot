@@ -325,6 +325,14 @@ void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
             continue;
         }
 
+        uint32 buytime = GetBuyTime(proto->ItemId, auctionIds[auction], category->GetName());
+        if (time(0) < buytime)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: will buy/bid in %d seconds",
+                    proto->Name1, item->GetCount(), auctionIds[auction], buytime - time(0));
+            continue;
+        }
+
         if (entry->bidder && !IsBotAuction(entry->bidder))
             player->GetSession()->SendAuctionOutbiddedMail(entry);
 
@@ -353,7 +361,39 @@ void AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
                 entry->bidder, entry->bid, entry->Id);
             AddToHistory(entry, AHBOT_WON_BID);
         }
+
+        CharacterDatabase.PExecute("DELETE FROM ahbot_history WHERE item = '%u' AND won = 4 AND auction_house = '%u' ",
+                proto->ItemId, factions[auctionIds[auction]]);
    }
+}
+
+uint32 AhBot::GetBuyTime(uint32 itemId, uint32 auctionHouse, string category)
+{
+    uint32 buytime = 0;
+
+    QueryResult* results = CharacterDatabase.PQuery("SELECT buytime FROM ahbot_history WHERE item = '%u' AND won = 4 AND auction_house = '%u' ",
+        itemId, factions[auctionHouse]);
+    if (results)
+    {
+        do
+        {
+            Field* fields = results->Fetch();
+            buytime = fields[0].GetUInt32();
+        } while (results->NextRow());
+
+        delete results;
+    }
+
+    if (!buytime)
+    {
+        buytime = time(0) + urand(sAhBotConfig.updateInterval, sAhBotConfig.itemBuyInterval / 2);
+        CharacterDatabase.PExecute("INSERT INTO ahbot_history (buytime, item, bid, buyout, category, won, auction_house) "
+            "VALUES ('%u', '%u', '%u', '%u', '%s', '%u', '%u')",
+            buytime, itemId, 0, 0,
+            category.c_str(), AHBOT_WON_DELAY, factions[auctionHouse]);
+    }
+
+    return buytime;
 }
 
 void AhBot::AddAuctions(int auction, Category* category, ItemBag* inAuctionItems)
