@@ -507,6 +507,9 @@ void Engine::ChangeStrategy(string names)
 
 void Engine::LogValues()
 {
+    if (testMode)
+        return;
+
     Player* bot = ai->GetBot();
     if (sPlayerbotAIConfig.logInGroupOnly && !bot->GetGroup())
         return;
