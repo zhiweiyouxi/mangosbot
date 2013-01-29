@@ -41,11 +41,9 @@ namespace ahbot
         int32 GetSellPrice(const ItemPrototype* proto);
 
     private:
-        void Update(int auction, ItemBag* inAuction);
-        void Update(int auction, Category* category, ItemBag* inAuctionItems);
-        void Answer(int auction, Category* category, ItemBag* inAuctionItems);
-        void AddAuctions(int auction, Category* category, ItemBag* inAuctionItems);
-        void AddAuction(int auction, Category* category, const ItemPrototype* proto);
+        int Answer(int auction, Category* category, ItemBag* inAuctionItems);
+        int AddAuctions(int auction, Category* category, ItemBag* inAuctionItems);
+        int AddAuction(int auction, Category* category, const ItemPrototype* proto);
         void Expire(int auction);
         void AddToHistory(AuctionEntry* entry, uint32 won = 0);
         void CleanupHistory();
