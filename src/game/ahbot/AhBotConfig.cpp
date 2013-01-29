@@ -38,7 +38,7 @@ bool AhBotConfig::Initialize()
     priceQualityMultiplier = config.GetFloatDefault("AhBot.PriceQualityMultiplier", 1.0f);
     underPriceProbability = config.GetFloatDefault("AhBot.UnderPriceProbability", 0.05f);
     buyProbability = config.GetFloatDefault("AhBot.BuyProbability", 0.25f);
-    sellProbability = config.GetFloatDefault("AhBot.SellProbability", 0.15f);
+    sellProbability = config.GetFloatDefault("AhBot.SellProbability", 1.0f);
 
     return enabled;
 }

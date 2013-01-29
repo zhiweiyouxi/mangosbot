@@ -72,6 +72,7 @@ namespace ahbot
         Player* player;
         time_t nextAICheckTime;
         map<string, double> categoryMultipliers;
+        map<string, uint32> categoryMaxAuctionCount;
         map<string, uint64> categoryMultiplierExpireTimes;
         map<uint32, vector<uint32> > bidders;
         set<uint32> allBidders;

@@ -400,11 +400,9 @@ void AhBot::AddAuctions(int auction, Category* category, ItemBag* inAuctionItems
 {
     vector<uint32>& inAuction = inAuctionItems->Get(category);
 
-    int32 maxAllowedAuctionCount = category->GetMaxAllowedAuctionCount();
-    if (inAuctionItems->GetCount(category) >= maxAllowedAuctionCount / 2)
+    int32 maxAllowedAuctionCount = categoryMaxAuctionCount[category->GetName()];
+    if (inAuctionItems->GetCount(category) >= maxAllowedAuctionCount)
         return;
-
-    maxAllowedAuctionCount = urand(1 + maxAllowedAuctionCount / 2, maxAllowedAuctionCount);
 
     vector<uint32> available = availableItems.Get(category);
     Shuffle(available);
@@ -700,14 +698,15 @@ uint32 AhBot::GetAvailableMoney(uint32 auctionHouse)
 
 void AhBot::CheckCategoryMultipliers()
 {
-    QueryResult* results = CharacterDatabase.PQuery("SELECT category, multiplier, expire_time FROM ahbot_category");
+    QueryResult* results = CharacterDatabase.PQuery("SELECT category, multiplier, max_auction_count, expire_time FROM ahbot_category");
     if (results)
     {
         do
         {
             Field* fields = results->Fetch();
             categoryMultipliers[fields[0].GetCppString()] = fields[1].GetFloat();
-            categoryMultiplierExpireTimes[fields[0].GetCppString()] = fields[2].GetUInt64();
+            categoryMaxAuctionCount[fields[0].GetCppString()] = fields[2].GetInt32();
+            categoryMultiplierExpireTimes[fields[0].GetCppString()] = fields[3].GetUInt64();
 
         } while (results->NextRow());
 
@@ -722,11 +721,14 @@ void AhBot::CheckCategoryMultipliers()
         if (categoryMultiplierExpireTimes[name] <= time(0) || categoryMultipliers[name] <= 0)
         {
             categoryMultipliers[name] = (double)urand(20, 100) / 20.0;
+            uint32 maxAllowedAuctionCount = CategoryList::instance[i]->GetMaxAllowedAuctionCount();
+            categoryMaxAuctionCount[name] = urand(maxAllowedAuctionCount / 2, maxAllowedAuctionCount);
             categoryMultiplierExpireTimes[name] = time(0) + urand(4, 7) * 3600 * 24;
         }
 
-        CharacterDatabase.PExecute("INSERT INTO ahbot_category (category, multiplier, expire_time) VALUES ('%s','%f','%u')",
-                name.c_str(), categoryMultipliers[name], categoryMultiplierExpireTimes[name]);
+        CharacterDatabase.PExecute("INSERT INTO ahbot_category (category, multiplier, max_auction_count, expire_time) "
+                "VALUES ('%s', '%f', '%u', '%u')",
+                name.c_str(), categoryMultipliers[name], categoryMaxAuctionCount[name], categoryMultiplierExpireTimes[name]);
     }
 }
 
