@@ -483,15 +483,16 @@ uint32 RandomPlayerbotMgr::SetEventValue(uint32 bot, string event, uint32 value,
 
 bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
 {
-    if(sConfig.GetBoolDefault("PlayerbotAI.DisableBots", false))
+    if (!sPlayerbotAIConfig.enabled)
     {
-        sLog.outError("Playerbot system is currently disabled!");
+        PSendSysMessage("|cffff0000Playerbot system is currently disabled!");
+        SetSentErrorMessage(true);
         return false;
     }
 
     if (!args || !*args)
     {
-        sLog.outError("Usage: rndbot stats/reset/init/update");
+        sLog.outError("Usage: rndbot stats/reset/init/update/add/remove");
         return false;
     }
 
@@ -503,14 +504,12 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
         sLog.outBasic("Random bots were reset for all players");
         return true;
     }
-
-    if (cmd == "stats")
+    else if (cmd == "stats")
     {
         sRandomPlayerbotMgr.PrintStats();
         return true;
     }
-
-    if (cmd == "init" || cmd == "update")
+    else if (cmd == "init" || cmd == "update")
     {
 		sLog.outString("Randomizing bots for %d accounts", sPlayerbotAIConfig.randomBotAccounts.size());
         BarGoLink bar(sPlayerbotAIConfig.randomBotAccounts.size());
@@ -548,6 +547,15 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
 
                 delete results;
             }
+        }
+        return true;
+    }
+    else
+    {
+        list<string> messages = sRandomPlayerbotMgr.HandlePlayerbotCommand(args, NULL);
+        for (list<string>::iterator i = messages.begin(); i != messages.end(); ++i)
+        {
+            sLog.outString(i->c_str());
         }
         return true;
     }
