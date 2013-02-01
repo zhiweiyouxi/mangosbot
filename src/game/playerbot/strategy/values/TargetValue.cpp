@@ -47,8 +47,6 @@ void FindTargetStrategy::CheckAttackers(Player* player)
         {
             CheckAttacker(player, attacker, threatManager);
             alreadyChecked.insert(attacker);
-            if (alreadyChecked.size() > 5)
-                break;
         }
     }
 }
