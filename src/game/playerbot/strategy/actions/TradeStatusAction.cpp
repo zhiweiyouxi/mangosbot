@@ -129,7 +129,14 @@ int32 TradeStatusAction::CalculateCost(TradeData* data)
         if (!item)
             continue;
 
-        sum += item->GetCount() * auctionbot.GetSellPrice(item->GetProto());
+        ItemPrototype const* proto = item->GetProto();
+        if (!proto)
+            continue;
+
+        if (proto->Quality < ITEM_QUALITY_NORMAL)
+            return 0;
+
+        sum += item->GetCount() * auctionbot.GetSellPrice(proto);
     }
 
     return sum;
