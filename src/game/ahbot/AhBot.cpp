@@ -153,8 +153,8 @@ void AhBot::ForceUpdate()
         for (int j = 0; j < CategoryList::instance.size(); j++)
         {
             Category* category = CategoryList::instance[j];
-            answered += Answer(auctionIds[i], category, &inAuctionItems);
-            added += AddAuctions(auctionIds[i], category, &inAuctionItems);
+            answered += Answer(i, category, &inAuctionItems);
+            added += AddAuctions(i, category, &inAuctionItems);
         }
     }
 
