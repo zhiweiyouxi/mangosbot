@@ -45,6 +45,7 @@ namespace ahbot
         int AddAuctions(int auction, Category* category, ItemBag* inAuctionItems);
         int AddAuction(int auction, Category* category, const ItemPrototype* proto);
         void Expire(int auction);
+        void PrintStats(int auction);
         void AddToHistory(AuctionEntry* entry, uint32 won = 0);
         void CleanupHistory();
         uint32 GetAvailableMoney(uint32 auctionHouse);

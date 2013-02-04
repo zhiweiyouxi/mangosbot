@@ -503,6 +503,14 @@ void AhBot::HandleCommand(string command)
         return;
     }
 
+    if (command == "stats")
+    {
+        for (int i = 0; i < MAX_AUCTIONS; i++)
+            PrintStats(i);
+
+        return;
+    }
+
     if (command == "update")
     {
         ForceUpdate();
@@ -512,6 +520,7 @@ void AhBot::HandleCommand(string command)
     uint32 itemId = atoi(command.c_str());
     if (!itemId)
     {
+        sLog.outString("ahbot stats - show short summary");
         sLog.outString("ahbot expire - expire all auctions");
         sLog.outString("ahbot update - update all auctions");
         sLog.outString("ahbot <itemId> - show item price");
@@ -579,6 +588,21 @@ void AhBot::Expire(int auction)
 
     CharacterDatabase.PExecute("DELETE FROM ahbot_category");
     sLog.outString("%d auctions marked as expired in auction %d", count, auctionIds[auction]);
+}
+
+void AhBot::PrintStats(int auction)
+{
+    if (!player)
+        return;
+
+    AuctionHouseEntry const* ahEntry = sAuctionHouseStore.LookupEntry(auctionIds[auction]);
+    if(!ahEntry)
+        return;
+
+    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
+    AuctionHouseObject::AuctionEntryMap const& auctions = auctionHouse->GetAuctions();
+
+    sLog.outString("%d auctions available on auction house %d", auctions.size(), auctionIds[auction]);
 }
 
 void AhBot::AddToHistory(AuctionEntry* entry, uint32 won)
