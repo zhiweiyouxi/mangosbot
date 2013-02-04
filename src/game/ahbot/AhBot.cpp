@@ -404,19 +404,17 @@ int AhBot::AddAuctions(int auction, Category* category, ItemBag* inAuctionItems)
     if (inAuctionItems->GetCount(category) >= maxAllowedAuctionCount)
         return 0;
 
-    vector<uint32> available = availableItems.Get(category);
-    Shuffle(available);
-
     int added = 0;
-    for (vector<uint32>::iterator i = available.begin(); i != available.end(); i++)
+    vector<uint32> available = availableItems.Get(category);
+    for (int32 i = 0; i <= maxAllowedAuctionCount && available.size() > 0 && inAuctionItems->GetCount(category) < maxAllowedAuctionCount; ++i)
     {
-        if (inAuctionItems->GetCount(category) >= maxAllowedAuctionCount)
-            break;
-
         if (urand(0, 100) > sAhBotConfig.sellProbability * 100)
             continue;
 
-        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(*i);
+        uint32 index = urand(0, available.size() - 1);
+        uint32 itemId = available[index];
+
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
         if (!proto)
             continue;
 
@@ -426,6 +424,7 @@ int AhBot::AddAuctions(int auction, Category* category, ItemBag* inAuctionItems)
 
         inAuctionItems->Add(proto);
         added += AddAuction(auction, category, proto);
+        available.erase(available.begin() + index);
     }
 
     return added;
