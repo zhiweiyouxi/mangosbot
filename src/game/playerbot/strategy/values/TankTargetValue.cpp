@@ -14,7 +14,7 @@ public:
         maxDpsCount = 0;
     }
 
-protected:
+public:
     virtual void CheckAttacker(Player* player, Unit* creature, ThreatManager* threatManager)
     {
         Player* bot = ai->GetBot();

@@ -14,7 +14,7 @@ public:
         minDpsCount = 0;
     }
 
-protected:
+public:
     virtual void CheckAttacker(Player* player, Unit* creature, ThreatManager* threatManager)
     {
         float threat = threatManager->getThreat(ai->GetBot());

@@ -12,7 +12,7 @@ public:
         this->spell = spell;
     }
 
-protected:
+public:
     virtual void CheckAttacker(Player* player, Unit* attacker, ThreatManager* threatManager)
     {
         if (ai->HasAura(spell, attacker))

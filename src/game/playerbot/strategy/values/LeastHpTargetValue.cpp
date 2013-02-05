@@ -14,7 +14,7 @@ public:
         minHealth = 0;
     }
 
-protected:
+public:
     virtual void CheckAttacker(Player* player, Unit* attacker, ThreatManager* threatManager)
     {
         if (!result || result->GetHealth() > attacker->GetHealth())

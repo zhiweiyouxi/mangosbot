@@ -13,10 +13,9 @@ namespace ai
         }
 
     public:
-        void CheckAttackers(Player* player);
         Unit* GetResult() { return result; }
 
-    protected:
+    public:
         virtual void CheckAttacker(Player* player, Unit* attacker, ThreatManager* threatManager) = 0;
         void GetPlayerCount(Unit* creature, int* tankCount, int* dpsCount);
 
@@ -27,7 +26,6 @@ namespace ai
     protected:
         map<Unit*, int> tankCountCache;
         map<Unit*, int> dpsCountCache;
-        set<Unit*> alreadyChecked;
     };
 
     class TargetValue : public UnitCalculatedValue
