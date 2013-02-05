@@ -15,7 +15,7 @@ public:
     }
 
 public:
-    virtual void CheckAttacker(Player* player, Unit* creature, ThreatManager* threatManager)
+    virtual void CheckAttacker(Unit* creature, ThreatManager* threatManager)
     {
         float threat = threatManager->getThreat(ai->GetBot());
         int tankCount, dpsCount;

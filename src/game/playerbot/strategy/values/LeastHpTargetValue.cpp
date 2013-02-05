@@ -15,7 +15,7 @@ public:
     }
 
 public:
-    virtual void CheckAttacker(Player* player, Unit* attacker, ThreatManager* threatManager)
+    virtual void CheckAttacker(Unit* attacker, ThreatManager* threatManager)
     {
         if (!result || result->GetHealth() > attacker->GetHealth())
             result = attacker;

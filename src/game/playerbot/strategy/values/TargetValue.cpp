@@ -15,7 +15,7 @@ Unit* TargetValue::FindTarget(FindTargetStrategy* strategy)
             continue;
 
         ThreatManager &threatManager = unit->getThreatManager();
-        strategy->CheckAttacker(bot, unit, &threatManager);
+        strategy->CheckAttacker(unit, &threatManager);
     }
 
     return strategy->GetResult();

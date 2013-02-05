@@ -15,7 +15,7 @@ public:
     }
 
 public:
-    virtual void CheckAttacker(Player* player, Unit* creature, ThreatManager* threatManager)
+    virtual void CheckAttacker(Unit* creature, ThreatManager* threatManager)
     {
         Player* bot = ai->GetBot();
         float threat = threatManager->getThreat(bot);

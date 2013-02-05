@@ -16,7 +16,7 @@ namespace ai
         Unit* GetResult() { return result; }
 
     public:
-        virtual void CheckAttacker(Player* player, Unit* attacker, ThreatManager* threatManager) = 0;
+        virtual void CheckAttacker(Unit* attacker, ThreatManager* threatManager) = 0;
         void GetPlayerCount(Unit* creature, int* tankCount, int* dpsCount);
 
     protected:
