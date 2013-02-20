@@ -166,6 +166,9 @@ void PlayerbotAI::HandleTeleportAck()
 
 void PlayerbotAI::Reset()
 {
+    if (bot->IsTaxiFlying())
+        return;
+
     currentEngine = engines[BOT_STATE_NON_COMBAT];
     nextAICheckDelay = 0;
 
@@ -898,6 +901,9 @@ bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target)
     {
         return false;
     }
+
+    if (bot->IsTaxiFlying())
+        return false;
 
     bot->clearUnitState( UNIT_STAT_CHASE );
     bot->clearUnitState( UNIT_STAT_FOLLOW );
