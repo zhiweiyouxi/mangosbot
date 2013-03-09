@@ -18,8 +18,8 @@
 
 #include "ObjectMgr.h"
 #include "Database/DatabaseEnv.h"
-#include "Policies/SingletonImp.h"
 #include "SystemConfig.h"
+#include "Policies/Singleton.h"
 
 #include "SQLStorages.h"
 #include "Log.h"
@@ -8155,7 +8155,7 @@ char const* conditionSourceToStr[] =
 bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject const* source, ConditionSource conditionSourceType) const
 {
     DEBUG_LOG("Condition-System: Check condition %u, type %i - called from %s with params plr: %s, map %i, src %s",
-                                    m_entry, m_condition, conditionSourceToStr[conditionSourceType], player ? player->GetGuidStr().c_str() : "<NULL>", map ? map->GetId() : -1, source ? source->GetGuidStr().c_str() : "<NULL>");
+        m_entry, m_condition, conditionSourceToStr[conditionSourceType], player ? player->GetGuidStr().c_str() : "<NULL>", map ? map->GetId() : -1, source ? source->GetGuidStr().c_str() : "<NULL>");
 
     if (!CheckParamRequirements(player, map, source, conditionSourceType))
         return false;
@@ -8227,7 +8227,7 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
             return false;
         case CONDITION_LEVEL:
         {
-            switch(m_value2)
+            switch (m_value2)
             {
                 case 0: return player->getLevel() == m_value1;
                 case 1: return player->getLevel() >= m_value1;
@@ -8239,7 +8239,7 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
             return !player->HasItemCount(m_value1, m_value2);
         case CONDITION_SPELL:
         {
-            switch(m_value2)
+            switch (m_value2)
             {
                 case 0: return player->HasSpell(m_value1);
                 case 1: return !player->HasSpell(m_value1);
@@ -8249,10 +8249,17 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
         case CONDITION_INSTANCE_SCRIPT:
         {
             if (!map)
-                map = player ? player->GetMap() : source->GetMap();
+                map = player ? player->GetMap() : source ? source->GetMap() : NULL;
+
+            if (!map)
+            {
+                sLog.outErrorDb("CONDITION_INSTANCE_SCRIPT (entry %u) is used without map by %s", m_entry, player ? player->GetGuidStr().c_str() : source ? source->GetGuidStr().c_str() : "<none>");
+                return false;
+            }
 
             if (InstanceData* data = map->GetInstanceData())
                 return data->CheckConditionCriteriaMeet(player, m_value1, source, conditionSourceType);
+
             return false;
         }
         case CONDITION_QUESTAVAILABLE:
@@ -8261,7 +8268,7 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
         }
         case CONDITION_ACHIEVEMENT:
         {
-            switch(m_value2)
+            switch (m_value2)
             {
                 case 0: return player->GetAchievementMgr().HasAchievement(m_value1);
                 case 1: return !player->GetAchievementMgr().HasAchievement(m_value1);
@@ -8271,7 +8278,7 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
         case CONDITION_ACHIEVEMENT_REALM:
         {
             AchievementEntry const* ach = sAchievementStore.LookupEntry(m_value1);
-            switch(m_value2)
+            switch (m_value2)
             {
                 case 0: return sAchievementMgr.IsRealmCompleted(ach);
                 case 1: return !sAchievementMgr.IsRealmCompleted(ach);
@@ -8314,7 +8321,7 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
 
             SkillLineAbilityMapBounds bounds = sSpellMgr.GetSkillLineAbilityMapBounds(m_value1);
 
-            for(SkillLineAbilityMap::const_iterator itr = bounds.first; itr != bounds.second; ++itr)
+            for (SkillLineAbilityMap::const_iterator itr = bounds.first; itr != bounds.second; ++itr)
             {
                 const SkillLineAbilityEntry* skillInfo = itr->second;
 
@@ -8361,7 +8368,14 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
         case CONDITION_COMPLETED_ENCOUNTER:
         {
             if (!map)
-                map = player ? player->GetMap() : source->GetMap();
+                map = player ? player->GetMap() : source ? source->GetMap() : NULL;
+
+            if (!map)
+            {
+                sLog.outErrorDb("CONDITION_COMPLETED_ENCOUNTER (entry %u) is used without dungeon map by %s", m_entry, player ? player->GetGuidStr().c_str() : source ? source->GetGuidStr().c_str() : "<none>");
+                return false;
+            }
+
             if (!map->IsDungeon())
             {
                 sLog.outErrorDb("CONDITION_COMPLETED_ENCOUNTER (entry %u) is used outside of a dungeon (on Map %u) by %s", m_entry, player->GetMapId(), player->GetGuidStr().c_str());
