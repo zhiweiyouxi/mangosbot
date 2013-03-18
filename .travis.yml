@@ -2,7 +2,7 @@ language: cpp
 
 branches:
   only:
-    - master
+    - mangosr2-wotlk_ai
 
 compiler:
   - gcc
@@ -12,12 +12,5 @@ script:
   - test -d _build || mkdir _build
   - test -d _install || mkdir _install
   - cd _build
-  - cmake -DCMAKE_INSTALL_PREFIX=../_install ..
+  - cmake -DPCH=1 -DCMAKE_INSTALL_PREFIX=../_install ..
   - make -j4
-
-notifications:
-  irc:
-    channels:
-      - "irc.rizon.net#cmangos"
-    on_success: never
-    on_failure: always
