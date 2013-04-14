@@ -97,7 +97,7 @@ void GameObject::AddToWorld()
 void GameObject::RemoveFromWorld(bool remove)
 {
     // store the slider value for non instance, non locked capture points
-    if (!GetMap()->IsBattleGroundOrArena())
+    if (GetMap() && !GetMap()->IsBattleGroundOrArena())
     {
         if (GetGOInfo()->type == GAMEOBJECT_TYPE_CAPTURE_POINT && m_lootState == GO_ACTIVATED)
             sOutdoorPvPMgr.SetCapturePointSlider(GetEntry(), m_captureSlider);
@@ -120,7 +120,7 @@ void GameObject::RemoveFromWorld(bool remove)
         EnableCollision(false);
     }
 
-    if (m_model)
+    if (m_model && GetMap())
         if (GetMap()->ContainsGameObjectModel(*m_model))
             GetMap()->RemoveGameObjectModel(*m_model);
 
@@ -521,9 +521,9 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
                 // reset flags
                 if (GetMap()->Instanceable())
                 {
-                    // In Instances GO_FLAG_LOCKED or GO_FLAG_NO_INTERACT are not changed
-                    uint32 currentLockOrInteractFlags = GetUInt32Value(GAMEOBJECT_FLAGS) & (GO_FLAG_LOCKED | GO_FLAG_NO_INTERACT);
-                    SetUInt32Value(GAMEOBJECT_FLAGS, (GetGOInfo()->flags & ~(GO_FLAG_LOCKED | GO_FLAG_NO_INTERACT)) | currentLockOrInteractFlags);
+                    // In Instances GO_FLAG_LOCKED, GO_FLAG_INTERACT_COND or GO_FLAG_NO_INTERACT are not changed
+                    uint32 currentLockOrInteractFlags = GetUInt32Value(GAMEOBJECT_FLAGS) & (GO_FLAG_LOCKED | GO_FLAG_INTERACT_COND | GO_FLAG_NO_INTERACT);
+                    SetUInt32Value(GAMEOBJECT_FLAGS, (GetGOInfo()->flags & ~(GO_FLAG_LOCKED | GO_FLAG_INTERACT_COND | GO_FLAG_NO_INTERACT)) | currentLockOrInteractFlags);
                 }
                 else
                     SetUInt32Value(GAMEOBJECT_FLAGS, GetGOInfo()->flags);
