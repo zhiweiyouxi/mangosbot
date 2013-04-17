@@ -914,8 +914,17 @@ bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target)
     Spell *spell = new Spell(bot, pSpellInfo, false);
 
     SpellCastTargets targets;
-    targets.setUnitTarget(target);
     WorldObject* faceTo = target;
+
+    if (pSpellInfo->Targets & TARGET_FLAG_SOURCE_LOCATION ||
+            pSpellInfo->Targets & TARGET_FLAG_DEST_LOCATION)
+    {
+        targets.setDestination(target->GetPosition());
+    }
+    else
+    {
+        targets.setUnitTarget(target);
+    }
 
     if (pSpellInfo->Targets & TARGET_FLAG_ITEM)
     {
