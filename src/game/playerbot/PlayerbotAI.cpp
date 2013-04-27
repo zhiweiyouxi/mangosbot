@@ -133,7 +133,7 @@ void PlayerbotAI::UpdateAIInternal(uint32 elapsed)
         ChatCommandHolder holder = chatCommands.top();
         string command = holder.GetCommand();
         Player* owner = holder.GetOwner();
-        if (!helper.ParseChatCommand(command, owner))
+        if (!helper.ParseChatCommand(command, owner) && holder.GetType() == CHAT_MSG_WHISPER)
         {
             ostringstream out; out << "Unknown command " << command;
             TellMaster(out);
@@ -215,7 +215,7 @@ void PlayerbotAI::HandleCommand(uint32 type, const string& text, Player& fromPla
 
     if (type == CHAT_MSG_RAID_WARNING && filtered.find(bot->GetName()) != string::npos && filtered.find("award") == string::npos)
     {
-        ChatCommandHolder cmd("warning", &fromPlayer);
+        ChatCommandHolder cmd("warning", &fromPlayer, type);
         chatCommands.push(cmd);
         return;
     }
@@ -231,7 +231,7 @@ void PlayerbotAI::HandleCommand(uint32 type, const string& text, Player& fromPla
     }
     else
     {
-        ChatCommandHolder cmd(filtered, &fromPlayer);
+        ChatCommandHolder cmd(filtered, &fromPlayer, type);
         chatCommands.push(cmd);
     }
 }
