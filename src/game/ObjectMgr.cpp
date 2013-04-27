@@ -2765,6 +2765,14 @@ void ObjectMgr::LoadPetLevelInfo()
 
     PetLevelInfo* petBaseInfo = petInfo[1];
 
+    // fatal error if no base pet with id 1
+    if (!petBaseInfo)
+    {
+        sLog.outErrorDb("Table `pet_levelstats` does not have requered base pet with id 1! Must be exist!");
+        Log::WaitBeforeContinueIfNeed();
+        exit(1);
+    }
+
     // Fill gaps and check integrity
     for (PetLevelInfoMap::iterator itr = petInfo.begin(); itr != petInfo.end(); ++itr)
     {
@@ -9554,7 +9562,7 @@ void ObjectMgr::LoadGossipMenuItems(std::set<uint32>& gossipScriptSet)
                               "SELECT menu_id, id, option_icon, option_text, option_id, npc_option_npcflag, "
                               "action_menu_id, action_poi_id, action_script_id, box_coded, box_money, box_text, "
                               "condition_id "
-                              "FROM gossip_menu_option");
+                              "FROM gossip_menu_option ORDER BY menu_id, id");
 
     if (!result)
     {
