@@ -49,6 +49,7 @@ namespace ai
             creators["emote"] = &StrategyContext::emote;
             creators["passive"] = &StrategyContext::passive;
             creators["conserve mana"] = &StrategyContext::conserve_mana;
+            creators["save mana"] = &StrategyContext::save_mana;
             creators["food"] = &StrategyContext::food;
             creators["chat"] = &StrategyContext::chat;
             creators["default"] = &StrategyContext::world_packet;
@@ -79,6 +80,7 @@ namespace ai
         static Strategy* emote(PlayerbotAI* ai) { return new EmoteStrategy(ai); }
         static Strategy* passive(PlayerbotAI* ai) { return new PassiveStrategy(ai); }
         static Strategy* conserve_mana(PlayerbotAI* ai) { return new ConserveManaStrategy(ai); }
+        static Strategy* save_mana(PlayerbotAI* ai) { return new SaveManaStrategy(ai); }
         static Strategy* food(PlayerbotAI* ai) { return new UseFoodStrategy(ai); }
         static Strategy* chat(PlayerbotAI* ai) { return new ChatCommandHandlerStrategy(ai); }
         static Strategy* world_packet(PlayerbotAI* ai) { return new WorldPacketHandlerStrategy(ai); }

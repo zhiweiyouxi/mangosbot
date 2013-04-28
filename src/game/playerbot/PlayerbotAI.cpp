@@ -872,7 +872,13 @@ bool PlayerbotAI::CanCastSpell(uint32 spellid, Unit* target, bool checkHasSpell)
 
 bool PlayerbotAI::CastSpell(string name, Unit* target)
 {
-    return CastSpell(aiObjectContext->GetValue<uint32>("spell id", name)->Get(), target);
+    bool result = CastSpell(aiObjectContext->GetValue<uint32>("spell id", name)->Get(), target);
+    if (result)
+    {
+        aiObjectContext->GetValue<time_t>("last spell cast time", name)->Set(time(0));
+    }
+
+    return result;
 }
 
 bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target)

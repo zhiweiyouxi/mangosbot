@@ -49,6 +49,7 @@
 #include "InvalidTargetValue.h"
 #include "EnemyPlayerValue.h"
 #include "AttackerWithoutAuraTargetValue.h"
+#include "LastSpellCastTimeValue.h"
 
 namespace ai
 {
@@ -115,6 +116,7 @@ namespace ai
             creators["item for spell"] = &ValueContext::item_for_spell;
             creators["spell cast useful"] = &ValueContext::spell_cast_useful;
             creators["last spell cast"] = &ValueContext::last_spell_cast;
+            creators["last spell cast time"] = &ValueContext::last_spell_cast_time;
             creators["chat"] = &ValueContext::chat;
             creators["has totem"] = &ValueContext::has_totem;
 
@@ -141,6 +143,7 @@ namespace ai
 
         static UntypedValue* chat(PlayerbotAI* ai) { return new ChatValue(ai); }
         static UntypedValue* last_spell_cast(PlayerbotAI* ai) { return new LastSpellCastValue(ai); }
+        static UntypedValue* last_spell_cast_time(PlayerbotAI* ai) { return new LastSpellCastTimeValue(ai); }
         static UntypedValue* spell_cast_useful(PlayerbotAI* ai) { return new SpellCastUsefulValue(ai); }
         static UntypedValue* item_for_spell(PlayerbotAI* ai) { return new ItemForSpellValue(ai); }
         static UntypedValue* spell_id(PlayerbotAI* ai) { return new SpellIdValue(ai); }

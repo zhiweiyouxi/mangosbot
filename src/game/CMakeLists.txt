@@ -917,6 +917,7 @@ playerbot/strategy/values/TargetValue.h
 playerbot/strategy/values/ThreatValues.cpp
 playerbot/strategy/values/ThreatValues.h
 playerbot/strategy/values/ValueContext.h
+playerbot/strategy/values/LastSpellCastTimeValue.h
 playerbot/strategy/warlock/DpsWarlockStrategy.cpp
 playerbot/strategy/warlock/DpsWarlockStrategy.h
 playerbot/strategy/warlock/GenericWarlockNonCombatStrategy.cpp
