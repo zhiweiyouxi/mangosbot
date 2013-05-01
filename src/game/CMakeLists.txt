@@ -602,6 +602,8 @@ playerbot/strategy/actions/UseMeetingStoneAction.h
 playerbot/strategy/actions/WhoAction.cpp
 playerbot/strategy/actions/WhoAction.h
 playerbot/strategy/actions/WorldPacketActionContext.h
+playerbot/strategy/actions/SaveManaAction.h
+playerbot/strategy/actions/SaveManaAction.cpp
 playerbot/strategy/druid/BearTankDruidStrategy.cpp
 playerbot/strategy/druid/BearTankDruidStrategy.h
 playerbot/strategy/druid/CasterDruidStrategy.cpp
@@ -919,8 +921,6 @@ playerbot/strategy/values/ThreatValues.h
 playerbot/strategy/values/ValueContext.h
 playerbot/strategy/values/LastSpellCastTimeValue.h
 playerbot/strategy/values/ManaSaveLevelValue.h
-playerbot/strategy/values/SaveManaAction.h
-playerbot/strategy/values/SaveManaAction.cpp
 playerbot/strategy/warlock/DpsWarlockStrategy.cpp
 playerbot/strategy/warlock/DpsWarlockStrategy.h
 playerbot/strategy/warlock/GenericWarlockNonCombatStrategy.cpp
