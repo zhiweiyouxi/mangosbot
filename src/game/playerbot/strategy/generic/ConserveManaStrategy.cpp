@@ -43,14 +43,13 @@ float ConserveManaMultiplier::GetValue(Action* action)
     return 1.0f;
 }
 
-void ConserveManaStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
-{
-    multipliers.push_back(new ConserveManaMultiplier(ai));
-}
-
 float SaveManaMultiplier::GetValue(Action* action)
 {
     if (action == NULL)
+        return 1.0f;
+
+    double saveLevel = AI_VALUE(double, "mana save level");
+    if (saveLevel <= 1.0)
         return 1.0f;
 
     CastSpellAction* spellAction = dynamic_cast<CastSpellAction*>(action);
@@ -75,29 +74,15 @@ float SaveManaMultiplier::GetValue(Action* action)
         return 1.0f;
 
     time_t elapsed = time(0) - lastCastTime;
-    double k = 2.0;
-    switch (bot->getClass())
-    {
-    case CLASS_HUNTER:
-    case CLASS_SHAMAN:
-    case CLASS_DRUID:
-        k = 4.0;
-        break;
-    case CLASS_MAGE:
-    case CLASS_PRIEST:
-    case CLASS_WARLOCK:
-        k = 2.0;
-        break;
-    default:
-        k = 3.0;
-    }
-    if ((double)elapsed < 10 + pow(k, sqrt(percent)))
+    if ((double)elapsed < 10 + pow(saveLevel, sqrt(percent)))
         return 0.0f;
 
     return 1.0f;
 }
 
-void SaveManaStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
+
+void ConserveManaStrategy::InitMultipliers(std::list<Multiplier*> &multipliers)
 {
+    multipliers.push_back(new ConserveManaMultiplier(ai));
     multipliers.push_back(new SaveManaMultiplier(ai));
 }

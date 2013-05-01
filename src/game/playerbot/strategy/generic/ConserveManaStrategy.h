@@ -11,16 +11,6 @@ namespace ai
         virtual float GetValue(Action* action);
     };
 
-    class ConserveManaStrategy : public Strategy
-    {
-    public:
-        ConserveManaStrategy(PlayerbotAI* ai) : Strategy(ai) {}
-
-    public:
-        virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
-        virtual string getName() { return "conserve mana"; }
-    };
-
     class SaveManaMultiplier : public Multiplier
     {
     public:
@@ -30,15 +20,13 @@ namespace ai
         virtual float GetValue(Action* action);
     };
 
-    class SaveManaStrategy : public Strategy
+    class ConserveManaStrategy : public Strategy
     {
     public:
-        SaveManaStrategy(PlayerbotAI* ai) : Strategy(ai) {}
+        ConserveManaStrategy(PlayerbotAI* ai) : Strategy(ai) {}
 
     public:
         virtual void InitMultipliers(std::list<Multiplier*> &multipliers);
-        virtual string getName() { return "save mana"; }
+        virtual string getName() { return "conserve mana"; }
     };
-
-
 }

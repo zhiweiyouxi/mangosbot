@@ -68,9 +68,11 @@ namespace ai
             creators["position"] = &ChatTriggerContext::position;
             creators["summon"] = &ChatTriggerContext::summon;
             creators["who"] = &ChatTriggerContext::who;
+            creators["save mana"] = &ChatTriggerContext::save_mana;
         }
 
     private:
+        static Trigger* save_mana(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "save mana"); }
         static Trigger* who(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "who"); }
         static Trigger* summon(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "summon"); }
         static Trigger* position(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "position"); }

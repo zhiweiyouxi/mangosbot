@@ -64,6 +64,7 @@ class ChatCommandTestCase : public MockedAiObjectContextTestCase
       CPPUNIT_TEST( position );
       CPPUNIT_TEST( summon );
       CPPUNIT_TEST( who );
+      CPPUNIT_TEST( save_mana );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -417,6 +418,11 @@ protected:
     void who()
     {
         assertCommand("who", "who");
+    }
+
+    void save_mana()
+    {
+        assertParametrizedCommand("save mana", "save mana");
     }
 };
 

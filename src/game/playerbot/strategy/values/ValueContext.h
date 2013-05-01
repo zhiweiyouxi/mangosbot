@@ -50,6 +50,7 @@
 #include "EnemyPlayerValue.h"
 #include "AttackerWithoutAuraTargetValue.h"
 #include "LastSpellCastTimeValue.h"
+#include "ManaSaveLevelValue.h"
 
 namespace ai
 {
@@ -129,9 +130,11 @@ namespace ai
             creators["balance"] = &ValueContext::balance;
             creators["attackers"] = &ValueContext::attackers;
             creators["invalid target"] = &ValueContext::invalid_target;
+            creators["mana save level"] = &ValueContext::mana_save_level;
         }
 
     private:
+        static UntypedValue* mana_save_level(PlayerbotAI* ai) { return new ManaSaveLevelValue(ai); }
         static UntypedValue* invalid_target(PlayerbotAI* ai) { return new InvalidTargetValue(ai); }
         static UntypedValue* balance(PlayerbotAI* ai) { return new BalancePercentValue(ai); }
         static UntypedValue* attackers(PlayerbotAI* ai) { return new AttackersValue(ai); }
