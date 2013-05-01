@@ -65,6 +65,7 @@ class ChatCommandTestCase : public MockedAiObjectContextTestCase
       CPPUNIT_TEST( summon );
       CPPUNIT_TEST( who );
       CPPUNIT_TEST( save_mana );
+      CPPUNIT_TEST( max_dps );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -424,6 +425,14 @@ protected:
     {
         assertParametrizedCommand("save mana", "save mana");
     }
+
+    void max_dps()
+    {
+        trigger("max dps");
+        tick();
+        assertActions(">S:max dps chat shortcut");
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ChatCommandTestCase );
