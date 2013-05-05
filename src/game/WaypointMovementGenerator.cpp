@@ -16,20 +16,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
-creature_movement Table
-
-alter table creature_movement add `textid1` int(11) NOT NULL default '0';
-alter table creature_movement add `textid2` int(11) NOT NULL default '0';
-alter table creature_movement add `textid3` int(11) NOT NULL default '0';
-alter table creature_movement add `textid4` int(11) NOT NULL default '0';
-alter table creature_movement add `textid5` int(11) NOT NULL default '0';
-alter table creature_movement add `emote` int(10) unsigned default '0';
-alter table creature_movement add `spell` int(5) unsigned default '0';
-alter table creature_movement add `wpguid` int(11) default '0';
-
-*/
-
 #include <ctime>
 
 #include "WaypointMovementGenerator.h"
@@ -77,7 +63,10 @@ void WaypointMovementGenerator<Creature>::LoadPath(Creature &creature)
         }
     }
 
-    StartMoveNow(creature);
+    // Initialize the i_currentNode to point to the first node
+    if (i_path->empty())
+        return;
+    i_currentNode = i_path->begin()->first;
 }
 
 void WaypointMovementGenerator<Creature>::Initialize(Creature &creature)
@@ -94,12 +83,7 @@ void WaypointMovementGenerator<Creature>::Finalize(Creature &creature)
 
 void WaypointMovementGenerator<Creature>::Interrupt(Creature &creature)
 {
-    if (!creature.movespline->Finalized())
-    {
-        Location loc = creature.movespline->ComputePosition();
-        creature.SetPosition(loc.x,loc.y,loc.z,loc.orientation);
-        creature.movespline->_Interrupt();
-    }
+    creature.InterruptMoving();
     creature.clearUnitState(UNIT_STAT_ROAMING | UNIT_STAT_ROAMING_MOVE);
     creature.SetWalk(!creature.hasUnitState(UNIT_STAT_RUNNING_STATE), false);
 }
@@ -121,14 +105,18 @@ void WaypointMovementGenerator<Creature>::OnArrived(Creature& creature)
     creature.clearUnitState(UNIT_STAT_ROAMING_MOVE);
     m_isArrivalDone = true;
 
-    if (i_path->at(i_currentNode).script_id)
+    WaypointPath::const_iterator currPoint = i_path->find(i_currentNode);
+    MANGOS_ASSERT(currPoint != i_path->end());
+    WaypointNode const& node = currPoint->second;
+
+    if (node.script_id)
     {
-        DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "Creature movement start script %u at point %u for %s.", i_path->at(i_currentNode).script_id, i_currentNode, creature.GetGuidStr().c_str());
-        creature.GetMap()->ScriptsStart(sCreatureMovementScripts, i_path->at(i_currentNode).script_id, &creature, &creature);
+        DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "Creature movement start script %u at point %u for %s.", node.script_id, i_currentNode, creature.GetGuidStr().c_str());
+        creature.GetMap()->ScriptsStart(sCreatureMovementScripts, node.script_id, &creature, &creature);
     }
 
     // We have reached the destination and can process behavior
-    if (WaypointBehavior *behavior = i_path->at(i_currentNode).behavior)
+    if (WaypointBehavior* behavior = node.behavior)
     {
         if (behavior->emote != 0)
             creature.HandleEmote(behavior->emote);
@@ -161,7 +149,7 @@ void WaypointMovementGenerator<Creature>::OnArrived(Creature& creature)
 
     // Inform script
     MovementInform(creature);
-    Stop(i_path->at(i_currentNode).delay);
+    Stop(node.delay);
 }
 
 void WaypointMovementGenerator<Creature>::StartMoveNow(Creature& creature)
@@ -179,7 +167,10 @@ void WaypointMovementGenerator<Creature>::StartMove(Creature& creature)
     if (Stopped(creature))
         return;
 
-    if (WaypointBehavior *behavior = i_path->at(i_currentNode).behavior)
+    WaypointPath::const_iterator currPoint = i_path->find(i_currentNode);
+    MANGOS_ASSERT(currPoint != i_path->end());
+
+    if (WaypointBehavior* behavior = currPoint->second.behavior)
     {
         if (behavior->model2 != 0)
             creature.SetDisplayId(behavior->model2);
@@ -187,18 +178,24 @@ void WaypointMovementGenerator<Creature>::StartMove(Creature& creature)
     }
 
     if (m_isArrivalDone)
-        i_currentNode = (i_currentNode+1) % i_path->size();
+    {
+        ++currPoint;
+        if (currPoint == i_path->end())
+            currPoint = i_path->begin();
+
+        i_currentNode = currPoint->first;
+    }
 
     m_isArrivalDone = false;
 
     creature.addUnitState(UNIT_STAT_ROAMING_MOVE);
 
-    const WaypointNode &node = i_path->at(i_currentNode);
+    WaypointNode const& nextNode = currPoint->second;;
     Movement::MoveSplineInit<Unit*> init(creature);
-    init.MoveTo(node.x, node.y, node.z, true);
+    init.MoveTo(nextNode.x, nextNode.y, nextNode.z, true);
 
-    if (node.orientation != 100 && node.delay != 0)
-        init.SetFacing(node.orientation);
+    if (nextNode.orientation != 100 && nextNode.delay != 0)
+        init.SetFacing(nextNode.orientation);
     creature.SetWalk(!creature.hasUnitState(UNIT_STAT_RUNNING_STATE) && !creature.IsLevitating(), false);
     init.Launch();
 }
@@ -303,12 +300,12 @@ void FlightPathMovementGenerator::_Initialize(Player &player)
 
 void FlightPathMovementGenerator::_Finalize(Player & player)
 {
-    if(player.m_taxi.empty())
+    if (player.m_taxi.empty())
     {
         // update z position to ground and orientation for landing point
         // this prevent cheating with landing  point at lags
         // when client side flight end early in comparison server side
-        player.StopMoving();
+        player.StopMoving(true);
     }
 }
 

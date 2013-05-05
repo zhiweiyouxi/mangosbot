@@ -1244,20 +1244,20 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
         else
             damageInfo.procEx |= PROC_EX_NORMAL_HIT;
 
-        damageInfo.absorb = 0;
-        unitTarget->CalculateHealAbsorb(damageInfo.damage, &damageInfo.absorb);
-        damageInfo.damage -= damageInfo.absorb;
+        damageInfo.SetAbsorb(0);
+        damageInfo.target->CalculateHealAbsorb(damageInfo.damage, &damageInfo.absorb);
+        damageInfo.damage -= damageInfo.GetAbsorb();
 
         // Do triggers for unit (reflect triggers passed on hit phase for correct drop charge)
         if (m_canTrigger && missInfo != SPELL_MISS_REFLECT)
         {
             uint32 saveAttacker = damageInfo.procAttacker;
             damageInfo.procAttacker = real_caster ? damageInfo.procAttacker : PROC_FLAG_NONE;
-            caster->ProcDamageAndSpell(&damageInfo);
+            damageInfo.attacker->ProcDamageAndSpell(&damageInfo);
             damageInfo.procAttacker = saveAttacker;
         }
 
-        int32 gain = caster->DealHeal(unitTarget, damageInfo.damage, m_spellInfo, crit, damageInfo.absorb);
+        int32 gain = damageInfo.attacker->DealHeal(&damageInfo, crit);
 
         if (real_caster)
             unitTarget->getHostileRefManager().threatAssist(real_caster, float(gain) * 0.5f * sSpellMgr.GetSpellThreatMultiplier(m_spellInfo), m_spellInfo);
@@ -1293,7 +1293,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
         damageInfo.procEx = createProcExtendMask(&damageInfo, missInfo);
         damageInfo.procVictim |= PROC_FLAG_TAKEN_ANY_DAMAGE;
 
-        if (damageInfo.absorb && damageInfo.damage == 0)
+        if (damageInfo.GetAbsorb() && damageInfo.damage == 0)
             damageInfo.procEx &= ~PROC_EX_DIRECT_DAMAGE;
         else if (damageInfo.damage > 0)
             damageInfo.procEx |= PROC_EX_DIRECT_DAMAGE;
@@ -1317,7 +1317,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
         if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->SpellIconID == 3172 &&
             m_spellInfo->GetSpellFamilyFlags().test<CF_WARLOCK_HAUNT>())
             if (Aura const* dummy = unitTarget->GetDummyAura(m_spellInfo->Id))
-                dummy->GetModifier()->m_amount = damageInfo.damage + damageInfo.absorb;
+                dummy->GetModifier()->m_amount = damageInfo.damage + damageInfo.GetAbsorb();
 
         /* process anticheat check */
         if (caster->GetObjectGuid().IsPlayer())
@@ -7983,11 +7983,9 @@ bool Spell::IsNeedSendToClient() const
         m_spellInfo->speed > 0.0f || (!m_triggeredByAuraSpell && !m_IsTriggeredSpell);
 }
 
-bool Spell::IsTriggeredSpellWithRedundentData() const
+bool Spell::IsTriggeredSpellWithRedundentCastTime() const
 {
-    return m_triggeredByAuraSpell || m_triggeredBySpellInfo ||
-        // possible not need after above check?
-        (m_IsTriggeredSpell && (m_spellInfo->manaCost || m_spellInfo->ManaCostPercentage));
+    return m_IsTriggeredSpell && (m_spellInfo->manaCost || m_spellInfo->ManaCostPercentage);
 }
 
 bool Spell::HaveTargetsForEffect(SpellEffectIndex effect) const
