@@ -732,6 +732,9 @@ void PlayerbotFactory::EnchantItem(Item* item)
     if (urand(0, 100) < 100 * sPlayerbotAIConfig.randomGearLoweringChance)
         return;
 
+    if (bot->getLevel() < urand(40, 50))
+        return;
+
     ItemPrototype const* proto = item->GetProto();
     int32 itemLevel = proto->ItemLevel;
 
