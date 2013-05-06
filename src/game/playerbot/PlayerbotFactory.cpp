@@ -465,7 +465,7 @@ bool PlayerbotFactory::CanEquipItem(ItemPrototype const* proto, uint32 desiredQu
 
     uint32 requiredLevel = proto->RequiredLevel;
     if (!requiredLevel)
-        return false;
+        return true;
 
     uint32 level = bot->getLevel();
     uint32 delta = 1;
