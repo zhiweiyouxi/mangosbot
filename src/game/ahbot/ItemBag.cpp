@@ -131,7 +131,7 @@ void AvailableItemsBag::Load()
 {
     set<uint32> vendorItems;
 
-      QueryResult* results = WorldDatabase.PQuery("SELECT item, count(item) as cnt FROM npc_vendor group by item having cnt > 20");
+      QueryResult* results = WorldDatabase.PQuery("SELECT item FROM npc_vendor where maxcount = 0");
       if (results != NULL)
       {
           do
