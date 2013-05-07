@@ -14,6 +14,7 @@
 #include "../ObjectMgr.h"
 
 using namespace ahbot;
+char * strstri (const char* str1, const char* str2);
 
 CategoryList CategoryList::instance;
 
@@ -113,6 +114,9 @@ bool ItemBag::Add(ItemPrototype const* proto)
         return false;
 
     if (proto->RequiredLevel > sAhBotConfig.maxRequiredLevel || proto->ItemLevel > sAhBotConfig.maxItemLevel)
+        return false;
+
+    if (strstri(proto->Name1, "qa") || strstri(proto->Name1, "test"))
         return false;
 
     for (int i = 0; i < CategoryList::instance.size(); i++)
