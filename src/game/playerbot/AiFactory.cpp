@@ -158,7 +158,8 @@ void AiFactory::AddDefaultNonCombatStrategies(Player* player, PlayerbotAI* const
             nonCombatEngine->addStrategy("bspeed");
             break;
         case CLASS_HUNTER:
-            nonCombatEngine->addStrategy("bspeed");
+        case CLASS_SHAMAN:
+            nonCombatEngine->addStrategy("bmana");
             break;
         case CLASS_MAGE:
             if (tab == 1)
