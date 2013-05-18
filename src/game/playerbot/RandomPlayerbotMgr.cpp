@@ -493,7 +493,7 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
 
     if (!args || !*args)
     {
-        sLog.outError("Usage: rndbot stats/reset/init/update/add/remove");
+        sLog.outError("Usage: rndbot stats/update/reset/init/refresh/add/remove");
         return false;
     }
 
@@ -510,7 +510,12 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
         sRandomPlayerbotMgr.PrintStats();
         return true;
     }
-    else if (cmd == "init" || cmd == "update")
+    else if (cmd == "update")
+    {
+        sRandomPlayerbotMgr.UpdateAIInternal(0);
+        return true;
+    }
+    else if (cmd == "init" || cmd == "refresh")
     {
 		sLog.outString("Randomizing bots for %d accounts", sPlayerbotAIConfig.randomBotAccounts.size());
         BarGoLink bar(sPlayerbotAIConfig.randomBotAccounts.size());
@@ -535,7 +540,7 @@ bool ChatHandler::HandlePlayerbotConsoleCommand(char* args)
                     }
                     else
                     {
-                        sLog.outDetail("Updating bot %s for account %u", bot->GetName(), account);
+                        sLog.outDetail("Refreshing bot %s for account %u", bot->GetName(), account);
                         bot->SetLevel(bot->getLevel() - 1);
                         sRandomPlayerbotMgr.IncreaseLevel(bot);
                     }
