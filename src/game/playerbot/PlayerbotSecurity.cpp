@@ -125,7 +125,11 @@ bool PlayerbotSecurity::CheckLevelFor(PlayerbotSecurityLevel level, bool silent,
             out << "You are too low level";
             break;
         case PLAYERBOT_DENY_GEARSCORE:
-            out << "Your gearscore is too low";
+            {
+                int botGS = (int)bot->GetEquipGearScore(false, false);
+                int fromGS = (int)from->GetEquipGearScore(false, false);
+                out << "Your gearscore is too low: |cffff0000" << fromGS << "|cffffffff/|cff00ff00" << botGS;
+            }
             break;
         case PLAYERBOT_DENY_NOT_YOURS:
             out << "I have a master already";
