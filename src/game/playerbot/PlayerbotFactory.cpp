@@ -460,21 +460,24 @@ bool PlayerbotFactory::CanEquipItem(ItemPrototype const* proto, uint32 desiredQu
     if (proto->Quality != desiredQuality)
         return false;
 
+    if (proto->Bonding == BIND_QUEST_ITEM || proto->Bonding == BIND_WHEN_USE)
+        return false;
+
     if (proto->Class == ITEM_CLASS_CONTAINER)
         return true;
 
     uint32 requiredLevel = proto->RequiredLevel;
     if (!requiredLevel)
-        return true;
+        return false;
 
     uint32 level = bot->getLevel();
-    uint32 delta = 1;
+    uint32 delta = 2;
     if (level < 15)
         delta = urand(7, 15);
     else if (proto->Class == ITEM_CLASS_WEAPON || proto->SubClass == ITEM_SUBCLASS_ARMOR_SHIELD)
-        delta = urand(1, 3);
+        delta = urand(2, 3);
     else if (!(level % 10) || (level % 10) == 9)
-        delta = 1;
+        delta = 2;
     else if (level < 40)
         delta = urand(5, 10);
     else if (level < 60)
@@ -482,7 +485,7 @@ bool PlayerbotFactory::CanEquipItem(ItemPrototype const* proto, uint32 desiredQu
     else if (level < 70)
         delta = urand(2, 5);
     else if (level < 80)
-        delta = urand(1, 4);
+        delta = urand(2, 4);
 
     if (desiredQuality > ITEM_QUALITY_NORMAL &&
             (requiredLevel > level || requiredLevel < level - delta))
