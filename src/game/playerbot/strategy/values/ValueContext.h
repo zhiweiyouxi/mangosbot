@@ -131,6 +131,7 @@ namespace ai
             creators["attackers"] = &ValueContext::attackers;
             creators["invalid target"] = &ValueContext::invalid_target;
             creators["mana save level"] = &ValueContext::mana_save_level;
+            creators["combat"] = &ValueContext::combat;
         }
 
     private:
@@ -205,5 +206,6 @@ namespace ai
         static UntypedValue* duel_target(PlayerbotAI* ai) { return new DuelTargetValue(ai); }
         static UntypedValue* has_totem(PlayerbotAI* ai) { return new HasTotemValue(ai); }
         static UntypedValue* threat(PlayerbotAI* ai) { return new ThreatValue(ai); }
+        static UntypedValue* combat(PlayerbotAI* ai) { return new IsInCombatValue(ai); }
     };
 };
