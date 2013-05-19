@@ -59,6 +59,8 @@ AiPlayerbot.RandomBotAutoCreate = 1
 # Random bot count
 AiPlayerbot.MinRandomBots = 50
 AiPlayerbot.MaxRandomBots = 200
+AiPlayerbot.RandomBotMinLevel = 1
+AiPlayerbot.RandomBotMaxLevel = 255 (ignored if more than MaxPlayerLevel mangosd.conf value)
 
 # Accounts to create for random bots
 AiPlayerbot.RandomBotAccountPrefix = rndbot

@@ -43,6 +43,7 @@ public:
     bool logInGroupOnly, logValuesPerTick;
     bool fleeingEnabled;
     std::string randomBotCombatStrategies, randomBotNonCombatStrategies;
+    uint32 randomBotMinLevel, randomBotMaxLevel;
 
     uint32 iterationsPerTick;
 

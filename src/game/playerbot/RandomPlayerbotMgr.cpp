@@ -284,7 +284,10 @@ void RandomPlayerbotMgr::IncreaseLevel(Player* bot)
 
 void RandomPlayerbotMgr::RandomizeFirst(Player* bot)
 {
-    uint32 maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
+    uint32 maxLevel = sPlayerbotAIConfig.randomBotMaxLevel;
+    if (maxLevel > sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL))
+        maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
+
     for (int attempt = 0; attempt < 100; ++attempt)
     {
         int index = urand(0, sPlayerbotAIConfig.randomBotMaps.size() - 1);
@@ -310,6 +313,9 @@ void RandomPlayerbotMgr::RandomizeFirst(Player* bot)
 
         if (urand(0, 100) < 100 * sPlayerbotAIConfig.randomBotMaxLevelChance)
             level = maxLevel;
+
+        if (level < sPlayerbotAIConfig.randomBotMinLevel)
+            continue;
 
         PlayerbotFactory factory(bot, level);
         factory.Randomize(false);
