@@ -274,6 +274,13 @@ int AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
             continue;
         }
 
+        if (proto->RequiredLevel > sAhBotConfig.maxRequiredLevel || proto->ItemLevel > sAhBotConfig.maxItemLevel)
+        {
+            sLog.outDetail("%s (x%d) in auction %d: above max required or item level",
+                    item->GetProto()->Name1, item->GetCount(), auctionIds[auction]);
+            continue;
+        }
+
         uint32 price = category->GetPricingStrategy()->GetBuyPrice(proto, auctionIds[auction]);
         if (!price)
         {
