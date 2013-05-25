@@ -535,8 +535,10 @@ void AhBot::HandleCommand(string command)
         if (category->Contains(proto))
         {
             ostringstream out;
-            out << proto->Name1 << " (" << category->GetDisplayName() << ")"
-                << "\n";
+            out << proto->Name1 << " (" << category->GetDisplayName() << "), "
+                    << category->GetMaxAllowedAuctionCount() << "x" << category->GetMaxAllowedItemAuctionCount(proto)
+                    << "x" << category->GetStackCount(proto) << " max"
+                    << "\n";
             for (int auction = 0; auction < MAX_AUCTIONS; auction++)
             {
                 const AuctionHouseEntry* ahEntry = sAuctionHouseStore.LookupEntry(auctionIds[auction]);

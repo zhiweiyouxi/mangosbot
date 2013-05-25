@@ -346,6 +346,8 @@ namespace ahbot
         virtual string GetName() { return category->GetName(); }
         virtual string GetDisplayName() { return combinedName; }
         virtual uint32 GetMaxAllowedItemAuctionCount(ItemPrototype const* proto);
+        virtual uint32 GetStackCount(ItemPrototype const* proto) { return category->GetStackCount(proto); }
+        virtual PricingStrategy* GetPricingStrategy() { return category->GetPricingStrategy(); }
 
     private:
         uint32 quality;

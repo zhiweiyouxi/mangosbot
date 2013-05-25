@@ -21,7 +21,7 @@ namespace ahbot
     class AhBot
     {
     public:
-        AhBot() : nextAICheckTime(0), player(NULL) {}
+        AhBot() : nextAICheckTime(0), player(NULL), session(NULL) {}
         virtual ~AhBot();
 
     public:
