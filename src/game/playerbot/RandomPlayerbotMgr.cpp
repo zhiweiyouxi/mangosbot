@@ -676,3 +676,31 @@ void RandomPlayerbotMgr::PrintStats()
         sLog.outString("%d..%d: %d alliance, %d horde", from, to, alliance[i], horde[i]);
     }
 }
+
+double RandomPlayerbotMgr::GetBuyMultiplier(Player* bot)
+{
+    uint32 id = bot->GetObjectGuid();
+    uint32 value = GetEventValue(id, "buymultiplier");
+    if (!value)
+    {
+        value = urand(1, 120);
+        uint32 validIn = urand(sPlayerbotAIConfig.minRandomBotsPriceChangeInterval, sPlayerbotAIConfig.maxRandomBotsPriceChangeInterval);
+        SetEventValue(id, "buymultiplier", value, validIn);
+    }
+
+    return (double)value / 100.0;
+}
+
+double RandomPlayerbotMgr::GetSellMultiplier(Player* bot)
+{
+    uint32 id = bot->GetObjectGuid();
+    uint32 value = GetEventValue(id, "sellmultiplier");
+    if (!value)
+    {
+        value = urand(80, 500);
+        uint32 validIn = urand(sPlayerbotAIConfig.minRandomBotsPriceChangeInterval, sPlayerbotAIConfig.maxRandomBotsPriceChangeInterval);
+        SetEventValue(id, "sellmultiplier", value, validIn);
+    }
+
+    return (double)value / 100.0;
+}
