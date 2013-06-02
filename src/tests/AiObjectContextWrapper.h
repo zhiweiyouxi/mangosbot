@@ -212,6 +212,9 @@ namespace ai
               GetValue<uint8>("health", "party member to heal")->Set(100);
               GetValue<uint8>("health", "party member to resurrect")->Set(100);
 
+              GetValue<bool>("dead", "current target")->Set(false);
+              GetValue<bool>("dead", "self target")->Set(false);
+
               GetValue<uint8>("mana", "self target")->Set(100);
               GetValue<uint8>("mana", "current target")->Set(100);
               GetValue<uint8>("mana", "pet target")->Set(100);
