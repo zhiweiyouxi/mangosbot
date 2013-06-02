@@ -38,7 +38,7 @@ void RandomPlayerbotMgr::UpdateAIInternal(uint32 elapsed)
 
     list<uint32> bots = GetBots();
     int botCount = bots.size();
-    int botsWere = botCount, allianceNewBots = 0, hordeNewBots = 0;
+    int allianceNewBots = 0, hordeNewBots = 0;
     int randomBotsPerInterval = (int)urand(sPlayerbotAIConfig.minRandomBotsPerInterval, sPlayerbotAIConfig.maxRandomBotsPerInterval);
     while (botCount++ < maxAllowedBotCount)
     {
@@ -68,8 +68,8 @@ void RandomPlayerbotMgr::UpdateAIInternal(uint32 elapsed)
             break;
     }
 
-    sLog.outString("%d random bot processed. %d alliance and %d horde bots added. %d bots available. Next check in %d seconds",
-            botProcessed, allianceNewBots, hordeNewBots, botsWere + allianceNewBots + hordeNewBots, sPlayerbotAIConfig.randomBotUpdateInterval);
+    sLog.outString("%d bots processed. %d alliance and %d horde bots added. %d bots online. Next check in %d seconds",
+            botProcessed, allianceNewBots, hordeNewBots, playerBots.size(), sPlayerbotAIConfig.randomBotUpdateInterval);
 }
 
 uint32 RandomPlayerbotMgr::AddRandomBot(bool alliance)
