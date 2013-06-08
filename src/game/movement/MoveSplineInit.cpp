@@ -57,11 +57,9 @@ namespace Movement
         MoveSpline& move_spline = *unit.movespline;
         TransportInfo* transportInfo = unit.GetTransportInfo();
 
-        Location real_position(unit.GetPositionX(), unit.GetPositionY(), unit.GetPositionZ(), unit.GetOrientation());
-
-        // If boarded use current local position
-        if (transportInfo)
-            transportInfo->GetLocalPosition(real_position.x, real_position.y, real_position.z, real_position.orientation);
+        Position real_position = transportInfo ? 
+                                    transportInfo->GetLocalPosition() :
+                                    unit.GetPosition();
 
         // there is a big chane that current position is unknown if current state is not finalized, need compute it
         // this also allows calculate spline position and update map position in much greater intervals
@@ -87,21 +85,24 @@ namespace Movement
         args.initialOrientation = real_position.orientation;
 
         uint32 moveFlags = unit.m_movementInfo.GetMovementFlags();
-        if (args.flags.walkmode)
-            moveFlags |= MOVEFLAG_WALK_MODE;
-        else
-            moveFlags &= ~MOVEFLAG_WALK_MODE;
-
         moveFlags |= (MOVEFLAG_SPLINE_ENABLED | MOVEFLAG_FORWARD);
-
-        if (fabs(args.velocity) < M_NULL_F)
-            args.velocity = unit.GetSpeed(SelectSpeedType(moveFlags));
-
-        if (!args.Validate(&unit))
-            return 0;
 
         if (moveFlags & MOVEFLAG_ROOT)
             moveFlags &= ~MOVEFLAG_MASK_MOVING;
+
+        if (fabs(args.velocity) < M_NULL_F)
+        {
+            // If spline is initialized with SetWalk method it only means we need to select
+            // walk move speed for it but not add walk flag to unit
+            uint32 moveFlagsForSpeed = moveFlags;
+            if (args.flags.walkmode)
+                moveFlagsForSpeed |= MOVEFLAG_WALK_MODE;
+
+            args.velocity = unit.GetSpeed(SelectSpeedType(moveFlagsForSpeed));
+        }
+
+        if (!args.Validate(&unit))
+            return 0;
 
         unit.m_movementInfo.SetMovementFlags((MovementFlags)moveFlags);
         move_spline.Initialize(args);
@@ -150,11 +151,9 @@ namespace Movement
         MoveSpline& move_spline = *gameobject.movespline;
         TransportInfo* transportInfo = gameobject.GetTransportInfo();
 
-        Location real_position(gameobject.GetPositionX(), gameobject.GetPositionY(), gameobject.GetPositionZ(), gameobject.GetOrientation());
-
-        // If boarded use current local position
-        if (transportInfo)
-            transportInfo->GetLocalPosition(real_position.x, real_position.y, real_position.z, real_position.orientation);
+        Position real_position = transportInfo ? 
+                                    transportInfo->GetLocalPosition() :
+                                    gameobject.GetPosition();
 
         // there is a big chane that current position is unknown if current state is not finalized, need compute it
         // this also allows calculate spline position and update map position in much greater intervals
