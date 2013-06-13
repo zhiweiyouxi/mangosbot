@@ -249,7 +249,7 @@ private:
 
 };
 
-bool PlayerbotFactory::CanEquipArmor(ItemPrototype const* proto, uint8 slot)
+bool PlayerbotFactory::CanEquipArmor(ItemPrototype const* proto)
 {
     if (bot->HasSkill(SKILL_SHIELD) && proto->SubClass == ITEM_SUBCLASS_ARMOR_SHIELD)
         return true;
@@ -387,7 +387,7 @@ void PlayerbotFactory::AddItemStats(uint32 mod, uint8 &sp, uint8 &ap, uint8 &tan
     }
 }
 
-bool PlayerbotFactory::CanEquipWeapon(ItemPrototype const* proto, uint8 slot)
+bool PlayerbotFactory::CanEquipWeapon(ItemPrototype const* proto)
 {
     switch (bot->getClass())
     {
@@ -541,10 +541,10 @@ void PlayerbotFactory::InitEquipment(bool incremental)
                     slot == EQUIPMENT_SLOT_LEGS ||
                     slot == EQUIPMENT_SLOT_FEET ||
                     slot == EQUIPMENT_SLOT_WRISTS ||
-                    slot == EQUIPMENT_SLOT_HANDS) && !CanEquipArmor(proto, slot))
+                    slot == EQUIPMENT_SLOT_HANDS) && !CanEquipArmor(proto))
                         continue;
 
-                if (proto->Class == ITEM_CLASS_WEAPON && !CanEquipWeapon(proto, slot))
+                if (proto->Class == ITEM_CLASS_WEAPON && !CanEquipWeapon(proto))
                     continue;
 
                 if (slot == EQUIPMENT_SLOT_OFFHAND && bot->getClass() == CLASS_ROGUE && proto->Class != ITEM_CLASS_WEAPON)
@@ -637,7 +637,7 @@ void PlayerbotFactory::InitSecondEquipmentSet()
 
             if (proto->Class == ITEM_CLASS_WEAPON)
             {
-                if (!CanEquipWeapon(proto, EQUIPMENT_SLOT_MAINHAND))
+                if (!CanEquipWeapon(proto))
                     continue;
 
                 Item* existingItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
@@ -666,7 +666,7 @@ void PlayerbotFactory::InitSecondEquipmentSet()
             }
             else if (proto->Class == ITEM_CLASS_ARMOR && proto->SubClass == ITEM_SUBCLASS_ARMOR_SHIELD)
             {
-                if (!CanEquipArmor(proto, EQUIPMENT_SLOT_OFFHAND))
+                if (!CanEquipArmor(proto))
                     continue;
 
                 Item* existingItem = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
@@ -1360,6 +1360,12 @@ void PlayerbotFactory::CancelAuras()
 
 void PlayerbotFactory::InitInventory()
 {
+    InitInventoryTrade();
+    InitInventoryEquip();
+}
+
+void PlayerbotFactory::InitInventoryTrade()
+{
     vector<uint32> ids;
     for (uint32 itemId = 0; itemId < sItemStorage.GetMaxEntry(); ++itemId)
     {
@@ -1385,7 +1391,7 @@ void PlayerbotFactory::InitInventory()
         ids.push_back(itemId);
     }
 
-    int maxCount = urand(0, 3);
+    int maxCount = urand(0, 5);
     int count = 0;
     for (int attempts = 0; attempts < 15; attempts++)
     {
@@ -1396,6 +1402,57 @@ void PlayerbotFactory::InitInventory()
         uint32 itemId = ids[index];
         ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
         Item* newItem = bot->StoreNewItemInInventorySlot(itemId, urand(1, proto->GetMaxStackSize()));
+        if (newItem)
+        {
+            newItem->AddToUpdateQueueOf(bot);
+            if (count++ >= maxCount)
+                break;
+        }
+    }
+}
+
+void PlayerbotFactory::InitInventoryEquip()
+{
+    vector<uint32> ids;
+
+    uint32 desiredQuality = itemQuality;
+    if (urand(0, 100) < 100 * sPlayerbotAIConfig.randomGearLoweringChance && desiredQuality > ITEM_QUALITY_NORMAL) {
+        desiredQuality--;
+    }
+
+    for (uint32 itemId = 0; itemId < sItemStorage.GetMaxEntry(); ++itemId)
+    {
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
+        if (!proto)
+            continue;
+
+        if (proto->Class != ITEM_CLASS_ARMOR && proto->Class != ITEM_CLASS_WEAPON || (proto->Bonding == BIND_WHEN_PICKED_UP ||
+                proto->Bonding == BIND_WHEN_USE))
+            continue;
+
+        if (proto->Class == ITEM_CLASS_ARMOR && !CanEquipArmor(proto))
+            continue;
+
+        if (proto->Class == ITEM_CLASS_WEAPON && !CanEquipWeapon(proto))
+            continue;
+
+        if (!CanEquipItem(proto, desiredQuality))
+            continue;
+
+        ids.push_back(itemId);
+    }
+
+    int maxCount = urand(0, 3);
+    int count = 0;
+    for (int attempts = 0; attempts < 15; attempts++)
+    {
+        uint32 index = urand(0, ids.size() - 1);
+        if (index >= ids.size())
+            continue;
+
+        uint32 itemId = ids[index];
+        ItemPrototype const* proto = sObjectMgr.GetItemPrototype(itemId);
+        Item* newItem = bot->StoreNewItemInInventorySlot(itemId, 1);
         if (newItem)
         {
             newItem->AddToUpdateQueueOf(bot);
