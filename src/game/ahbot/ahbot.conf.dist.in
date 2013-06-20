@@ -110,7 +110,11 @@ AhBot.MaxAuctionCount.Food.white = 40
 AhBot.PriceMultiplier.Sell.Food = 1.0
 AhBot.PriceMultiplier.Buy.Food = 1.0
 
-AhBot.MaxAuctionCount.OtherConsumable.white = 40
+AhBot.MaxAuctionCount.bandage.white = 10
+AhBot.PriceMultiplier.Sell.bandage = 1.0
+AhBot.PriceMultiplier.Buy.bandage = 1.0
+
+AhBot.MaxAuctionCount.OtherConsumable.white = 20
 AhBot.MaxAuctionCount.OtherConsumable.green = 10
 AhBot.MaxAuctionCount.OtherConsumable.blue = 5
 AhBot.PriceMultiplier.Sell.OtherConsumable = 1.0
