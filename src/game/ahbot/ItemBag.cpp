@@ -120,6 +120,9 @@ bool ItemBag::Add(ItemPrototype const* proto)
     if (proto->Duration & 0x80000000)
         return false;
 
+    if (sAhBotConfig.ignoreItemIds.find(proto->ItemId) != sAhBotConfig.ignoreItemIds.end())
+        return false;
+
     if (strstri(proto->Name1, "qa") || strstri(proto->Name1, "test"))
         return false;
 
