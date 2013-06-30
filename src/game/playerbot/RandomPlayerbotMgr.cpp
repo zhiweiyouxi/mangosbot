@@ -654,13 +654,23 @@ Player* RandomPlayerbotMgr::GetRandomPlayer()
 
 void RandomPlayerbotMgr::PrintStats()
 {
-    sLog.outString("%d Random Bots online:", playerBots.size());
+    sLog.outString("%d Random Bots online", playerBots.size());
 
     map<uint32, int> alliance, horde;
     for (uint32 i = 0; i < 10; ++i)
     {
         alliance[i] = 0;
         horde[i] = 0;
+    }
+
+    map<uint8, int> perRace, perClass;
+    for (uint8 race = RACE_HUMAN; race < MAX_RACES; ++race)
+    {
+        perRace[race] = 0;
+    }
+    for (uint8 cls = CLASS_WARRIOR; cls < MAX_CLASSES; ++cls)
+    {
+        perClass[cls] = 0;
     }
 
     for (PlayerBotMap::iterator i = playerBots.begin(); i != playerBots.end(); ++i)
@@ -670,8 +680,12 @@ void RandomPlayerbotMgr::PrintStats()
             alliance[bot->getLevel() / 10]++;
         else
             horde[bot->getLevel() / 10]++;
+
+        perRace[bot->getRace()]++;
+        perClass[bot->getClass()]++;
     }
 
+    sLog.outString("Per level:");
     uint32 maxLevel = sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL);
     for (uint32 i = 0; i < 10; ++i)
     {
@@ -681,7 +695,19 @@ void RandomPlayerbotMgr::PrintStats()
         uint32 from = i*10;
         uint32 to = min(from + 9, maxLevel);
         if (!from) from = 1;
-        sLog.outString("%d..%d: %d alliance, %d horde", from, to, alliance[i], horde[i]);
+        sLog.outString("    %d..%d: %d alliance, %d horde", from, to, alliance[i], horde[i]);
+    }
+    sLog.outString("Per race:");
+    for (uint8 race = RACE_HUMAN; race < MAX_RACES; ++race)
+    {
+        if (perRace[race])
+            sLog.outString("    %s: %d", ChatHelper::formatRace(race).c_str(), perRace[race]);
+    }
+    sLog.outString("Per class:");
+    for (uint8 cls = CLASS_WARRIOR; cls < MAX_CLASSES; ++cls)
+    {
+        if (perClass[cls])
+            sLog.outString("    %s: %d", ChatHelper::formatClass(cls).c_str(), perClass[cls]);
     }
 }
 
