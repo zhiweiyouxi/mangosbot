@@ -11,7 +11,7 @@
 
 INSTANTIATE_SINGLETON_1(RandomPlayerbotMgr);
 
-RandomPlayerbotMgr::RandomPlayerbotMgr() : PlayerbotHolder(), firstRun(true)
+RandomPlayerbotMgr::RandomPlayerbotMgr() : PlayerbotHolder(), processTicks(0)
 {
 }
 
@@ -40,12 +40,10 @@ void RandomPlayerbotMgr::UpdateAIInternal(uint32 elapsed)
     int botCount = bots.size();
     int allianceNewBots = 0, hordeNewBots = 0;
     int randomBotsPerInterval = (int)urand(sPlayerbotAIConfig.minRandomBotsPerInterval, sPlayerbotAIConfig.maxRandomBotsPerInterval);
-    if (firstRun)
+    if (!processTicks)
     {
         if (sPlayerbotAIConfig.randomBotLoginAtStartup)
             randomBotsPerInterval = bots.size();
-
-        firstRun = false;
     }
 
     while (botCount++ < maxAllowedBotCount)
@@ -78,6 +76,9 @@ void RandomPlayerbotMgr::UpdateAIInternal(uint32 elapsed)
 
     sLog.outString("%d bots processed. %d alliance and %d horde bots added. %d bots online. Next check in %d seconds",
             botProcessed, allianceNewBots, hordeNewBots, playerBots.size(), sPlayerbotAIConfig.randomBotUpdateInterval);
+
+    if (processTicks++ == 1)
+        PrintStats();
 }
 
 uint32 RandomPlayerbotMgr::AddRandomBot(bool alliance)
