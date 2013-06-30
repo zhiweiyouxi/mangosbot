@@ -362,14 +362,19 @@ uint32 RandomPlayerbotMgr::GetZoneLevel(uint32 mapId, float teleX, float teleY, 
 
 void RandomPlayerbotMgr::Refresh(Player* bot)
 {
-    bot->GetPlayerbotAI()->Reset();
-
     if (bot->isDead())
     {
         PlayerbotChatHandler ch(bot);
         ch.revive(*bot);
         bot->GetPlayerbotAI()->ResetStrategies();
     }
+
+    bot->GetPlayerbotAI()->Reset();
+    if (bot->IsInWorld() && !bot->IsBeingTeleported())
+        bot->GetMap()->RemoveAllAttackersFor(bot->GetObjectGuid());
+    ThreatManager& tm = bot->getThreatManager();
+    tm.clearReferences();
+    bot->ClearInCombat();
 
     bot->DurabilityRepairAll(false, 1.0f, false);
     bot->SetHealthPercent(100);
