@@ -83,6 +83,7 @@ void PlayerbotFactory::Randomize(bool incremental)
     InitPotions();
     InitSecondEquipmentSet();
     InitInventory();
+    bot->SetMoney(urand(level * 1000, level * 5 * 1000));
     bot->SaveToDB();
 
     InitPet();
