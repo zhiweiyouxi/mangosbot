@@ -7,9 +7,9 @@
 using namespace ai;
 
 
-class FrostMageEfficiencyTestCase : public EngineTestBase
+class MageEfficiencyTestCase : public EngineTestBase
 {
-  CPPUNIT_TEST_SUITE( FrostMageEfficiencyTestCase );
+  CPPUNIT_TEST_SUITE( MageEfficiencyTestCase );
   CPPUNIT_TEST( lvl19_frost );
   CPPUNIT_TEST( lvl19_fire );
   CPPUNIT_TEST( lvl19_arcane );
@@ -43,7 +43,7 @@ protected:
         EfficiencyActionExecutionListener* listener = new EfficiencyActionExecutionListener(ai, lvl19(), 888);
         engine->AddActionExecutionListener(listener);
 
- 	    for (int i = 0; i < 100; i++)
+        while (listener->CanContinue())
  	    {
             tick();
             spellAvailable("frostbolt");
@@ -59,7 +59,7 @@ protected:
         EfficiencyActionExecutionListener* listener = new EfficiencyActionExecutionListener(ai, lvl19(), 888);
         engine->AddActionExecutionListener(listener);
 
- 	    for (int i = 0; i < 100; i++)
+        while (listener->CanContinue())
  	    {
             tick();
             spellAvailable("fireball");
@@ -76,7 +76,7 @@ protected:
         EfficiencyActionExecutionListener* listener = new EfficiencyActionExecutionListener(ai, lvl19(), 888);
         engine->AddActionExecutionListener(listener);
 
- 	    for (int i = 0; i < 100; i++)
+        while (listener->CanContinue())
  	    {
             tick();
             spellAvailable("arcane missiles");
@@ -89,4 +89,4 @@ protected:
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( FrostMageEfficiencyTestCase );
+CPPUNIT_TEST_SUITE_REGISTRATION( MageEfficiencyTestCase );

@@ -7,7 +7,7 @@
 
 
 EfficiencyActionExecutionListener::EfficiencyActionExecutionListener(MockPlayerbotAIBase *ai, map<string, SpellInfo> spellInfo, double mana) :
-    ai(ai), spellInfo(spellInfo), mana(mana), castTime(0), damage(0)
+    ai(ai), spellInfo(spellInfo), mana(mana), castTime(0), damage(0), fullMana(mana)
 {
 }
 
@@ -32,45 +32,40 @@ bool EfficiencyActionExecutionListener::OverrideResult(Action* action, bool exec
 
     SpellInfo spell = spellInfo[name];
 
-    if (cooldown.count(name) && cooldown[name] > 0)
-    {
-        cout << name << " is on cooldown" << endl;
+    string sharedCooldown = spell.sharedCooldown.empty() ? name : spell.sharedCooldown;
+    if (cooldown.count(sharedCooldown) && cooldown[sharedCooldown] > 0)
         return false;
-    }
 
     if (mana < spell.mana)
-    {
-        cout << name << ": OOM" << endl;
         return false;
-    }
 
-    cout << name << endl;
     return true;
 }
 
 void EfficiencyActionExecutionListener::After(Action* action, bool executed, Event event)
 {
-    if (!executed)
-        return;
-
     string name = action->getName();
     if (!spellInfo.count(name))
         return;
 
     SpellInfo spell = spellInfo[name];
 
+    double elapsed = max(executed ? 1.5 : 0.1, spell.castTime);
     for (map<string, double>::iterator i = cooldown.begin(); i != cooldown.end(); ++i)
     {
-        int value = i->second - spell.castTime;
-        cooldown[i->first] = value > 0 ? value : 0;
+        int value = i->second - elapsed;
+        string sharedCooldown = spell.sharedCooldown.empty() ? i->first : spell.sharedCooldown;
+        cooldown[sharedCooldown] = value > 0 ? value : 0;
     }
 
-    if (spell.castTime > 1.5)
-        castTime += spell.castTime;
-    else
-        castTime += 1.5;
+    castTime += elapsed;
+
+    if (!executed)
+        return;
+
     mana -= spell.mana;
-    cooldown[name] = spell.cooldown;
+    string sharedCooldown = spell.sharedCooldown.empty() ? name : spell.sharedCooldown;
+    cooldown[sharedCooldown] = spell.cooldown;
     damage += spell.damage;
 }
 
@@ -81,4 +76,9 @@ void EfficiencyActionExecutionListener::Report()
             "Mana: " << mana << endl;
     if (damage > 0 && castTime > 0)
         cout << "DPS: " << damage / castTime << endl;
+}
+
+bool EfficiencyActionExecutionListener::CanContinue()
+{
+    return castTime < 60 && mana > fullMana / 10;
 }

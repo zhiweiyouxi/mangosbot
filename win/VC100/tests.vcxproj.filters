@@ -199,7 +199,10 @@
     <ClCompile Include="..\..\src\tests\efficiency\EfficiencyActionExecutionListener.cpp">
       <Filter>efficiency</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tests\efficiency\FrostMageEfficiencyTestCase.cpp">
+    <ClCompile Include="..\..\src\tests\efficiency\ShamanEfficiencyTestCase.cpp">
+      <Filter>efficiency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tests\efficiency\MageEfficiencyTestCase.cpp">
       <Filter>efficiency</Filter>
     </ClCompile>
   </ItemGroup>
