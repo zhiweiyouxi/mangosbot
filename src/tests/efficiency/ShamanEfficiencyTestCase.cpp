@@ -3,22 +3,17 @@
 #include "../aitest.h"
 #include "../../game/playerbot/strategy/shaman/ShamanAiObjectContext.h"
 #include "EfficiencyActionExecutionListener.h"
+#include "AbstractEfficiencyTestCase.h"
 
 using namespace ai;
 
 
-class ShamanEfficiencyTestCase : public EngineTestBase
+class ShamanEfficiencyTestCase : public AbstractEfficiencyTestCase
 {
   CPPUNIT_TEST_SUITE( ShamanEfficiencyTestCase );
   CPPUNIT_TEST( lvl19_melee );
   CPPUNIT_TEST( lvl19_caster );
   CPPUNIT_TEST_SUITE_END();
-
-public:
-    void setUp()
-    {
-		EngineTestBase::setUp();
-    }
 
 protected:
     map<string, SpellInfo> lvl19()
@@ -34,44 +29,16 @@ protected:
         return spellInfo;
     }
 
-    void refresh(map<string, SpellInfo> spellInfo)
-    {
-        for (map<string, SpellInfo>::iterator i = spellInfo.begin(); i != spellInfo.end(); ++i)
-        {
-            spellAvailable(i->first);
-        }
-    }
-
  	void lvl19_melee()
 	{
- 	    map<string, SpellInfo> spellInfo = lvl19();
         setupEngine(new ShamanAiObjectContext(ai), "melee", "melee aoe", NULL);
-        EfficiencyActionExecutionListener* listener = new EfficiencyActionExecutionListener(ai, spellInfo, 600);
-        engine->AddActionExecutionListener(listener);
-
-        while (listener->CanContinue())
- 	    {
-            tick();
-            refresh(spellInfo);
- 	    }
-        cout << "Act: " << ai->buffer << "\n";
-        listener->Report();
+        run(lvl19(), 600);
 	}
 
  	void lvl19_caster()
 	{
- 	    map<string, SpellInfo> spellInfo = lvl19();
         setupEngine(new ShamanAiObjectContext(ai), "caster", "caster aoe", NULL);
-        EfficiencyActionExecutionListener* listener = new EfficiencyActionExecutionListener(ai, spellInfo, 600);
-        engine->AddActionExecutionListener(listener);
-
-        while (listener->CanContinue())
- 	    {
-            tick();
-            refresh(spellInfo);
- 	    }
-        cout << "Act: " << ai->buffer << "\n";
-        listener->Report();
+        run(lvl19(), 600);
 	}
 
 };
