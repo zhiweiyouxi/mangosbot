@@ -78,5 +78,5 @@ void HealShamanStrategy::InitTriggers(std::list<TriggerNode*> &triggers)
 
     triggers.push_back(new TriggerNode(
         "medium aoe",
-        NextAction::array(0, new NextAction("flametongue totem", ACTION_LIGHT_HEAL), NULL)));
+        NextAction::array(0, new NextAction("healing stream totem", ACTION_LIGHT_HEAL), NULL)));
 }
