@@ -129,7 +129,7 @@ protected:
     {
         tickWithAttackerCount(3);
 
-        assertActions(">S:healing stream totem");
+        assertActions(">S:flametongue totem");
     }
 };
 
