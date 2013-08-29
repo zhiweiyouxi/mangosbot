@@ -3,6 +3,7 @@
 #include "playerbot.h"
 #include "RandomPlayerbotFactory.h"
 #include "../AccountMgr.h"
+#include "../../shared/SystemConfig.h"
 
 using namespace std;
 
@@ -30,7 +31,7 @@ bool PlayerbotAIConfig::Initialize()
 {
     sLog.outString("Initializing AI Playerbot by ike3, based on the original Playerbot by blueboy");
 
-    if (!config.SetSource("aiplayerbot.conf"))
+    if (!config.SetSource(SYSCONFDIR"aiplayerbot.conf"))
     {
         sLog.outString("AI Playerbot is Disabled. Unable to open configuration file aiplayerbot.conf");
         return false;
