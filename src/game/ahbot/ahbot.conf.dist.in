@@ -18,7 +18,7 @@ AuctionHouseBot.Buyer.Enabled = 0
 AhBot.Enabled = 1
 
 # Should be used only if random bots are disabled
-AhBot.GUID = 0
+# AhBot.GUID = 0
 
 # 199 for 80, 80 for 70, 70 for 60, ..., 25 for 20
 AhBot.MaxItemLevel = 199
