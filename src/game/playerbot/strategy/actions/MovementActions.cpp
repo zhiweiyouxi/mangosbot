@@ -41,6 +41,22 @@ bool MovementAction::MoveTo(uint32 mapId, float x, float y, float z)
     if (!IsMovingAllowed(mapId, x, y, z))
         return false;
 
+    bot->UpdateGroundPositionZ(x, y, z);
+
+    float botZ = bot->GetPositionZ();
+
+    if (z - botZ > sPlayerbotAIConfig.followDistance)
+        return false;
+
+    if (z - botZ > 0.5f)
+    {
+        WaitForReach(0.5f);
+        MotionMaster &mm = *bot->GetMotionMaster();
+        mm.Clear();
+        mm.MoveJump(x, y, botZ + 0.5f, bot->GetSpeed(MOVE_RUN), 0.5f);
+        return true;
+    }
+
     float distance = bot->GetDistance(x, y, z);
     if (distance > sPlayerbotAIConfig.meleeDistance / 2)
     {
