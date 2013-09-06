@@ -82,9 +82,9 @@ bool SummonAction::Execute(Event event)
     if (!master)
         return false;
 
-    if (!master->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING) && master->GetSession()->GetSecurity() < SEC_GAMEMASTER)
+    if (master->GetSession()->GetSecurity() < SEC_GAMEMASTER)
     {
-        ai->TellMasterNoFacing("You must be in a city or inn to summon me");
+        ai->TellMasterNoFacing("You cannot summon me");
         return false;
     }
 
