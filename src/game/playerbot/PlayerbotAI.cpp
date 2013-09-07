@@ -122,6 +122,14 @@ PlayerbotAI::~PlayerbotAI()
         delete aiObjectContext;
 }
 
+void PlayerbotAI::UpdateAI(uint32 elapsed)
+{
+    if (nextAICheckDelay > sPlayerbotAIConfig.maxWaitForMove && bot->isInCombat())
+        nextAICheckDelay = sPlayerbotAIConfig.maxWaitForMove;
+
+    PlayerbotAIBase::UpdateAI(elapsed);
+}
+
 void PlayerbotAI::UpdateAIInternal(uint32 elapsed)
 {
     if (bot->IsBeingTeleported())
