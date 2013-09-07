@@ -22,6 +22,13 @@ bool LfgJoinAction::Execute(Event event)
     if (sLFGMgr.GetQueueInfo(bot->GetObjectGuid()))
         return false;
 
+    if (bot->IsBeingTeleported())
+        return false;
+
+    Map* map = bot->GetMap();
+    if (map && map->Instanceable())
+        return false;
+
     return JoinProposal();
 }
 
