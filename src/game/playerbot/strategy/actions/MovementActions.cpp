@@ -44,10 +44,6 @@ bool MovementAction::MoveTo(uint32 mapId, float x, float y, float z)
     bot->UpdateGroundPositionZ(x, y, z);
 
     float botZ = bot->GetPositionZ();
-
-    if (z - botZ > sPlayerbotAIConfig.followDistance)
-        return false;
-
     if (z - botZ > 0.5f)
     {
         WaitForReach(0.5f);
