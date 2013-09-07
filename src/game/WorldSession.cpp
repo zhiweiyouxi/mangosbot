@@ -427,7 +427,7 @@ void WorldSession::LogoutPlayer(bool Save)
             GetPlayer()->BuildPlayerRepop();
             GetPlayer()->RepopAtGraveyard();
         }
-        else if (GetPlayer()->IsInCombat() && GetPlayer()->GetMap())
+        else if (GetPlayer()->GetMap() && GetPlayer()->IsInCombat())
         {
             GetPlayer()->CombatStop();
             GetPlayer()->getHostileRefManager().setOnlineOfflineState(false);

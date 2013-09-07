@@ -1324,6 +1324,20 @@ void Aura::TriggerSpell()
     // specific code for cases with no trigger spell provided in field
     if (triggeredSpellInfo == NULL)
     {
+        // Server side spells
+        switch (trigger_spell_id)
+        {
+            // Ice Tomb (Sindragosa)
+            case 70159:
+            {
+                if (triggerTarget->HasAura(70157))
+                    return;
+                trigger_spell_id = 70157;
+            }
+            default:
+                break;
+        }
+
         switch(auraSpellInfo->SpellFamilyName)
         {
             case SPELLFAMILY_GENERIC:
@@ -1355,7 +1369,9 @@ void Aura::TriggerSpell()
 //                    // Ranshalla Waiting
 //                    case 18953: break;
 //                    // Inferno
-//                    case 19695: break;
+                    case 19695:
+                        trigger_spell_id = 19698;
+                        break;
 //                    // Frostwolf Muzzle DND
 //                    case 21794: break;
 //                    // Alterac Ram Collar DND
@@ -2002,8 +2018,11 @@ void Aura::TriggerSpell()
                     case 70017:                             // Gunship Cannon Fire
                         trigger_spell_id = 70021;
                         break;
-//                    // Ice Tomb
-//                    case 70157: break;
+                    // Ice Tomb
+                    case 70157:
+                        if (uint32(time(NULL) - GetAuraApplyTime()) >= 20 && !triggerTarget->HasAura(71665))
+                            triggerTarget->CastSpell(triggerTarget, 71665, true);
+                        return;
                     case 70842:                             // Mana Barrier
                     {
                         if (!triggerTarget || triggerTarget->getPowerType() != POWER_MANA)
@@ -2406,7 +2425,12 @@ void Aura::TriggerSpell()
         if (Unit* caster = GetCaster())
         {
             if (triggerTarget->GetTypeId() != TYPEID_UNIT || !sScriptMgr.OnEffectDummy(caster, GetId(), GetEffIndex(), (Creature*)triggerTarget, ObjectGuid()))
-                sLog.outError("Aura::TriggerSpell: Spell %u have 0 in EffectTriggered[%d], not handled custom case?", GetId(), GetEffIndex());
+            {
+                if (!trigger_spell_id)
+                    sLog.outError("Aura::TriggerSpell: Spell %u have 0 in EffectTriggered[%d], not handled custom case?", GetId(), GetEffIndex());
+                else
+                    sLog.outError("Aura::TriggerSpell: Spell %u have server side %u in EffectTriggered[%d], but %u not defined.", GetId(), trigger_spell_id, GetEffIndex(), trigger_spell_id);
+            }
         }
     }
 }
@@ -6206,22 +6230,13 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
         {
             if (apply)
             {
-                if (GameObject *pGO = target->SummonGameobject(201722, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0.0f, 180))
-                {
-                    pGO->SetSpellId(GetId());
-                    target->AddGameObject(pGO);
-                }
-                if (Creature *pCreature = target->SummonCreature(36980, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 180000))
-                {
+                if (Creature* pCreature = target->SummonCreature(36980, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0.0f, TEMPSUMMON_MANUAL_DESPAWN, 0))
                     pCreature->SetCreatorGuid(target->GetObjectGuid());
-                }
             }
             else
             {
-                if (GameObject *pGo = target->GetGameObject(GetId()))
-                    pGo->Delete();
+                target->RemoveAurasDueToSpell(71665); // Asphyxiation
             }
-
             return;
         }
         case 71530:                                     // Essence of the Blood Queen (Queen Lana'thel)
