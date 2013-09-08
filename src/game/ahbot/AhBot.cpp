@@ -975,3 +975,21 @@ int32 AhBot::GetBuyPrice(ItemPrototype const* proto)
 
     return maxPrice;
 }
+
+double AhBot::GetRarityPriceMultiplier(const ItemPrototype* proto)
+{
+    if (!sAhBotConfig.enabled)
+        return 1.0;
+
+    for (int i=0; i<CategoryList::instance.size(); i++)
+    {
+        Category* category = CategoryList::instance[i];
+        if (!category->Contains(proto))
+            continue;
+
+        return category->GetPricingStrategy()->GetRarityPriceMultiplier(proto->ItemId);
+    }
+
+    return 1.0;
+
+}

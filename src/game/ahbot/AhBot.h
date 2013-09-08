@@ -41,6 +41,7 @@ namespace ahbot
 
         int32 GetSellPrice(const ItemPrototype* proto);
         int32 GetBuyPrice(const ItemPrototype* proto);
+        double GetRarityPriceMultiplier(const ItemPrototype* proto);
 
     private:
         int Answer(int auction, Category* category, ItemBag* inAuctionItems);
