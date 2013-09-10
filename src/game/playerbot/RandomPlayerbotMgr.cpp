@@ -387,10 +387,21 @@ void RandomPlayerbotMgr::Refresh(Player* bot)
     }
 
     bot->GetPlayerbotAI()->Reset();
-    if (bot->IsInWorld() && !bot->IsBeingTeleported())
-        bot->GetMap()->RemoveAllAttackersFor(bot->GetObjectGuid());
-    ThreatManager& tm = bot->getThreatManager();
-    tm.clearReferences();
+
+    HostileReference *ref = bot->getHostileRefManager().getFirst();
+    while( ref )
+    {
+        ThreatManager *threatManager = ref->getSource();
+        Unit *unit = threatManager->getOwner();
+        float threat = ref->getThreat();
+
+        unit->RemoveAllAttackers();
+        unit->ClearInCombat();
+
+        ref = ref->next();
+    }
+
+    bot->RemoveAllAttackers();
     bot->ClearInCombat();
 
     bot->DurabilityRepairAll(false, 1.0f, false);
