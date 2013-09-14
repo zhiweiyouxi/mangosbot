@@ -3752,6 +3752,22 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     m_caster->SetFacingTo(frand(0, M_PI_F*2));
                     return;
                 }
+                case 64489:                                 // Feral Rush
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    m_caster->CastSpell(unitTarget, 64496, true);
+                    return;
+                }
+                case 64673:                                 // Feral Rush (h)
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    m_caster->CastSpell(unitTarget, 64674, true);
+                    return;
+                }
                 case 64981:                                 // Summon Random Vanquished Tentacle
                 {
                     uint32 spell_id = 0;
@@ -3959,11 +3975,6 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     m_caster->RemoveSpellCooldown(53385, true);
                     return;
                 }
-                case 70961:                                 // Shattered Bones (Icecrown Citadel, trash mob The Damned)
-                {
-                    m_caster->CastSpell(m_caster, m_spellInfo->CalculateSimpleValue(eff_idx), true);
-                    break;
-                }
                 case 70895:                                 // Dark Transformation (Icecrown Citadel, Lady Deathwhisper encounter)
                 {
                     if (!unitTarget)
@@ -3994,6 +4005,14 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                             unitTarget->CastSpell(unitTarget, 71236, false);
                             break;
                     }
+                    break;
+                }
+                case 70961:                                 // Shattered Bones (Icecrown Citadel, trash mob The Damned)
+                {
+                    if (!unitTarget || unitTarget == m_caster)
+                        return;
+
+                    m_caster->CastSpell(unitTarget, m_spellInfo->CalculateSimpleValue(eff_idx), true);
                     break;
                 }
                 case 71281:                                 // Slave Trigger Closest (Q:24498)
@@ -10391,6 +10410,28 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(m_caster, 62340, true);
                     return;
                 }
+                case 62381:                                 // Chill
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->RemoveAurasDueToSpell(62373);
+                    unitTarget->CastSpell(unitTarget, 62382, true);
+                    return;
+                }
+                case 62488:                                 // Activate Construct
+                {
+                    if (!unitTarget || !unitTarget->HasAura(62468))
+                        return;
+
+                    unitTarget->RemoveAurasDueToSpell(62468);
+                    unitTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    unitTarget->CastSpell(unitTarget, 64474, true);
+
+                    if (m_caster->getVictim())
+                        ((Creature*)unitTarget)->AI()->AttackStart(m_caster->getVictim());
+                    return;
+                }
                 case 62524:                                 // Attuned to Nature 2 Dose Reduction
                 case 62525:                                 // Attuned to Nature 10 Dose Reduction
                 case 62521:                                 // Attuned to Nature 25 Dose Reduction
@@ -10699,15 +10740,6 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     unitTarget->CastSpell(unitTarget, spellid, true);
                     break;
                 }
-                case 64475:                                 // Ignis Strength of the Creator stack decreasing
-                {
-                    if (!unitTarget)
-                        return;
-                    if (SpellAuraHolderPtr holder = unitTarget->GetSpellAuraHolder(64473))
-                        if (holder->ModStackAmount(-1))
-                            unitTarget->RemoveSpellAuraHolder(holder);
-                    break;
-                }
                 case 65238:                                 // Shattered Illusion (Ulduar - Yogg Saron)
                 {
                     if (!unitTarget)
@@ -10789,6 +10821,22 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
 
                     uint32 spellId = m_spellInfo->CalculateSimpleValue(eff_idx);
                     unitTarget->RemoveAuraHolderFromStack(spellId);
+                    return;
+                }
+                case 64475:                                 // Strength of the Creator
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->RemoveAuraHolderFromStack(64473);
+                    return;
+                }
+                case 64503:                                 // Water
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() == TYPEID_PLAYER || !unitTarget->HasAura(62373))
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, 62381, true);
                     return;
                 }
                 case 66477:                                 // Bountiful Feast

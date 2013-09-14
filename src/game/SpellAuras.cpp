@@ -2682,25 +2682,18 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     case 58589:                                 // Stoneclaw Totem VIII
                         target->CastSpell(target, 58583, true);
                         return;
-                    case 58600:                             // Restricted Flight Area
-                        target->MonsterWhisper(LANG_NO_FLY_ZONE, target, true);
-                        return;
                     case 58590:                                 // Stoneclaw Totem IX
                         target->CastSpell(target, 58584, true);
                         return;
                     case 58591:                                 // Stoneclaw Totem X
                         target->CastSpell(target, 58585, true);
                         return;
+                    case 58600:                             // Restricted Flight Area
+                        target->MonsterWhisper(LANG_NO_FLY_ZONE, target, true);
+                        return;
                     case 58983:                                 // Big Blizzard Bear
                         Spell::SelectMountByAreaAndSkill(target, GetSpellProto(), 58997, 58999, 0, 0, 0);
                         return;
-                    case 61187:                                 // Twilight Shift
-                        target->CastSpell(target, 61885, true);
-                        if (target->HasAura(57620))
-                            target->RemoveAurasDueToSpell(57620);
-                        if (target->HasAura(57874))
-                            target->RemoveAurasDueToSpell(57874);
-                        break;
                     case 54729:                             // Winged Steed of the Ebon Blade
                         Spell::SelectMountByAreaAndSkill(target, GetSpellProto(), 0, 0, 54726, 54727, 0);
                         return;
@@ -2711,6 +2704,12 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                             target->CastSpell(target, spell_id + urand(0, 7), true);
                             return;
                         }
+                        break;
+                    case 61187:                             // Twilight Shift (single target)
+                    case 61190:                             // Twilight Shift (many targets)
+                        target->RemoveAurasDueToSpell(57620);
+                        target->CastSpell(target, 61885, true, NULL, this);
+                        return;
                     case 62061:                             // Festive Holiday Mount
                         if (target->HasAuraType(SPELL_AURA_MOUNTED))
                             // Reindeer Transformation
@@ -9778,8 +9777,16 @@ void Aura::PeriodicDummyTick()
                     target->CastSpell(target, 62593, true);
                     return;
                 }
-                case 62717:                                 // Slag Pot (periodic dmg)
-                case 63477:
+                case 62717:                                 // Slag Pot
+                {
+                    target->CastSpell(target, 65722, true, NULL, this);
+
+                    // cast Slag Imbued if the target survives up to the last tick
+                    if (GetAuraTicks() == 10)
+                        target->CastSpell(target, 63536, true, NULL, this);
+                    return;
+                }
+                case 64217:                                 // Overcharged
                 {
                     Unit *caster = GetCaster();
 
@@ -9794,6 +9801,15 @@ void Aura::PeriodicDummyTick()
 
                     if (caster && target)
                         caster->CastCustomSpell(target, 63278, 0, &(spell->EffectBasePoints[0]), 0, false, 0, 0, caster->GetObjectGuid() , spell);
+                    return;
+                }
+                case 63477:                                 // Slag Pot (H)
+                {
+                    target->CastSpell(target, 65723, true, NULL, this);
+
+                    // cast Slag Imbued if the target survives up to the last tick
+                    if (GetAuraTicks() == 10)
+                        target->CastSpell(target, 62836, true, NULL, this);
                     return;
                 }
                 case 69008:                                 // Soulstorm (OOC aura)

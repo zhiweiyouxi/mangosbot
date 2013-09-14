@@ -172,8 +172,6 @@ enum UnitBytes1_Flags
     UNIT_BYTE1_FLAG_ALL          = 0xFF
 };
 
-#define UNIT_BYTE1_FLAG_UNK_2 UNIT_BYTE1_FLAG_HOVER
-
 // byte value (UNIT_FIELD_BYTES_2,0)
 enum SheathState
 {
@@ -416,7 +414,7 @@ enum UnitState
     UNIT_STAT_NO_COMBAT_MOVEMENT    = 0x01000000,           // Combat Movement for MoveChase stopped
     UNIT_STAT_RUNNING               = 0x02000000,           // SetRun for waypoints and such
     UNIT_STAT_WAYPOINT_PAUSED       = 0x04000000,           // Waypoint-Movement paused genericly (ie by script)
-
+    UNIT_STAT_DELAYED_EVADE         = 0x08000000,           // Creature in delayed evade event
     UNIT_STAT_IGNORE_PATHFINDING    = 0x10000000,           // do not use pathfinding in any MovementGenerator
 
     // masks (only for check)
