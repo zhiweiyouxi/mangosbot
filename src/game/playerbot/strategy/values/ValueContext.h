@@ -134,6 +134,7 @@ namespace ai
             creators["mana save level"] = &ValueContext::mana_save_level;
             creators["combat"] = &ValueContext::combat;
             creators["lfg proposal"] = &ValueContext::lfg_proposal;
+            creators["bag space"] = &ValueContext::bag_space;
         }
 
     private:
@@ -210,5 +211,6 @@ namespace ai
         static UntypedValue* threat(PlayerbotAI* ai) { return new ThreatValue(ai); }
         static UntypedValue* combat(PlayerbotAI* ai) { return new IsInCombatValue(ai); }
         static UntypedValue* lfg_proposal(PlayerbotAI* ai) { return new LfgProposalValue(ai); }
+        static UntypedValue* bag_space(PlayerbotAI* ai) { return new BagSpaceValue(ai); }
     };
 };
