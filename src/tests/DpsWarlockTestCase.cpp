@@ -12,7 +12,6 @@ class DpsWarlockTestCase : public EngineTestBase
       CPPUNIT_TEST( combatVsMelee );
       CPPUNIT_TEST( aoe );
       CPPUNIT_TEST( low_mana );
-      CPPUNIT_TEST( flee );
       CPPUNIT_TEST( cc );
   CPPUNIT_TEST_SUITE_END();
 
@@ -81,14 +80,6 @@ protected:
         tick();
 
 		assertActions(">T:shadowfury>T:seed of corruption>T:rain of fire>A:corruption on attacker>T:immolate");
-    }
-
-    void flee()
-    {
-        tickInMeleeRange();
-        tickInMeleeRange();
-
-        assertActions(">T:fear>S:flee");
     }
 
     void cc()

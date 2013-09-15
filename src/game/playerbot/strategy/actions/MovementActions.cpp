@@ -98,10 +98,17 @@ bool MovementAction::MoveTo(Unit* target, float distance)
         needToGo = -maxDistance;
 
     MotionMaster &mm = *bot->GetMotionMaster();
-    WaitForReach(needToGo);
-    mm.MoveChase(target, distance, angle);
+    if (distance <= sPlayerbotAIConfig.meleeDistance)
+    {
+        WaitForReach(needToGo);
+        mm.MoveChase(target, distance, GetFollowAngle());
+        return true;
+    }
 
-    return true;
+    float dx = cos(angle) * needToGo + bx;
+    float dy = sin(angle) * needToGo + by;
+
+    return MoveTo(target->GetMapId(), dx, dy, tz);
 }
 
 float MovementAction::GetFollowAngle()
