@@ -828,3 +828,9 @@ void RandomPlayerbotMgr::SetLootAmount(Player* bot, uint32 value)
     uint32 id = bot->GetObjectGuid();
     SetEventValue(id, "lootamount", value, 24 * 3600);
 }
+
+uint32 RandomPlayerbotMgr::GetTradeDiscount(Player* bot)
+{
+    Group* group = bot->GetGroup();
+    return GetLootAmount(bot) / (group ? group->GetMembersCount() : 10);
+}
