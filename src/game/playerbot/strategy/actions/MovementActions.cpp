@@ -97,10 +97,11 @@ bool MovementAction::MoveTo(Unit* target, float distance)
     else if (needToGo < 0 && needToGo < -maxDistance)
         needToGo = -maxDistance;
 
-    float dx = cos(angle) * needToGo + bx;
-    float dy = sin(angle) * needToGo + by;
+    MotionMaster &mm = *bot->GetMotionMaster();
+    WaitForReach(needToGo);
+    mm.MoveChase(target, distance, angle);
 
-    return MoveTo(target->GetMapId(), dx, dy, tz);
+    return true;
 }
 
 float MovementAction::GetFollowAngle()
@@ -197,10 +198,7 @@ bool MovementAction::Follow(Unit* target, float distance, float angle)
     if (target->IsFriendlyTo(bot) && bot->IsMounted() && AI_VALUE(list<ObjectGuid>, "possible targets").empty())
         distance += angle;
 
-	bool canMove = MoveNear(target, distance);
-	if (!canMove)
-		return false;
-    //mm.MoveFollow(target, distance, angle);
+    mm.MoveFollow(target, distance, angle);
 
     AI_VALUE(LastMovement&, "last movement").Set(target);
     return true;
