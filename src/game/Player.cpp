@@ -633,8 +633,10 @@ Player::~Player ()
 
     // clean up player-instance binds, may unload some instance saves
     for (uint8 i = 0; i < MAX_DIFFICULTY; ++i)
+    {
         for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
-            itr->second.state->RemovePlayer(this);
+            itr->second.state->RemoveFromUnbind(GetObjectGuid());
+    }
 
     delete m_declinedname;
     delete m_runes;
@@ -17389,7 +17391,7 @@ void Player::UnbindInstance(BoundInstancesMap::iterator &itr, Difficulty difficu
 
         sCalendarMgr.SendCalendarRaidLockoutRemove(GetObjectGuid(), itr->second.state);
 
-        itr->second.state->RemovePlayer(this);              // state can become invalid
+        itr->second.state->RemoveFromUnbind(GetObjectGuid());  // state can become invalid
         m_boundInstances[difficulty].erase(itr++);
     }
 }
@@ -17418,8 +17420,9 @@ InstancePlayerBind* Player::BindToInstance(DungeonPersistentState *state, bool p
         if (bind.state != state)
         {
             if (bind.state)
-                bind.state->RemovePlayer(this);
-            state->AddPlayer(this);
+                bind.state->RemoveFromUnbind(GetObjectGuid());
+
+            state->AddToUnbind(GetObjectGuid());
         }
 
         if (permanent)
@@ -18800,7 +18803,7 @@ void Player::ResetInstances(InstanceResetMethod method, bool isRaid)
         m_boundInstances[diff].erase(itr++);
 
         // the following should remove the instance save from the manager and delete it as well
-        state->RemovePlayer(this);
+        state->RemoveFromUnbind(GetObjectGuid());
     }
 }
 
@@ -18873,12 +18876,12 @@ void Player::UpdateDuelFlag(time_t currTime)
 
 void Player::RemovePet(PetSaveMode mode)
 {
-    GroupPetList groupPets = GetPets();
-    if (!groupPets.empty())
+    GuidSet groupPetsCopy = GetPets();
+    if (!groupPetsCopy.empty())
     {
-        for (GroupPetList::const_iterator itr = groupPets.begin(); itr != groupPets.end(); ++itr)
-             if (Pet* _pet = GetMap()->GetPet(*itr))
-                 _pet->Unsummon(mode, this);
+        for (GuidSet::const_iterator itr = groupPetsCopy.begin(); itr != groupPetsCopy.end(); ++itr)
+             if (Pet* pPet = GetMap()->GetPet(*itr))
+                 pPet->Unsummon(mode, this);
     }
 }
 
@@ -19023,12 +19026,12 @@ void Player::PetSpellInitialize()
 
 void Player::SendPetGUIDs()
 {
-    GroupPetList m_groupPets = GetPets();
-    WorldPacket data(SMSG_PET_GUIDS, 4+8*m_groupPets.size());
-    data << uint32(m_groupPets.size());                      // count
-    if (!m_groupPets.empty())
+    GuidSet const& groupPets = GetPets();
+    WorldPacket data(SMSG_PET_GUIDS, 4 + 8 * groupPets.size());
+    data << uint32(groupPets.size());                      // count
+    if (!groupPets.empty())
     {
-        for (GroupPetList::const_iterator itr = m_groupPets.begin(); itr != m_groupPets.end(); ++itr)
+        for (GuidSet::const_iterator itr = groupPets.begin(); itr != groupPets.end(); ++itr)
             data << (*itr);
     }
     GetSession()->SendPacket(&data);
@@ -23013,11 +23016,11 @@ void Player::UnsummonPetTemporaryIfAny(bool full)
     if (!petmap)
         return;
 
-    GroupPetList m_groupPetsTmp = GetPets();  // Original list may be modified in this function
-    if (m_groupPetsTmp.empty())
+    GuidSet groupPetsCopy = GetPets();  // Original list may be modified in this function
+    if (groupPetsCopy.empty())
         return;
 
-    for (GroupPetList::const_iterator itr = m_groupPetsTmp.begin(); itr != m_groupPetsTmp.end(); ++itr)
+    for (GuidSet::const_iterator itr = groupPetsCopy.begin(); itr != groupPetsCopy.end(); ++itr)
     {
         if (Pet* pet = petmap->GetPet(*itr))
         {
@@ -23040,7 +23043,7 @@ void Player::UnsummonPetTemporaryIfAny(bool full)
                 else
                     pet->Unsummon(PET_SAVE_NOT_IN_SLOT, this);
             }
-            DEBUG_LOG("Player::UnsummonPetTemporaryIfAny tempusummon pet %s ",(*itr).GetString().c_str());
+            DEBUG_LOG("Player::UnsummonPetTemporaryIfAny tempusummon pet %s ", (*itr).GetString().c_str());
         }
     }
 }

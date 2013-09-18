@@ -216,16 +216,40 @@ DungeonPersistentState::DungeonPersistentState( uint16 MapId, uint32 InstanceId,
 
 DungeonPersistentState::~DungeonPersistentState()
 {
-    while(!m_playerList.empty())
+    while (!m_playerList.empty())
     {
-        Player *player = *(m_playerList.begin());
-        player->UnbindInstance(GetMapId(), GetDifficulty(), true);
+        GuidSet::iterator itr = m_playerList.begin();
+        if (Player* player = ObjectAccessor::FindPlayer(*itr))
+            player->UnbindInstance(GetMapId(), GetDifficulty(), true);
+        else
+            m_playerList.erase(itr);
     }
-    while(!m_groupList.empty())
+    while (!m_groupList.empty())
     {
-        Group *group = *(m_groupList.begin());
-        group->UnbindInstance(GetMapId(), GetDifficulty(), true);
+        GuidSet::iterator itr = m_groupList.begin();
+        if (Group* group = sObjectMgr.GetGroup(*itr))
+            group->UnbindInstance(GetMapId(), GetDifficulty(), true);
+        else
+            m_groupList.erase(itr);
     }
+}
+
+void DungeonPersistentState::AddToUnbind(ObjectGuid const& guid)
+{
+    if (guid.IsPlayer())
+        m_playerList.insert(guid);
+    else if (guid.IsGroup())
+        m_groupList.insert(guid);
+}
+
+void DungeonPersistentState::RemoveFromUnbind(ObjectGuid const& guid)
+{
+    if (guid.IsPlayer())
+        m_playerList.erase(guid);
+    else if (guid.IsGroup())
+        m_groupList.erase(guid);
+
+    UnloadIfEmpty();
 }
 
 bool DungeonPersistentState::CanBeUnload() const
