@@ -64,6 +64,7 @@ namespace ai
             context->GetValue<Unit*>("current target")->Set(NULL);
             bot->SetSelectionGuid(ObjectGuid());
             ai->ChangeEngine(BOT_STATE_NON_COMBAT);
+            ai->InterruptSpell();
 			return true;
         }
     };

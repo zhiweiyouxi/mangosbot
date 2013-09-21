@@ -61,7 +61,11 @@ bool MovementAction::MoveTo(uint32 mapId, float x, float y, float z)
         if (bot->IsSitState())
             bot->SetStandState(UNIT_STAND_STATE_STAND);
 
-        bot->CastStop();
+        if (bot->IsNonMeleeSpellCasted(true))
+        {
+            bot->CastStop();
+            ai->InterruptSpell();
+        }
 
         bool generatePath = bot->GetAurasByType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED).empty() &&
                 !bot->IsFlying() && !bot->IsUnderWater();
@@ -204,6 +208,18 @@ bool MovementAction::Follow(Unit* target, float distance, float angle)
 
     if (target->IsFriendlyTo(bot) && bot->IsMounted() && AI_VALUE(list<ObjectGuid>, "possible targets").empty())
         distance += angle;
+
+    if (bot->GetDistance(target) <= sPlayerbotAIConfig.followDistance)
+        return false;
+
+    if (bot->IsSitState())
+        bot->SetStandState(UNIT_STAND_STATE_STAND);
+
+    if (bot->IsNonMeleeSpellCasted(true))
+    {
+        bot->CastStop();
+        ai->InterruptSpell();
+    }
 
     mm.MoveFollow(target, distance, angle);
 
