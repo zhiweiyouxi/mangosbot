@@ -25,9 +25,17 @@ namespace ai
     public:
         AttackAnythingAction(PlayerbotAI* ai) : AttackAction(ai, "attack anything") {}
         virtual string GetTargetName() { return "grind target"; }
+        virtual bool Execute(Event event)
+        {
+            if (sLFGMgr.GetQueueInfo(bot->GetObjectGuid()))
+                sLFGMgr.Leave(bot);
+
+            return AttackAction::Execute(event);
+        }
+        virtual bool isUseful() { return GetTarget(); }
         virtual bool isPossible()
         {
-            return AttackAction::isPossible() &&
+            return AttackAction::isPossible() && GetTarget() &&
                     AI_VALUE2(uint8, "health", "self target") > sPlayerbotAIConfig.mediumHealth &&
                     (!AI_VALUE2(uint8, "mana", "self target") || AI_VALUE2(uint8, "mana", "self target") > sPlayerbotAIConfig.mediumMana);
         }
