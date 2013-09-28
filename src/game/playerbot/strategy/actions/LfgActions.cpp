@@ -122,7 +122,7 @@ bool LfgJoinAction::JoinProposal()
         if (heroic && !dungeon->difficulty)
             continue;
 
-        if (raid && !dungeon->type != LFG_TYPE_RAID)
+        if (raid && dungeon->type != LFG_TYPE_RAID)
             continue;
 
         list.insert(dungeon);
