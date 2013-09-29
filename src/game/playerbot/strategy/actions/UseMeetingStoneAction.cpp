@@ -48,6 +48,12 @@ bool UseMeetingStoneAction::Execute(Event event)
     if (master->IsBeingTeleported())
         return false;
 
+    if (bot->IsInCombat())
+    {
+        ai->TellMasterNoFacing("I am in combat");
+        return false;
+    }
+
     list<GameObject*> targets;
 
     MaNGOS::GameObjectByGuidInRangeCheck u_check(master, guid, sPlayerbotAIConfig.sightDistance);
