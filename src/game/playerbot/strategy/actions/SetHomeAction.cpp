@@ -1,6 +1,7 @@
 #include "../../../pchdef.h"
 #include "../../playerbot.h"
 #include "SetHomeAction.h"
+#include "../../PlayerbotAIConfig.h"
 
 
 using namespace ai;
@@ -17,7 +18,12 @@ bool SetHomeAction::Execute(Event event)
         Unit* unit = master->GetMap()->GetUnit(selection);
         if (unit && unit->isInnkeeper())
         {
-            bot->SetHomebindToLocation(unit->GetPosition());
+            float angle = GetFollowAngle();
+            float x = unit->GetPositionX() + sPlayerbotAIConfig.followDistance * cos(angle);
+            float y = unit->GetPositionY() + sPlayerbotAIConfig.followDistance * sin(angle);
+            float z = unit->GetPositionZ();
+            WorldLocation loc(unit->GetMapId(), x, y, z);
+            bot->SetHomebindToLocation(loc);
             ai->TellMaster("This inn is my new home");
             return true;
         }
