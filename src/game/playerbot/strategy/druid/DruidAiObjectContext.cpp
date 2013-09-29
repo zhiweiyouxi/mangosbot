@@ -46,7 +46,7 @@ namespace ai
                 creators["tank"] = &druid::DruidStrategyFactoryInternal::bear;
                 creators["cat"] = &druid::DruidStrategyFactoryInternal::cat;
                 creators["caster"] = &druid::DruidStrategyFactoryInternal::caster;
-                creators["dps"] = &druid::DruidStrategyFactoryInternal::caster;
+                creators["dps"] = &druid::DruidStrategyFactoryInternal::cat;
                 creators["heal"] = &druid::DruidStrategyFactoryInternal::heal;
             }
 
