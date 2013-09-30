@@ -196,4 +196,10 @@ namespace ai
 	    CastEvocationAction(PlayerbotAI* ai) : CastSpellAction(ai, "evocation") {}
 	    virtual string GetTargetName() { return "self target"; }
 	};
+
+    class CastCounterspellOnEnemyHealerAction : public CastSpellOnEnemyHealerAction
+    {
+    public:
+	    CastCounterspellOnEnemyHealerAction(PlayerbotAI* ai) : CastSpellOnEnemyHealerAction(ai, "counterspell") {}
+    };
 }

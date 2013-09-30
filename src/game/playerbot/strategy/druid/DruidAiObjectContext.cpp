@@ -89,6 +89,7 @@ namespace ai
                 creators["tree form"] = &TriggerFactoryInternal::tree_form;
                 creators["eclipse (solar)"] = &TriggerFactoryInternal::eclipse_solar;
                 creators["eclipse (lunar)"] = &TriggerFactoryInternal::eclipse_lunar;
+                creators["bash on enemy healer"] = &TriggerFactoryInternal::bash_on_enemy_healer;
             }
 
         private:
@@ -111,6 +112,7 @@ namespace ai
             static Trigger* bear_form(PlayerbotAI* ai) { return new BearFormTrigger(ai); }
             static Trigger* cat_form(PlayerbotAI* ai) { return new CatFormTrigger(ai); }
             static Trigger* tree_form(PlayerbotAI* ai) { return new TreeFormTrigger(ai); }
+            static Trigger* bash_on_enemy_healer(PlayerbotAI* ai) { return new BashInterruptEnemyHealerSpellTrigger(ai); }
         };
     };
 };
@@ -182,6 +184,7 @@ namespace ai
                 creators["hurricane"] = &AiObjectContextInternal::hurricane;
                 creators["innervate"] = &AiObjectContextInternal::innervate;
                 creators["tranquility"] = &AiObjectContextInternal::tranquility;
+                creators["bash on enemy healer"] = &AiObjectContextInternal::bash_on_enemy_healer;
             }
 
         private:
@@ -241,6 +244,7 @@ namespace ai
             static Action* lacerate(PlayerbotAI* ai) { return new CastLacerateAction(ai); }
             static Action* hurricane(PlayerbotAI* ai) { return new CastHurricaneAction(ai); }
             static Action* innervate(PlayerbotAI* ai) { return new CastInnervateAction(ai); }
+            static Action* bash_on_enemy_healer(PlayerbotAI* ai) { return new CastBashOnEnemyHealerAction(ai); }
         };
     };
 };

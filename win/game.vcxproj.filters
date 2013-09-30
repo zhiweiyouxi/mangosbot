@@ -443,6 +443,7 @@
     <ClCompile Include="..\src\game\WorldSocket.cpp" />
     <ClCompile Include="..\src\game\WorldSocketMgr.cpp" />
     <ClCompile Include="..\src\game\WorldStateMgr.cpp" />
+    <ClCompile Include="..\src\game\playerbot\strategy\values\EnemyHealerTargetValue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\game\AccountMgr.h" />
@@ -957,6 +958,7 @@
     <ClInclude Include="..\src\game\WorldSocket.h" />
     <ClInclude Include="..\src\game\WorldSocketMgr.h" />
     <ClInclude Include="..\src\game\WorldStateMgr.h" />
+    <ClInclude Include="..\src\game\playerbot\strategy\values\EnemyHealerTargetValue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\game\CMakeLists.txt" />
