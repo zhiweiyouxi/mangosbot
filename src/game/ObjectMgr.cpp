@@ -161,6 +161,23 @@ ObjectMgr::~ObjectMgr()
     for( QuestMap::iterator i = mQuestTemplates.begin( ); i != mQuestTemplates.end( ); ++i )
         delete i->second;
 
+    mQuestLocaleMap.clear();
+    mItemLocaleMap.clear();
+    mNpcTextLocaleMap.clear();
+    mCreatureDataMap.clear();
+    mCreatureLocaleMap.clear();
+    mGameObjectDataMap.clear();
+    mGameObjectLocaleMap.clear();
+    mItemLocaleMap.clear();
+    mNpcTextLocaleMap.clear();
+    mPageTextLocaleMap.clear();
+    mMangosStringLocaleMap.clear();
+    mGossipMenuItemsLocaleMap.clear();
+    mPointOfInterestLocaleMap.clear();
+    m_DungeonEncounters.clear();
+    m_mCreatureModelRaceMap.clear();
+    m_GameTeleMap.clear();
+
     for(PetLevelInfoMap::iterator i = petInfo.begin( ); i != petInfo.end( ); ++i )
         delete[] i->second;
 
@@ -3945,12 +3962,15 @@ void ObjectMgr::LoadGroups()
     // TODO: maybe delete from the DB before loading in this case
     for (GroupMap::iterator itr = mGroupMap.begin(); itr != mGroupMap.end(); ++itr)
     {
-        if (itr->second->GetMembersCount() < 2)
+        if (Group* group = itr->second)
         {
-            itr->second->Disband();
-            delete itr->second;
-            mGroupMap.erase(itr);
-            itr = mGroupMap.begin();
+            if (group->GetMembersCount() < 2)
+            {
+                itr = mGroupMap.begin();
+                // group deleted from mGroupMap in Disband() method!
+                group->Disband();
+                delete group;
+            }
         }
     }
 
@@ -8017,7 +8037,7 @@ bool ObjectMgr::LoadMangosStrings(DatabaseType& db, char const* table, int32 min
         {
             data.SoundId     = fields[10].GetUInt32();
             data.Type        = fields[11].GetUInt32();
-            data.Language    = fields[12].GetUInt32();
+            data.LanguageId    = Language(fields[12].GetUInt32());
             data.Emote       = fields[13].GetUInt32();
 
             if (data.SoundId && !sSoundEntriesStore.LookupEntry(data.SoundId))
@@ -8026,13 +8046,13 @@ bool ObjectMgr::LoadMangosStrings(DatabaseType& db, char const* table, int32 min
                 data.SoundId = 0;
             }
 
-            if (!GetLanguageDescByID(data.Language))
+            if (!GetLanguageDescByID(data.LanguageId))
             {
-                _DoStringError(entry, "Entry %i in table `%s` using Language %u but Language does not exist.", entry, table, data.Language);
-                data.Language = LANG_UNIVERSAL;
+                _DoStringError(entry, "Entry %i in table `%s` using Language %u but Language does not exist.", entry, table, uint32(data.LanguageId));
+                data.LanguageId = LANG_UNIVERSAL;
             }
 
-            if (data.Type > CHAT_TYPE_ZONE_YELL)
+            if (data.Type >= CHAT_TYPE_MAX)
             {
                 _DoStringError(entry, "Entry %i in table `%s` has Type %u but this Chat Type does not exist.", entry, table, data.Type);
                 data.Type = CHAT_TYPE_SAY;
@@ -9114,25 +9134,46 @@ void ObjectMgr::LoadGameTele()
     sLog.outString(">> Loaded %u GameTeleports", count);
 }
 
-GameTele const* ObjectMgr::GetGameTele(const std::string& name) const
+GameTele const* ObjectMgr::GetGameTele(std::string const& name) const
 {
     // explicit name case
     std::wstring wname;
-    if(!Utf8toWStr(name,wname))
+    if (!Utf8toWStr(name, wname))
         return NULL;
 
     // converting string that we try to find to lower case
-    wstrToLower( wname );
+    wstrToLower(wname);
 
     // Alternative first GameTele what contains wnameLow as substring in case no GameTele location found
     const GameTele* alt = NULL;
-    for(GameTeleMap::const_iterator itr = m_GameTeleMap.begin(); itr != m_GameTeleMap.end(); ++itr)
-        if(itr->second.wnameLow == wname)
+    for (GameTeleMap::const_iterator itr = m_GameTeleMap.begin(); itr != m_GameTeleMap.end(); ++itr)
+    {
+        if (itr->second.wnameLow == wname)
             return &itr->second;
         else if (alt == NULL && itr->second.wnameLow.find(wname) != std::wstring::npos)
             alt = &itr->second;
+    }
 
     return alt;
+}
+
+GameTele const* ObjectMgr::GetGameTeleExactName(std::string const& name) const
+{
+    // explicit name case
+    std::wstring wname;
+    if (!Utf8toWStr(name, wname))
+        return NULL;
+
+    // converting string that we try to find to lower case
+    wstrToLower(wname);
+
+    for (GameTeleMap::const_iterator itr = m_GameTeleMap.begin(); itr != m_GameTeleMap.end(); ++itr)
+    {
+        if (itr->second.wnameLow == wname)
+            return &itr->second;
+    }
+
+    return NULL;
 }
 
 bool ObjectMgr::AddGameTele(GameTele& tele)
@@ -9140,8 +9181,10 @@ bool ObjectMgr::AddGameTele(GameTele& tele)
     // find max id
     uint32 new_id = 0;
     for (GameTeleMap::const_iterator itr = m_GameTeleMap.begin(); itr != m_GameTeleMap.end(); ++itr)
+    {
         if (itr->first > new_id)
             new_id = itr->first;
+    }
 
     // use next
     ++new_id;
@@ -9152,6 +9195,7 @@ bool ObjectMgr::AddGameTele(GameTele& tele)
     wstrToLower(tele.wnameLow);
 
     m_GameTeleMap[new_id] = tele;
+
     std::string safeName(tele.name);
     WorldDatabase.escape_string(safeName);
 
@@ -9159,24 +9203,24 @@ bool ObjectMgr::AddGameTele(GameTele& tele)
         "(id,position_x,position_y,position_z,orientation,map,name) "
         "VALUES (%u,%f,%f,%f,%f,%u,'%s')",
         new_id, tele.loc.x, tele.loc.y, tele.loc.z,
-        tele.loc.orientation, tele.loc.GetMapId(), safeName.c_str());
+        tele.loc.o, tele.loc.GetMapId(), safeName.c_str());
 }
 
 bool ObjectMgr::DeleteGameTele(const std::string& name)
 {
     // explicit name case
     std::wstring wname;
-    if(!Utf8toWStr(name,wname))
+    if (!Utf8toWStr(name, wname))
         return false;
 
     // converting string that we try to find to lower case
-    wstrToLower( wname );
+    wstrToLower(wname);
 
-    for(GameTeleMap::iterator itr = m_GameTeleMap.begin(); itr != m_GameTeleMap.end(); ++itr)
+    for (GameTeleMap::iterator itr = m_GameTeleMap.begin(); itr != m_GameTeleMap.end(); ++itr)
     {
-        if(itr->second.wnameLow == wname)
+        if (itr->second.wnameLow == wname)
         {
-            WorldDatabase.PExecuteLog("DELETE FROM game_tele WHERE name = '%s'",itr->second.name.c_str());
+            WorldDatabase.PExecuteLog("DELETE FROM game_tele WHERE name = '%s'", itr->second.name.c_str());
             m_GameTeleMap.erase(itr);
             return true;
         }
@@ -10201,15 +10245,15 @@ void ObjectMgr::LoadTransports()
     {
         bar.step();
 
-        Transport* t = new Transport;
+        MOTransport* t = new MOTransport;
 
-        Field *fields = result->Fetch();
+        Field* fields = result->Fetch();
 
         uint32 entry = fields[0].GetUInt32();
         std::string name = fields[1].GetCppString();
-        t->m_period = fields[2].GetUInt32();
+        t->SetDBPeriod(fields[2].GetUInt32());
 
-        const GameObjectInfo *goinfo = ObjectMgr::GetGameObjectInfo(entry);
+        GameObjectInfo const* goinfo = ObjectMgr::GetGameObjectInfo(entry);
 
         if(!goinfo)
         {
@@ -10237,10 +10281,10 @@ void ObjectMgr::LoadTransports()
             continue;
         }
 
-        WorldLocation loc = t->m_WayPoints[0].loc;
+        WorldLocation loc = t->GetWayPoint(0).loc;
 
         //current code does not support transports in dungeon!
-        const MapEntry* pMapInfo = sMapStore.LookupEntry(loc.GetMapId());
+        MapEntry const* pMapInfo = sMapStore.LookupEntry(loc.GetMapId());
         if(!pMapInfo || pMapInfo->Instanceable())
         {
             delete t;
@@ -10289,11 +10333,11 @@ void ObjectMgr::LoadTransports()
     }
 }
 
-Transport const* ObjectMgr::GetTransportByGOMapId(uint32 mapid) const
+MOTransport const* ObjectMgr::GetTransportByGOMapId(uint32 mapid) const
 {
     for (TransportSet::const_iterator iter = m_Transports.begin(); iter != m_Transports.end(); ++iter)
     {
-        Transport const* transport = *iter;
+        MOTransport const* transport = *iter;
 
         if (!transport)
             continue;
@@ -10304,11 +10348,11 @@ Transport const* ObjectMgr::GetTransportByGOMapId(uint32 mapid) const
     return NULL;
 }
 
-Transport* ObjectMgr::GetTransportByGuid(ObjectGuid const& guid)
+MOTransport* ObjectMgr::GetTransportByGuid(ObjectGuid const& guid)
 {
     for (TransportSet::iterator iter = m_Transports.begin(); iter != m_Transports.end(); ++iter)
     {
-        Transport* transport = *iter;
+        MOTransport* transport = *iter;
 
         if (!transport)
             continue;
@@ -10332,12 +10376,12 @@ void ObjectMgr::LoadTransports(Map* map)
     uint32 count = 0;
     do
     {
-        Field *fields = result->Fetch();
+        Field* fields = result->Fetch();
         uint32 entry        = fields[0].GetUInt32();
         std::string name    = fields[1].GetCppString();
         uint32 period       = fields[2].GetUInt32();
 
-        if (Transport::GetPossibleMapByEntry(entry, true) != map->GetId() || !Transport::IsSpawnedAtDifficulty(entry, map->GetDifficulty()))
+        if (MOTransport::GetPossibleMapByEntry(entry, true) != map->GetId() || !MOTransport::IsSpawnedAtDifficulty(entry, map->GetDifficulty()))
             continue;
 
         ++count;
@@ -10359,7 +10403,7 @@ void ObjectMgr::LoadTransports(Map* map)
                 transport->GetPositionZ());
         }
 */
-    } while(result->NextRow());
+    } while (result->NextRow());
 
     delete result;
 

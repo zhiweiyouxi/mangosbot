@@ -33,8 +33,8 @@
 #include "MapManager.h"
 #include "Log.h"
 #include "Transports.h"
-#include "TargetedMovementGenerator.h"
-#include "WaypointMovementGenerator.h"
+#include "movementGenerators/TargetedMovementGenerator.h"
+#include "movementGenerators/WaypointMovementGenerator.h"
 #include "VMapFactory.h"
 #include "CellImpl.h"
 #include "GridNotifiers.h"
@@ -48,6 +48,7 @@
 #include "UpdateFieldFlags.h"
 #include "Group.h"
 #include "CreatureLinkingMgr.h"
+#include "Chat.h"
 
 #define TERRAIN_LOS_STEP_DISTANCE   3.0f        // sample distance for terrain LoS
 
@@ -105,17 +106,16 @@ bool UpdateFieldData::IsUpdateFieldVisible(uint16 fieldIndex) const
     return false;
 }
 
-Object::Object()
+Object::Object() :
+    m_objectTypeId(TYPEID_OBJECT),
+    m_objectType(TYPEMASK_OBJECT),
+    m_uint32Values(NULL),
+    m_valuesCount(0),
+    m_fieldNotifyFlags(UF_FLAG_DYNAMIC),
+    m_inWorld(false),
+    m_objectUpdated(false),
+    m_skipUpdate(false)
 {
-    m_objectTypeId        = TYPEID_OBJECT;
-    m_objectType          = TYPEMASK_OBJECT;
-
-    m_uint32Values        = NULL;
-    m_valuesCount         = 0;
-    m_fieldNotifyFlags    = UF_FLAG_DYNAMIC;
-
-    m_inWorld             = false;
-    m_objectUpdated       = false;
 }
 
 Object::~Object()
@@ -242,7 +242,7 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData *data, Player *target) c
 
         if (isType(TYPEMASK_UNIT))
         {
-            if(((Unit*)this)->getVictim())
+            if (((Unit*)this)->getVictim())
                 updateFlags |= UPDATEFLAG_HAS_ATTACKING_TARGET;
         }
     }
@@ -459,8 +459,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     // 0x4
     if (updateFlags & UPDATEFLAG_HAS_ATTACKING_TARGET)       // packed guid (current target guid)
     {
-        if (((Unit*)this)->getVictim())
-            *data << ((Unit*)this)->getVictim()->GetPackGUID();
+        if (Unit* pVictim = ((Unit*)this)->getVictim())
+            *data << pVictim->GetPackGUID();
         else
             data->appendPackGUID(0);
     }
@@ -475,7 +475,10 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     if (updateFlags & UPDATEFLAG_VEHICLE)
     {
         *data << uint32(((Unit*)this)->GetVehicleInfo()->m_ID); // vehicle id
-        *data << float(((WorldObject*)this)->GetOrientation());
+        if (((WorldObject*)this)->IsOnTransport())
+            *data << float(((WorldObject*)this)->GetTransOffsetO());
+        else
+            *data << float(((WorldObject*)this)->GetOrientation());
     }
 
     // 0x200
@@ -1475,8 +1478,7 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
     {
         case TYPEID_UNIT:
         {
-            Unit* pVictim = ((Creature const*)this)->getVictim();
-            if (pVictim)
+            if (Unit* pVictim = ((Creature const*)this)->getVictim())
             {
                 // anyway creature move to victim for thinly Z distance (shun some VMAP wrong ground calculating)
                 if (fabs(GetPositionZ() - pVictim->GetPositionZ()) < 5.0f)
@@ -1553,23 +1555,25 @@ bool WorldObject::IsPositionValid() const
 
 void WorldObject::MonsterSay(const char* text, uint32 language, Unit const* target) const
 {
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
-    BuildMonsterChat(&data, GetObjectGuid(), CHAT_MSG_MONSTER_SAY, text, language, GetName(), target ? target->GetObjectGuid() : ObjectGuid(), target ? target->GetName() : "");
-    SendMessageToSetInRange(&data,sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_SAY),true);
+    WorldPacket data;
+    ChatHandler::BuildChatPacket(data, CHAT_MSG_MONSTER_SAY, text, LANG_UNIVERSAL, CHAT_TAG_NONE, GetObjectGuid(), GetName(),
+        target ? target->GetObjectGuid() : ObjectGuid(),target ? target->GetName() : "");
+    SendMessageToSetInRange(&data, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_SAY), true);
 }
 
 void WorldObject::MonsterYell(const char* text, uint32 language, Unit const* target) const
 {
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
-    BuildMonsterChat(&data, GetObjectGuid(), CHAT_MSG_MONSTER_YELL, text, language, GetName(), target ? target->GetObjectGuid() : ObjectGuid(), target ? target->GetName() : "");
-    SendMessageToSetInRange(&data,sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_YELL),true);
+    WorldPacket data;
+    ChatHandler::BuildChatPacket(data, CHAT_MSG_MONSTER_YELL, text, LANG_UNIVERSAL, CHAT_TAG_NONE, GetObjectGuid(), GetName(),
+        target ? target->GetObjectGuid() : ObjectGuid(),target ? target->GetName() : "");
+    SendMessageToSetInRange(&data, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_YELL), true);
 }
 
 void WorldObject::MonsterTextEmote(const char* text, Unit const* target, bool IsBossEmote) const
 {
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
-    BuildMonsterChat(&data, GetObjectGuid(), IsBossEmote ? CHAT_MSG_RAID_BOSS_EMOTE : CHAT_MSG_MONSTER_EMOTE, text, LANG_UNIVERSAL,
-        GetName(), target ? target->GetObjectGuid() : ObjectGuid(), target ? target->GetName() : "");
+    WorldPacket data;
+    ChatHandler::BuildChatPacket(data, IsBossEmote ? CHAT_MSG_RAID_BOSS_EMOTE : CHAT_MSG_MONSTER_EMOTE, text, LANG_UNIVERSAL, CHAT_TAG_NONE, GetObjectGuid(), GetName(),
+        target ? target->GetObjectGuid() : ObjectGuid(),target ? target->GetName() : "");
     SendMessageToSetInRange(&data, sWorld.getConfig(IsBossEmote ? CONFIG_FLOAT_LISTEN_RANGE_YELL : CONFIG_FLOAT_LISTEN_RANGE_TEXTEMOTE), true);
 }
 
@@ -1578,9 +1582,9 @@ void WorldObject::MonsterWhisper(const char* text, Unit const* target, bool IsBo
     if (!target || target->GetTypeId() != TYPEID_PLAYER)
         return;
 
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
-    BuildMonsterChat(&data, GetObjectGuid(), IsBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_WHISPER, text, LANG_UNIVERSAL,
-        GetName(), target->GetObjectGuid(), target->GetName());
+    WorldPacket data;
+    ChatHandler::BuildChatPacket(data, IsBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_WHISPER, text, LANG_UNIVERSAL, CHAT_TAG_NONE, GetObjectGuid(), GetName(),
+        target->GetObjectGuid(), target->GetName());
     ((Player*)target)->GetSession()->SendPacket(&data);
 }
 
@@ -1589,7 +1593,7 @@ namespace MaNGOS
     class MonsterChatBuilder
     {
         public:
-            MonsterChatBuilder(WorldObject const& obj, ChatMsg msgtype, MangosStringLocale const* textData, uint32 language, Unit const* target)
+            MonsterChatBuilder(WorldObject const& obj, ChatMsg msgtype, MangosStringLocale const* textData, Language language, Unit const* target)
                 : i_object(obj), i_msgtype(msgtype), i_textData(textData), i_language(language), i_target(target) {}
             void operator()(WorldPacket& data, int32 loc_idx)
             {
@@ -1599,20 +1603,21 @@ namespace MaNGOS
                 else
                     text = i_textData->Content[0].c_str();
 
-                WorldObject::BuildMonsterChat(&data, i_object.GetObjectGuid(), i_msgtype, text, i_language, i_object.GetNameForLocaleIdx(loc_idx), i_target ? i_target->GetObjectGuid() : ObjectGuid(), i_target ? i_target->GetNameForLocaleIdx(loc_idx) : "");
+                ChatHandler::BuildChatPacket(data, i_msgtype, text, i_language, CHAT_TAG_NONE, i_object.GetObjectGuid(), i_object.GetNameForLocaleIdx(loc_idx),
+                    i_target ? i_target->GetObjectGuid() : ObjectGuid(), i_target ? i_target->GetNameForLocaleIdx(loc_idx) : "");
             }
 
         private:
             WorldObject const& i_object;
             ChatMsg i_msgtype;
             MangosStringLocale const* i_textData;
-            uint32 i_language;
+            Language i_language;
             Unit const* i_target;
     };
 }                                                           // namespace MaNGOS
 
 /// Helper function to create localized around a source
-void _DoLocalizedTextAround(WorldObject const* source, MangosStringLocale const* textData, ChatMsg msgtype, uint32 language, Unit const* target, float range)
+void _DoLocalizedTextAround(WorldObject const* source, MangosStringLocale const* textData, ChatMsg msgtype, Language language, Unit const* target, float range)
 {
     MaNGOS::MonsterChatBuilder say_build(*source, msgtype, textData, language, target);
     MaNGOS::LocalizedPacketDo<MaNGOS::MonsterChatBuilder> say_do(say_build);
@@ -1628,10 +1633,10 @@ void WorldObject::MonsterText(MangosStringLocale const* textData, Unit const* ta
     switch (textData->Type)
     {
         case CHAT_TYPE_SAY:
-            _DoLocalizedTextAround(this, textData, CHAT_MSG_MONSTER_SAY, textData->Language, target, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_SAY));
+            _DoLocalizedTextAround(this, textData, CHAT_MSG_MONSTER_SAY, textData->LanguageId, target, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_SAY));
             break;
         case CHAT_TYPE_YELL:
-            _DoLocalizedTextAround(this, textData, CHAT_MSG_MONSTER_YELL, textData->Language, target, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_YELL));
+            _DoLocalizedTextAround(this, textData, CHAT_MSG_MONSTER_YELL, textData->LanguageId, target, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_YELL));
             break;
         case CHAT_TYPE_TEXT_EMOTE:
             _DoLocalizedTextAround(this, textData, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, target, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_TEXTEMOTE));
@@ -1659,7 +1664,7 @@ void WorldObject::MonsterText(MangosStringLocale const* textData, Unit const* ta
         }
         case CHAT_TYPE_ZONE_YELL:
         {
-            MaNGOS::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_YELL, textData, textData->Language, target);
+            MaNGOS::MonsterChatBuilder say_build(*this, CHAT_MSG_MONSTER_YELL, textData, textData->LanguageId, target);
             MaNGOS::LocalizedPacketDo<MaNGOS::MonsterChatBuilder> say_do(say_build);
             uint32 zoneid = GetZoneId();
             Map::PlayerList const& pList = GetMap()->GetPlayers();
@@ -1669,42 +1674,6 @@ void WorldObject::MonsterText(MangosStringLocale const* textData, Unit const* ta
             break;
         }
     }
-}
-
-/*
-void WorldObject::MonsterWhisper(int32 textId, Unit const* target, bool IsBossWhisper) const
-{
-    if (!target || target->GetTypeId() != TYPEID_PLAYER)
-        return;
-
-    uint32 loc_idx = ((Player*)target)->GetSession()->GetSessionDbLocaleIndex();
-    char const* text = sObjectMgr.GetMangosString(textId, loc_idx);
-
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
-    BuildMonsterChat(&data, GetObjectGuid(), IsBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_WHISPER, text, LANG_UNIVERSAL,
-        GetNameForLocaleIdx(loc_idx), target->GetObjectGuid(), "");
-
-    ((Player*)target)->GetSession()->SendPacket(&data);
-}
-*/
-
-void WorldObject::BuildMonsterChat(WorldPacket *data, ObjectGuid senderGuid, uint8 msgtype, char const* text, uint32 language, char const* name, ObjectGuid targetGuid, char const* targetName)
-{
-    *data << uint8(msgtype);
-    *data << uint32(language);
-    *data << ObjectGuid(senderGuid);
-    *data << uint32(0);                                     // 2.1.0
-    *data << uint32(strlen(name)+1);
-    *data << name;
-    *data << ObjectGuid(targetGuid);                        // Unit Target
-    if (targetGuid && !targetGuid.IsPlayer())
-    {
-        *data << uint32(strlen(targetName)+1);              // target name length
-        *data << targetName;                                // target name
-    }
-    *data << uint32(strlen(text)+1);
-    *data << text;
-    *data << uint8(0);                                      // ChatTag
 }
 
 void WorldObject::SendMessageToSet(WorldPacket* data, bool /*bToSelf*/) const
@@ -1755,7 +1724,7 @@ void WorldObject::SetMap(Map* map)
     m_position.SetInstanceId(map->GetInstanceId());
 }
 
-TerrainInfo const* WorldObject::GetTerrain() const
+TerrainInfoPtr WorldObject::GetTerrain() const
 {
     MANGOS_ASSERT(m_currMap);
     return m_currMap->GetTerrain();
@@ -1838,6 +1807,9 @@ GameObject* WorldObject::SummonGameobject(uint32 id, float x, float y, float z, 
     return pGameObj;
 }
 
+// how much space should be left in front of/ behind a mob that already uses a space
+#define OCCUPY_POS_DEPTH_FACTOR                          1.8f
+
 namespace MaNGOS
 {
     class NearUsedPosDo
@@ -1884,16 +1856,19 @@ namespace MaNGOS
             // we must add used pos that can fill places around center
             void add(WorldObject* u, float x, float y) const
             {
-                // dist include size of u and i_object
                 float dx = i_object.GetPositionX() - x;
                 float dy = i_object.GetPositionY() - y;
                 float dist2d = sqrt((dx * dx) + (dy * dy));
 
-                float delta = i_selector.m_searcherSize + u->GetObjectBoundingRadius();
+                // It is ok for the objects to require a bit more space
+                float delta = u->GetObjectBoundingRadius();
+                if (i_selector.m_searchPosFor && i_selector.m_searchPosFor != u)
+                    delta += i_selector.m_searchPosFor->GetObjectBoundingRadius();
 
-                // u is too nearest/far away to i_object
-                if (dist2d < i_selector.m_searcherDist - delta ||
-                    dist2d >= i_selector.m_searcherDist + delta)
+                delta *= OCCUPY_POS_DEPTH_FACTOR;           // Increase by factor
+
+                // u is too near/far away from i_object. Do not consider it to occupy space
+                if (fabs(i_selector.m_searcherDist - dist2d) > delta)
                     return;
 
                 float angle = i_object.GetAngle(u) - i_absAngle;
@@ -1904,7 +1879,7 @@ namespace MaNGOS
                 else if (angle < -M_PI_F)
                     angle += 2.0f * M_PI_F;
 
-                i_selector.AddUsedArea(u->GetObjectBoundingRadius(), angle, dist2d);
+                i_selector.AddUsedArea(u, angle, dist2d);
             }
         private:
             WorldObject const& i_object;
@@ -1918,8 +1893,8 @@ namespace MaNGOS
 
 void WorldObject::GetNearPoint2D(float &x, float &y, float distance2d, float absAngle ) const
 {
-    x = GetPositionX() + (GetObjectBoundingRadius() + distance2d) * cos(absAngle);
-    y = GetPositionY() + (GetObjectBoundingRadius() + distance2d) * sin(absAngle);
+    x = GetPositionX() + distance2d * cos(absAngle);
+    y = GetPositionY() + distance2d * sin(absAngle);
 
     MaNGOS::NormalizeMapCoord(x);
     MaNGOS::NormalizeMapCoord(y);
@@ -1927,7 +1902,7 @@ void WorldObject::GetNearPoint2D(float &x, float &y, float distance2d, float abs
 
 void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, float &z, float searcher_bounding_radius, float distance2d, float absAngle) const
 {
-    GetNearPoint2D(x, y, distance2d + searcher_bounding_radius, absAngle);
+    GetNearPoint2D(x, y, distance2d, absAngle);
     const float init_z = z = GetPositionZ();
 
     // if detection disabled, return first point
@@ -1948,14 +1923,14 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, 
     const float dist = distance2d + searcher_bounding_radius + GetObjectBoundingRadius();
 
     // prepare selector for work
-    ObjectPosSelector selector(GetPositionX(), GetPositionY(), dist, searcher_bounding_radius);
+    ObjectPosSelector selector(GetPositionX(), GetPositionY(), distance2d, searcher_bounding_radius, searcher);
 
     // adding used positions around object
     {
         MaNGOS::NearUsedPosDo u_do(*this, searcher, absAngle, selector);
         MaNGOS::WorldObjectWorker<MaNGOS::NearUsedPosDo> worker(this, u_do);
 
-        Cell::VisitAllObjects(this, worker, distance2d + searcher_bounding_radius);
+        Cell::VisitAllObjects(this, worker, dist);
     }
 
     // maybe can just place in primary position
@@ -1980,7 +1955,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, 
     // select in positions after current nodes (selection one by one)
     while (selector.NextAngle(angle))                        // angle for free pos
     {
-        GetNearPoint2D(x, y, distance2d + searcher_bounding_radius, absAngle + angle);
+        GetNearPoint2D(x, y, distance2d, absAngle + angle);
         z = GetPositionZ();
 
         if (searcher)
@@ -2012,7 +1987,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, 
     // select in positions after current nodes (selection one by one)
     while (selector.NextUsedAngle(angle))                   // angle for used pos but maybe without LOS problem
     {
-        GetNearPoint2D(x, y, distance2d + searcher_bounding_radius, absAngle + angle);
+        GetNearPoint2D(x, y, distance2d, absAngle + angle);
         z = GetPositionZ();
 
         if (searcher)
@@ -2131,6 +2106,7 @@ void WorldObject::AddToClientUpdateList()
 
 void WorldObject::RemoveFromClientUpdateList()
 {
+    MAPLOCK_WRITE(this, MAP_LOCK_TYPE_MAPOBJECTS);
     GetMap()->RemoveUpdateObject(GetObjectGuid());
 }
 
@@ -2335,13 +2311,11 @@ WorldObjectEventProcessor* WorldObject::GetEvents()
 
 void WorldObject::KillAllEvents(bool force)
 {
-    MAPLOCK_WRITE(this, MAP_LOCK_TYPE_DEFAULT);
     GetEvents()->KillAllEvents(force);
 }
 
 void WorldObject::AddEvent(BasicEvent* Event, uint64 e_time, bool set_addtime)
 {
-    MAPLOCK_WRITE(this, MAP_LOCK_TYPE_DEFAULT);
     if (set_addtime)
         GetEvents()->AddEvent(Event, GetEvents()->CalculateTime(e_time), set_addtime);
     else
@@ -2350,11 +2324,7 @@ void WorldObject::AddEvent(BasicEvent* Event, uint64 e_time, bool set_addtime)
 
 void WorldObject::UpdateEvents(uint32 update_diff, uint32 time)
 {
-    {
-        MAPLOCK_READ(this, MAP_LOCK_TYPE_DEFAULT);
-        GetEvents()->RenewEvents();
-    }
-
+    GetEvents()->RenewEvents();
     GetEvents()->Update(update_diff);
 }
 
@@ -2376,4 +2346,20 @@ TransportBase* WorldObject::GetTransportBase()
         return ((Unit*)this)->GetTransportBase();
 
     return NULL;
+}
+
+void WorldObject::UpdateHelper::Update(uint32 time_diff)
+{
+    if (m_obj.SkipUpdate())
+    {
+        m_obj.SkipUpdate(false);
+        return;
+    }
+    uint32 realDiff = m_obj.m_updateTracker.timeElapsed();
+    if (realDiff < sWorld.getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE)/2)
+        return;
+
+    m_obj.m_updateTracker.Reset();
+    m_obj.Update(realDiff, time_diff);
+    m_obj.SetLastUpdateTime();
 }

@@ -39,23 +39,35 @@ typedef   ACE_Read_Guard<ObjectLockType>     ReadGuard;
 typedef   ACE_Write_Guard<ObjectLockType>    WriteGuard;
 
 #ifndef MAPLOCK_READ
-#  define MAPLOCK_READ(OBJ,TYPE) ReadGuard Guard((OBJ)->GetLock(TYPE));
+#  define MAPLOCK_READ(OBJ,TYPE) ReadGuard Guard((OBJ)->GetLock(TYPE), true);
 #endif
 
 #ifndef MAPLOCK_READ1
-#  define MAPLOCK_READ1(OBJ,TYPE) ReadGuard Guard1((OBJ)->GetLock(TYPE));
+#  define MAPLOCK_READ1(OBJ,TYPE) ReadGuard Guard1((OBJ)->GetLock(TYPE), true);
 #endif
 
 #ifndef MAPLOCK_READ2
-#  define MAPLOCK_READ2(OBJ,TYPE) ReadGuard Guard2((OBJ)->GetLock(TYPE));
+#  define MAPLOCK_READ2(OBJ,TYPE) ReadGuard Guard2((OBJ)->GetLock(TYPE), true);
 #endif
 
 #ifndef MAPLOCK_WRITE
-#  define MAPLOCK_WRITE(OBJ,TYPE) WriteGuard Guard((OBJ)->GetLock(TYPE));
+#  define MAPLOCK_WRITE(OBJ,TYPE) WriteGuard Guard((OBJ)->GetLock(TYPE), true);
 #endif
 
 #ifndef MAPLOCK_WRITE1
-#  define MAPLOCK_WRITE1(OBJ,TYPE) WriteGuard Guard1((OBJ)->GetLock(TYPE));
+#  define MAPLOCK_WRITE1(OBJ,TYPE) WriteGuard Guard1((OBJ)->GetLock(TYPE), true);
+#endif
+
+#ifndef MAPLOCK_TRYREAD
+#  define MAPLOCK_TRYREAD(OBJ,TYPE) ReadGuard Guard((OBJ)->GetLock(TYPE), false);
+#endif
+
+#ifndef MAPLOCK_TRYREAD1
+#  define MAPLOCK_TRYREAD1(OBJ,TYPE) ReadGuard Guard1((OBJ)->GetLock(TYPE), false);
+#endif
+
+#ifndef MAPLOCK_TRYWRITE
+#  define MAPLOCK_TRYWRITE(OBJ,TYPE) WriteGuard Guard((OBJ)->GetLock(TYPE), false);
 #endif
 
 #endif

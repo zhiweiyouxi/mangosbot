@@ -36,6 +36,7 @@ struct ItemPrototype;
 
 class WorldSession;
 class Map;
+class BattleField;
 class BattleGround;
 class DungeonPersistentState;
 class Field;
@@ -123,15 +124,18 @@ enum GroupFlagMask
     GROUP_MAIN_TANK      = (1 << GROUP_FLAG_MAIN_TANK),
 
     // unions
-    GROUP_MEMBER_AMT     = ( GROUP_ASSISTANT   |
-                             GROUP_MAIN_ASSISTANT |
-                             GROUP_MAIN_TANK      ),
-    GROUP_MEMBER_AT      = ( GROUP_ASSISTANT   |
-                             GROUP_MAIN_TANK      ),
-    GROUP_MEMBER_AM      = ( GROUP_ASSISTANT   |
-                             GROUP_MAIN_ASSISTANT ),
-    GROUP_MEMBER_MT      = ( GROUP_MAIN_ASSISTANT |
-                             GROUP_MAIN_TANK      ),
+    GROUP_MEMBER_AMT     = (GROUP_ASSISTANT |
+                            GROUP_MAIN_ASSISTANT |
+                            GROUP_MAIN_TANK),
+
+    GROUP_MEMBER_AT      = (GROUP_ASSISTANT |
+                            GROUP_MAIN_TANK),
+
+    GROUP_MEMBER_AM      = (GROUP_ASSISTANT |
+                            GROUP_MAIN_ASSISTANT),
+
+    GROUP_MEMBER_MT      = (GROUP_MAIN_ASSISTANT |
+                            GROUP_MAIN_TANK),
 
 };
 
@@ -180,9 +184,9 @@ class Roll : public LootValidatorRef
             : lootedTargetGUID(_lootedTragetGuid), itemid(li.itemid), itemRandomPropId(li.randomPropertyId), itemRandomSuffix(li.randomSuffix),
             itemCount(li.count), totalPlayersRolling(0), totalNeed(0), totalGreed(0), totalPass(0), itemSlot(0),
             m_method(method), m_commonVoteMask(ROLL_VOTE_MASK_ALL) {}
-        ~Roll() { }
+        ~Roll() {}
         void setLoot(Loot *pLoot) { link(pLoot, this); }
-        Loot *getLoot() { return getTarget(); }
+        Loot* getLoot() { return getTarget(); }
         void targetObjectBuildLink();
 
         void CalculateCommonVoteMask(uint32 max_enchanting_skill);
@@ -233,11 +237,11 @@ class MANGOS_DLL_SPEC Group
         typedef MemberSlotList::const_iterator member_citerator;
         typedef MemberSlotList::iterator       member_witerator;
 
-        typedef UNORDERED_MAP< uint32 /*mapId*/, InstanceGroupBind> BoundInstancesMap;
+        typedef UNORDERED_MAP<uint32 /*mapId*/, InstanceGroupBind> BoundInstancesMap;
 
     protected:
         typedef UNORDERED_SET<Player*> InvitesList;
-        typedef std::vector<Roll*> Rolls;
+        typedef std::vector<Roll*> TRolls;
 
     public:
         Group(GroupType type);
@@ -252,8 +256,11 @@ class MANGOS_DLL_SPEC Group
         void   RemoveAllInvites();
         bool   AddLeaderInvite(Player *player);
         bool   AddMember(ObjectGuid guid, const char* name);
-        uint32 RemoveMember(ObjectGuid guid, uint8 method); // method: 0=just remove, 1=kick
+        uint32 RemoveMember(ObjectGuid guid, uint8 method, bool logout = false); // method: 0=just remove, 1=kick
+        void   RemoveGroupBuffsOnMemberRemove(ObjectGuid guid);
         void   ChangeLeader(ObjectGuid guid);
+        void CheckLeader(ObjectGuid const& guid, bool logout);
+        bool ChangeLeaderToFirstSuitableMember(bool onlySet = false);
         void   SetLootMethod(LootMethod method) { m_lootMethod = method; }
         void   SetLooterGuid(ObjectGuid guid) { m_looterGuid = guid; }
         void   UpdateLooterGuid(WorldObject* pSource, bool ifneed = false);
@@ -280,20 +287,29 @@ class MANGOS_DLL_SPEC Group
         bool IsLeader(ObjectGuid guid) const { return GetLeaderGuid() == guid; }
         ObjectGuid GetMemberGuid(const std::string& name)
         {
-            for(member_citerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
+            for (member_citerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
+            {
                 if (itr->name == name)
                     return itr->guid;
-
+            }
             return ObjectGuid();
         }
-        bool IsAssistant(ObjectGuid guid) const
+        bool IsGroupRole(ObjectGuid const& guid, GroupFlagMask role) const
         {
             member_citerator mslot = _getMemberCSlot(guid);
-            if (mslot==m_memberSlots.end())
+            if (mslot == m_memberSlots.end())
                 return false;
 
-            return mslot->flags & GROUP_ASSISTANT;
+            if (role == GROUP_MEMBER)
+                return true;
+            else
+                return mslot->flags & role;
         }
+        bool IsMainAssistant(ObjectGuid const& guid) const { return IsGroupRole(guid, GROUP_MAIN_ASSISTANT); }
+        bool IsMainTank(ObjectGuid const& guid) const { return IsGroupRole(guid, GROUP_MAIN_TANK); }
+        bool IsAssistant(ObjectGuid const& guid) const { return IsGroupRole(guid, GROUP_ASSISTANT); }
+        Player* GetMemberWithRole(GroupFlagMask role);
+
         Player* GetInvited(ObjectGuid guid) const;
         Player* GetInvited(const std::string& name) const;
 
@@ -322,6 +338,7 @@ class MANGOS_DLL_SPEC Group
         void ConvertToRaid();
 
         void SetBattlegroundGroup(BattleGround *bg) { m_bgGroup = bg; }
+        void SetBattlefieldGroup(BattleField *bf) { m_bfGroup = bf; }
         GroupJoinBattlegroundResult CanJoinBattleGroundQueue(BattleGround const* bgOrTemplate, BattleGroundQueueTypeId bgQueueTypeId, uint32 MinPlayerCount, uint32 MaxPlayerCount, bool isRated, uint32 arenaSlot);
 
         void ChangeMembersGroup(ObjectGuid guid, uint8 group);
@@ -343,6 +360,7 @@ class MANGOS_DLL_SPEC Group
 
         void SendTargetIconList(WorldSession *session);
         void SendUpdate();
+        void Update(uint32 diff);
         void UpdatePlayerOutOfRange(Player* pPlayer);
                                                             // ignore: GUID of player that will be ignored
         void BroadcastPacket(WorldPacket *packet, bool ignorePlayersInBGRaid, int group=-1, ObjectGuid ignore = ObjectGuid());
@@ -378,7 +396,6 @@ class MANGOS_DLL_SPEC Group
         BoundInstancesMap& GetBoundInstances(Difficulty difficulty) { return m_boundInstances[difficulty]; }
 
         // LFG
-        LFGGroupState* GetLFGGroupState() { return &m_LFGState; };
         bool ConvertToLFG(LFGType type);
         bool isLFDGroup()  const { return m_groupType & GROUPTYPE_LFD; }
         bool isLFGGroup()  const { return ((m_groupType & GROUPTYPE_LFD) && !(m_groupType & GROUPTYPE_RAID)) ; }
@@ -451,8 +468,8 @@ class MANGOS_DLL_SPEC Group
 
         uint32 GetMaxSkillValueForGroup(SkillType skill);
 
-        void CountTheRoll(Rolls::iterator& roll);           // iterator update to next, in CountRollVote if true
-        bool CountRollVote(ObjectGuid const& playerGUID, Rolls::iterator& roll, RollVote vote);
+        void CountTheRoll(TRolls::iterator& roll);                    // iterator update to next, in CountRollVote if true
+        bool CountRollVote(ObjectGuid const& playerGUID, TRolls::iterator& roll, RollVote vote);
 
         ObjectGuid          m_Guid;
         MemberSlotList      m_memberSlots;
@@ -465,13 +482,15 @@ class MANGOS_DLL_SPEC Group
         uint32              m_Difficulty;                             // contains both dungeon (first byte) and raid (second byte) difficultyes of player. bytes 2,3 not used.
 
         BattleGround*       m_bgGroup;
+        BattleField*        m_bfGroup;
         ObjectGuid          m_targetIcons[TARGET_ICON_COUNT];
         LootMethod          m_lootMethod;
         ItemQualities       m_lootThreshold;
         ObjectGuid          m_looterGuid;
-        Rolls               RollId;
+        TRolls*             m_rollIds;
         BoundInstancesMap   m_boundInstances[MAX_DIFFICULTY];
         uint8*              m_subGroupsCounts;
-        LFGGroupState       m_LFGState;
+        uint32              m_waitLeaderTimer;
+
 };
 #endif

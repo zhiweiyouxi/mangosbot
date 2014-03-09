@@ -254,7 +254,7 @@ struct CreatureSpellEntry
 #define MAX_CREATURE_SPELL_LISTS 8
 
 typedef std::map<uint8 /* index */,     CreatureSpellEntry> CreatureSpellsList;
-typedef std::map<uint32 /*creature_id*/,CreatureSpellsList> CreatureSpellStorage;
+typedef UNORDERED_MAP<uint32 /*creature_id*/,CreatureSpellsList> CreatureSpellStorage;
 
 // GCC have alternative #pragma pack() syntax and old gcc version not support pack(pop), also any gcc version not support it at some platform
 #if defined( __GNUC__ )
@@ -306,7 +306,9 @@ enum ChatType
     CHAT_TYPE_BOSS_EMOTE        = 3,
     CHAT_TYPE_WHISPER           = 4,
     CHAT_TYPE_BOSS_WHISPER      = 5,
-    CHAT_TYPE_ZONE_YELL         = 6
+    CHAT_TYPE_ZONE_YELL         = 6,
+    CHAT_TYPE_NOTHING_SAY       = 7,                        // use for nothing say, for emote/sound only
+    CHAT_TYPE_MAX
 };
 
 // Selection method used by SelectAttackingTarget
@@ -505,7 +507,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
 
         char const* GetSubName() const { return m_creatureInfo->SubName; }
 
-        void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
+        virtual void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
 
         virtual void RegenerateAll(uint32 update_diff);
 
@@ -764,6 +766,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
         time_t m_respawnTime;                               // (secs) time of next respawn
         uint32 m_respawnDelay;                              // (secs) delay between corpse disappearance and respawning
         uint32 m_corpseDelay;                               // (secs) delay between death and corpse disappearance
+        uint32 m_aggroDelay;                                // (msecs)delay between respawn and aggro due to movement
         float m_respawnradius;
 
         CreatureSubtype m_subtype;                          // set in Creatures subclasses for fast it detect without dynamic_cast use

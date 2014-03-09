@@ -417,7 +417,7 @@ void BattleGroundQueue::RemovePlayer(ObjectGuid guid, bool decreaseInvitedCount)
             plr2->RemoveBattleGroundQueueId(bgQueueTypeId); // must be called this way, because if you move this call to
             // queue->removeplayer, it causes bugs
             WorldPacket data;
-            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_NONE, 0, 0, ARENA_TYPE_NONE);
+            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_NONE, 0, 0, ARENA_TYPE_NONE, TEAM_NONE);
             plr2->GetSession()->SendPacket(&data);
         }
         // then actually delete, this may delete the group as well!
@@ -499,7 +499,7 @@ bool BattleGroundQueue::InviteGroupToBG(GroupQueueInfo* ginfo, BattleGround* bg,
                       plr->GetGuidStr().c_str(), bg->GetInstanceID(), queueSlot, bg->GetTypeID());
 
             // send status packet
-            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_JOIN, INVITE_ACCEPT_WAIT_TIME, 0, ginfo->arenaType);
+            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_JOIN, INVITE_ACCEPT_WAIT_TIME, 0, ginfo->arenaType, TEAM_NONE);
             plr->GetSession()->SendPacket(&data);
         }
         return true;
@@ -1086,7 +1086,7 @@ void BattleGroundMgr::Update(uint32 diff)
         std::vector<uint64> scheduled;
         {
             // create mutex
-            // ACE_Guard<ACE_Thread_Mutex> guard(SchedulerLock);
+            // ACE_Guard<MANGOSR2_MUTEX_MODEL_2> guard(SchedulerLock);
             // copy vector and clear the other
             scheduled = std::vector<uint64>(m_QueueUpdateScheduler);
             m_QueueUpdateScheduler.clear();
@@ -1140,7 +1140,7 @@ void BattleGroundMgr::Update(uint32 diff)
     }
 }
 
-void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket* data, BattleGround* bg, uint8 QueueSlot, uint8 StatusID, uint32 Time1, uint32 Time2, ArenaType arenatype)
+void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket* data, BattleGround* bg, uint8 QueueSlot, uint8 StatusID, uint32 Time1, uint32 Time2, ArenaType arenatype, Team arenaTeam)
 {
     // we can be in 2 queues in same time...
 
@@ -1179,7 +1179,7 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket* data, BattleGro
             *data << uint64(0);                             // 3.3.5, unknown
             *data << uint32(Time1);                         // time to bg auto leave, 0 at bg start, 120000 after bg end, milliseconds
             *data << uint32(Time2);                         // time from bg start, milliseconds
-            *data << uint8(0x1);                            // Lua_GetBattlefieldArenaFaction (bool)
+            *data << uint8(arenaTeam == ALLIANCE ? 1 : 0);  // arenaTeam (0 for horde, 1 for alliance)
             break;
         default:
             sLog.outError("Unknown BG status!");
@@ -1220,9 +1220,7 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket* data, BattleGround* bg)
     }
 
     if (bg->GetStatus() != STATUS_WAIT_LEAVE)
-    {
         *data << uint8(0);                                  // bg not ended
-    }
     else
     {
         *data << uint8(1);                                  // bg ended
@@ -1756,9 +1754,9 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket* data, ObjectGuid 
     if (!plr)
         return;
 
-    uint32 win_kills = plr->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST;
-    uint32 win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_ARENA_LAST : BG_REWARD_WINNER_ARENA_FIRST;
-    uint32 loos_kills = plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST;
+    uint32 win_kills = plr->IsRandomBGWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST;
+    uint32 win_arena = plr->IsRandomBGWinner() ? BG_REWARD_WINNER_ARENA_LAST : BG_REWARD_WINNER_ARENA_FIRST;
+    uint32 loos_kills = plr->IsRandomBGWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST;
 
     win_kills = (uint32)MaNGOS::Honor::hk_honor_at_level(plr->getLevel(), win_kills*4);
     loos_kills = (uint32)MaNGOS::Honor::hk_honor_at_level(plr->getLevel(), loos_kills*4);
@@ -1771,7 +1769,7 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket* data, ObjectGuid 
     *data << uint8(0);                                      // unk
 
     // Rewards
-    *data << uint8( plr->GetRandomWinner() );               // 3.3.3 hasWin
+    *data << uint8(plr->IsRandomBGWinner());               // 3.3.3 hasWin
     *data << uint32( win_kills );                           // 3.3.3 winHonor
     *data << uint32( win_arena );                           // 3.3.3 winArena
     *data << uint32( loos_kills );                          // 3.3.3 lossHonor
@@ -1781,7 +1779,7 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket* data, ObjectGuid 
     if (isRandom)
     {
         // Rewards (random)
-        *data << uint8( plr->GetRandomWinner() );           // 3.3.3 hasWin_Random
+        *data << uint8(plr->IsRandomBGWinner());            // 3.3.3 hasWin_Random
         *data << uint32( win_kills );                       // 3.3.3 winHonor_Random
         *data << uint32( win_arena );                       // 3.3.3 winArena_Random
         *data << uint32( loos_kills );                      // 3.3.3 lossHonor_Random
@@ -1958,7 +1956,7 @@ void BattleGroundMgr::ToggleArenaTesting()
 
 void BattleGroundMgr::ScheduleQueueUpdate(uint32 arenaRating, ArenaType arenaType, BattleGroundQueueTypeId bgQueueTypeId, BattleGroundTypeId bgTypeId, BattleGroundBracketId bracket_id)
 {
-    // ACE_Guard<ACE_Thread_Mutex> guard(SchedulerLock);
+    // ACE_Guard<MANGOSR2_MUTEX_MODEL_2> guard(SchedulerLock);
     // we will use only 1 number created of bgTypeId and bracket_id
     uint64 schedule_id = ((uint64)arenaRating << 32) | (arenaType << 24) | (bgQueueTypeId << 16) | (bgTypeId << 8) | bracket_id;
     bool found = false;

@@ -58,8 +58,6 @@ ChatLexicsCutter.h
 ChatLog.cpp
 ChatLog.h
 CombatHandler.cpp
-ConfusedMovementGenerator.cpp
-ConfusedMovementGenerator.h
 Corpse.cpp
 Corpse.h
 CreatureAI.cpp
@@ -87,8 +85,6 @@ debugcmds.cpp
 DuelHandler.cpp
 DynamicObject.cpp
 DynamicObject.h
-FleeingMovementGenerator.cpp
-FleeingMovementGenerator.h
 FollowerReference.cpp
 FollowerReference.h
 FollowerRefManager.h
@@ -108,8 +104,6 @@ GridMap.h
 GridNotifiers.cpp
 GridNotifiers.h
 GridNotifiersImpl.h
-GridStates.cpp
-GridStates.h
 Group.cpp
 Group.h
 GroupHandler.cpp
@@ -123,12 +117,8 @@ Guild.h
 GuildHandler.cpp
 GuildMgr.cpp
 GuildMgr.h
-HomeMovementGenerator.cpp
-HomeMovementGenerator.h
 HostileRefManager.cpp
 HostileRefManager.h
-IdleMovementGenerator.cpp
-IdleMovementGenerator.h
 InstanceData.cpp
 InstanceData.h
 Item.cpp
@@ -171,9 +161,6 @@ MotionMaster.h
 MoveMap.cpp
 MoveMap.h
 MoveMapSharedDefines.h
-MovementGenerator.cpp
-MovementGenerator.h
-MovementGeneratorImpl.h
 MovementHandler.cpp
 NPCHandler.cpp
 NPCHandler.h
@@ -209,16 +196,12 @@ Player.cpp
 PlayerDump.cpp
 PlayerDump.h
 Player.h
-PointMovementGenerator.cpp
-PointMovementGenerator.h
 PoolManager.cpp
 PoolManager.h
 QueryHandler.cpp
 QuestDef.cpp
 QuestDef.h
 QuestHandler.cpp
-RandomMovementGenerator.cpp
-RandomMovementGenerator.h
 ReactorAI.cpp
 ReactorAI.h
 ReputationMgr.cpp
@@ -245,8 +228,6 @@ StateMgr.cpp
 StateMgr.h
 StateMgrImpl.h
 StatSystem.cpp
-TargetedMovementGenerator.cpp
-TargetedMovementGenerator.h
 TaxiHandler.cpp
 TemporarySummon.cpp
 TemporarySummon.h
@@ -277,8 +258,6 @@ VehicleHandler.cpp
 VoiceChatHandler.cpp
 WaypointManager.cpp
 WaypointManager.h
-WaypointMovementGenerator.cpp
-WaypointMovementGenerator.h
 Weather.cpp
 Weather.h
 World.cpp
@@ -298,6 +277,9 @@ WorldStateMgr.h
 
 AuctionHouseBot/AuctionHouseBot.cpp
 AuctionHouseBot/AuctionHouseBot.h
+
+BattleField/BattleField.cpp
+BattleField/BattleField.h
 
 BattleGround/BattleGroundAA.cpp
 BattleGround/BattleGroundAA.h
@@ -347,8 +329,6 @@ OutdoorPvP/OutdoorPvPSI.cpp
 OutdoorPvP/OutdoorPvPSI.h
 OutdoorPvP/OutdoorPvPTF.cpp
 OutdoorPvP/OutdoorPvPTF.h
-OutdoorPvP/OutdoorPvPWG.cpp
-OutdoorPvP/OutdoorPvPWG.h
 OutdoorPvP/OutdoorPvPZM.cpp
 OutdoorPvP/OutdoorPvPZM.h
 
@@ -365,6 +345,26 @@ movement/spline.h
 movement/spline.impl.h
 movement/typedefs.h
 movement/util.cpp
+
+movementGenerators/ConfusedMovementGenerator.cpp
+movementGenerators/ConfusedMovementGenerator.h
+movementGenerators/FleeingMovementGenerator.cpp
+movementGenerators/FleeingMovementGenerator.h
+movementGenerators/HomeMovementGenerator.cpp
+movementGenerators/HomeMovementGenerator.h
+movementGenerators/IdleMovementGenerator.cpp
+movementGenerators/IdleMovementGenerator.h
+movementGenerators/MovementGenerator.cpp
+movementGenerators/MovementGenerator.h
+movementGenerators/MovementGeneratorImpl.h
+movementGenerators/PointMovementGenerator.cpp
+movementGenerators/PointMovementGenerator.h
+movementGenerators/RandomMovementGenerator.cpp
+movementGenerators/RandomMovementGenerator.h
+movementGenerators/TargetedMovementGenerator.cpp
+movementGenerators/TargetedMovementGenerator.h
+movementGenerators/WaypointMovementGenerator.cpp
+movementGenerators/WaypointMovementGenerator.h
 
 vmap/BIH.cpp
 vmap/BIH.h
@@ -985,6 +985,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/warden
   ${CMAKE_CURRENT_SOURCE_DIR}/OutdoorPvP
   ${CMAKE_CURRENT_SOURCE_DIR}/BattleGround
+  ${CMAKE_CURRENT_SOURCE_DIR}/movementGenerators
   ${CMAKE_SOURCE_DIR}/dep/include/g3dlite
   ${CMAKE_SOURCE_DIR}/dep/recastnavigation/Detour
   ${CMAKE_SOURCE_DIR}/dep/recastnavigation/
@@ -1115,6 +1116,9 @@ add_dependencies(${LIBRARY_NAME} revision.h)
 if(NOT ACE_USE_EXTERNAL)
   add_dependencies(${LIBRARY_NAME} ACE_Project)
 endif()
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/AuctionHouseBot/ahbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist DESTINATION ${CONF_DIR})
 
 # Generate precompiled header
 if(PCH)

@@ -21,7 +21,6 @@
 #include "Player.h"
 #include "GridNotifiers.h"
 #include "Log.h"
-#include "GridStates.h"
 #include "CellImpl.h"
 #include "InstanceData.h"
 #include "GridNotifiersImpl.h"
@@ -38,12 +37,13 @@
 #include "MoveMap.h"
 #include "BattleGround/BattleGroundMgr.h"
 #include "Calendar.h"
+#include "Chat.h"
 
 Map::~Map()
 {
     UnloadAll(true);
 
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
 
     if(!m_scriptSchedule.empty())
         sScriptMgr.DecreaseScheduledScriptCount(m_scriptSchedule.size());
@@ -57,12 +57,14 @@ Map::~Map()
         i_data = NULL;
     }
 
-    // unload instance specific navigation data
-    MMAP::MMapFactory::createOrGetMMapManager()->unloadMapInstance(m_TerrainData->GetMapId(), GetInstanceId());
+    sMapMgr.GetMapUpdater().MapStatisticDataRemove(this);
 
-    //release reference count
-    if(m_TerrainData->Release())
-        sTerrainMgr.UnloadTerrain(m_TerrainData->GetMapId());
+    // unload instance specific navigation data
+    MMAP::MMapFactory::createOrGetMMapManager()->unloadMapInstance(GetTerrain()->GetMapId(), GetInstanceId());
+
+    sTerrainMgr.UnloadTerrain(GetTerrain()->GetMapId());
+
+    DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Map::~Map removing map %u instance %u complete", GetId(), GetInstanceId());
 }
 
 void Map::LoadMapAndVMap(int gx,int gy)
@@ -70,16 +72,17 @@ void Map::LoadMapAndVMap(int gx,int gy)
     if (m_bLoadedGrids[gx][gy])
         return;
 
-    if (m_TerrainData->Load(gx, gy))
-        m_bLoadedGrids[gx][gy] = true;
+    m_bLoadedGrids[gx][gy] = true;
+
+    if (!GetTerrain()->Load(gx, gy))
+        m_bLoadedGrids[gx][gy] = false;
 }
 
 Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode)
   : i_mapEntry (sMapStore.LookupEntry(id)), i_spawnMode(SpawnMode),
   i_id(id), i_InstanceId(InstanceId), m_unloadTimer(0),
   m_VisibleDistance(DEFAULT_VISIBILITY_DISTANCE),
-  m_activeNonPlayersIter(m_activeNonPlayers.end()),
-  i_gridExpiry(expiry), m_TerrainData(sTerrainMgr.LoadTerrain(id)),
+  m_TerrainData(sTerrainMgr.LoadTerrain(id)),
   i_data(NULL), i_script_id(0)
 {
     m_CreatureGuids.Set(sObjectMgr.GetFirstTemporaryCreatureLowGuid());
@@ -98,13 +101,22 @@ Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode)
     //lets initialize visibility distance for map
     Map::InitVisibilityDistance();
 
-    //add reference for TerrainData object
-    m_TerrainData->AddRef();
-
     MapPersistentState* persistentState = sMapPersistentStateMgr.AddPersistentState(i_mapEntry, GetInstanceId(), GetDifficulty(), 0, IsDungeon());
     persistentState->SetUsedByMapState(this);
     SetBroken(false);
-    //sObjectMgr.LoadTransports(this);
+
+    // start unload timer for non continent and BG/Arena maps
+    if (!IsContinent() && !IsBattleGroundOrArena())
+    {
+        // the timer is started by default, and stopped when the first player joins
+        // this make sure it gets unloaded if for some reason no player joins
+        m_unloadTimer = sWorld.getConfig(CONFIG_UINT32_INSTANCE_UNLOAD_DELAY);
+    }
+
+    //if (GetInstanceId() && !sMapMgr.IsTransportMap(GetId()))
+    //    sObjectMgr.LoadTransports(this);
+
+    DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Map::Map creating map %u instance %u complete", GetId(), GetInstanceId());
 }
 
 MapPersistentState* Map::GetPersistentState() const
@@ -245,9 +257,6 @@ void Map::RemoveFromGrid(GameObject* obj, NGridType *grid, Cell const& cell)
 void Map::DeleteFromWorld(Player* pl)
 {
     sObjectAccessor.RemoveObject(pl);
-
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_AURAS));
-
     delete pl;
 }
 
@@ -261,18 +270,23 @@ void Map::setUnitCell(Creature* obj)
 void
 Map::EnsureGridCreated(const GridPair &p)
 {
-    if (!getNGrid(p.x_coord, p.y_coord))
+    if (!getNGridWithoutLock(p.x_coord, p.y_coord))
     {
         {
-            WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
-            setNGrid(new NGridType(p.x_coord*MAX_NUMBER_OF_GRIDS + p.y_coord, p.x_coord, p.y_coord, i_gridExpiry, sWorld.getConfig(CONFIG_BOOL_GRID_UNLOAD)),
-                p.x_coord, p.y_coord);
+            WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+
+            // Grid may be created while wait in semafore, requires double check
+            if (getNGridWithoutLock(p.x_coord, p.y_coord))
+                return;
+
+            NGridType* grid = new NGridType(p.x_coord*MAX_NUMBER_OF_GRIDS + p.y_coord, p.x_coord, p.y_coord, sWorld.getConfig(CONFIG_UINT32_INTERVAL_GRIDCLEAN), sWorld.getConfig(CONFIG_BOOL_GRID_UNLOAD));
+            setNGrid(grid, p.x_coord, p.y_coord);
+
+            // build a linkage between this map and NGridType
+            buildNGridLinkage(grid);
+            grid->SetGridState(GRID_STATE_IDLE);
+            ResetGridExpiry(*grid, 0.2f);
         }
-
-        // build a linkage between this map and NGridType
-        buildNGridLinkage(getNGrid(p.x_coord, p.y_coord));
-
-        getNGrid(p.x_coord, p.y_coord)->SetGridState(GRID_STATE_IDLE);
 
         //z coord
         int gx = (MAX_NUMBER_OF_GRIDS - 1) - p.x_coord;
@@ -310,26 +324,31 @@ Map::EnsureGridLoadedAtEnter(Cell const& cell, Player* player)
         AddToGrid(player,grid,cell);
 }
 
-bool Map::EnsureGridLoaded(const Cell &cell)
+bool Map::EnsureGridLoaded(Cell const& cell)
 {
     EnsureGridCreated(GridPair(cell.GridX(), cell.GridY()));
-    NGridType* grid = getNGrid(cell.GridX(), cell.GridY());
+    NGridType const* cgrid = getNGridWithoutLock(cell.GridX(), cell.GridY());
 
-    MANGOS_ASSERT(grid != NULL);
-    if (!IsGridObjectDataLoaded(grid))
+    MANGOS_ASSERT(cgrid != NULL);
+
+    if (!IsGridObjectDataLoaded(cgrid))
     {
-        //it's important to set it loaded before loading!
-        //otherwise there is a possibility of infinity chain (grid loading will be called many times for the same grid)
-        //possible scenario:
-        //active object A(loaded with loader.LoadN call and added to the  map)
-        //summons some active object B, while B added to map grid loading called again and so on..
-        SetGridObjectDataLoaded(true, grid);
-        ObjectGridLoader loader(*grid, this, cell);
-        loader.LoadN();
+        NGridType* grid = const_cast<NGridType*>(cgrid);
+        {
+            WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+            //it's important to set it loaded before loading!
+            //otherwise there is a possibility of infinity chain (grid loading will be called many times for the same grid)
+            //possible scenario:
+            //active object A(loaded with loader.LoadN call and added to the  map)
+            //summons some active object B, while B added to map grid loading called again and so on..
+            SetGridObjectDataLoaded(true, *grid);
+            ObjectGridLoader loader(*grid, this, cell);
+            loader.LoadN();
 
-        // Add resurrectable corpses to world object list in grid
-        sObjectAccessor.AddCorpsesToGrid(GridPair(cell.GridX(),cell.GridY()),(*grid)(cell.CellX(), cell.CellY()), this);
-        m_dyn_tree.balance();
+            // Add resurrectable corpses to world object list in grid
+            sObjectAccessor.AddCorpsesToGrid(GridPair(cell.GridX(),cell.GridY()),(*grid)(cell.CellX(), cell.CellY()), this);
+        }
+        DynamicMapTreeBalance();
         return true;
     }
 
@@ -341,10 +360,9 @@ bool Map::IsGridObjectDataLoaded(NGridType const* grid) const
     return grid ? grid->isGridObjectDataLoaded() : false;
 }
 
-void Map::SetGridObjectDataLoaded(bool pLoaded, NGridType* grid) 
+void Map::SetGridObjectDataLoaded(bool pLoaded, NGridType& grid) 
 {
-    if (grid)
-        grid->setGridObjectDataLoaded(pLoaded);
+    grid.setGridObjectDataLoaded(pLoaded);
 }
 
 void Map::LoadGrid(const Cell& cell, bool no_unload)
@@ -379,50 +397,75 @@ void Map::ActivateGrid(NGridType* nGrid)
 {
     if (nGrid)
     {
-        ResetGridExpiry(*nGrid, 0.1f);
+        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+        ResetGridExpiry(*nGrid, 0.2f);
         if (nGrid->GetGridState() != GRID_STATE_ACTIVE)
             nGrid->SetGridState(GRID_STATE_ACTIVE);
     }
 }
 
-bool Map::Add(Player *player)
+bool Map::Add(Player* player)
 {
+    if (!IsContinent() && !IsBattleGroundOrArena())
+        m_unloadTimer = 0;
+
+    if (FindObject(player->GetObjectGuid()))
+    {
+        sLog.outError("Map::Add map %u instance %u %s is found stored in Map object store, but trying to be addes!", GetId(), GetInstanceId(), player->GetObjectGuid() ? player->GetObjectGuid().GetString().c_str() : "<no GUID>");
+    }
+
+    player->GetMapRef().unlink();
     player->GetMapRef().link(this, player);
     player->SetMap(this);
-    CreateAttackersStorageFor(player->GetObjectGuid());
 
     // update player state for other player and visa-versa
+    AddToActive(player);
+    CreateAttackersStorageFor(player->GetObjectGuid());
+
     CellPair p = MaNGOS::ComputeCellPair(player->GetPositionX(), player->GetPositionY());
     Cell cell(p);
     EnsureGridLoadedAtEnter(cell, player);
-    player->AddToWorld();
+    NGridType* grid = getNGrid(cell.GridX(), cell.GridY());
+    MANGOS_ASSERT(grid != NULL);
 
+    player->AddToWorld();
     SendInitSelf(player);
     SendInitActiveObjects(player);
-
-    NGridType* grid = getNGrid(cell.GridX(), cell.GridY());
     player->GetViewPoint().Event_AddedToWorld(&(*grid)(cell.CellX(), cell.CellY()));
     UpdateObjectVisibility(player,cell,p);
+
+    DEBUG_FILTER_LOG(LOG_FILTER_PLAYER_MOVES, "Map::Add map %u instance %u add %s to grid [%u,%u]", GetId(), GetInstanceId(), player->GetObjectGuid().GetString().c_str(), cell.GridX(), cell.GridY());
 
     if (i_data)
         i_data->OnPlayerEnter(player);
 
     sLFGMgr.OnPlayerEnterMap(player, this);
-
     return true;
 }
 
 template<class T>
 void
-Map::Add(T *obj)
+Map::Add(T* obj)
 {
     MANGOS_ASSERT(obj);
 
     CellPair p = MaNGOS::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY());
     if(p.x_coord >= TOTAL_NUMBER_OF_CELLS_PER_MAP || p.y_coord >= TOTAL_NUMBER_OF_CELLS_PER_MAP )
     {
-        sLog.outError("Map::Add: Object (GUID: %u TypeId: %u) have invalid coordinates X:%f Y:%f grid cell [%u:%u]", obj->GetGUIDLow(), obj->GetTypeId(), obj->GetPositionX(), obj->GetPositionY(), p.x_coord, p.y_coord);
+        sLog.outError("Map::Add map %u instance %u %s have invalid coordinates X:%f Y:%f grid cell [%u:%u]", GetId(), GetInstanceId(), obj->GetObjectGuid() ? obj->GetObjectGuid().GetString().c_str() : "<no GUID>", obj->GetPositionX(), obj->GetPositionY(), p.x_coord, p.y_coord);
         return;
+    }
+
+    if (FindObject(obj->GetObjectGuid()))
+    {
+        if (obj->GetObjectGuid().IsCreatureOrVehicle())
+        {
+            DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING,"Map::Add map %u instance %u %s is found stored in Map object store, but trying to be addes. Possible result of pool operations.", GetId(), GetInstanceId(), obj->GetObjectGuid() ? obj->GetObjectGuid().GetString().c_str() : "<no GUID>");
+        }
+        else
+        {
+            sLog.outError("Map::Add map %u instance %u %s is found stored in Map object store, but trying to be addes!", GetId(), GetInstanceId(), obj->GetObjectGuid() ? obj->GetObjectGuid().GetString().c_str() : "<no GUID>");
+        }
     }
 
     obj->SetMap(this);
@@ -436,7 +479,7 @@ Map::Add(T *obj)
         EnsureGridCreated(GridPair(cell.GridX(), cell.GridY()));
 
     NGridType* grid = getNGrid(cell.GridX(), cell.GridY());
-    MANGOS_ASSERT( grid != NULL );
+    MANGOS_ASSERT(grid != NULL);
 
     AddToGrid(obj,grid,cell);
     obj->AddToWorld();
@@ -444,7 +487,7 @@ Map::Add(T *obj)
     if(obj->isActiveObject())
         AddToActive(obj);
 
-    DEBUG_LOG("%s enters grid[%u,%u]", obj->GetGuidStr().c_str(), cell.GridX(), cell.GridY());
+    DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Map::Add map %u instance %u add %s to grid [%u,%u]", GetId(), GetInstanceId(), obj->GetObjectGuid() ? obj->GetObjectGuid().GetString().c_str() : "<no GUID>", cell.GridX(), cell.GridY());
 
     obj->GetViewPoint().Event_AddedToWorld(&(*grid)(cell.CellX(), cell.CellY()));
     UpdateObjectVisibility(obj,cell,p);
@@ -542,13 +585,13 @@ void Map::MessageDistBroadcast(WorldObject const* obj, WorldPacket* msg, float d
 
 bool Map::loaded(GridPair const& p) const
 {
-    NGridType* grid = getNGrid(p.x_coord, p.y_coord);
+    NGridType const* grid = getNGridWithoutLock(p.x_coord, p.y_coord);
     return grid ? IsGridObjectDataLoaded(grid) : false;
 }
 
 void Map::Update(const uint32 &t_diff)
 {
-    m_dyn_tree.update(t_diff);
+    DynamicMapTreeUpdate(t_diff);
 
     // Load all objects in begin of update diff (loading objects count limited by time)
     uint32 loadingObjectToGridUpdateTime = WorldTimer::getMSTime();
@@ -581,29 +624,68 @@ void Map::Update(const uint32 &t_diff)
 
     UpdateEvents(t_diff);
 
-    /// update worldsessions for existing players
-    for(m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
+    /// update worldsessions for existing players (stage 1)
+    GuidQueue updateQueue = GetActiveObjects();
+    while (!updateQueue.empty())
     {
-        Player* plr = m_mapRefIter->getSource();
-        if(plr && plr->IsInWorld())
-        {
-            WorldSession * pSession = plr->GetSession();
-            MapSessionFilter updater(pSession);
+        ObjectGuid guid = updateQueue.front();
+        updateQueue.pop();
 
-            pSession->Update(updater);
-            // sending WorldState updates
-            plr->SendUpdatedWorldStates(false);
+        if (!guid.IsPlayer())
+            continue;
+
+        Player* plr = GetPlayer(guid);
+
+        if (plr && plr->IsInWorld())
+        {
+            if (WorldSession* pSession = plr->GetSession())
+            {
+                MapSessionFilter updater(pSession);
+                pSession->Update(updater);
+                // sending WorldState updates
+                plr->SendUpdatedWorldStates(false);
+            }
         }
     }
 
-    /// update players at tick
-    for(m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
+    /// update active objects (players also) at tick (stage 2)
+    /*GuidQueue*/ updateQueue = GetActiveObjects();
+    while (!updateQueue.empty())
     {
-        Player* plr = m_mapRefIter->getSource();
-        if(plr && plr->IsInWorld())
+        ObjectGuid guid = updateQueue.front();
+        updateQueue.pop();
+
+        WorldObject* obj = GetWorldObject(guid);
+        if (!obj || !obj->IsInWorld())
+            continue;
+
+        switch (guid.GetHigh())
         {
-            WorldObject::UpdateHelper helper(plr);
-            helper.Update(t_diff);
+            case HIGHGUID_PLAYER:
+            {
+                Player* plr = dynamic_cast<Player*>(obj);
+                if (plr)
+                {
+                    WorldObject::UpdateHelper helper(*plr);
+                    helper.Update(t_diff);
+                }
+                break;
+            }
+            case HIGHGUID_MO_TRANSPORT:
+            {
+                // update active MO_TRANSPORT objects
+                if (obj->isActiveObject() && obj->IsPositionValid())
+                {
+                    WorldObject::UpdateHelper helper(*obj);
+                    helper.Update(t_diff);
+                }
+                break;
+            }
+            case HIGHGUID_TRANSPORT:
+            // updating regular transports (after fully implementing Transport:: (NOT MOTransport!) class)
+            default:
+            // All another objects (active and not active) be updated in TypeContainerVisitor<> expressions
+                break;
         }
     }
 
@@ -616,19 +698,22 @@ void Map::Update(const uint32 &t_diff)
     // for pets
     TypeContainerVisitor<MaNGOS::ObjectUpdater, WorldTypeMapContainer > world_object_update(updater);
 
-    // the player iterator is stored in the map object
-    // to make sure calls to Map::Remove don't invalidate it
-    for(m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
+    // player and non-player active objects (only cells re-mark)
+    /*GuidQueue*/ updateQueue = GetActiveObjects();
+    bool hasActive = !updateQueue.empty();
+    while (!updateQueue.empty())
     {
-        Player* plr = m_mapRefIter->getSource();
+        ObjectGuid guid = updateQueue.front();
+        updateQueue.pop();
 
-        if (!plr || !plr->IsInWorld() || !plr->IsPositionValid())
+        WorldObject* obj = GetWorldObject(guid);
+
+        if (!obj || !obj->IsInWorld() || !obj->isActiveObject() || !obj->IsPositionValid())
             continue;
 
         //lets update mobs/objects in ALL visible cells around player!
-        CellArea area = Cell::CalculateCellArea(plr->GetPositionX(), plr->GetPositionY(), GetVisibilityDistance());
-
-        for(uint32 x = area.low_bound.x_coord; x <= area.high_bound.x_coord; ++x)
+        CellArea area = Cell::CalculateCellArea(obj->GetPositionX(), obj->GetPositionY(), GetVisibilityDistance());
+        for (uint32 x = area.low_bound.x_coord; x <= area.high_bound.x_coord; ++x)
         {
             for(uint32 y = area.low_bound.y_coord; y <= area.high_bound.y_coord; ++y)
             {
@@ -648,54 +733,9 @@ void Map::Update(const uint32 &t_diff)
         }
     }
 
-    // non-player active objects
-    if(!m_activeNonPlayers.empty())
-    {
-        for(m_activeNonPlayersIter = m_activeNonPlayers.begin(); m_activeNonPlayersIter != m_activeNonPlayers.end(); )
-        {
-            // skip not in world
-            WorldObject* obj = *m_activeNonPlayersIter;
-
-            // step before processing, in this case if Map::Remove remove next object we correctly
-            // step to next-next, and if we step to end() then newly added objects can wait next update.
-            ++m_activeNonPlayersIter;
-
-            if (!obj->IsInWorld() || !obj->IsPositionValid())
-                continue;
-
-            // FIXME - temphack for update active MO_TRANSPORT objects
-            if (obj->GetObjectGuid().IsMOTransport())
-            {
-                WorldObject::UpdateHelper helper(obj);
-                helper.Update(t_diff);
-            }
-
-            //lets update mobs/objects in ALL visible cells around player!
-            CellArea area = Cell::CalculateCellArea(obj->GetPositionX(), obj->GetPositionY(), GetVisibilityDistance());
-
-            for(uint32 x = area.low_bound.x_coord; x <= area.high_bound.x_coord; ++x)
-            {
-                for(uint32 y = area.low_bound.y_coord; y <= area.high_bound.y_coord; ++y)
-                {
-                    // marked cells are those that have been visited
-                    // don't visit the same cell twice
-                    uint32 cell_id = (y * TOTAL_NUMBER_OF_CELLS_PER_MAP) + x;
-                    if(!isCellMarked(cell_id))
-                    {
-                        markCell(cell_id);
-                        CellPair pair(x,y);
-                        Cell cell(pair);
-                        cell.SetNoCreate();
-                        Visit(cell, grid_object_update);
-                        Visit(cell, world_object_update);
-                    }
-                }
-            }
-        }
-    }
-
     // Send world objects and item update field changes
-    SendObjectUpdates();
+    if (hasActive)
+        SendObjectUpdates();
 
     // Calculate and send map-related WorldState updates
     sWorldStateMgr.MapUpdate(this);
@@ -710,7 +750,7 @@ void Map::Update(const uint32 &t_diff)
             GridInfo *info = i->getSource()->getGridInfoRef();
             ++i;                                                // The update might delete the map and we need the next map before the iterator gets invalid
             MANGOS_ASSERT(grid->GetGridState() >= 0 && grid->GetGridState() < MAX_GRID_STATE);
-            sMapMgr.UpdateGridState(grid->GetGridState(), *this, *grid, *info, grid->getX(), grid->getY(), t_diff);
+            UpdateGridState(*grid, *info, t_diff);
         }
     }
 
@@ -724,10 +764,17 @@ void Map::Update(const uint32 &t_diff)
 
 void Map::Remove(Player* player, bool remove)
 {
+    if (!FindObject(player->GetObjectGuid()))
+    {
+        sLog.outError("Map::Remove: map %u instance %u %s not stored in Map object store, byt trying to be removed!", GetId(), GetInstanceId(), player->GetObjectGuid().GetString().c_str());
+    }
+
     if (i_data)
         i_data->OnPlayerLeave(player);
 
     sLFGMgr.OnPlayerLeaveMap(player, this);
+
+    RemoveFromActive(player);
 
     if (remove)
         player->CleanupsBeforeDelete();
@@ -737,18 +784,13 @@ void Map::Remove(Player* player, bool remove)
     player->RemoveFromWorld(remove);
 
     // this may be called during Map::Update
-    // after decrement+unlink, ++m_mapRefIter will continue correctly
-    // when the first element of the list is being removed
-    // nocheck_prev will return the padding element of the RefManager
-    // instead of NULL in the case of prev
-    if(m_mapRefIter == player->GetMapRef())
-        m_mapRefIter = m_mapRefIter->nocheck_prev();
     player->GetMapRef().unlink();
+
     CellPair p = MaNGOS::ComputeCellPair(player->GetPositionX(), player->GetPositionY());
     if (p.x_coord >= TOTAL_NUMBER_OF_CELLS_PER_MAP || p.y_coord >= TOTAL_NUMBER_OF_CELLS_PER_MAP)
     {
         // invalid coordinates
-        sLog.outError("Map::Remove() player %s invalid cellPair x:%d, y:%d", player->GetObjectGuid().GetString().c_str(), p.x_coord,p.y_coord);
+        sLog.outError("Map::Remove player %s invalid cellPair x:%d, y:%d", player->GetObjectGuid().GetString().c_str(), p.x_coord,p.y_coord);
         remove ? DeleteFromWorld(player) :  (void)player->TeleportToHomebind();
         return;
     }
@@ -758,12 +800,12 @@ void Map::Remove(Player* player, bool remove)
     if (!grid)
     {
         // invalid coordinates
-        sLog.outError("Map::Remove() player %s i_grids was NULL x:%d, y:%d",player->GetObjectGuid().GetString().c_str(),cell.data.Part.grid_x,cell.data.Part.grid_y);
+        sLog.outError("Map::Remove player %s i_grids was NULL x:%d, y:%d",player->GetObjectGuid().GetString().c_str(),cell.data.Part.grid_x,cell.data.Part.grid_y);
         remove ? DeleteFromWorld(player) :  (void)player->TeleportToHomebind();
         return;
     }
 
-    DEBUG_FILTER_LOG(LOG_FILTER_PLAYER_MOVES, "Map::Remove() Remove player %s from grid[%u,%u]", player->GetName(), cell.GridX(), cell.GridY());
+    DEBUG_FILTER_LOG(LOG_FILTER_PLAYER_MOVES, "Map::Remove Remove player %s from grid [%u,%u]", player->GetName(), cell.GridX(), cell.GridY());
 
     RemoveFromGrid(player,grid,cell);
     SendRemoveActiveObjects(player);
@@ -777,6 +819,13 @@ void Map::Remove(Player* player, bool remove)
         EraseObject(player->GetObjectGuid());
     else
         DeleteFromWorld(player);
+
+    // if last player - set unload timer
+    if (!IsContinent() && !IsBattleGroundOrArena())
+    {
+        if (!m_unloadTimer && !HavePlayers())
+            m_unloadTimer = sWorld.getConfig(CONFIG_UINT32_INSTANCE_UNLOAD_DELAY);
+    }
 }
 
 template<class T>
@@ -795,8 +844,8 @@ Map::Remove(T* obj, bool remove)
         return;
 
     DEBUG_LOG("Remove object (GUID: %u TypeId:%u) from grid[%u,%u]", obj->GetGUIDLow(), obj->GetTypeId(), cell.data.Part.grid_x, cell.data.Part.grid_y);
-    NGridType *grid = getNGrid(cell.GridX(), cell.GridY());
-    MANGOS_ASSERT( grid != NULL );
+    NGridType* grid = getNGrid(cell.GridX(), cell.GridY());
+    MANGOS_ASSERT(grid != NULL);
 
     RemoveFromActive(obj);
 
@@ -990,49 +1039,41 @@ bool Map::CreatureRespawnRelocation(Creature *c)
         return false;
 }
 
-bool Map::UnloadGrid(const uint32 &x, const uint32 &y, bool pForce)
+bool Map::UnloadGrid(NGridType& grid, bool pForce)
 {
-    NGridType* grid = getNGrid(x, y);
+    if (!pForce && ActiveObjectsNearGrid(grid.getX(), grid.getY()))
+        return false;
 
-    if (grid != NULL)
-    {
-        if (!pForce && ActiveObjectsNearGrid(x, y))
-            return false;
+    // Make refcounted pointer for deleting object in destructor
+    GridPtr deletePtr = GridPtr(&grid);
 
-        SetGridObjectDataLoaded(false, grid);
+    SetGridObjectDataLoaded(false, grid);
+    ObjectGridUnloader unloader(grid);
 
-        DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Unloading grid[%u,%u] for map %u", x, y, GetId());
-        ObjectGridUnloader unloader(*grid);
+    // Finish remove and delete all creatures with delayed remove before moving to respawn grids
+    // Must know real mob position before move
+    RemoveAllObjectsInRemoveList();
 
-        // Finish remove and delete all creatures with delayed remove before moving to respawn grids
-        // Must know real mob position before move
-        RemoveAllObjectsInRemoveList();
+    // move creatures to respawn grids if this is diff.grid or to remove list
+    unloader.MoveToRespawnN();
 
-        // move creatures to respawn grids if this is diff.grid or to remove list
-        unloader.MoveToRespawnN();
+    // Finish remove and delete all creatures with delayed remove before unload
+    RemoveAllObjectsInRemoveList();
 
-        // Finish remove and delete all creatures with delayed remove before unload
-        RemoveAllObjectsInRemoveList();
+    unloader.UnloadN();
+    setNGrid(NULL, grid.getX(), grid.getY());
 
-        unloader.UnloadN();
+    DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Map::UnloadGrid unloading grid[%u,%u] for map %u finished", grid.getX(), grid.getY(), GetId(), GetInstanceId());
 
-        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
-        delete getNGrid(x, y);
-        setNGrid(NULL, x, y);
-        DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Unloading grid[%u,%u] for map %u finished", x, y, GetId());
-    }
-    else
-        sLog.outError("Map::UnloadGrid trying unload grid[%u,%u] for map %u, but grid not created!", x,y, GetId());
-
-    int gx = (MAX_NUMBER_OF_GRIDS - 1) - x;
-    int gy = (MAX_NUMBER_OF_GRIDS - 1) - y;
+    int gx = (MAX_NUMBER_OF_GRIDS - 1) - grid.getX();
+    int gy = (MAX_NUMBER_OF_GRIDS - 1) - grid.getY();
 
     // unload GridMap - it is reference-countable so will be deleted safely when lockCount < 1
     // also simply set Map's pointer to corresponding GridMap object to NULL
-    if(m_bLoadedGrids[gx][gy])
+    if (m_bLoadedGrids[gx][gy])
     {
         m_bLoadedGrids[gx][gy] = false;
-        m_TerrainData->Unload(gx, gy);
+        GetTerrain()->Unload(gx, gy);
     }
 
     return true;
@@ -1048,15 +1089,19 @@ void Map::UnloadAll(bool pForce)
 
     for (GridRefManager<NGridType>::iterator i = GridRefManager<NGridType>::begin(); i != GridRefManager<NGridType>::end(); )
     {
-        NGridType &grid(*i->getSource());
+        NGridType& grid(*i->getSource());
         ++i;
-        UnloadGrid(grid.getX(), grid.getY(), pForce);       // deletes the grid and removes it from the GridRefManager
+        UnloadGrid(grid, pForce);       // deletes the grid and removes it from the GridRefManager
     }
+
+    //if (GetInstanceId() && !sMapMgr.IsTransportMap(GetId()))
+    //    sObjectMgr.UnLoadTransports(this);
+
+    DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Map::UnloadAll unloading all objects from map %u instance %u complete", GetId(), GetInstanceId());
 }
 
 void Map::AddLoadingObject(LoadingObjectQueueMember* obj)
 {
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
     i_loadingObjectQueue.push(obj);
 }
 
@@ -1065,7 +1110,7 @@ LoadingObjectQueueMember* Map::GetNextLoadingObject()
     LoadingObjectQueueMember* loadingObject = NULL;
     if (!IsLoadingObjectsQueueEmpty())
     {
-        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
+        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
         loadingObject = i_loadingObjectQueue.top();
         i_loadingObjectQueue.pop();
     }
@@ -1165,16 +1210,24 @@ void Map::SendInitActiveObjects(Player* player)
 {
     if (!player)
         return;
-    ActiveNonPlayers const& activeObjects = GetActiveObjects();
-    if (activeObjects.empty())
+
+    GuidQueue updateQueue = GetActiveObjects();
+    if (updateQueue.empty())
         return;
 
-    UpdateData initData;
+    UpdateData initData = UpdateData();
     bool hasAny = false;
 
-    for (ActiveNonPlayers::iterator itr = m_activeNonPlayers.begin(); itr != m_activeNonPlayers.end(); ++itr)
+    while(!updateQueue.empty())
     {
-        WorldObject* object = *itr;
+        ObjectGuid guid = updateQueue.front();
+        updateQueue.pop();
+
+        if (guid.IsPlayer())
+            continue;
+
+        WorldObject* object = GetWorldObject(guid);
+
         if (!object || !object->IsInWorld() || !object->isVisibleForInState(player,player,false) || !object->isActiveObject())
             continue;
 
@@ -1182,7 +1235,7 @@ void Map::SendInitActiveObjects(Player* player)
         object->AddNotifiedClient(player->GetObjectGuid());
         hasAny = true;
         DEBUG_FILTER_LOG(LOG_FILTER_VISIBILITY_CHANGES, "Map::SendInitActiveObjects %s visibility initialized for %s",
-                      object->GetObjectGuid().GetString().c_str(), player->GetGuidStr().c_str());
+                      guid.GetString().c_str(), player->GetGuidStr().c_str());
     }
     if (!hasAny)
         return;
@@ -1196,16 +1249,24 @@ void Map::SendRemoveActiveObjects(Player* player)
 {
     if (!player)
         return;
-    ActiveNonPlayers const& activeObjects = GetActiveObjects();
-    if (activeObjects.empty())
+
+    GuidQueue updateQueue = GetActiveObjects();
+    if (updateQueue.empty())
         return;
 
-    UpdateData initData;
+    UpdateData initData = UpdateData();
     bool hasAny = false;
 
-    for (ActiveNonPlayers::iterator itr = m_activeNonPlayers.begin(); itr != m_activeNonPlayers.end(); ++itr)
+    while(!updateQueue.empty())
     {
-        WorldObject* object = *itr;
+        ObjectGuid guid = updateQueue.front();
+        updateQueue.pop();
+
+        if (guid.IsPlayer())
+            continue;
+
+        WorldObject* object = GetWorldObject(guid);
+
         if (!object || !object->IsInWorld() || !object->isActiveObject())
             continue;
 
@@ -1213,7 +1274,7 @@ void Map::SendRemoveActiveObjects(Player* player)
         hasAny = true;
         object->RemoveNotifiedClient(player->GetObjectGuid());
         DEBUG_FILTER_LOG(LOG_FILTER_VISIBILITY_CHANGES, "Map::SendRemoveActiveObjects %s visibility removed for %s",
-                      object->GetObjectGuid().GetString().c_str(), player->GetGuidStr().c_str());
+                    guid.GetString().c_str(), player->GetGuidStr().c_str());
     }
     if (!hasAny)
         return;
@@ -1223,7 +1284,7 @@ void Map::SendRemoveActiveObjects(Player* player)
     player->GetSession()->SendPacket(&packet);
 }
 
-inline void Map::setNGrid(NGridType *grid, uint32 x, uint32 y)
+inline void Map::setNGrid(NGridType* grid, uint32 x, uint32 y)
 {
     if(x >= MAX_NUMBER_OF_GRIDS || y >= MAX_NUMBER_OF_GRIDS)
     {
@@ -1317,19 +1378,18 @@ bool Map::ActiveObjectsNearGrid(uint32 x, uint32 y) const
     cell_max >> cell_range;
     cell_max += cell_range;
 
-    for(MapRefManager::const_iterator iter = m_mapRefManager.begin(); iter != m_mapRefManager.end(); ++iter)
-    {
-        Player* plr = iter->getSource();
+    GuidQueue updateQueue = const_cast<Map*>(this)->GetActiveObjects();
+    if (updateQueue.empty())
+        return false;
 
-        CellPair p = MaNGOS::ComputeCellPair(plr->GetPositionX(), plr->GetPositionY());
-        if( (cell_min.x_coord <= p.x_coord && p.x_coord <= cell_max.x_coord) &&
-            (cell_min.y_coord <= p.y_coord && p.y_coord <= cell_max.y_coord) )
-            return true;
-    }
-
-    for(ActiveNonPlayers::const_iterator iter = m_activeNonPlayers.begin(); iter != m_activeNonPlayers.end(); ++iter)
+    while(!updateQueue.empty())
     {
-        WorldObject* obj = *iter;
+        ObjectGuid guid = updateQueue.front();
+        updateQueue.pop();
+
+        WorldObject const* obj = const_cast<Map*>(this)->GetWorldObject(guid);
+        if (!obj || !obj->isActiveObject())
+            continue;
 
         CellPair p = MaNGOS::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY());
         if( (cell_min.x_coord <= p.x_coord && p.x_coord <= cell_max.x_coord) &&
@@ -1342,9 +1402,15 @@ bool Map::ActiveObjectsNearGrid(uint32 x, uint32 y) const
 
 void Map::AddToActive(WorldObject* obj)
 {
-    m_activeNonPlayers.insert(obj);
+    if (!obj)
+        return;
+    {
+        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+        m_activeObjects.insert(obj->GetObjectGuid());
+    }
+
     Cell cell = Cell(MaNGOS::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY()));
-    EnsureGridLoaded(cell);
+    EnsureGridLoadedAtEnter(cell, obj->GetTypeId() == TYPEID_PLAYER ? (Player*)obj : NULL);
 
     // also not allow unloading spawn grid to prevent creating creature clone at load
     if (obj->GetTypeId() == TYPEID_UNIT)
@@ -1367,7 +1433,7 @@ void Map::AddToActive(WorldObject* obj)
         }
     }
 
-    if (IsVisibleGlobally(obj->GetObjectGuid()))
+    if (obj->GetTypeId() != TYPEID_PLAYER && IsVisibleGlobally(obj->GetObjectGuid()))
     {
         PlayerList const& plist = GetPlayers();
         if (!plist.isEmpty())
@@ -1391,21 +1457,19 @@ void Map::AddToActive(WorldObject* obj)
     }
 }
 
-void Map::RemoveFromActive( WorldObject* obj )
+void Map::RemoveFromActive(WorldObject* obj)
 {
+    if (!obj)
+        return;
+
     // Map::Update for active object in proccess
-    if(m_activeNonPlayersIter != m_activeNonPlayers.end())
     {
-        ActiveNonPlayers::iterator itr = m_activeNonPlayers.find(obj);
-        if(itr == m_activeNonPlayersIter)
-            ++m_activeNonPlayersIter;
-        m_activeNonPlayers.erase(itr);
+        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+        m_activeObjects.erase(obj->GetObjectGuid());
     }
-    else
-        m_activeNonPlayers.erase(obj);
 
     // also allow unloading spawn grid
-    if (obj->GetTypeId()==TYPEID_UNIT)
+    if (obj->GetTypeId() == TYPEID_UNIT)
     {
         Creature* c = (Creature*)obj;
 
@@ -1511,10 +1575,6 @@ DungeonMap::DungeonMap(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnM
 
     //lets initialize visibility distance for dungeons
     DungeonMap::InitVisibilityDistance();
-
-    // the timer is started by default, and stopped when the first player joins
-    // this make sure it gets unloaded if for some reason no player joins
-    m_unloadTimer = std::max(sWorld.getConfig(CONFIG_UINT32_INSTANCE_UNLOAD_DELAY), (uint32)MIN_UNLOAD_DELAY);
 }
 
 DungeonMap::~DungeonMap()
@@ -1661,7 +1721,6 @@ bool DungeonMap::Add(Player *player)
 
     DETAIL_LOG("MAP: Player '%s' is entering instance '%u' of map '%s'", player->GetName(), GetInstanceId(), GetMapName());
     // initialize unload state
-    m_unloadTimer = 0;
     m_resetAfterUnload = false;
     m_unloadWhenEmpty = false;
 
@@ -1680,11 +1739,11 @@ void DungeonMap::Remove(Player *player, bool remove)
 {
     DETAIL_LOG("MAP: Removing player '%s' from instance '%u' of map '%s' before relocating to other map", player->GetName(), GetInstanceId(), GetMapName());
 
-    //if last player set unload timer
-    if(!m_unloadTimer && m_mapRefManager.getSize() == 1)
-        m_unloadTimer = m_unloadWhenEmpty ? MIN_UNLOAD_DELAY : std::max(sWorld.getConfig(CONFIG_UINT32_INSTANCE_UNLOAD_DELAY), (uint32)MIN_UNLOAD_DELAY);
-
     Map::Remove(player, remove);
+
+    // if last player and unload when empty - unload immediately
+    if (m_unloadWhenEmpty && !HavePlayers())
+        m_unloadTimer = MIN_UNLOAD_DELAY;
 
     // for normal instances schedule the reset after all players have left
     SetResetSchedule(true);
@@ -1912,6 +1971,7 @@ bool Map::ScriptsStart(ScriptMapMapName const& scripts, uint32 id, Object* sourc
 
     if (execParams)                                         // Check if the execution should be uniquely
     {
+        ReadGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
         for (ScriptScheduleMap::const_iterator searchItr = m_scriptSchedule.begin(); searchItr != m_scriptSchedule.end(); ++searchItr)
         {
             if (searchItr->second.IsSameScript(scripts.first, id,
@@ -1929,10 +1989,9 @@ bool Map::ScriptsStart(ScriptMapMapName const& scripts, uint32 id, Object* sourc
     for (ScriptMap::const_iterator iter = s2->begin(); iter != s2->end(); ++iter)
     {
         ScriptAction sa(scripts.first, this, sourceGuid, targetGuid, ownerGuid, &iter->second);
-
-        m_scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld.GetGameTime() + iter->first), sa));
-
         sScriptMgr.IncreaseScheduledScriptsCount();
+        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+        m_scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld.GetGameTime() + iter->first), sa));
     }
 
     return true;
@@ -1948,51 +2007,65 @@ void Map::ScriptCommandStart(ScriptInfo const& script, uint32 delay, Object* sou
     ObjectGuid ownerGuid  = source->isType(TYPEMASK_ITEM) ? ((Item*)source)->GetOwnerGuid() : ObjectGuid();
 
     ScriptAction sa("Internal Activate Command used for spell", this, sourceGuid, targetGuid, ownerGuid, &script);
-
-    m_scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld.GetGameTime() + delay), sa));
-
     sScriptMgr.IncreaseScheduledScriptsCount();
+
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    m_scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld.GetGameTime() + delay), sa));
 }
 
 /// Process queued scripts
 void Map::ScriptsProcess()
 {
-    if (m_scriptSchedule.empty())
-        return;
-
-    ///- Process overdue queued scripts
-    ScriptScheduleMap::iterator iter = m_scriptSchedule.begin();
     // ok as multimap is a *sorted* associative container
-    while (!m_scriptSchedule.empty() && (iter->first <= sWorld.GetGameTime()))
+    while (ScriptAction* action = GetNextSheduledScript())
     {
-        if (iter->second.HandleScriptStep())
+        if (action->HandleScriptStep())
         {
             // Terminate following script steps of this script
-            const char* tableName = iter->second.GetTableName();
-            uint32 id = iter->second.GetId();
-            ObjectGuid sourceGuid = iter->second.GetSourceGuid();
-            ObjectGuid targetGuid = iter->second.GetTargetGuid();
-            ObjectGuid ownerGuid = iter->second.GetOwnerGuid();
+            const char* tableName = action->GetTableName();
+            uint32 id = action->GetId();
+            ObjectGuid sourceGuid = action->GetSourceGuid();
+            ObjectGuid targetGuid = action->GetTargetGuid();
+            ObjectGuid ownerGuid = action->GetOwnerGuid();
 
-            for (ScriptScheduleMap::iterator rmItr = m_scriptSchedule.begin(); rmItr != m_scriptSchedule.end();)
+            for (ScriptScheduleMap::iterator rmItr = m_scriptSchedule.begin(); rmItr != m_scriptSchedule.end(); ++rmItr)
             {
                 if (rmItr->second.IsSameScript(tableName, id, sourceGuid, targetGuid, ownerGuid))
                 {
-                    m_scriptSchedule.erase(rmItr++);
-                    sScriptMgr.DecreaseScheduledScriptCount();
+                    if (EraseScriptAction(&rmItr->second))
+                        rmItr = m_scriptSchedule.begin();
                 }
-                else
-                    ++rmItr;
             }
         }
         else
-        {
-            m_scriptSchedule.erase(iter);
-
-            sScriptMgr.DecreaseScheduledScriptCount();
-        }
-        iter = m_scriptSchedule.begin();
+            EraseScriptAction(action);
     }
+}
+
+ScriptAction* Map::GetNextSheduledScript()
+{
+    ReadGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    if (m_scriptSchedule.empty())
+        return NULL;
+    ScriptScheduleMap::iterator iter = m_scriptSchedule.begin();
+    return (iter->first <= sWorld.GetGameTime()) ? &iter->second : NULL;
+}
+
+bool Map::EraseScriptAction(ScriptAction* action)
+{
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    if (m_scriptSchedule.empty())
+        return false;
+    for (ScriptScheduleMap::iterator itr = m_scriptSchedule.begin(); itr != m_scriptSchedule.end(); ++itr)
+    {
+        if (&itr->second == action)
+        {
+            m_scriptSchedule.erase(itr);
+            sScriptMgr.DecreaseScheduledScriptCount();
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -2004,8 +2077,7 @@ void Map::InsertObject(WorldObject* object)
 {
     if (!object)
         return;
-
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_DEFAULT));
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
     m_objectsStore.insert(MapStoredObjectTypesContainer::value_type(object->GetObjectGuid(), object));
 }
 
@@ -2022,7 +2094,7 @@ void Map::EraseObject(ObjectGuid const& guid)
     if (guid.IsEmpty())
         return;
 
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_DEFAULT));
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     m_objectsStore.erase(guid);
 }
 
@@ -2031,7 +2103,7 @@ WorldObject* Map::FindObject(ObjectGuid const& guid)
     if (guid.IsEmpty())
         return NULL;
 
-    ReadGuard Guard(GetLock(MAP_LOCK_TYPE_DEFAULT));
+    ReadGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     MapStoredObjectTypesContainer::iterator itr = m_objectsStore.find(guid);
     return (itr == m_objectsStore.end()) ? NULL : itr->second;
 }
@@ -2184,32 +2256,29 @@ WorldObject* Map::GetWorldObject(ObjectGuid const& guid)
 
 void Map::AddUpdateObject(ObjectGuid const& guid)
 {
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_DEFAULT));
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     i_objectsToClientUpdate.insert(guid);
 }
 
 void Map::RemoveUpdateObject(ObjectGuid const& guid)
 {
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_DEFAULT));
     i_objectsToClientUpdate.erase(guid);
 }
 
+ObjectGuid Map::GetNextObjectFromUpdateQueue()
+{
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
+    ObjectGuid guid = i_objectsToClientUpdate.empty() ? ObjectGuid::Null : *i_objectsToClientUpdate.begin();
+    i_objectsToClientUpdate.erase(guid);
+    return guid;
+}
+ 
 void Map::SendObjectUpdates()
 {
-    UpdateDataMapType update_players;
+    UpdateDataMapType update_players = UpdateDataMapType();
 
-    while (!GetObjectsUpdateQueue()->empty())
+    while (ObjectGuid guid = GetNextObjectFromUpdateQueue())
     {
-        ObjectGuid guid;
-        {
-            WriteGuard Guard(GetLock(MAP_LOCK_TYPE_DEFAULT));
-            guid = *i_objectsToClientUpdate.begin();
-            i_objectsToClientUpdate.erase(i_objectsToClientUpdate.begin());
-        }
-
-        if (guid.IsEmpty())
-            continue;
-
         WorldObject* obj = GetWorldObject(guid);
         if (obj && obj->IsInWorld())
         {
@@ -2278,7 +2347,7 @@ uint32 Map::GenerateLocalLowGuid(HighGuid guidhigh)
 class StaticMonsterChatBuilder
 {
     public:
-        StaticMonsterChatBuilder(CreatureInfo const* cInfo, ChatMsg msgtype, int32 textId, uint32 language, Unit const* target, uint32 senderLowGuid = 0)
+        StaticMonsterChatBuilder(CreatureInfo const* cInfo, ChatMsg msgtype, int32 textId, Language language, Unit const* target, uint32 senderLowGuid = 0)
             : i_cInfo(cInfo), i_msgtype(msgtype), i_textId(textId), i_language(language), i_target(target)
         {
             // 0 lowguid not used in core, but accepted fine in this case by client
@@ -2291,7 +2360,8 @@ class StaticMonsterChatBuilder
             char const* nameForLocale = i_cInfo->Name;
             sObjectMgr.GetCreatureLocaleStrings(i_cInfo->Entry, loc_idx, &nameForLocale);
 
-            WorldObject::BuildMonsterChat(&data, i_senderGuid, i_msgtype, text, i_language, nameForLocale, i_target ? i_target->GetObjectGuid() : ObjectGuid(), i_target ? i_target->GetNameForLocaleIdx(loc_idx) : "");
+            ChatHandler::BuildChatPacket(data, i_msgtype, text, i_language, CHAT_TAG_NONE, i_senderGuid, nameForLocale, i_target ? i_target->GetObjectGuid() : ObjectGuid(),
+                i_target ? i_target->GetNameForLocaleIdx(loc_idx) : "");
         }
 
     private:
@@ -2299,7 +2369,7 @@ class StaticMonsterChatBuilder
         CreatureInfo const* i_cInfo;
         ChatMsg i_msgtype;
         int32 i_textId;
-        uint32 i_language;
+        Language i_language;
         Unit const* i_target;
 };
 
@@ -2312,7 +2382,7 @@ class StaticMonsterChatBuilder
  * @param language language of the text
  * @param target, can be NULL
  */
-void Map::MonsterYellToMap(ObjectGuid guid, int32 textId, uint32 language, Unit const* target) const
+void Map::MonsterYellToMap(ObjectGuid guid, int32 textId, Language language, Unit const* target) const
 {
     if (guid.IsAnyTypeCreature())
     {
@@ -2343,7 +2413,7 @@ void Map::MonsterYellToMap(ObjectGuid guid, int32 textId, uint32 language, Unit 
  * @param senderLowGuid provide way proper show yell for near spawned creature with known lowguid,
  *        0 accepted by client else if this not important
  */
-void Map::MonsterYellToMap(CreatureInfo const* cinfo, int32 textId, uint32 language, Unit const* target, uint32 senderLowGuid /*= 0*/) const
+void Map::MonsterYellToMap(CreatureInfo const* cinfo, int32 textId, Language language, Unit const* target, uint32 senderLowGuid /*= 0*/) const
 {
     StaticMonsterChatBuilder say_build(cinfo, CHAT_MSG_MONSTER_YELL, textId, language, target, senderLowGuid);
     MaNGOS::LocalizedPacketDo<StaticMonsterChatBuilder> say_do(say_build);
@@ -2432,7 +2502,7 @@ void Map::AddAttackerFor(ObjectGuid const& targetGuid, ObjectGuid const& attacke
     if (targetGuid.IsEmpty() || attackerGuid.IsEmpty())
         return;
 
-    WriteGuard Guard(GetLock());
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     AttackersMap::iterator itr = m_attackersMap.find(targetGuid);
     if (itr != m_attackersMap.end())
     {
@@ -2450,7 +2520,7 @@ void Map::RemoveAttackerFor(ObjectGuid const& targetGuid, ObjectGuid const& atta
     if (targetGuid.IsEmpty() || attackerGuid.IsEmpty())
         return;
 
-    WriteGuard Guard(GetLock());
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     AttackersMap::iterator itr = m_attackersMap.find(targetGuid);
     if (itr != m_attackersMap.end())
     {
@@ -2463,7 +2533,7 @@ void Map::RemoveAllAttackersFor(ObjectGuid const& targetGuid)
     if (targetGuid.IsEmpty())
         return;
 
-    WriteGuard Guard(GetLock());
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     AttackersMap::iterator itr = m_attackersMap.find(targetGuid);
     if (itr != m_attackersMap.end())
     {
@@ -2473,13 +2543,13 @@ void Map::RemoveAllAttackersFor(ObjectGuid const& targetGuid)
 
 GuidSet& Map::GetAttackersFor(ObjectGuid const& targetGuid)
 {
-    ReadGuard Guard(GetLock());
+    ReadGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     return m_attackersMap[targetGuid];
 }
 
 bool Map::IsInCombat(ObjectGuid const& targetGuid) const
 {
-    ReadGuard Guard(const_cast<Map*>(this)->GetLock());
+    ReadGuard Guard(const_cast<Map*>(this)->GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     AttackersMap::const_iterator itr = m_attackersMap.find(targetGuid);
     if (itr == m_attackersMap.end())
         return false;
@@ -2505,7 +2575,7 @@ void Map::RemoveAttackersStorageFor(ObjectGuid const& targetGuid)
     if (targetGuid.IsEmpty())
         return;
 
-    WriteGuard Guard(GetLock());
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     AttackersMap::iterator itr = m_attackersMap.find(targetGuid);
     if (itr != m_attackersMap.end())
     {
@@ -2596,7 +2666,7 @@ float Map::GetVisibilityDistance(WorldObject const* obj) const
 bool Map::IsInLineOfSight(float srcX, float srcY, float srcZ, float destX, float destY, float destZ, uint32 phasemask) const
 {
     return VMAP::VMapFactory::createOrGetVMapManager()->isInLineOfSight(GetId(), srcX, srcY, srcZ, destX, destY, destZ)
-        && m_dyn_tree.isInLineOfSight(srcX, srcY, srcZ, destX, destY, destZ, phasemask);
+        && IsInLineOfSightByDynamicMapTree(srcX, srcY, srcZ, destX, destY, destZ, phasemask);
 }
 
 /**
@@ -2617,7 +2687,8 @@ bool Map::GetHitPosition(float srcX, float srcY, float srcZ, float& destX, float
         destZ = tempZ;
     }
     // at second all dynamic objects, if static check has an hit, then we can calculate only to this point and NOT to end, because we need closely hit point
-    bool result1 = m_dyn_tree.getObjectHitPos(phasemask, srcX, srcY, srcZ, destX, destY, destZ, tempX, tempY, tempZ, modifyDist);
+    ReadGuard Guard(const_cast<Map*>(this)->GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    bool result1 = GetDynamicMapTree().getObjectHitPos(phasemask, srcX, srcY, srcZ, destX, destY, destZ, tempX, tempY, tempZ, modifyDist);
     if (result1)
     {
         DEBUG_LOG("Map::GetHitPosition vmaps corrects gained with dynamic objects! new dest coords are X:%f Y:%f Z:%f",destX, destY, destZ);
@@ -2630,38 +2701,69 @@ bool Map::GetHitPosition(float srcX, float srcY, float srcZ, float& destX, float
 
 float Map::GetHeight(uint32 phasemask, float x, float y, float z) const
 {
-    float staticHeight = m_TerrainData->GetHeightStatic(x, y, z);
+    float staticHeight = GetTerrain()->GetHeightStatic(x, y, z);
 
     // Get Dynamic Height around static Height (if valid)
     float dynSearchHeight = 2.0f + (z < staticHeight ? staticHeight : z);
-    return std::max<float>(staticHeight, m_dyn_tree.getHeight(x, y, dynSearchHeight, dynSearchHeight - staticHeight, phasemask));
+    ReadGuard Guard(const_cast<Map*>(this)->GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    return std::max<float>(staticHeight, GetDynamicMapTree().getHeight(x, y, dynSearchHeight, dynSearchHeight - staticHeight, phasemask));
 }
 
-void Map::InsertGameObjectModel(const GameObjectModel& mdl)
+void Map::InsertGameObjectModel(GameObjectModel const& mdl)
 {
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     m_dyn_tree.insert(mdl);
 }
 
-void Map::RemoveGameObjectModel(const GameObjectModel& mdl)
+void Map::RemoveGameObjectModel(GameObjectModel const& mdl)
 {
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
     m_dyn_tree.remove(mdl);
 }
 
-bool Map::ContainsGameObjectModel(const GameObjectModel& mdl) const
+bool Map::ContainsGameObjectModel(GameObjectModel const& mdl) const
 {
-    return m_dyn_tree.contains(mdl);
+    ReadGuard Guard(const_cast<Map*>(this)->GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    return GetDynamicMapTree().contains(mdl);
+}
+
+void Map::DynamicMapTreeBalance()
+{
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    m_dyn_tree.balance();
+}
+
+void Map::DynamicMapTreeUpdate(uint32 const& t_diff)
+{
+    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    m_dyn_tree.update(t_diff);
+}
+
+bool Map::IsInLineOfSightByDynamicMapTree(float srcX, float srcY, float srcZ, float destX, float destY, float destZ, uint32 phasemask) const
+{
+    ReadGuard Guard(const_cast<Map*>(this)->GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    return GetDynamicMapTree().isInLineOfSight(srcX, srcY, srcZ, destX, destY, destZ, phasemask);
+}
+
+DynamicMapTree const& Map::GetDynamicMapTree() const
+{
+   // Don't need lock here! use locks around this usage.
+   return m_dyn_tree;
 }
 
 template<class T> void Map::LoadObjectToGrid(uint32& guid, GridType& grid, BattleGround* bg)
 {
-    WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
     T* obj = new T;
     if(!obj->LoadFromDB(guid, this))
     {
         delete obj;
         return;
     }
-    grid.AddGridObject(obj);
+
+    {
+        WriteGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+        grid.AddGridObject(obj);
+    }
     setUnitCell(obj);
 
     obj->SetMap(this);
@@ -2684,13 +2786,11 @@ WorldObjectEventProcessor* Map::GetEvents()
 
 void Map::KillAllEvents(bool force)
 {
-    WriteGuard Guard(GetLock());
     GetEvents()->KillAllEvents(force);
 }
 
 void Map::AddEvent(BasicEvent* Event, uint64 e_time, bool set_addtime)
 {
-    WriteGuard Guard(GetLock());
     if (set_addtime)
         GetEvents()->AddEvent(Event, GetEvents()->CalculateTime(e_time), set_addtime);
     else
@@ -2699,10 +2799,7 @@ void Map::AddEvent(BasicEvent* Event, uint64 e_time, bool set_addtime)
 
 void Map::UpdateEvents(uint32 update_diff)
 {
-    {
-        ReadGuard Guard(GetLock());
-        GetEvents()->RenewEvents();
-    }
+    GetEvents()->RenewEvents();
     GetEvents()->Update(update_diff);
 }
 
@@ -2752,4 +2849,87 @@ void Map::SendRemoveNotifyToStoredClients(WorldObject* object, bool destroy)
         object->GetObjectGuid().GetString().c_str(), object->GetNotifiedClients().size(), count);
 
     object->GetNotifiedClients().clear();
+}
+
+bool Map::UpdateGridState(NGridType& grid, GridInfo& info, uint32 const& t_diff)
+{
+
+    ACE_GUARD_RETURN(ObjectLockType, Guard, GetLock(MAP_LOCK_TYPE_MAPOBJECTS), false);
+
+    switch (grid.GetGridState())
+    {
+        case GRID_STATE_ACTIVE:
+        {
+            // Only check grid activity every (grid_expiry/10) ms, because it's really useless to do it every cycle
+            info.UpdateTimeTracker(t_diff);
+            if (info.getTimeTracker().Passed())
+            {
+                Guard.release();
+                if (grid.ActiveObjectsInGrid() == 0 && !ActiveObjectsNearGrid(grid.getX(), grid.getY()))
+                {
+                    ObjectGridStoper stoper(grid);
+                    stoper.StopN();
+                    grid.SetGridState(GRID_STATE_IDLE);
+                    DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING,"Map::UpdateGridState grid[%u,%u] on map %u instance %u moved to IDLE state", grid.getX(), grid.getY(), GetId(), GetInstanceId());
+                    ResetGridExpiry(grid, 0.1f);
+                }
+                else
+                {
+                    ResetGridExpiry(grid, 0.2f);
+                }
+            }
+            break;
+        }
+        case GRID_STATE_IDLE:
+        {
+            // Only check grid activity very (grid_expiry/10) ms, because it's really useless to do it every cycle
+            info.UpdateTimeTracker(t_diff);
+            if (info.getTimeTracker().Passed())
+            {
+                ResetGridExpiry(grid, 0.8f);
+                grid.SetGridState(GRID_STATE_REMOVAL);
+                DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING,"Map::UpdateGridState grid[%u,%u] on map %u instance %u moved to REMOVAL state", grid.getX(), grid.getY(), GetId(), GetInstanceId());
+            }
+            break;
+        }
+        case GRID_STATE_REMOVAL:
+        {
+            if (!info.getUnloadLock())
+            {
+                info.UpdateTimeTracker(t_diff);
+                if (info.getTimeTracker().Passed())
+                {
+                    Guard.release();
+                    if (!UnloadGrid(grid, false))
+                    {
+                        DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING,"Map::UpdateGridState grid[%u,%u] for map %u instance %u differed unloading due to players or active objects nearby", grid.getX(), grid.getY(), GetId(), GetInstanceId());
+                        ResetGridExpiry(grid);
+                    }
+                }
+            }
+            break;
+        }
+        case GRID_STATE_INVALID:
+        case MAX_GRID_STATE:
+        default:
+        {
+            sLog.outError("Map::UpdateGridState trying set invalid state (%u) to grid[%u,%u] on map %u instance %u", grid.GetGridState(), grid.getX(), grid.getY(), GetId(), GetInstanceId());
+            return false;
+        }
+    }
+    return true;
+}
+
+GuidQueue Map::GetActiveObjects()
+{
+    ReadGuard Guard(GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+    GuidQueue result;
+    for (GuidSet::const_iterator itr = m_activeObjects.begin(); itr != m_activeObjects.end(); ++itr)
+        result.push(*itr);
+    return result;
+}
+
+time_t Map::GetGridExpiry() const
+{
+    return sWorld.getConfig(CONFIG_UINT32_INTERVAL_GRIDCLEAN);
 }

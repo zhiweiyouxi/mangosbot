@@ -38,6 +38,7 @@
 #include "Weather.h"
 #include "CreatureLinkingMgr.h"
 #include "ObjectLock.h"
+#include "ObjectHandler.h"
 #include "vmap/DynamicTree.h"
 #include "WorldObjectEvents.h"
 
@@ -98,7 +99,64 @@ enum LevelRequirementVsMode
 
 #define MIN_UNLOAD_DELAY      1                             // immediate unload
 
-typedef std::map<ObjectGuid,GuidSet>  AttackersMap;
+struct MANGOS_DLL_DECL MapID
+{
+    explicit MapID(uint32 id) : nMapId(id), nInstanceId(0) {}
+    MapID(uint32 id, uint32 instid) : nMapId(id), nInstanceId(instid) {}
+
+    bool operator<(const MapID& val) const
+    {
+        if (nMapId == val.nMapId)
+            return nInstanceId < val.nInstanceId;
+
+        if (IsContinent() && !val.IsContinent())
+            return true;
+        else if (!IsContinent() && val.IsContinent())
+            return false;
+
+        return nMapId < val.nMapId;
+    }
+
+    bool operator==(const MapID& val) const { return nMapId == val.nMapId && nInstanceId == val.nInstanceId; }
+
+    bool IsContinent() const
+    {
+        return nMapId == 0 || nMapId == 1 || nMapId == 530 || nMapId == 571;
+    };
+
+    uint32 const& GetId() const { return nMapId; };
+    uint32 const& GetInstanceId() const { return nInstanceId; };
+
+    uint32 nMapId;
+    uint32 nInstanceId;
+};
+
+HASH_NAMESPACE_START
+template<> class hash <MapID>
+{
+    public: size_t operator()(const MapID& __x) const { return (size_t)((__x.GetId() << 16) | (__x.GetInstanceId())); }
+};
+HASH_NAMESPACE_END
+
+typedef UNORDERED_SET<MapID> MapIDSet;
+
+struct MANGOS_DLL_DECL ZoneID : public MapID
+{
+    explicit ZoneID(uint32 mapId, uint32 zoneId) : MapID(mapId), nZoneId(zoneId) {}
+    ZoneID(uint32 mapId, uint32 instid, uint32 zoneId) : MapID(mapId, instid), nZoneId(zoneId) {}
+    bool operator == (const ZoneID& val) const { return GetId() == val.GetId() && GetInstanceId() == val.GetInstanceId() && GetZoneId() == val.GetZoneId(); }
+    uint32 const& GetZoneId() const { return nZoneId; };
+    uint32 nZoneId;
+};
+
+HASH_NAMESPACE_START
+template<> class hash <ZoneID>
+{
+    public: size_t operator()(const ZoneID& __x) const { return (size_t)((__x.GetId() << 24) | (__x.GetInstanceId() << 16) | (__x.GetZoneId())) ; }
+};
+HASH_NAMESPACE_END
+
+typedef UNORDERED_MAP<ObjectGuid,GuidSet>  AttackersMap;
 
 struct LoadingObjectQueueMember
 {
@@ -193,15 +251,17 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         bool GetUnloadLock(const GridPair &p) const { return getNGrid(p.x_coord, p.y_coord)->getUnloadLock(); }
         void SetUnloadLock(const GridPair &p, bool on) { getNGrid(p.x_coord, p.y_coord)->setUnloadExplicitLock(on); }
         void LoadGrid(const Cell& cell, bool no_unload = false);
-        bool UnloadGrid(const uint32 &x, const uint32 &y, bool pForce);
+        bool UnloadGrid(NGridType& grid, bool pForce);
+        bool UpdateGridState(NGridType& grid, GridInfo& gridInfo, uint32 const& t_diff);
+
         virtual void UnloadAll(bool pForce);
 
-        void ResetGridExpiry(NGridType &grid, float factor = 1) const
+        void ResetGridExpiry(NGridType& grid, float factor = 1.0f) const
         {
-            grid.ResetTimeTracker((time_t)((float)i_gridExpiry*factor));
+            grid.ResetTimeTracker((time_t)((float)GetGridExpiry() * factor));
         }
 
-        time_t GetGridExpiry(void) const { return i_gridExpiry; }
+        time_t GetGridExpiry() const;
         uint32 GetId(void) const { return i_id; }
 
         // some calls like isInWater should not use vmaps due to processor power
@@ -270,14 +330,14 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         };
         bool ScriptsStart(ScriptMapMapName const& scripts, uint32 id, Object* source, Object* target, ScriptExecutionParam execParams = SCRIPT_EXEC_PARAM_NONE);
         void ScriptCommandStart(ScriptInfo const& script, uint32 delay, Object* source, Object* target);
+        ScriptAction* GetNextSheduledScript();
+        bool EraseScriptAction(ScriptAction* action);
 
-        typedef UNORDERED_SET<WorldObject*> ActiveNonPlayers;
         // must called with AddToWorld
         void AddToActive(WorldObject* obj);
         // must called with RemoveFromWorld
         void RemoveFromActive(WorldObject* obj);
-        ActiveNonPlayers const& GetActiveObjects() { return m_activeNonPlayers; };
-
+        GuidQueue GetActiveObjects();
 
         Player* GetPlayer(ObjectGuid const& guid, bool globalSearch = false);
         Creature* GetCreature(ObjectGuid  const& guid);
@@ -302,19 +362,20 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         void AddUpdateObject(ObjectGuid const& guid);
         void RemoveUpdateObject(ObjectGuid const& guid);
         GuidSet const* GetObjectsUpdateQueue() { return &i_objectsToClientUpdate; };
+        ObjectGuid GetNextObjectFromUpdateQueue();
 
         // DynObjects currently
         uint32 GenerateLocalLowGuid(HighGuid guidhigh);
 
         //get corresponding TerrainData object for this particular map
-        const TerrainInfo * GetTerrain() const { return m_TerrainData; }
+        TerrainInfoPtr GetTerrain() const { return m_TerrainData; }
 
         void CreateInstanceData(bool load);
         InstanceData* GetInstanceData() const { return i_data; }
         uint32 GetScriptId() const { return i_script_id; }
 
-        void MonsterYellToMap(ObjectGuid guid, int32 textId, uint32 language, Unit const* target) const;
-        void MonsterYellToMap(CreatureInfo const* cinfo, int32 textId, uint32 language, Unit const* target, uint32 senderLowGuid = 0) const;
+        void MonsterYellToMap(ObjectGuid guid, int32 textId, Language language, Unit const* target) const;
+        void MonsterYellToMap(CreatureInfo const* cinfo, int32 textId, Language language, Unit const* target, uint32 senderLowGuid = 0) const;
         void PlayDirectSoundToMap(uint32 soundId, uint32 zoneId = 0) const;
 
         // Weather
@@ -345,9 +406,13 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         void ForcedUnload();
 
         // Dynamic VMaps
+        DynamicMapTree const& GetDynamicMapTree() const;
         float GetHeight(uint32 phasemask, float x, float y, float z) const;
         bool IsInLineOfSight(float x1, float y1, float z1, float x2, float y2, float z2, uint32 phasemask) const;
         bool GetHitPosition(float srcX, float srcY, float srcZ, float& destX, float& destY, float& destZ, uint32 phasemask, float modifyDist) const;
+        void DynamicMapTreeBalance();
+        void DynamicMapTreeUpdate(uint32 const& t_diff);
+        bool IsInLineOfSightByDynamicMapTree(float srcX, float srcY, float srcZ, float destX, float destY, float destZ, uint32 phasemask) const;
 
         void InsertGameObjectModel(const GameObjectModel& mdl);
         void RemoveGameObjectModel(const GameObjectModel& mdl);
@@ -367,8 +432,6 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
 
     private:
         void LoadMapAndVMap(int gx, int gy);
-
-        void SetTimer(uint32 t) { i_gridExpiry = t < MIN_GRID_DELAY ? MIN_GRID_DELAY : t; }
 
         void SendInitSelf( Player * player );
 
@@ -393,7 +456,14 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         {
             MANGOS_ASSERT(x < MAX_NUMBER_OF_GRIDS);
             MANGOS_ASSERT(y < MAX_NUMBER_OF_GRIDS);
-            ReadGuard Guard(const_cast<Map*>(this)->GetLock(MAP_LOCK_TYPE_MAPOBJECTS));
+            ReadGuard Guard(const_cast<Map*>(this)->GetLock(MAP_LOCK_TYPE_MAPOBJECTS), true);
+            return i_grids[x][y];
+        }
+
+        NGridType const* getNGridWithoutLock(uint32 x, uint32 y) const
+        {
+            MANGOS_ASSERT(x < MAX_NUMBER_OF_GRIDS);
+            MANGOS_ASSERT(y < MAX_NUMBER_OF_GRIDS);
             return i_grids[x][y];
         }
 
@@ -402,7 +472,7 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         void setUnitCell(Creature* obj);
 
         bool IsGridObjectDataLoaded(NGridType const* grid) const;
-        void SetGridObjectDataLoaded(bool pLoaded, NGridType* grid);
+        void SetGridObjectDataLoaded(bool pLoaded, NGridType& grid);
 
         void setNGrid(NGridType* grid, uint32 x, uint32 y);
         void ScriptsProcess();
@@ -422,19 +492,17 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         float m_VisibleDistance;
 
         MapRefManager m_mapRefManager;
-        MapRefManager::iterator m_mapRefIter;
 
-        ActiveNonPlayers m_activeNonPlayers;
-        ActiveNonPlayers::iterator m_activeNonPlayersIter;
+        GuidSet m_activeObjects;
+        GuidSet m_activeObjectsSafeCopy;
         MapStoredObjectTypesContainer m_objectsStore;
 
     private:
-        time_t i_gridExpiry;
 
         NGridType* i_grids[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
 
         //Shared geodata object with map coord info...
-        TerrainInfo* const m_TerrainData;
+        TerrainInfoPtr m_TerrainData;
         DynamicMapTree m_dyn_tree;
 
         bool m_bLoadedGrids[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
@@ -538,19 +606,15 @@ class MANGOS_DLL_SPEC BattleGroundMap : public Map
 };
 
 template<class T, class CONTAINER>
-inline void
-Map::Visit(const Cell& cell, TypeContainerVisitor<T, CONTAINER> &visitor)
+inline void Map::Visit(Cell const& cell, TypeContainerVisitor<T, CONTAINER>& visitor)
 {
-    const uint32 x = cell.GridX();
-    const uint32 y = cell.GridY();
-    const uint32 cell_x = cell.CellX();
-    const uint32 cell_y = cell.CellY();
-
-    if (!cell.NoCreate() || loaded(GridPair(x,y)))
-    {
+    NGridType const* cgrid = getNGridWithoutLock(cell.GridX(), cell.GridY());
+    if (cell.NoCreate() && !IsGridObjectDataLoaded(cgrid))
+        return;
+    if (!IsGridObjectDataLoaded(cgrid))
         EnsureGridLoaded(cell);
-        getNGrid(x, y)->Visit(cell_x, cell_y, visitor);
-    }
+    NGridType& grid = *getNGrid(cell.GridX(), cell.GridY());
+    grid.Visit(cell.CellX(), cell.CellY(), visitor);
 }
 
 #endif

@@ -1397,7 +1397,7 @@ struct MapEntry
     {
         if (IsContinent())
             return false;
-        return map_type == MAP_COMMON && mapFlags == MAP_FLAG_INSTANCEABLE;
+        return map_type == MAP_COMMON && mapFlags == MAP_FLAG_INSTANCEABLE && linked_zone == 0;
     }
 };
 
@@ -2239,6 +2239,7 @@ struct SpellEntry
     inline uint32 GetEffectImplicitTargetBByIndex(SpellEffectIndex j) const { return EffectImplicitTargetB[j];};
     inline uint32 GetEffectApplyAuraNameByIndex(SpellEffectIndex j) const   { return EffectApplyAuraName[j];};
     inline uint32 GetEffectMiscValue(SpellEffectIndex j) const              { return EffectMiscValue[j];};
+    inline uint32 GetEffectMiscValueB(SpellEffectIndex j) const              { return EffectMiscValueB[j];};
     inline ClassFamilyMask GetSpellFamilyFlags() const                      { return SpellFamilyFlags; };
 
     inline uint32 GetCastingTimeIndex() const        { return CastingTimeIndex; };
@@ -2484,7 +2485,7 @@ struct TransportAnimationEntry
     float     x;                                            // 3       transport offset X
     float     y;                                            // 4       transport offset Y
     float     z;                                            // 5       transport offset Z
-    //uint32    animId;                                     // 6       animation ID
+    uint32    animId;                                       // 6       animation ID
 };
 
 struct TransportRotationEntry
@@ -2626,9 +2627,9 @@ struct WMOAreaTableEntry
 
 struct WorldMapAreaEntry
 {
-    //uint32  ID;                                           // 0        m_ID
+    uint32  ID;                                             // 0        m_ID
     uint32  map_id;                                         // 1        m_mapID
-    uint32  area_id;                                        // 2        m_areaID index (continent 0 areas ignored)
+    uint32  zone_id;                                        // 2        m_areaID index (0 areas contains oveall continent definition)
     //char* internal_name                                   // 3        m_areaName
     float   y1;                                             // 4        m_locLeft
     float   y2;                                             // 5        m_locRight
@@ -2763,6 +2764,9 @@ struct TaxiPathNodePtr
 
 typedef Path<TaxiPathNodePtr,TaxiPathNodeEntry const> TaxiPathNodeList;
 typedef std::vector<TaxiPathNodeList> TaxiPathNodesByPath;
+
+typedef UNORDERED_MAP<uint32 /*frame*/, TransportAnimationEntry const*> TransportAnimationEntryMap;
+typedef UNORDERED_MAP<uint32, TransportAnimationEntryMap> TransportAnimationsByEntry;
 
 #define TaxiMaskSize 14
 typedef uint32 TaxiMask[TaxiMaskSize];

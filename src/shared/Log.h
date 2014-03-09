@@ -90,7 +90,7 @@ enum Color
 
 const int Color_count = int(WHITE)+1;
 
-class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Thread_Mutex> >
+class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, MANGOSR2_MUTEX_MODEL_2> >
 {
         friend class MaNGOS::OperatorNew<Log>;
 
@@ -200,7 +200,6 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Th
         FILE* eventAiErLogfile;
         FILE* scriptErrLogFile;
         FILE* worldLogfile;
-        ACE_Thread_Mutex m_worldLogMtx;
 
         // log/console control
         LogLevel m_logLevel;

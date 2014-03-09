@@ -144,8 +144,7 @@ void LoadHelper(CellCorpseSet const& cell_corpses, CellPair& cell, CorpseMapType
     }
 }
 
-void
-ObjectGridLoader::Visit(GameObjectMapType &m)
+void ObjectGridLoader::Visit(GameObjectMapType &m)
 {
     uint32 x = (i_cell.GridX()*MAX_NUMBER_OF_CELLS) + i_cell.CellX();
     uint32 y = (i_cell.GridY()*MAX_NUMBER_OF_CELLS) + i_cell.CellY();
@@ -154,13 +153,16 @@ ObjectGridLoader::Visit(GameObjectMapType &m)
 
     CellObjectGuids const& cell_guids = sObjectMgr.GetCellObjectGuids(i_map->GetId(), i_map->GetSpawnMode(), cell_id);
 
-    GridType& grid = (*i_map->getNGrid(i_cell.GridX(),i_cell.GridY())) (i_cell.CellX(),i_cell.CellY());
+    NGridType* pNGrid = const_cast<NGridType*>(i_map->getNGridWithoutLock(i_cell.GridX(),i_cell.GridY()));
+    if (!pNGrid)
+        return;
+    GridType& grid = (*pNGrid)(i_cell.CellX(),i_cell.CellY());
+
     LoadHelper(cell_guids.gameobjects, cell_pair, m, i_gameObjects, i_map, grid, TYPEID_GAMEOBJECT);
     LoadHelper(i_map->GetPersistentState()->GetCellObjectGuids(cell_id).gameobjects, cell_pair, m, i_gameObjects, i_map, grid, TYPEID_GAMEOBJECT);
 }
 
-void
-ObjectGridLoader::Visit(CreatureMapType &m)
+void ObjectGridLoader::Visit(CreatureMapType &m)
 {
     uint32 x = (i_cell.GridX()*MAX_NUMBER_OF_CELLS) + i_cell.CellX();
     uint32 y = (i_cell.GridY()*MAX_NUMBER_OF_CELLS) + i_cell.CellY();
@@ -169,13 +171,16 @@ ObjectGridLoader::Visit(CreatureMapType &m)
 
     CellObjectGuids const& cell_guids = sObjectMgr.GetCellObjectGuids(i_map->GetId(), i_map->GetSpawnMode(), cell_id);
 
-    GridType& grid = (*i_map->getNGrid(i_cell.GridX(),i_cell.GridY())) (i_cell.CellX(),i_cell.CellY());
+    NGridType* pNGrid = const_cast<NGridType*>(i_map->getNGridWithoutLock(i_cell.GridX(),i_cell.GridY()));
+    if (!pNGrid)
+        return;
+    GridType& grid = (*pNGrid)(i_cell.CellX(),i_cell.CellY());
+
     LoadHelper(cell_guids.creatures, cell_pair, m, i_creatures, i_map, grid, TYPEID_UNIT);
     LoadHelper(i_map->GetPersistentState()->GetCellObjectGuids(cell_id).creatures, cell_pair, m, i_creatures, i_map, grid, TYPEID_UNIT);
 }
 
-void
-ObjectWorldLoader::Visit(CorpseMapType &m)
+void ObjectWorldLoader::Visit(CorpseMapType &m)
 {
     uint32 x = (i_cell.GridX()*MAX_NUMBER_OF_CELLS) + i_cell.CellX();
     uint32 y = (i_cell.GridY()*MAX_NUMBER_OF_CELLS) + i_cell.CellY();
@@ -184,12 +189,15 @@ ObjectWorldLoader::Visit(CorpseMapType &m)
 
     // corpses are always added to spawn mode 0 and they are spawned by their instance id
     CellObjectGuids const& cell_guids = sObjectMgr.GetCellObjectGuids(i_map->GetId(), 0, cell_id);
-    GridType& grid = (*i_map->getNGrid(i_cell.GridX(),i_cell.GridY())) (i_cell.CellX(),i_cell.CellY());
+    NGridType* pNGrid = const_cast<NGridType*>(i_map->getNGridWithoutLock(i_cell.GridX(),i_cell.GridY()));
+    if (!pNGrid)
+        return;
+    GridType& grid = (*pNGrid)(i_cell.CellX(),i_cell.CellY());
+
     LoadHelper(cell_guids.corpses, cell_pair, m, i_corpses, i_map, grid);
 }
 
-void
-ObjectGridLoader::Load(GridType &grid)
+void ObjectGridLoader::Load(GridType &grid)
 {
     {
         TypeContainerVisitor<ObjectGridLoader, GridTypeMapContainer > loader(*this);
@@ -208,17 +216,17 @@ void ObjectGridLoader::LoadN(void)
 {
     i_gameObjects = 0; i_creatures = 0; i_corpses = 0;
     i_cell.data.Part.cell_y = 0;
-    for(unsigned int x=0; x < MAX_NUMBER_OF_CELLS; ++x)
+    for (uint32 x = 0; x < MAX_NUMBER_OF_CELLS; ++x)
     {
         i_cell.data.Part.cell_x = x;
-        for(unsigned int y=0; y < MAX_NUMBER_OF_CELLS; ++y)
+        for (uint32 y = 0; y < MAX_NUMBER_OF_CELLS; ++y)
         {
             i_cell.data.Part.cell_y = y;
             GridLoader<Player, AllWorldObjectTypes, AllGridObjectTypes> loader;
             loader.Load(i_grid(x, y), *this);
         }
     }
-    DEBUG_LOG("%u GameObjects, %u Creatures, and %u Corpses/Bones loaded for grid %u on map %u", i_gameObjects, i_creatures, i_corpses,i_grid.GetGridId(), i_map->GetId());
+    DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING,"ObjectGridLoader::LoadN %u GameObjects, %u Creatures, and %u Corpses/Bones loaded for grid[%u,%u] on map %u instance %u", i_gameObjects, i_creatures, i_corpses, i_grid.getX(), i_grid.getY(), i_map->GetId(), i_map->GetInstanceId());
 }
 
 void ObjectGridUnloader::MoveToRespawnN()

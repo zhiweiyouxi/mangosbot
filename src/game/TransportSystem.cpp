@@ -65,7 +65,7 @@ void TransportBase::Update(uint32 diff)
 }
 
 // Update the global positions of all passengers
-void TransportBase::UpdateGlobalPositions()
+void TransportBase::UpdateGlobalPositions(bool isParent)
 {
     WorldLocation pos = m_owner->GetPosition();
 
@@ -78,7 +78,8 @@ void TransportBase::UpdateGlobalPositions()
 
     if (!m_passengers.empty())
     {
-        MAPLOCK_READ(GetOwner(), MAP_LOCK_TYPE_MOVEMENT);
+        if (!isParent)
+            MAPLOCK_READ(GetOwner(), MAP_LOCK_TYPE_MOVEMENT);
         // Update global positions
         for (PassengerMap::const_iterator itr = m_passengers.begin(); itr != m_passengers.end(); ++itr)
             UpdateGlobalPositionOf(itr->first, itr->second.GetLocalPosition());
@@ -95,25 +96,30 @@ void TransportBase::UpdateGlobalPositionOf(ObjectGuid const& passengerGuid, Posi
     if (!passenger)
         return;
 
-    Position g = CalculateGlobalPositionOf(pos);
+    //Position g = CalculateGlobalPositionOf(pos);
+    WorldLocation globalPos = GetOwner()->GetPosition();
+    globalPos.SetTransportPosition(pos);
+
+    if (globalPos == passenger->GetPosition())
+        return;
 
     switch(passenger->GetTypeId())
     {
         case TYPEID_GAMEOBJECT:
         case TYPEID_DYNAMICOBJECT:
-            m_owner->GetMap()->Relocation((GameObject*)passenger, g);
+            m_owner->GetMap()->Relocation((GameObject*)passenger, globalPos);
             break;
         case TYPEID_UNIT:
-            m_owner->GetMap()->Relocation((Creature*)passenger, g);
+            m_owner->GetMap()->Relocation((Creature*)passenger, globalPos);
             // If passenger is vehicle
             if (((Unit*)passenger)->IsVehicle())
-                ((Unit*)passenger)->GetVehicleKit()->UpdateGlobalPositions();
+                ((Unit*)passenger)->GetVehicleKit()->UpdateGlobalPositions(true);
             break;
         case TYPEID_PLAYER:
-            m_owner->GetMap()->Relocation((Player*)passenger, g);
+            m_owner->GetMap()->Relocation((Player*)passenger, globalPos);
             // If passenger is vehicle
             if (((Unit*)passenger)->IsVehicle())
-                ((Unit*)passenger)->GetVehicleKit()->UpdateGlobalPositions();
+                ((Unit*)passenger)->GetVehicleKit()->UpdateGlobalPositions(true);
             break;
         case TYPEID_CORPSE:
         // TODO - add corpse relocation
@@ -206,13 +212,12 @@ void TransportBase::UnBoardPassenger(WorldObject* passenger)
 
 void TransportInfo::SetLocalPosition(Position const& pos)
 {
-    m_owner.SetTransportPosition(pos);
-
+    // m_owner.SetTransportPosition(pos);
     // Update global position
     m_transport.UpdateGlobalPositionOf(m_owner.GetObjectGuid(), pos);
 }
 
-WorldObject* TransportInfo::GetTransport() const 
+WorldObject* TransportInfo::GetTransport() const
 {
     return m_transport.GetOwner();
 }
@@ -248,11 +253,11 @@ void NotifyMapChangeBegin::operator() (WorldObject* obj) const
             if (!plr)
                 return;
             if (plr->isDead() && !plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST))
-                plr->ResurrectPlayer(1.0);
+                plr->ResurrectPlayer(100);
             if (plr->GetSession() && m_oldloc.GetMapId() != m_loc.GetMapId())
             {
                 WorldPacket data(SMSG_NEW_WORLD, 4);
-                data << uint32(plr->IsOnTransport() ? plr->GetTransport()->GetTransportMapId() : m_loc.GetMapId());
+                data << uint32(m_loc.GetMapId());
                 plr->GetSession()->SendPacket(&data);
             }
             plr->TeleportTo(m_loc, TELE_TO_NOT_LEAVE_TRANSPORT | TELE_TO_NODELAY);
@@ -289,7 +294,7 @@ void NotifyMapChangeEnd::operator() (WorldObject* obj) const
 
 void SendCurrentTransportDataWithHelper::operator() (WorldObject* object) const
 {
-    if (!object || 
+    if (!object ||
         object->GetObjectGuid() == m_player->GetObjectGuid() ||
         !m_player->HaveAtClient(object->GetObjectGuid()))
         return;

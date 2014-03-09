@@ -46,8 +46,10 @@
 #include "Map.h"
 #include "InstanceData.h"
 #include "DBCStructure.h"
+#include "Chat.h"
 
 #include "Policies/Singleton.h"
+
 
 INSTANTIATE_SINGLETON_1(AchievementGlobalMgr);
 
@@ -62,15 +64,8 @@ namespace MaNGOS
             {
                 char const* text = sObjectMgr.GetMangosString(i_textId, loc_idx);
 
-                data << uint8(i_msgtype);
-                data << uint32(LANG_UNIVERSAL);
-                data << i_player.GetObjectGuid();
-                data << uint32(5);
-                data << i_player.GetObjectGuid();
-                data << uint32(strlen(text) + 1);
-                data << text;
-                data << uint8(0);
-                data << uint32(i_achievementId);
+                ChatHandler::BuildChatPacket(data, i_msgtype, text, LANG_UNIVERSAL, i_player.GetChatTag(),  i_player.GetObjectGuid(), NULL, i_player.GetObjectGuid(), NULL, NULL,
+                    i_achievementId);
             }
 
         private:
@@ -95,6 +90,7 @@ bool AchievementCriteriaRequirement::IsValid(AchievementCriteriaEntry const* cri
         case ACHIEVEMENT_CRITERIA_TYPE_WIN_ARENA:
         case ACHIEVEMENT_CRITERIA_TYPE_WIN_RATED_ARENA:
         case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM:
+        case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_DAILY_QUEST:// only children's week event
         case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
         case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
         case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET2:
@@ -711,7 +707,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
         Cell::VisitWorldObjects(GetPlayer(), say_worker, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_SAY));
     }
 
-    WorldPacket data(SMSG_ACHIEVEMENT_EARNED, 8 + 4 + 8);
+    WorldPacket data(SMSG_ACHIEVEMENT_EARNED, GetPlayer()->GetPackGUID().size() + 4 + 4);
     data << GetPlayer()->GetPackGUID();
     data << uint32(achievement->ID);
     data.AppendPackedTime(time(NULL));
@@ -721,7 +717,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 
 void AchievementMgr::SendCriteriaUpdate(uint32 id, CriteriaProgress const* progress)
 {
-    WorldPacket data(SMSG_CRITERIA_UPDATE, 8 + 4 + 8);
+    WorldPacket data(SMSG_CRITERIA_UPDATE, 4 + 4 + 9 + GetPlayer()->GetPackGUID().size() + 4 + 4 + 4 + 4);
     data << uint32(id);
 
     time_t now = time(NULL);
@@ -886,7 +882,15 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
         AchievementCriteriaEntry const* achievementCriteria = *itr;
 
         AchievementEntry const* achievement = sAchievementStore.LookupEntry(achievementCriteria->referredAchievement);
-        // Checked in LoadAchievementCriteriaList
+        // *achievement Checked in LoadAchievementCriteriaList
+
+        // Don't complete "First on server" achieves for GMs
+        if (m_player->GetSession()->GetSecurity() > SEC_PLAYER)
+        {
+            if ((achievement->flags & ACHIEVEMENT_FLAG_REALM_FIRST_REACH) ||
+                (achievement->flags & ACHIEVEMENT_FLAG_REALM_FIRST_RAID_REACH))
+                continue;
+        }
 
         if ((achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE    && GetPlayer()->GetTeam() != HORDE) ||
                 (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != ALLIANCE))
@@ -2996,7 +3000,7 @@ void AchievementMgr::IncompletedAchievement(AchievementEntry const* achievement)
 void AchievementMgr::SendAllAchievementData()
 {
     // since we don't know the exact size of the packed GUIDs this is just an approximation
-    WorldPacket data(SMSG_ALL_ACHIEVEMENT_DATA, 4 * 2 + m_completedAchievements.size() * 4 * 2 + m_completedAchievements.size() * 7 * 4);
+    WorldPacket data(SMSG_ALL_ACHIEVEMENT_DATA, m_completedAchievements.size() * (4 + 4) + m_criteriaProgress.size() * (4 + 9 + 9 + 4 + 4 + 4 + 4));
     BuildAllDataPacket(&data);
     GetPlayer()->GetSession()->SendPacket(&data);
 }
@@ -3004,7 +3008,7 @@ void AchievementMgr::SendAllAchievementData()
 void AchievementMgr::SendRespondInspectAchievements(Player* player)
 {
     // since we don't know the exact size of the packed GUIDs this is just an approximation
-    WorldPacket data(SMSG_RESPOND_INSPECT_ACHIEVEMENTS, 4 + 4 * 2 + m_completedAchievements.size() * 4 * 2 + m_completedAchievements.size() * 7 * 4);
+    WorldPacket data(SMSG_RESPOND_INSPECT_ACHIEVEMENTS, GetPlayer()->GetPackGUID().size() + m_completedAchievements.size() * (4 + 4) + m_criteriaProgress.size() * (4 + 9 + 9 + 4 + 4 + 4 + 4));
     data << GetPlayer()->GetPackGUID();
     BuildAllDataPacket(&data);
     player->GetSession()->SendPacket(&data);

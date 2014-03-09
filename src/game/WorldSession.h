@@ -136,6 +136,15 @@ enum PartyResult
     ERR_PARTY_LFG_TELEPORT_IN_COMBAT    = 30
 };
 
+enum BattlefieldLeaveReason
+{
+    BATTLEFIELD_LEAVE_REASON_CLOSE     = 0x00000001,
+    //BATTLEFIELD_LEAVE_REASON_UNK1    = 0x00000002, (not used)
+    //BATTLEFIELD_LEAVE_REASON_UNK2    = 0x00000004, (not used)
+    BATTLEFIELD_LEAVE_REASON_EXITED    = 0x00000008,
+    BATTLEFIELD_LEAVE_REASON_LOW_LEVEL = 0x00000010,
+};
+
 enum ChatRestrictionType
 {
     ERR_CHAT_RESTRICTED = 0,
@@ -361,6 +370,7 @@ class MANGOS_DLL_SPEC WorldSession
 
         uint32 GetLatency() const { return m_latency; }
         void SetLatency(uint32 latency) { m_latency = latency; }
+        void ResetClientTimeDelay() { m_clientTimeDelay = 0; }
         uint32 getDialogStatus(Player *pPlayer, Object* questgiver, uint32 defstatus);
 
         // LFG
@@ -888,6 +898,17 @@ class MANGOS_DLL_SPEC WorldSession
         // end of playerbot mod
 
 
+        // BattleField system
+        void SendBfInvitePlayerToWar(ObjectGuid battlefieldGuid, uint32 uiZoneId, uint32 uiTimeToAccept);
+        void SendBfInvitePlayerToQueue(ObjectGuid battlefieldGuid);
+        void SendBfQueueInviteResponse(ObjectGuid battlefieldGuid, ObjectGuid queueGuid, uint32 uiZoneId, bool bCanQueue, bool bFull);
+        void SendBfEntered(ObjectGuid battlefieldGuid);
+        void SendBfLeaveMessage(ObjectGuid battlefieldGuid, BattlefieldLeaveReason reason);
+        void HandleBfQueueInviteResponse(WorldPacket& recv_data);
+        void HandleBfQueueRequest(WorldPacket& recv_data);
+        void HandleBfEntryInviteResponse(WorldPacket& recv_data);
+        void HandleBfExitRequest(WorldPacket& recv_data);
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);
@@ -918,6 +939,7 @@ class MANGOS_DLL_SPEC WorldSession
         LocaleConstant m_sessionDbcLocale;
         int m_sessionDbLocaleIndex;
         uint32 m_latency;
+        uint32 m_clientTimeDelay;
         AccountData m_accountData[NUM_ACCOUNT_DATA_TYPES];
         uint32 m_Tutorials[8];
         TutorialDataState m_tutorialState;
