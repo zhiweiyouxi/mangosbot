@@ -183,7 +183,10 @@ void PlayerbotAI::HandleTeleportAck()
 		bot->GetSession()->HandleMoveTeleportAckOpcode(p);
 	}
 	else if (bot->IsBeingTeleportedFar())
+	{
 		bot->GetSession()->HandleMoveWorldportAckOpcode();
+		SetNextCheckDelay(1000);
+	}
 }
 
 void PlayerbotAI::Reset()
@@ -406,11 +409,8 @@ void PlayerbotAI::ChangeEngine(BotState type)
 
 void PlayerbotAI::DoNextAction()
 {
-    if (bot->IsBeingTeleported() || (GetMaster() && GetMaster()->IsBeingTeleported()))
+    if (bot->IsBeingTeleported() || bot->IsBeingTeleportedDelayEvent() || (GetMaster() && GetMaster()->IsBeingTeleported()))
         return;
-
-    bot->UpdateUnderwaterState(bot->GetMap(), bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ());
-    bot->CheckAreaExploreAndOutdoor();
 
     currentEngine->DoNextAction(NULL);
 
@@ -686,9 +686,7 @@ bool PlayerbotAI::TellMasterNoFacing(string text, PlayerbotSecurityLevel securit
             (bot->GetMapId() != master->GetMapId() || bot->GetDistance(master) > sPlayerbotAIConfig.whisperDistance))
         return false;
 
-    WorldPacket data(SMSG_MESSAGECHAT, 1024);
-    bot->BuildPlayerChat(&data, *aiObjectContext->GetValue<ChatMsg>("chat"), text, LANG_UNIVERSAL);
-    master->GetSession()->SendPacket(&data);
+    bot->Whisper(text, LANG_UNIVERSAL, master->GetObjectGuid());
     return true;
 }
 

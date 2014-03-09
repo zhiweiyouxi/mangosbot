@@ -165,9 +165,6 @@ bool PlayerbotSecurity::CheckLevelFor(PlayerbotSecurityLevel level, bool silent,
         break;
     }
 
-    WorldPacket data(SMSG_MESSAGECHAT, 1024);
-    bot->BuildPlayerChat(&data, CHAT_MSG_WHISPER, out.str().c_str(), LANG_UNIVERSAL);
-    from->GetSession()->SendPacket(&data);
-
+	bot->Whisper(out.str(), LANG_UNIVERSAL, from->GetObjectGuid());
     return false;
 }

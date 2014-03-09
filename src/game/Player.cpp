@@ -4394,8 +4394,8 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             }
 
             // wow armory begin
-            CharacterDatabase.PExecute("DELETE FROM armory_character_stats WHERE guid = '%u'", lowguid);
-            CharacterDatabase.PExecute("DELETE FROM character_feed_log WHERE guid = '%u'", lowguid);
+            CharacterDatabase.PExecute("DELETE FROM armory_character_stats WHERE guid = '%u'", lowGuid);
+            CharacterDatabase.PExecute("DELETE FROM character_feed_log WHERE guid = '%u'", lowGuid);
             // wow armory end
             CharacterDatabase.PExecute("DELETE FROM characters WHERE guid = %u", lowGuid);
             CharacterDatabase.PExecute("DELETE FROM character_account_data WHERE guid = %u", lowGuid);
