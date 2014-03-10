@@ -30,7 +30,31 @@ uint32 PlayerbotFactory::tradeSkills[] =
     SKILL_FISHING
 };
 
-void PlayerbotFactory::Randomize(bool incremental)
+void PlayerbotFactory::Randomize()
+{
+    Randomize(true);
+}
+
+void PlayerbotFactory::Refresh()
+{
+    Prepare();
+    InitEquipment(true);
+    InitAmmo();
+    InitFood();
+    InitPotions();
+
+    uint32 money = urand(level * 1000, level * 5 * 1000);
+    if (bot->GetMoney() < money)
+        bot->SetMoney(money);
+    bot->SaveToDB();
+}
+
+void PlayerbotFactory::CleanRandomize()
+{
+    Randomize(false);
+}
+
+void PlayerbotFactory::Prepare()
 {
     if (!itemQuality)
     {
@@ -53,6 +77,11 @@ void PlayerbotFactory::Randomize(bool incremental)
     bot->SetLevel(level);
     bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
     bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK);
+}
+
+void PlayerbotFactory::Randomize(bool incremental)
+{
+    Prepare();
 
     bot->resetTalents(true, true);
     ClearSpells();

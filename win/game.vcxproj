@@ -542,6 +542,7 @@
     <ClCompile Include="..\src\game\playerbot\strategy\actions\GenericActions.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\actions\GenericSpellActions.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\actions\GossipHelloAction.cpp" />
+    <ClCompile Include="..\src\game\playerbot\strategy\actions\GuildAcceptAction.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\actions\GuildBankAction.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\actions\HelpAction.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\actions\InventoryAction.cpp" />
@@ -1002,6 +1003,7 @@
     <ClInclude Include="..\src\game\playerbot\strategy\actions\GenericActions.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\actions\GenericSpellActions.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\actions\GossipHelloAction.h" />
+    <ClInclude Include="..\src\game\playerbot\strategy\actions\GuildAcceptAction.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\actions\GuildBankAction.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\actions\HelpAction.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\actions\InventoryAction.h" />
