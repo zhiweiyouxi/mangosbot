@@ -1,6 +1,7 @@
 #include "../../../pchdef.h"
 #include "../../playerbot.h"
 #include "Formations.h"
+#include "formations/Arrow.h"
 
 using namespace ai;
 
@@ -133,7 +134,7 @@ namespace ai
             if (!group)
                 return WorldLocation::Null;
 
-            float range = 2.0f;
+            float range = sPlayerbotAIConfig.followDistance;
 
             Player* master = GetMaster();
             if (!master)
@@ -176,12 +177,12 @@ namespace ai
             }
             if (ai->IsTank(bot) && !ai->IsTank(master))
             {
-                float diff = tanks.size() % 2 == 0 ? -range / 2.0f : 0.0f;
+                float diff = tanks.size() % 2 == 0 ? -sPlayerbotAIConfig.tooCloseDistance / 2.0f : 0.0f;
                 return MoveLine(tanks, diff, x + cos(orientation) * range, y + sin(orientation) * range, z, orientation, range);
             }
             if (!ai->IsTank(bot) && ai->IsTank(master))
             {
-                float diff = dps.size() % 2 == 0 ? -range / 2.0f : 0.0f;
+                float diff = dps.size() % 2 == 0 ? -sPlayerbotAIConfig.tooCloseDistance / 2.0f : 0.0f;
                 return MoveLine(dps, diff, x - cos(orientation) * range, y - sin(orientation) * range, z, orientation, range);
             }
             return WorldLocation::Null;
@@ -256,11 +257,16 @@ bool SetFormationAction::Execute(Event event)
         if (value->Get()) delete value->Get();
         value->Set(new ShieldFormation(ai));
     }
+    else if (formation == "arrow")
+    {
+        if (value->Get()) delete value->Get();
+        value->Set(new ArrowFormation(ai));
+    }
     else
     {
         ostringstream str; str << "Invalid formation: |cffff0000" << formation;
         ai->TellMaster(str);
-        ai->TellMaster("Please set to any of:|cffffffff melee (default), queue, chaos, circle, line, shield");
+        ai->TellMaster("Please set to any of:|cffffffff melee (default), queue, chaos, circle, line, shield, arrow");
         return false;
     }
 

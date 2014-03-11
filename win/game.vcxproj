@@ -710,6 +710,7 @@
     <ClCompile Include="..\src\game\playerbot\strategy\values\EnemyHealerTargetValue.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\values\EnemyPlayerValue.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\values\Formations.cpp" />
+    <ClCompile Include="..\src\game\playerbot\strategy\values\formations\Arrow.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\values\GrindTargetValue.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\values\InvalidTargetValue.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\values\ItemCountValue.cpp" />
@@ -1201,6 +1202,7 @@
     <ClInclude Include="..\src\game\playerbot\strategy\values\EnemyHealerTargetValue.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\values\EnemyPlayerValue.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\values\Formations.h" />
+    <ClInclude Include="..\src\game\playerbot\strategy\values\formations\Arrow.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\values\GrindTargetValue.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\values\HasAvailableLootValue.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\values\HasTotemValue.h" />

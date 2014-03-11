@@ -17,7 +17,7 @@ bool FollowAction::Execute(Event event)
     else
     {
         WorldLocation loc = formation->GetLocation();
-        if (loc == WorldLocation::Null)
+        if (loc == WorldLocation::Null || loc.GetMapId() == -1)
             return false;
 
         return MoveTo(loc.GetMapId(), loc.x, loc.y, loc.z);

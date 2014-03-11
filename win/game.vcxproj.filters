@@ -440,6 +440,7 @@
     <ClCompile Include="..\src\game\movementGenerators\WaypointMovementGenerator.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\actions\GuildAcceptAction.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\values\Formations.cpp" />
+    <ClCompile Include="..\src\game\playerbot\strategy\values\formations\Arrow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\game\AccountMgr.h" />
@@ -951,6 +952,7 @@
     <ClInclude Include="..\src\game\movementGenerators\WaypointMovementGenerator.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\actions\GuildAcceptAction.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\values\Formations.h" />
+    <ClInclude Include="..\src\game\playerbot\strategy\values\formations\Arrow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\game\CMakeLists.txt" />

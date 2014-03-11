@@ -538,6 +538,25 @@ void PlayerbotAI::ResetStrategies()
     AiFactory::AddDefaultDeadStrategies(bot, this, engines[BOT_STATE_DEAD]);
 }
 
+bool PlayerbotAI::IsRanged(Player* player)
+{
+    PlayerbotAI* botAi = player->GetPlayerbotAI();
+    if (botAi)
+        return botAi->ContainsStrategy(STRATEGY_TYPE_RANGED);
+
+    switch (player->getClass())
+    {
+    case CLASS_DEATH_KNIGHT:
+    case CLASS_PALADIN:
+    case CLASS_WARRIOR:
+    case CLASS_ROGUE:
+        return false;
+    case CLASS_DRUID:
+        return !HasAnyAuraOf(player, "cat form", "bear form", "dire bear form", NULL);
+    }
+    return true;
+}
+
 bool PlayerbotAI::IsTank(Player* player)
 {
     PlayerbotAI* botAi = player->GetPlayerbotAI();

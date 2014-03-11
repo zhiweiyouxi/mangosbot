@@ -921,6 +921,8 @@ playerbot/strategy/values/EnemyHealerTargetValue.cpp
 playerbot/strategy/values/EnemyHealerTargetValue.h
 playerbot/strategy/values/Formations.cpp
 playerbot/strategy/values/Formations.h
+playerbot/strategy/values/formations/Arrow.cpp
+playerbot/strategy/values/formations/Arrow.h
 playerbot/strategy/warlock/DpsWarlockStrategy.cpp
 playerbot/strategy/warlock/DpsWarlockStrategy.h
 playerbot/strategy/warlock/GenericWarlockNonCombatStrategy.cpp
