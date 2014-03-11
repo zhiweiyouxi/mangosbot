@@ -240,8 +240,6 @@
     <ClCompile Include="..\src\game\playerbot\strategy\generic\DuelStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\EmoteStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\FleeStrategy.cpp" />
-    <ClCompile Include="..\src\game\playerbot\strategy\generic\FollowLineStrategy.cpp" />
-    <ClCompile Include="..\src\game\playerbot\strategy\generic\FollowMasterRandomStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\FollowMasterStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\GrindingStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\GuardStrategy.cpp" />
@@ -255,9 +253,6 @@
     <ClCompile Include="..\src\game\playerbot\strategy\generic\RacialsStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\RangedCombatStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\RunawayStrategy.cpp" />
-    <ClCompile Include="..\src\game\playerbot\strategy\generic\StayCircleStrategy.cpp" />
-    <ClCompile Include="..\src\game\playerbot\strategy\generic\StayCombatStrategy.cpp" />
-    <ClCompile Include="..\src\game\playerbot\strategy\generic\StayLineStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\StayStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\TankAoeStrategy.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\generic\TankAssistStrategy.cpp" />
@@ -444,6 +439,7 @@
     <ClCompile Include="..\src\game\movementGenerators\TargetedMovementGenerator.cpp" />
     <ClCompile Include="..\src\game\movementGenerators\WaypointMovementGenerator.cpp" />
     <ClCompile Include="..\src\game\playerbot\strategy\actions\GuildAcceptAction.cpp" />
+    <ClCompile Include="..\src\game\playerbot\strategy\values\Formations.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\game\AccountMgr.h" />
@@ -712,8 +708,6 @@
     <ClInclude Include="..\src\game\playerbot\strategy\generic\DuelStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\EmoteStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\FleeStrategy.h" />
-    <ClInclude Include="..\src\game\playerbot\strategy\generic\FollowLineStrategy.h" />
-    <ClInclude Include="..\src\game\playerbot\strategy\generic\FollowMasterRandomStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\FollowMasterStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\GrindingStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\GuardStrategy.h" />
@@ -728,9 +722,6 @@
     <ClInclude Include="..\src\game\playerbot\strategy\generic\RacialsStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\RangedCombatStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\RunawayStrategy.h" />
-    <ClInclude Include="..\src\game\playerbot\strategy\generic\StayCircleStrategy.h" />
-    <ClInclude Include="..\src\game\playerbot\strategy\generic\StayCombatStrategy.h" />
-    <ClInclude Include="..\src\game\playerbot\strategy\generic\StayLineStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\StayStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\TankAoeStrategy.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\generic\TankAssistStrategy.h" />
@@ -959,6 +950,7 @@
     <ClInclude Include="..\src\game\movementGenerators\TargetedMovementGenerator.h" />
     <ClInclude Include="..\src\game\movementGenerators\WaypointMovementGenerator.h" />
     <ClInclude Include="..\src\game\playerbot\strategy\actions\GuildAcceptAction.h" />
+    <ClInclude Include="..\src\game\playerbot\strategy\values\Formations.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\game\CMakeLists.txt" />

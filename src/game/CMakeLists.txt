@@ -606,6 +606,8 @@ playerbot/strategy/actions/SaveManaAction.h
 playerbot/strategy/actions/SaveManaAction.cpp
 playerbot/strategy/actions/SecurityCheckAction.h
 playerbot/strategy/actions/SecurityCheckAction.cpp
+playerbot/strategy/actions/GuildAcceptAction.h
+playerbot/strategy/actions/GuildAcceptAction.cpp
 playerbot/strategy/druid/BearTankDruidStrategy.cpp
 playerbot/strategy/druid/BearTankDruidStrategy.h
 playerbot/strategy/druid/CasterDruidStrategy.cpp
@@ -657,10 +659,6 @@ playerbot/strategy/generic/EmoteStrategy.cpp
 playerbot/strategy/generic/EmoteStrategy.h
 playerbot/strategy/generic/FleeStrategy.cpp
 playerbot/strategy/generic/FleeStrategy.h
-playerbot/strategy/generic/FollowLineStrategy.cpp
-playerbot/strategy/generic/FollowLineStrategy.h
-playerbot/strategy/generic/FollowMasterRandomStrategy.cpp
-playerbot/strategy/generic/FollowMasterRandomStrategy.h
 playerbot/strategy/generic/FollowMasterStrategy.cpp
 playerbot/strategy/generic/FollowMasterStrategy.h
 playerbot/strategy/generic/GrindingStrategy.cpp
@@ -688,12 +686,6 @@ playerbot/strategy/generic/RangedCombatStrategy.cpp
 playerbot/strategy/generic/RangedCombatStrategy.h
 playerbot/strategy/generic/RunawayStrategy.cpp
 playerbot/strategy/generic/RunawayStrategy.h
-playerbot/strategy/generic/StayCircleStrategy.cpp
-playerbot/strategy/generic/StayCircleStrategy.h
-playerbot/strategy/generic/StayCombatStrategy.cpp
-playerbot/strategy/generic/StayCombatStrategy.h
-playerbot/strategy/generic/StayLineStrategy.cpp
-playerbot/strategy/generic/StayLineStrategy.h
 playerbot/strategy/generic/StayStrategy.cpp
 playerbot/strategy/generic/StayStrategy.h
 playerbot/strategy/generic/TankAoeStrategy.cpp
@@ -927,6 +919,8 @@ playerbot/strategy/values/ManaSaveLevelValue.h
 playerbot/strategy/values/LfgValues.h
 playerbot/strategy/values/EnemyHealerTargetValue.cpp
 playerbot/strategy/values/EnemyHealerTargetValue.h
+playerbot/strategy/values/Formations.cpp
+playerbot/strategy/values/Formations.h
 playerbot/strategy/warlock/DpsWarlockStrategy.cpp
 playerbot/strategy/warlock/DpsWarlockStrategy.h
 playerbot/strategy/warlock/GenericWarlockNonCombatStrategy.cpp
