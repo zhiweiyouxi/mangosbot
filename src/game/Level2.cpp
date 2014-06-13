@@ -1496,7 +1496,7 @@ bool ChatHandler::HandleModifyPowerTypeCommand(char* args)
         return false;
     }
 
-    target->setPowerType(Powers(type));
+    target->SetPowerType(Powers(type));
 
     return true;
 }
@@ -2145,8 +2145,8 @@ bool ChatHandler::HandleNpcFactionIdCommand(char* args)
     // update in memory
     if (CreatureInfo const* cinfo = pCreature->GetCreatureInfo())
     {
-        const_cast<CreatureInfo*>(cinfo)->faction_A = factionId;
-        const_cast<CreatureInfo*>(cinfo)->faction_H = factionId;
+        const_cast<CreatureInfo*>(cinfo)->FactionAlliance = factionId;
+        const_cast<CreatureInfo*>(cinfo)->FactionHorde = factionId;
     }
 
     // and DB
@@ -4604,7 +4604,7 @@ bool ChatHandler::HandleLookupAccountEmailCommand(char* args)
     std::string email = emailStr;
     LoginDatabase.escape_string(email);
     //                                                 0     1           2          3           4
-    QueryResult* result = LoginDatabase.PQuery("SELECT a.id, a.username, a.last_ip, aa.gmlevel, a.expansion FROM account a LEFT JOIN account_access aa ON (a.id = aa.id) WHERE email "_LIKE_" "_CONCAT3_("'%%'", "'%s'", "'%%'"), email.c_str());
+    QueryResult* result = LoginDatabase.PQuery("SELECT a.id, a.username, a.last_ip, aa.gmlevel, a.expansion FROM account a LEFT JOIN account_access aa ON (a.id = aa.id) WHERE email " _LIKE_ " " _CONCAT3_ ("'%%'", "'%s'", "'%%'"), email.c_str());
 
     return ShowAccountListHelper(result, &limit);
 }
@@ -4623,7 +4623,7 @@ bool ChatHandler::HandleLookupAccountIpCommand(char* args)
     LoginDatabase.escape_string(ip);
 
     //                                                 0     1           2          3           4
-    QueryResult* result = LoginDatabase.PQuery("SELECT a.id, a.username, a.last_ip, aa.gmlevel, a.expansion FROM account a LEFT JOIN account_access aa ON (a.id = aa.id) WHERE last_ip "_LIKE_" "_CONCAT3_("'%%'", "'%s'", "'%%'"), ip.c_str());
+    QueryResult* result = LoginDatabase.PQuery("SELECT a.id, a.username, a.last_ip, aa.gmlevel, a.expansion FROM account a LEFT JOIN account_access aa ON (a.id = aa.id) WHERE last_ip " _LIKE_ " " _CONCAT3_ ("'%%'", "'%s'", "'%%'"), ip.c_str());
 
     return ShowAccountListHelper(result, &limit);
 }
@@ -4644,7 +4644,7 @@ bool ChatHandler::HandleLookupAccountNameCommand(char* args)
 
     LoginDatabase.escape_string(account);
     //                                                 0     1           2          3           4
-    QueryResult* result = LoginDatabase.PQuery("SELECT a.id, a.username, a.last_ip, aa.gmlevel, a.expansion FROM account a LEFT JOIN account_access aa ON (a.id = aa.id) WHERE username "_LIKE_" "_CONCAT3_("'%%'", "'%s'", "'%%'"), account.c_str());
+    QueryResult* result = LoginDatabase.PQuery("SELECT a.id, a.username, a.last_ip, aa.gmlevel, a.expansion FROM account a LEFT JOIN account_access aa ON (a.id = aa.id) WHERE username " _LIKE_ " " _CONCAT3_ ("'%%'", "'%s'", "'%%'"), account.c_str());
 
     return ShowAccountListHelper(result, &limit);
 }
@@ -5502,7 +5502,7 @@ bool ChatHandler::HandleMmapPathCommand(char* args)
     PointsArray pointPath = path.getPath();
     PSendSysMessage("%s's path to %s:", target->GetName(), player->GetName());
     PSendSysMessage("Building %s", useStraightPath ? "StraightPath" : "SmoothPath");
-    PSendSysMessage("length "SIZEFMTD" type %u", pointPath.size(), path.getPathType());
+    PSendSysMessage("length " SIZEFMTD " type %u", pointPath.size(), path.getPathType());
 
     Vector3 start = path.getStartPosition();
     Vector3 end = path.getEndPosition();

@@ -189,8 +189,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
 
     // reget for sure use real creature info selected for Pet at load/creating
     CreatureInfo const* cinfo = GetCreatureInfo();
-
-    if (cinfo->type == CREATURE_TYPE_CRITTER)
+    if (cinfo->CreatureType == CREATURE_TYPE_CRITTER)
     {
         LoadCreatureAddon(true);
         pos->GetMap()->Add((Creature*)this);
@@ -211,7 +210,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
             RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP | UNIT_BYTE2_FLAG_SANCTUARY | UNIT_BYTE2_FLAG_PVP);
             SetMaxPower(POWER_HAPPINESS, GetCreatePowers(POWER_HAPPINESS));
             SetPower(POWER_HAPPINESS, fields[12].GetUInt32());
-            setPowerType(POWER_FOCUS);
+            SetPowerType(POWER_FOCUS);
             break;
         default:
             RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP | UNIT_BYTE2_FLAG_SANCTUARY | UNIT_BYTE2_FLAG_PVP);
@@ -236,7 +235,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, uint32(time(NULL)));
 
     uint32 savedhealth = fields[10].GetUInt32();
-    uint32 savedmana = fields[11].GetUInt32();
+    uint32 savedpower = fields[11].GetUInt32();
 
     // set current pet as current
     // 0=current
@@ -297,13 +296,13 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
             else
             {
                 SetHealth(savedhealth > GetMaxHealth() ? GetMaxHealth() : savedhealth);
-                SetPower(POWER_MANA, savedmana > GetMaxPower(POWER_MANA) ? GetMaxPower(POWER_MANA) : savedmana);
+                SetPower(POWER_MANA, savedpower > GetMaxPower(POWER_MANA) ? GetMaxPower(POWER_MANA) : savedpower);
             }
         }
         else
         {
             SetHealth(GetMaxHealth());
-            SetPower(getPowerType(), GetMaxPower(getPowerType()));
+            SetPower(GetPowerType(), GetMaxPower(GetPowerType()));
         }
     }
 
@@ -380,7 +379,7 @@ void Pet::SavePetToDB(PetSaveMode mode)
         }
 
         uint32 curhealth = GetHealth();
-        uint32 curmana = GetPower(POWER_MANA);
+        uint32 curpower = GetPower(GetPowerType());
 
         // stable and not in slot saves
         if (getPetType() == HUNTER_PET && mode != PET_SAVE_AS_CURRENT)
@@ -433,7 +432,7 @@ void Pet::SavePetToDB(PetSaveMode mode)
         savePet.addString(m_name);
         savePet.addUInt32(uint32(HasByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_RENAMED) ? 0 : 1));
         savePet.addUInt32(curhealth < 1 ? (getPetType() == HUNTER_PET ? 0 : 1) : curhealth);
-        savePet.addUInt32(curmana);
+        savePet.addUInt32(curpower);
         savePet.addUInt32(GetPower(POWER_HAPPINESS));
 
         std::ostringstream ss;
@@ -669,14 +668,12 @@ void Pet::RegenerateAll(uint32 update_diff)
     // regenerate focus for hunter pets or energy for deathknight's ghoul
     if (m_regenTimer <= update_diff)
     {
-        Regenerate(getPowerType(), REGEN_TIME_FULL);
-        m_regenTimer = REGEN_TIME_FULL;
-
-        if (getPetType() == HUNTER_PET)
-            Regenerate(POWER_HAPPINESS, REGEN_TIME_FULL);
-
         if (!isInCombat() || IsPolymorphed())
             RegenerateHealth(REGEN_TIME_FULL);
+
+        RegeneratePower();
+
+        m_regenTimer = 4000;
     }
     else
         m_regenTimer -= update_diff;
@@ -897,19 +894,19 @@ bool Pet::CreateBaseAtCreature(Creature* creature, Unit* owner)
     if (!Create(0, pos, cinfo, 0, owner))
         return false;
 
-    if (CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->family))
+    if (CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->Family))
         SetName(cFamily->Name[sWorld.GetDefaultDbcLocale()]);
     else
         SetName(creature->GetNameForLocaleIdx(sObjectMgr.GetDBCLocaleIndex()));
 
 
-    if (cinfo->type == CREATURE_TYPE_CRITTER)
+    if (cinfo->CreatureType == CREATURE_TYPE_CRITTER)
     {
         setPetType(MINI_PET);
         return true;
     }
 
-    if (cinfo->type == CREATURE_TYPE_BEAST)
+    if (cinfo->CreatureType == CREATURE_TYPE_BEAST)
     {
         SetUInt32Value(UNIT_MOD_CAST_SPEED, creature->GetUInt32Value(UNIT_MOD_CAST_SPEED));
     }
@@ -942,7 +939,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 
     PetLevelInfo const* pInfo = sObjectMgr.GetPetLevelInfo(cinfo->Entry, petlevel);
 
-    SetMeleeDamageSchool(SpellSchools(cinfo->dmgschool));
+    SetMeleeDamageSchool(SpellSchools(cinfo->DamageSchool));
 
     int32 createStats[MAX_STATS+7] =  {22,     // STAT_STRENGTH
                                        22,     // STAT_AGILITY
@@ -959,37 +956,37 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 
     uint32 createResistance[MAX_SPELL_SCHOOL] = {0,0,0,0,0,0,0};
 
-    createResistance[SPELL_SCHOOL_HOLY]   = cinfo->resistance1;
-    createResistance[SPELL_SCHOOL_FIRE]   = cinfo->resistance2;
-    createResistance[SPELL_SCHOOL_NATURE] = cinfo->resistance3;
-    createResistance[SPELL_SCHOOL_FROST]  = cinfo->resistance4;
-    createResistance[SPELL_SCHOOL_SHADOW] = cinfo->resistance5;
-    createResistance[SPELL_SCHOOL_ARCANE] = cinfo->resistance6;
+    createResistance[SPELL_SCHOOL_HOLY]   = cinfo->ResistanceHoly;
+    createResistance[SPELL_SCHOOL_FIRE]   = cinfo->ResistanceFire;
+    createResistance[SPELL_SCHOOL_NATURE] = cinfo->ResistanceNature;
+    createResistance[SPELL_SCHOOL_FROST]  = cinfo->ResistanceFrost;
+    createResistance[SPELL_SCHOOL_SHADOW] = cinfo->ResistanceShadow;
+    createResistance[SPELL_SCHOOL_ARCANE] = cinfo->ResistanceArcane;
     // Armor
-    createResistance[SPELL_SCHOOL_NORMAL] = int32(cinfo->armor  * petlevel / cinfo->maxlevel / (1 +  cinfo->rank));
+    createResistance[SPELL_SCHOOL_NORMAL] = int32(cinfo->Armor  * petlevel / cinfo->MaxLevel / (1 +  cinfo->Rank));
 
     for (int i = 0; i < MAX_STATS; ++i)
         createStats[i] *= petlevel/10;
 
-    createStats[MAX_STATS]    = int32(cinfo->maxhealth * petlevel / cinfo->maxlevel / (1 +  cinfo->rank));
-    createStats[MAX_STATS+1]  = int32(cinfo->maxmana * petlevel / cinfo->maxlevel / (1 +  cinfo->rank));
-    createStats[MAX_STATS+2]  = int32(cinfo->attackpower * petlevel / cinfo->maxlevel / (1 +  cinfo->rank));
-    createStats[MAX_STATS+3]  = int32(cinfo->mindmg * petlevel / cinfo->maxlevel / (1 + cinfo->rank));
-    createStats[MAX_STATS+4]  = int32(cinfo->maxdmg * petlevel / cinfo->maxlevel / (1 + cinfo->rank));
-    createStats[MAX_STATS+5]  = int32(cinfo->minrangedmg * petlevel / cinfo->maxlevel/ (1 + cinfo->rank));
-    createStats[MAX_STATS+6]  = int32(cinfo->maxrangedmg * petlevel / cinfo->maxlevel/ (1 + cinfo->rank));
-    SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE, float(cinfo->maxrangedmg * petlevel / cinfo->maxlevel));
-    setPowerType(Powers(cinfo->GetPowerType()));
-    SetAttackTime(BASE_ATTACK, cinfo->baseattacktime);
-    SetAttackTime(RANGED_ATTACK, cinfo->rangeattacktime);
+    createStats[MAX_STATS]    = int32(cinfo->MaxLevelHealth * petlevel / cinfo->MaxLevel / (1 +  cinfo->Rank));
+    createStats[MAX_STATS+1]  = int32(cinfo->MaxLevelMana * petlevel / cinfo->MaxLevel / (1 +  cinfo->Rank));
+    createStats[MAX_STATS+2]  = int32(cinfo->MeleeAttackPower * petlevel / cinfo->MaxLevel / (1 +  cinfo->Rank));
+    createStats[MAX_STATS+3]  = int32(cinfo->MinMeleeDmg * petlevel / cinfo->MaxLevel / (1 + cinfo->Rank));
+    createStats[MAX_STATS+4]  = int32(cinfo->MaxMeleeDmg * petlevel / cinfo->MaxLevel / (1 + cinfo->Rank));
+    createStats[MAX_STATS+5]  = int32(cinfo->MinRangedDmg * petlevel / cinfo->MaxLevel/ (1 + cinfo->Rank));
+    createStats[MAX_STATS+6]  = int32(cinfo->MaxRangedDmg * petlevel / cinfo->MaxLevel/ (1 + cinfo->Rank));
+    SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE, float(cinfo->MaxRangedDmg * petlevel / cinfo->MaxLevel));
+
+    SetAttackTime(BASE_ATTACK, cinfo->MeleeBaseAttackTime);
+    SetAttackTime(RANGED_ATTACK, cinfo->RangedBaseAttackTime);
 
     switch (getPetType())
     {
         case SUMMON_PET:
         {
             SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_MAGE);
-            if (cinfo->family == CREATURE_FAMILY_GHOUL)
-                setPowerType(POWER_ENERGY);
+            if (cinfo->Family == CREATURE_FAMILY_GHOUL)
+                SetPowerType(POWER_ENERGY);
             break;
         }
         case HUNTER_PET:
@@ -1001,7 +998,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             SetByteValue(UNIT_FIELD_BYTES_0, 2, GENDER_NONE);
             SetSheath(SHEATH_STATE_MELEE);
 
-            CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->family);
+            CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->Family);
             if (cFamily && cFamily->minScale > 0.0f && getPetType()==HUNTER_PET)
             {
                 float scale;
@@ -1017,7 +1014,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             }
 
             SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, sObjectMgr.GetXPForPetLevel(petlevel));
-            setPowerType(POWER_FOCUS);
+            SetPowerType(POWER_FOCUS);
             break;
         }
         case GUARDIAN_PET:
@@ -1026,8 +1023,8 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
             SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, 1000);
             // DK ghouls have energy
-            if (cinfo->family == CREATURE_FAMILY_GHOUL)
-                setPowerType(POWER_ENERGY);
+            if (cinfo->Family == CREATURE_FAMILY_GHOUL)
+                SetPowerType(POWER_ENERGY);
             break;
         }
         default:
@@ -1113,7 +1110,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
     UpdateAllStats();
 
     SetHealth(GetMaxHealth());
-    SetPower(getPowerType(), GetMaxPower(getPowerType()));
+    SetPower(GetPowerType(), GetMaxPower(GetPowerType()));
 
     return true;
 }
@@ -1127,7 +1124,7 @@ bool Pet::HaveInDiet(ItemPrototype const* item) const
     if (!cInfo)
         return false;
 
-    CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cInfo->family);
+    CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cInfo->Family);
     if (!cFamily)
         return false;
 
@@ -1636,7 +1633,7 @@ void Pet::InitLevelupSpellsForLevel()
 {
     uint32 level = getLevel();
 
-    if (PetLevelupSpellSet const* levelupSpells = GetCreatureInfo()->family ? sSpellMgr.GetPetLevelupSpellList(GetCreatureInfo()->family) : NULL)
+    if (PetLevelupSpellSet const* levelupSpells = GetCreatureInfo()->Family ? sSpellMgr.GetPetLevelupSpellList(GetCreatureInfo()->Family) : NULL)
     {
         // PetLevelupSpellSet ordered by levels, process in reversed order
         for (PetLevelupSpellSet::const_reverse_iterator itr = levelupSpells->rbegin(); itr != levelupSpells->rend(); ++itr)
@@ -1793,7 +1790,7 @@ bool Pet::resetTalents()
         return false;
 
     // Check pet talent type
-    CreatureFamilyEntry const* pet_family = sCreatureFamilyStore.LookupEntry(ci->family);
+    CreatureFamilyEntry const* pet_family = sCreatureFamilyStore.LookupEntry(ci->Family);
     if (!pet_family || pet_family->petTalentType < 0)
         return false;
 
@@ -2030,9 +2027,9 @@ bool Pet::IsPermanentPetFor(Player* owner)
                 // oddly enough, Mage's Water Elemental is still treated as temporary pet with Glyph of Eternal Water
                 // i.e. does not unsummon at mounting, gets dismissed at teleport etc.
                 case CLASS_WARLOCK:
-                    return GetCreatureInfo()->type == CREATURE_TYPE_DEMON;
+                    return GetCreatureInfo()->CreatureType == CREATURE_TYPE_DEMON;
                 case CLASS_DEATH_KNIGHT:
-                    return GetCreatureInfo()->type == CREATURE_TYPE_UNDEAD;
+                    return GetCreatureInfo()->CreatureType == CREATURE_TYPE_UNDEAD;
                 case CLASS_MAGE:
                     // both permanent and temporary water elementals should be in spellbook
                     return GetCreatureInfo()->Entry == (owner->HasAura(70937) ? 37994 : 510);
@@ -2126,7 +2123,7 @@ void Pet::LearnPetPassives()
     if (!cInfo)
         return;
 
-    CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cInfo->family);
+    CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cInfo->Family);
     if (!cFamily)
         return;
 
@@ -2687,7 +2684,7 @@ bool Pet::Summon()
         case PROTECTOR_PET:
         {
             RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP | UNIT_BYTE2_FLAG_SANCTUARY | UNIT_BYTE2_FLAG_PVP);
-            SetUInt32Value(UNIT_NPC_FLAGS, GetCreatureInfo()->npcflag);
+            SetUInt32Value(UNIT_NPC_FLAGS, GetCreatureInfo()->NpcFlags);
             SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
             SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
             SetNeedSave(false);
@@ -2737,7 +2734,7 @@ bool Pet::Summon()
         case MINI_PET:
         {
             SelectLevel(GetCreatureInfo());
-            SetUInt32Value(UNIT_NPC_FLAGS, GetCreatureInfo()->npcflag);
+            SetUInt32Value(UNIT_NPC_FLAGS, GetCreatureInfo()->NpcFlags);
             SetByteValue(UNIT_FIELD_BYTES_2, 1, 0);
             SetName("");
             SetNeedSave(false);
@@ -2782,7 +2779,7 @@ bool Pet::Summon()
     }
 
     SetHealth(GetMaxHealth());
-    SetPower(getPowerType(), GetMaxPower(getPowerType()));
+    SetPower(GetPowerType(), GetMaxPower(GetPowerType()));
 
     AIM_Initialize();
 
@@ -3378,7 +3375,7 @@ Unit* Pet::SelectPreferredTargetForSpell(SpellEntry const* spellInfo)
     if (target && target != this)
     {
         if (spellInfo->GetRangeIndex() == SPELL_RANGE_IDX_COMBAT)
-            max_range_unfriendly = GetCombatDistance(target, true);
+            max_range_unfriendly = GetCombatReach(target, true);
 
         bool friendly = IsFriendlyTo(target);
         float dist = GetDistance(target);

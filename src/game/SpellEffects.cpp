@@ -2138,6 +2138,14 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                     unitTarget->CastSpell(unitTarget, spell_id, true);
                     return;
                 }
+                case 41283:                                 // Abyssal Toss
+                {
+                    if (!unitTarget)
+                        return;
+
+                    m_caster->SummonCreature(23416, unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000);
+                    return;
+                }
                 case 41333:                                 // Empyreal Equivalency
                 {
                     if (!unitTarget)
@@ -2611,6 +2619,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                 case 51961:                                 // Captured Chicken Cover
                 case 55364:                                 // Create Ghoul Drool Cover
                 case 61832:                                 // Rifle the Bodies: Create Magehunter Personal Effects Cover
+                case 63125:                                 // Search Maloric
                 case 74904:                                 // Pickup Sen'jin Frog
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -2628,6 +2637,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                         case 51961: spellId = 51037; break;
                         case 55364: spellId = 55363; break;
                         case 61832: spellId = 47096; break;
+                        case 63125: spellId = 63126; break;
                         case 74904: spellId = 74905; break;
                     }
 
@@ -4859,7 +4869,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
             // Mana Spring Totem
             if (m_spellInfo->GetSpellFamilyFlags().test<CF_SHAMAN_MANA_SPRING>())
             {
-                if (!unitTarget || unitTarget->getPowerType()!=POWER_MANA)
+                if (!unitTarget || unitTarget->GetPowerType() != POWER_MANA)
                     return;
 
                 m_caster->CastCustomSpell(unitTarget, 52032, &damage, 0, 0, true, 0, 0, m_originalCasterGuid);
@@ -4884,7 +4894,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
             }
             if (m_spellInfo->Id == 39610)                   // Mana Tide Totem effect
             {
-                if (!unitTarget || unitTarget->getPowerType() != POWER_MANA)
+                if (!unitTarget || unitTarget->GetPowerType() != POWER_MANA)
                     return;
 
                 // Glyph of Mana Tide
@@ -5858,7 +5868,7 @@ void Spell::EffectPowerDrain(SpellEffectIndex eff_idx)
     if (!unitTarget->isAlive())
         return;
 
-    if (unitTarget->getPowerType() != drain_power)
+    if (unitTarget->GetPowerType() != drain_power)
         return;
 
     if (damage < 0)
@@ -5919,7 +5929,7 @@ void Spell::EffectPowerBurn(SpellEffectIndex eff_idx)
         return;
     if (!unitTarget->isAlive())
         return;
-    if (unitTarget->getPowerType()!=powertype)
+    if (unitTarget->GetPowerType() != powertype)
         return;
     if (damage < 0)
         return;
@@ -6745,7 +6755,7 @@ void Spell::EffectSummonType(SpellEffectIndex eff_idx)
                                 return;
 
                             // FIXME: not all totems and similar cases selected by this check...
-                            if (cInfo->type == CREATURE_TYPE_TOTEM)
+                            if (cInfo->CreatureType == CREATURE_TYPE_TOTEM)
                                 DoSummonTotem(eff_idx);
                             else
                                 DoSummonGuardian(eff_idx, factionId);
@@ -9265,16 +9275,6 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     m_caster->CastSpell(m_caster, 50217, true);
                     return;
                 }
-                case 44364:                                 // Rock Falcon Primer
-                {
-                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
-                        return;
-
-                    // Are there anything special with this, a random chance or condition?
-                    // Feeding Rock Falcon
-                    unitTarget->CastSpell(unitTarget, m_spellInfo->CalculateSimpleValue(eff_idx), true, NULL, NULL, unitTarget->GetObjectGuid(), m_spellInfo);
-                    return;
-                }
                 case 43375:                                 // Mixing Vrykul Blood
                 case 43972:                                 // Mixing Blood for Quest 11306
                 {
@@ -9284,6 +9284,33 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     uint32 triggeredSpell[] = {43376, 43378, 43970, 43377};
 
                     unitTarget->CastSpell(unitTarget, triggeredSpell[urand(0, 3)], true);
+                    return;
+                }
+                case 44323:                                 // Hawk Hunting
+                case 44407:                                 // Hawk Hunting
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
+                        return;
+
+                    // check target entry specific to each spell
+                    if (m_spellInfo->Id == 44323 && unitTarget->GetEntry() != 24746)
+                        return;
+                    if (m_spellInfo->Id == 44407 && unitTarget->GetEntry() != 24747)
+                        return;
+
+                    unitTarget->CastSpell(m_caster, m_spellInfo->CalculateSimpleValue(eff_idx), true);
+                    // despawn delay depends on the distance between caster and target
+                    ((Creature*)unitTarget)->ForcedDespawn(100 * unitTarget->GetDistance2d(m_caster));
+                    return;
+                }
+                case 44364:                                 // Rock Falcon Primer
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    // Are there anything special with this, a random chance or condition?
+                    // Feeding Rock Falcon
+                    unitTarget->CastSpell(unitTarget, m_spellInfo->CalculateSimpleValue(eff_idx), true, NULL, NULL, unitTarget->GetObjectGuid(), m_spellInfo);
                     return;
                 }
                 case 44436:                                 // Tricky Treat
@@ -9541,7 +9568,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     }
                     else
                     {
-                        m_caster->SetUInt32Value(UNIT_NPC_FLAGS, cTemplate->npcflag);
+                        m_caster->SetUInt32Value(UNIT_NPC_FLAGS, cTemplate->NpcFlags);
                         ((Creature*)m_caster)->SetVirtualItem(VIRTUAL_ITEM_SLOT_0, 0);
                         ((Creature*)m_caster)->SetVirtualItem(VIRTUAL_ITEM_SLOT_1, 0);
 
@@ -10438,7 +10465,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     if (!unitTarget)
                         return;
 
-                    switch (unitTarget->getPowerType())
+                    switch (unitTarget->GetPowerType())
                     {
                         case POWER_RUNIC_POWER:
                         {
@@ -11391,7 +11418,7 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                     if (unitTarget->HasAura(72371))
                     {
                         unitTarget->RemoveAurasDueToSpell(72371);
-                        int32 power = unitTarget->GetPower(unitTarget->getPowerType());
+                        int32 power = unitTarget->GetPower(unitTarget->GetPowerType());
                         unitTarget->CastCustomSpell(unitTarget, 72371, &power, &power, NULL, true);
                     }
                     return;

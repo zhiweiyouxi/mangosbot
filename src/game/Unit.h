@@ -647,6 +647,9 @@ enum MovementFlags
         MOVEFLAG_FORWARD | MOVEFLAG_BACKWARD | MOVEFLAG_STRAFE_LEFT | MOVEFLAG_STRAFE_RIGHT |
         MOVEFLAG_PITCH_UP | MOVEFLAG_PITCH_DOWN | MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR | MOVEFLAG_ASCENDING | MOVEFLAG_DESCENDING |
         MOVEFLAG_SPLINE_ELEVATION,
+
+    MOVEFLAG_MASK_TURNING =
+        MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT,
 };
 
 // flags that use in movement check for example at spell casting
@@ -1291,6 +1294,17 @@ typedef std::map<uint32, SpellCooldown> SpellCooldowns;
 #define REGEN_TIME_FULL     2000                            // For this time difference is computed regen value
 #define REGEN_TIME_PRECISE  500                             // Used in Spell::CheckPower for precise regeneration in spell cast time
 
+// Power type values defines
+enum PowerDefaults
+{
+    POWER_RAGE_DEFAULT              = 1000,
+    POWER_FOCUS_DEFAULT             = 100,
+    POWER_ENERGY_DEFAULT            = 100,
+    POWER_HAPPINESS_DEFAULT         = 1000000,
+    POWER_RUNE_DEFAULT              = 8,
+    POWER_RUNIC_POWER_DEFAULT       = 1000,
+};
+
 // delay time for evading
 #define EVADE_TIME_DELAY     500
 #define EVADE_TIME_DELAY_MIN 50
@@ -1343,7 +1357,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
             if (IsInFeralForm())
                 return false;
 
-            switch(attackType)
+            switch (attackType)
             {
                 default:
                 case BASE_ATTACK:
@@ -1355,9 +1369,10 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
             }
         }
 
-        float GetCombatReach(Unit const* pVictim, bool forMeleeRange = true, float flat_mod = 0.0f) const;
+        float GetCombatReach(bool forMeleeRange /*=true*/) const;
+        float GetCombatReach(Unit const* pVictim, bool forMeleeRange = true, float flatMod = 0.0f) const;
         float GetCombatDistance(Unit const* pVictim, bool forMeleeRange = true) const;
-        bool CanReachWithMeleeAttack(Unit const* pVictim, float flat_mod = 0.0f) const;
+        bool CanReachWithMeleeAttack(Unit const* pVictim, float flatMod = 0.0f) const;
 
         uint32 m_extraAttacks;
 
@@ -1414,8 +1429,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void SetHealthPercent(float percent);
         int32 ModifyHealth(int32 val);
 
-        Powers getPowerType() const { return Powers(GetByteValue(UNIT_FIELD_BYTES_0, 3)); }
-        void setPowerType(Powers power);
+        Powers GetPowerType() const { return Powers(GetByteValue(UNIT_FIELD_BYTES_0, 3)); }
+        void SetPowerType(Powers power);
         uint32 GetPower(Powers power) const { return GetUInt32Value(UNIT_FIELD_POWER1 + power); }
         uint32 GetMaxPower(Powers power) const { return GetUInt32Value(UNIT_FIELD_MAXPOWER1 + power); }
         void SetPower(Powers power, uint32 val);
@@ -1759,7 +1774,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool AddSpellAuraHolder(SpellAuraHolderPtr holder);
         void AddAuraToModList(Aura *aura);
 
-        void _AddAura(uint32 spellID, uint32 duration = 60000);
+        SpellAuraHolderPtr _AddAura(uint32 spellID, uint32 duration = 60000, Unit* caster = NULL);
         float CheckAuraStackingAndApply(Aura *Aur, UnitMods unitMod, UnitModifierType modifierType, float amount, bool apply, int32 miscMask = 0, int32 miscValue = 0);
 
         // removing specific aura stack
@@ -1794,6 +1809,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void RemoveAllAuras(AuraRemoveMode mode = AURA_REMOVE_BY_DEFAULT);
         void RemoveArenaAuras(bool onleave = false);
         void RemoveAllAurasOnDeath();
+        void RemoveAllAurasOnEvade();
 
         void HandleArenaPreparation(bool apply);
         bool RemoveSpellsCausingAuraByCaster(AuraType auraType, ObjectGuid casterGuid, AuraRemoveMode mode = AURA_REMOVE_BY_DEFAULT);
@@ -2416,7 +2432,7 @@ void Unit::CallForAllControlledUnits(Func const& func, uint32 controlledMask)
 
     if (controlledMask & CONTROLLED_MINIPET)
     {
-        if (Unit* mini = GetMiniPet())
+        if (Unit* mini = (Unit*)GetMiniPet())
             func(mini);
     }
 
@@ -2461,7 +2477,7 @@ bool Unit::CheckAllControlledUnits(Func const& func, uint32 controlledMask) cons
 
     if (controlledMask & CONTROLLED_MINIPET)
     {
-        if (Unit const* mini = GetMiniPet())
+        if (Unit* mini = (Unit*)GetMiniPet())
             if (func(mini))
                 return true;
     }

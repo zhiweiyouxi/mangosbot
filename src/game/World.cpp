@@ -1126,6 +1126,11 @@ void World::LoadConfigSettings(bool reload)
     // Anounce reset of instance to whole party
     setConfig(CONFIG_BOOL_INSTANCES_RESET_GROUP_ANNOUNCE,  "InstancesResetAnnounce", false);
 
+    setConfigMinMax(CONFIG_FLOAT_MELEE_DIST_ADDITION, "Melee.Distance.Addition", 4.0f, 0.0f, 10.0f);
+
+    setConfigMinMax(CONFIG_UINT32_FIX_MOVE_PACKETS_METHOD, "Player.FixMovementPackets.Method", 0, 0, 2);
+    setConfigMinMax(CONFIG_UINT32_FIX_MOVE_PACKETS_ADD_TIME, "Player.FixMovementPackets.AddTime", 50, 1, 1000);
+
     // Set  world timers
     m_timers[WUPDATE_AUCTIONS].SetInterval(sConfig.GetIntDefault("Auctions.Timer", 60000));
     m_timers[WUPDATE_AUCTIONS].Reset();
@@ -1336,7 +1341,10 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading Creature spells..." );
     sObjectMgr.LoadCreatureSpells();
 
-    sLog.outString( "Loading Creature templates..." );
+    sLog.outString("Loading Creature Stats...");
+    sObjectMgr.LoadCreatureClassLvlStats();
+
+    sLog.outString("Loading Creature templates...");
     sObjectMgr.LoadCreatureTemplates();
 
     sLog.outString( "Loading Creature Model for race..." ); // must be after creature templates
@@ -2493,7 +2501,7 @@ void World::InitWeeklyQuestResetTime()
     m_NextWeeklyQuestReset = m_NextWeeklyQuestReset < curTime ? nextWeekResetTime - WEEK : nextWeekResetTime;
 
     if (!result)
-        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextWeeklyQuestResetTime) VALUES ('"UI64FMTD"')", uint64(m_NextWeeklyQuestReset));
+        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextWeeklyQuestResetTime) VALUES ('" UI64FMTD "')", uint64(m_NextWeeklyQuestReset));
     else
         delete result;
 }
@@ -2524,7 +2532,7 @@ void World::InitDailyQuestResetTime()
     m_NextDailyQuestReset = m_NextDailyQuestReset < curTime ? nextDayResetTime - DAY : nextDayResetTime;
 
     if (!result)
-        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextDailyQuestResetTime) VALUES ('"UI64FMTD"')", uint64(m_NextDailyQuestReset));
+        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextDailyQuestResetTime) VALUES ('" UI64FMTD "')", uint64(m_NextDailyQuestReset));
     else
         delete result;
 }
@@ -2555,7 +2563,7 @@ void World::InitRandomBGResetTime()
     m_NextRandomBGReset = m_NextRandomBGReset < curTime ? nextDayResetTime - DAY : nextDayResetTime;
 
     if (!result)
-        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextRandomBGResetTime) VALUES ('"UI64FMTD"')", uint64(m_NextRandomBGReset));
+        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextRandomBGResetTime) VALUES ('" UI64FMTD "')", uint64(m_NextRandomBGReset));
     else
         delete result;
 }
@@ -2603,7 +2611,7 @@ void World::SetMonthlyQuestResetTime(bool initialize)
     m_NextMonthlyQuestReset = (initialize && m_NextMonthlyQuestReset < nextMonthResetTime) ? m_NextMonthlyQuestReset : nextMonthResetTime;
 
     // Row must exist for this to work. Currently row is added by InitDailyQuestResetTime(), called before this function
-    CharacterDatabase.PExecute("UPDATE saved_variables SET NextMonthlyQuestResetTime = '"UI64FMTD"'", uint64(m_NextMonthlyQuestReset));
+    CharacterDatabase.PExecute("UPDATE saved_variables SET NextMonthlyQuestResetTime = '" UI64FMTD "'", uint64(m_NextMonthlyQuestReset));
 }
 
 void World::ResetDailyQuests()
@@ -2615,7 +2623,7 @@ void World::ResetDailyQuests()
             itr->second->GetPlayer()->ResetDailyQuestStatus();
 
     m_NextDailyQuestReset = time_t(m_NextDailyQuestReset + DAY);
-    CharacterDatabase.PExecute("UPDATE saved_variables SET NextDailyQuestResetTime = '"UI64FMTD"'", uint64(m_NextDailyQuestReset));
+    CharacterDatabase.PExecute("UPDATE saved_variables SET NextDailyQuestResetTime = '" UI64FMTD "'", uint64(m_NextDailyQuestReset));
 }
 
 void World::ResetWeeklyQuests()
@@ -2627,7 +2635,7 @@ void World::ResetWeeklyQuests()
             itr->second->GetPlayer()->ResetWeeklyQuestStatus();
 
     m_NextWeeklyQuestReset = time_t(m_NextWeeklyQuestReset + WEEK);
-    CharacterDatabase.PExecute("UPDATE saved_variables SET NextWeeklyQuestResetTime = '"UI64FMTD"'", uint64(m_NextWeeklyQuestReset));
+    CharacterDatabase.PExecute("UPDATE saved_variables SET NextWeeklyQuestResetTime = '" UI64FMTD "'", uint64(m_NextWeeklyQuestReset));
 }
 
 void World::ResetRandomBG()
@@ -2639,7 +2647,7 @@ void World::ResetRandomBG()
             itr->second->GetPlayer()->SetRandomBGWinner(false);
 
     m_NextRandomBGReset = time_t(m_NextRandomBGReset + DAY);
-    CharacterDatabase.PExecute("UPDATE saved_variables SET NextRandomBGResetTime = '"UI64FMTD"'", uint64(m_NextRandomBGReset));
+    CharacterDatabase.PExecute("UPDATE saved_variables SET NextRandomBGResetTime = '" UI64FMTD "'", uint64(m_NextRandomBGReset));
 }
 
 void World::ResetMonthlyQuests()
