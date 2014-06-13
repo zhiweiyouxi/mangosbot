@@ -140,7 +140,7 @@ void PlayerbotFactory::InitPet()
             if (!co || !co->isTameable(false))
                 continue;
 
-            if (co->minlevel > bot->getLevel())
+            if (co->MinLevel > bot->getLevel())
                 continue;
 
 			PetLevelInfo const* petInfo = sObjectMgr.GetPetLevelInfo(co->Entry, bot->getLevel());
@@ -1020,13 +1020,13 @@ void PlayerbotFactory::InitAvailableSpells()
         if (!co)
             continue;
 
-        if (co->trainer_type != TRAINER_TYPE_TRADESKILLS && co->trainer_type != TRAINER_TYPE_CLASS)
+        if (co->TrainerType != TRAINER_TYPE_TRADESKILLS && co->TrainerType != TRAINER_TYPE_CLASS)
             continue;
 
-        if (co->trainer_type == TRAINER_TYPE_CLASS && co->trainer_class != bot->getClass())
+        if (co->TrainerType == TRAINER_TYPE_CLASS && co->TrainerClass != bot->getClass())
             continue;
 
-        uint32 trainerId = co->trainerId;
+		uint32 trainerId = co->TrainerTemplateId;
         if (!trainerId)
             trainerId = co->Entry;
 
