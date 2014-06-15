@@ -224,13 +224,6 @@ void PlayerbotAI::HandleCommand(uint32 type, const string& text, Player& fromPla
     if (!GetSecurity()->CheckLevelFor(PLAYERBOT_SECURITY_INVITE, type != CHAT_MSG_WHISPER, &fromPlayer))
         return;
 
-    for (string::const_iterator i = text.begin(); i != text.end(); i++)
-    {
-        char symbol = *i;
-        if (symbol < 32 || symbol > 127 || symbol == '$' || symbol == '%')
-            return;
-    }
-
     if (type == CHAT_MSG_ADDON)
         return;
 
