@@ -380,6 +380,7 @@ bool SetFacingTargetAction::Execute(Event event)
         return false;
 
     bot->SetFacingTo(bot->GetAngle(target));
+    ai->SetNextCheckDelay(sPlayerbotAIConfig.globalCoolDown);
     return true;
 }
 
