@@ -670,7 +670,7 @@ void WorldSession::HandleRaidReadyCheckOpcode(WorldPacket& recv_data)
 
         // everything is fine, do it
         WorldPacket data(MSG_RAID_READY_CHECK, 8);
-        data << ObjectGuid(GetPlayer()->GetObjectGuid());
+        data << GetPlayer()->GetObjectGuid();
         group->BroadcastPacket(&data, false, -1);
 
         group->OfflineReadyCheck();
@@ -799,7 +799,7 @@ void WorldSession::BuildPartyMemberStatsChangedPacket(Player* player, WorldPacke
         *data << (pet ? pet->GetObjectGuid() : ObjectGuid());
 
     if (mask & GROUP_UPDATE_FLAG_PET_NAME)
-        *data << (pet ? pet->GetName() : uint8(0));
+        *data << (pet ? pet->GetName() : "");
 
     if (mask & GROUP_UPDATE_FLAG_PET_MODEL_ID)
         *data << uint16(pet ? pet->GetDisplayId() : 0);

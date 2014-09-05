@@ -1045,6 +1045,23 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, DamageInfo* damageI
                     target = SelectRandomUnfriendlyTarget(getVictim());
                     break;
                  }
+                // Grim Reprisal
+                case 63305:
+                {
+                    // also update caster entry if required
+                    if (Unit* caster = triggeredByAura->GetCaster())
+                    {
+                        if (caster->GetEntry() != 33943 && caster->GetTypeId() == TYPEID_UNIT)
+                        {
+                            ((Creature*)caster)->UpdateEntry(33943);
+                            caster->CastSpell(caster, 64017, true);
+                        }
+                    }
+
+                    triggered_spell_id = 64039;
+                    basepoints[EFFECT_INDEX_0] = damage;
+                    break;
+                }
                 // Glyph of Life Tap
                 case 63320:
                     triggered_spell_id = 63321;
@@ -3672,6 +3689,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, DamageIn
                 //case 59288: break;                        // Infra-Green Shield
                 //case 59532: break;                        // Abandon Passengers on Poly
                 //case 59735: break:                        // Woe Strike
+                case 64148:                                 // Diminsh Power
+                {
+                    if (Unit* caster = triggeredByAura->GetCaster())
+                        caster->InterruptNonMeleeSpells(false);
+                    return SPELL_AURA_PROC_OK;
+                }
                 case 64415:                                 // // Val'anyr Hammer of Ancient Kings - Equip Effect
                 {
                     // for DOT procs

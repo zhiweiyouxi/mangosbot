@@ -73,6 +73,7 @@ ScriptMgr::ScriptMgr() :
     m_pOnGOUse(NULL),
     m_pOnItemUse(NULL),
     m_pOnAreaTrigger(NULL),
+    m_pOnNpcSpellClick(NULL),
     m_pOnProcessEvent(NULL),
     m_pOnEffectDummyCreature(NULL),
     m_pOnEffectDummyGO(NULL),
@@ -674,6 +675,15 @@ void ScriptMgr::LoadScripts(ScriptMapMapName& scripts, const char* tablename)
                 if (tmp.terminateCond.failQuest && !sObjectMgr.GetQuestTemplate(tmp.terminateCond.failQuest))
                 {
                     sLog.outErrorDb("Table `%s` has datalong2 = %u in SCRIPT_COMMAND_TERMINATE_COND for script id %u, but this questId does not exist.", tablename, tmp.terminateCond.failQuest, tmp.id);
+                    continue;
+                }
+                break;
+            }
+            case SCRIPT_COMMAND_SEND_AI_EVENT_AROUND:       // 35
+            {
+                if (tmp.sendAIEvent.eventType >= MAXIMAL_AI_EVENT_EVENTAI)
+                {
+                    sLog.outErrorDb("Table `%s` has invalid AI event (datalong = %u) in SCRIPT_COMMAND_SEND_AI_EVENT for script id %u", tablename, tmp.sendAIEvent.eventType, tmp.id);
                     continue;
                 }
                 break;
@@ -1814,6 +1824,16 @@ bool ScriptAction::HandleScriptStep()
             }
             return terminateResult;
         }
+        case SCRIPT_COMMAND_SEND_AI_EVENT_AROUND:           // 35
+        {
+            if (LogIfNotCreature(pSource))
+                return false;
+            if (LogIfNotUnit(pTarget))
+                break;
+
+            ((Creature*)pSource)->AI()->SendAIEventAround(AIEventType(m_script->sendAIEvent.eventType), (Unit*)pTarget, 0, float(m_script->sendAIEvent.radius));
+            break;
+        }
         default:
             sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u unknown command used.", m_table, m_script->id, m_script->command);
             break;
@@ -2099,6 +2119,11 @@ bool ScriptMgr::OnAreaTrigger(Player* pPlayer, AreaTriggerEntry const* atEntry)
     return m_pOnAreaTrigger != NULL && m_pOnAreaTrigger(pPlayer, atEntry);
 }
 
+bool ScriptMgr::OnNpcSpellClick(Player* pPlayer, Creature* pClickedCreature, uint32 spellId)
+{
+    return m_pOnNpcSpellClick != NULL && m_pOnNpcSpellClick(pPlayer, pClickedCreature, spellId);
+}
+
 bool ScriptMgr::OnProcessEvent(uint32 eventId, Object* pSource, Object* pTarget, bool isStart)
 {
     return m_pOnProcessEvent != NULL && m_pOnProcessEvent(eventId, pSource, pTarget, isStart);
@@ -2182,6 +2207,7 @@ ScriptLoadResult ScriptMgr::LoadScriptLibrary(const char* libName)
     GET_SCRIPT_HOOK_PTR(m_pOnGOUse,                    "GOUse");
     GET_SCRIPT_HOOK_PTR(m_pOnItemUse,                  "ItemUse");
     GET_SCRIPT_HOOK_PTR(m_pOnAreaTrigger,              "AreaTrigger");
+    GET_SCRIPT_HOOK_PTR(m_pOnNpcSpellClick,            "NpcSpellClick");
     GET_SCRIPT_HOOK_PTR(m_pOnProcessEvent,             "ProcessEvent");
     GET_SCRIPT_HOOK_PTR(m_pOnEffectDummyCreature,      "EffectDummyCreature");
     GET_SCRIPT_HOOK_PTR(m_pOnEffectDummyGO,            "EffectDummyGameObject");
@@ -2236,6 +2262,7 @@ void ScriptMgr::UnloadScriptLibrary()
     m_pOnGOUse                  = NULL;
     m_pOnItemUse                = NULL;
     m_pOnAreaTrigger            = NULL;
+    m_pOnNpcSpellClick          = NULL;
     m_pOnProcessEvent           = NULL;
     m_pOnEffectDummyCreature    = NULL;
     m_pOnEffectDummyGO          = NULL;

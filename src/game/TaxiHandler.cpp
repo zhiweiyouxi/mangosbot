@@ -57,7 +57,7 @@ void WorldSession::SendTaxiStatus(ObjectGuid guid)
     DEBUG_LOG("WORLD: current location %u ",curloc);
 
     WorldPacket data(SMSG_TAXINODE_STATUS, 9);
-    data << ObjectGuid(guid);
+    data << guid;
     data << uint8(GetPlayer()->m_taxi.IsTaximaskNodeKnown(curloc) ? 1 : 0);
     SendPacket(&data);
 
@@ -183,7 +183,7 @@ void WorldSession::HandleActivateTaxiExpressOpcode(WorldPacket& recv_data)
         if (!GetPlayer()->m_taxi.IsTaximaskNodeKnown(node) && !GetPlayer()->isTaxiCheater())
         {
             SendActivateTaxiReply(ERR_TAXINOTVISITED);
-            recv_data.rfinish();
+            recv_data.rfinish();                                // prevent warnings spam
             return;
         }
 

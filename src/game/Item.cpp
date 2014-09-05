@@ -77,7 +77,7 @@ void AddItemsSetItem(Player* player, Item* item)
         if (!set->spells[x])
             continue;
 
-        // not enough for  spell
+        // not enough for spell
         if (set->items_to_triggerspell[x] > eff->item_count)
             continue;
 
@@ -256,7 +256,7 @@ Item::Item() : loot(NULL)
     m_queuePos     = -1;
     m_container    = NULL;
     m_lootState    = ITEM_LOOT_NONE;
-    mb_in_trade    = false;
+    m_inTrade      = false;
 
     m_paidCost     = 0;
     m_paidExtCost  = 0;
@@ -953,6 +953,7 @@ bool Item::IsFitToSpellRequirements(SpellEntry const* spellInfo) const
         // EffectItemType[0] is the associated scroll itemID, if a scroll can be made
         if (spellInfo->EffectItemType[EFFECT_INDEX_0] == 0)
             return false;
+
         // Other checks do not apply to vellum enchants, so return final result
         return ((proto->SubClass == ITEM_SUBCLASS_WEAPON_ENCHANTMENT && spellInfo->EquippedItemClass == ITEM_CLASS_WEAPON) ||
                 (proto->SubClass == ITEM_SUBCLASS_ARMOR_ENCHANTMENT && spellInfo->EquippedItemClass == ITEM_CLASS_ARMOR));
@@ -1038,6 +1039,7 @@ void Item::ClearEnchantment(EnchantmentSlot slot)
 
     for (uint8 x = 0; x < 3; ++x)
         SetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1 + slot * MAX_ENCHANTMENT_OFFSET + x, 0);
+
     SetState(ITEM_CHANGED);
 }
 
@@ -1048,33 +1050,32 @@ bool Item::GemsFitSockets() const
     {
         uint8 SocketColor = GetProto()->Socket[enchant_slot - SOCK_ENCHANTMENT_SLOT].Color;
 
-        if (!SocketColor) //prismatic socket
+        if (!SocketColor) // prismatic socket
             continue;
 
         uint32 enchant_id = GetEnchantmentId(EnchantmentSlot(enchant_slot));
         if (!enchant_id)
         {
-            if (SocketColor) fits &= false;
+            if (SocketColor)
+                fits &= false;
             continue;
         }
 
         SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
         if (!enchantEntry)
         {
-            if (SocketColor) fits &= false;
+            if (SocketColor)
+                fits &= false;
             continue;
         }
 
         uint8 GemColor = 0;
 
-        uint32 gemid = enchantEntry->GemID;
-        if (gemid)
+        if (uint32 gemid = enchantEntry->GemID)
         {
-            ItemPrototype const* gemProto = sItemStorage.LookupEntry<ItemPrototype>(gemid);
-            if (gemProto)
+            if (ItemPrototype const* gemProto = sItemStorage.LookupEntry<ItemPrototype>(gemid))
             {
-                GemPropertiesEntry const* gemProperty = sGemPropertiesStore.LookupEntry(gemProto->GemProperties);
-                if (gemProperty)
+                if (GemPropertiesEntry const* gemProperty = sGemPropertiesStore.LookupEntry(gemProto->GemProperties))
                     GemColor = gemProperty->color;
             }
         }
@@ -1168,14 +1169,14 @@ void Item::SendTimeUpdate(Player* owner)
         return;
 
     WorldPacket data(SMSG_ITEM_TIME_UPDATE, 8 + 4);
-    data << ObjectGuid(GetObjectGuid());
+    data << GetObjectGuid();
     data << uint32(duration);
     owner->GetSession()->SendPacket(&data);
 }
 
 Item* Item::CreateItem(uint32 item, uint32 count, Player const* player, uint32 randomPropertyId)
 {
-    if (count < 1)
+    if (!count)
         return NULL;                                        // don't create item at zero count
 
     if (ItemPrototype const* pProto = ObjectMgr::GetItemPrototype(item))
@@ -1183,7 +1184,7 @@ Item* Item::CreateItem(uint32 item, uint32 count, Player const* player, uint32 r
         if (count > pProto->GetMaxStackSize())
             count = pProto->GetMaxStackSize();
 
-        MANGOS_ASSERT(count != 0 && "pProto->Stackable == 0 but checked at loading already");
+        MANGOS_ASSERT(count > 0 && "pProto->Stackable == 0 but checked at loading already");
 
         Item* pItem = NewItemOrBag(pProto);
         if (pItem->Create(sObjectMgr.GenerateItemLowGuid(), item, player))
@@ -1237,13 +1238,9 @@ bool Item::IsBindedNotWith(Player const* player) const
     if (!IsBoundAccountWide())
         return true;
 
-    // online
-    if (Player* owner = GetOwner())
-    {
+    if (Player* owner = GetOwner()) // online
         return owner->GetSession()->GetAccountId() != player->GetSession()->GetAccountId();
-    }
-    // offline slow case
-    else
+    else                            // offline slow case
     {
         return sAccountMgr.GetPlayerAccountIdByGUID(GetOwnerGuid()) != player->GetSession()->GetAccountId();
     }
@@ -1251,20 +1248,20 @@ bool Item::IsBindedNotWith(Player const* player) const
 
 void Item::AddToClientUpdateList()
 {
-    if (Player* pPlayer = GetOwner()) 
+    if (Player* pPlayer = GetOwner())
         pPlayer->AddUpdateObject(GetObjectGuid());
 }
 
 void Item::RemoveFromClientUpdateList()
 {
-    if (Player* pPlayer = GetOwner()) 
+    if (Player* pPlayer = GetOwner())
         pPlayer->RemoveUpdateObject(GetObjectGuid());
 }
 
-void Item::BuildUpdateData(UpdateDataMapType& update_players)
+void Item::BuildUpdateData(UpdateDataMapType& playerMap)
 {
-    if (Player* pl = GetOwner())
-        BuildUpdateDataForPlayer(pl, update_players);
+    if (Player* pPlayer = GetOwner())
+        BuildUpdateDataForPlayer(pPlayer, playerMap);
 
     ClearUpdateMask(false);
 }
@@ -1309,7 +1306,7 @@ bool Item::HasMaxCharges() const
 {
     ItemPrototype const* itemProto = GetProto();
 
-    for (int i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
+    for (uint8 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
     {
         if (GetSpellCharges(i) != itemProto->Spells[i].SpellCharges)
             return false;
@@ -1385,7 +1382,7 @@ bool Item::HasTriggeredByAuraSpell(SpellEntry const* spellInfo) const
     if (!proto)
         return false;
 
-    for (uint32 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
+    for (uint8 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
     {
         _Spell const& spellData = proto->Spells[i];
 
@@ -1402,7 +1399,7 @@ bool Item::HasTriggeredByAuraSpell(SpellEntry const* spellInfo) const
         if (!spellproto)
             continue;
 
-        for (uint32 j = 0; j < MAX_EFFECT_INDEX; ++j)
+        for (uint8 j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
             if (spellproto->EffectTriggerSpell[j] == spellInfo->Id)
                 return true;
@@ -1424,7 +1421,7 @@ bool Item::IsEligibleForRefund() const
     if (!proto || !(proto->Flags & ITEM_FLAG_REFUNDABLE) || (proto->GetMaxStackSize() != 1))
         return false;
 
-    for (uint32 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
+    for (uint8 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
     {
         _Spell const& spellData = proto->Spells[i];
 
@@ -1614,15 +1611,15 @@ bool Item::LoadSoulboundTradeableDataFromDB(Player* owner)
     if (result)
     {
         Field* fields = result->Fetch();
-        std::string guidsStr = fields[0].GetCppString();
-        delete result;
-
-        Tokens guidList(guidsStr, ' ');
-
         AllowedLooterSet looters;
-        for (Tokens::iterator itr = guidList.begin(); itr != guidList.end(); ++itr)
-            looters.insert(atol(*itr));
+        {
+            std::string guidsStr = fields[0].GetCppString();
+            delete result;
 
+            Tokens guidList(guidsStr, ' ');
+            for (Tokens::iterator itr = guidList.begin(); itr != guidList.end(); ++itr)
+                looters.insert(atol(*itr));
+        }
         if (!looters.empty())
             SetSoulboundTradeable(owner, &looters, true);
         else
@@ -1649,14 +1646,4 @@ bool Item::CheckSoulboundTradeExpire(Player* owner)
     }
 
     return false;
-}
-
-void Item::AddToWorld()
-{
-    Object::AddToWorld();
-}
-
-void Item::RemoveFromWorld(bool remove)
-{
-    Object::RemoveFromWorld(remove);
 }

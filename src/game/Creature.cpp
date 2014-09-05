@@ -99,7 +99,7 @@ VendorItem const* VendorItemData::FindItemCostPair(uint32 item_id, uint32 extend
     return NULL;
 }
 
-void CreatureCreatePos::SelectFinalPoint(Creature* cr, bool checkLOS)
+void CreatureCreatePos::SelectFinalPoint(Creature* cr, bool checkLOS /*=false*/)
 {
     // if object provided then selected point at specific dist/angle from object forward look
     if (m_closeObject)
@@ -146,7 +146,7 @@ Creature::Creature(CreatureSubtype subtype) : Unit(),
     m_AlreadyCallAssistance(false), m_AlreadySearchedAssistance(false),
     m_AI_locked(false), m_isDeadByDefault(false), m_temporaryFactionFlags(TEMPFACTION_NONE),
     m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0),
-    m_creatureInfo(NULL),
+    m_creatureInfo(NULL), m_focusSpell(NULL),
     m_modelInhabitType(-1)
 {
     m_regenTimer = 200;
@@ -172,11 +172,6 @@ void Creature::AddToWorld()
     // Not one time call this "added to world" creatures, spawned with negative spawn time (BG events mostly)
     if (GetVehicleKit())
         GetVehicleKit()->Reset();
-}
-
-void Creature::RemoveFromWorld(bool remove)
-{
-    Unit::RemoveFromWorld(remove);
 }
 
 void Creature::RemoveCorpse()
@@ -205,6 +200,9 @@ void Creature::RemoveCorpse()
 
     if (AI())
         AI()->CorpseRemoved(respawnDelay);
+
+    if (m_isCreatureLinkingTrigger)
+        GetMap()->GetCreatureLinkingHolder()->DoCreatureLinkingEvent(LINKING_EVENT_DESPAWN, this);
 
     // script can set time (in seconds) explicit, override the original
     if (respawnDelay)
@@ -1539,7 +1537,7 @@ float Creature::GetAttackDistance(Unit const* pPlayer) const
     uint32 creatureLevel = GetLevelForTarget(pPlayer);
     int32 levelDiff = int32(playerLevel) - int32(creatureLevel);
 
-    // "The maximum Aggro Radius has a cap of 25 levels under. 
+    // "The maximum Aggro Radius has a cap of 25 levels under.
     // Example: A level 30 char has the same Aggro Radius of a level 5 char on a level 60 mob."
     if (levelDiff < -25)
         levelDiff = -25;
@@ -1945,6 +1943,9 @@ bool Creature::CanInitiateAttack()
     if (m_aggroDelay)
         return false;
 
+    if (!CanAttackByItself())
+        return false;
+
     return true;
 }
 
@@ -2234,11 +2235,42 @@ bool Creature::IsInEvadeMode() const
     return IsInUnitState(UNIT_ACTION_HOME) || hasUnitState(UNIT_STAT_DELAYED_EVADE);
 }
 
-bool Creature::HasSpell(uint32 spellID)
+void Creature::ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs)
+{
+    time_t curTime = time(NULL);
+
+    for (uint8 i = 0; i <= GetSpellMaxIndex(); ++i)
+    {
+        uint32 spellId = GetSpell(i);
+        if (!spellId)
+            continue;
+
+        SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellId);
+        if (!spellInfo)
+        {
+            sLog.outError("Creature::ProhibitSpellSchool: %s have nonexistent spell %u!", GetGuidStr().c_str(), spellId);
+            continue;
+        }
+
+        // Not send cooldown for this spells
+        if (spellInfo->HasAttribute(SPELL_ATTR_DISABLED_WHILE_ACTIVE))
+            continue;
+
+        if (spellInfo->PreventionType != SPELL_PREVENTION_TYPE_SILENCE)
+            continue;
+
+        if ((idSchoolMask & GetSpellSchoolMask(spellInfo)) && GetSpellCooldownDelay(spellInfo) < unTimeMs)
+            AddSpellCooldown(spellId, 0, curTime + unTimeMs / IN_MILLISECONDS);
+    }
+}
+
+bool Creature::HasSpell(uint32 spellId)
 {
     for (uint8 i = 0; i <= GetSpellMaxIndex(); ++i)
-        if (spellID == GetSpell(i))
+    {
+        if (spellId == GetSpell(i))
             return true;
+    }
     return false;
 }
 
@@ -2495,7 +2527,7 @@ void Creature::SendAreaSpiritHealerQueryOpcode(Player* pl)
     if (Spell* pcurSpell = GetCurrentSpell(CURRENT_CHANNELED_SPELL))
         next_resurrect = pcurSpell->GetCastedTime();
     WorldPacket data(SMSG_AREA_SPIRIT_HEALER_TIME, 8 + 4);
-    data << ObjectGuid(GetObjectGuid());
+    data << GetObjectGuid();
     data << uint32(next_resurrect);
     pl->SendDirectMessage(&data);
 }
@@ -2859,4 +2891,44 @@ bool Creature::CanFly()
         return false;
 
     return true;
+}
+
+void Creature::SetTargetGuid(ObjectGuid targetGuid)
+{
+    // not focused
+    if (!m_focusSpell)
+        Unit::SetTargetGuid(targetGuid);
+}
+
+void Creature::FocusTarget(Spell const* focusSpell, WorldObject* target)
+{
+    // already focused
+    if (m_focusSpell)
+        return;
+
+    m_focusSpell = focusSpell;
+    Unit::SetTargetGuid(target->GetObjectGuid());
+
+    if (focusSpell->m_spellInfo->HasAttribute(SPELL_ATTR_EX5_DONT_TURN_DURING_CAST))
+        addUnitState(UNIT_STAT_ROTATING);
+
+    // Set serverside orientation if needed (needs to be after attribute check)
+    SetInFront((Unit*)target);
+}
+
+void Creature::ReleaseFocus(Spell const* focusSpell)
+{
+    // focused to something else
+    if (focusSpell != m_focusSpell)
+        return;
+
+    m_focusSpell = NULL;
+
+    if (Unit* pVictim = getVictim())
+        Unit::SetTargetGuid(pVictim->GetObjectGuid());
+    else
+        Unit::SetTargetGuid(ObjectGuid());
+
+    if (focusSpell->m_spellInfo->HasAttribute(SPELL_ATTR_EX5_DONT_TURN_DURING_CAST))
+        clearUnitState(UNIT_STAT_ROTATING);
 }

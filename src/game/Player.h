@@ -322,8 +322,8 @@ struct Areas
     float y2;
 };
 
-#define MAX_RUNES       6
-#define RUNE_COOLDOWN   (2*5*IN_MILLISECONDS)                // msec
+#define MAX_RUNES     6
+#define RUNE_BASE_COOLDOWN (2 * 5 * IN_MILLISECONDS)        // msec
 
 enum RuneType
 {
@@ -968,10 +968,25 @@ struct BGData
 
     bool m_needSave;                                        ///< true, if saved to DB fields modified after prev. save (marked as "saved" above)
 
-    bool forLFG;                                            // true, if data used for LFG entry point set ( fields modified after prev. save (instanceID = 0!)
+    bool forLFG;                                            // true, if data used for LFG entry point set (fields modified after prev. save (instanceID = 0!)
 
     void ClearTaxiPath()     { taxiPath[0] = taxiPath[1] = 0; }
     bool HasTaxiPath() const { return taxiPath[0] && taxiPath[1]; }
+};
+
+struct TTradeStatusInfo
+{
+    TTradeStatusInfo() :
+        m_status(TRADE_STATUS_BUSY), m_traderGuid(ObjectGuid()),
+        m_itemLimitCategoryId(0), m_slot(0),
+        m_invResult(EQUIP_ERR_OK), m_isTargetResult(false) {}
+
+    TradeStatus      m_status;
+    ObjectGuid       m_traderGuid;
+    uint32           m_itemLimitCategoryId;
+    uint8            m_slot;
+    InventoryResult  m_invResult;
+    bool             m_isTargetResult;
 };
 
 class TradeData
@@ -1055,8 +1070,9 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         virtual void CleanupsBeforeDelete() override;
 
-        void AddToWorld();
-        virtual void RemoveFromWorld(bool remove) override;
+        void AddToWorld() override;
+        void RemoveFromWorld(bool remove) override;
+
         virtual void SetMap(Map* map) override;
         virtual void ResetMap() override;
         // Used for lock map from unloading. Use with caution!
@@ -1169,7 +1185,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void UpdateInnerTime (time_t time) { time_inn_enter = time; }
 
         void RemovePet(PetSaveMode mode);
-
+        bool HasOrphan();
         uint32 GetPhaseMaskForSpawn() const;                // used for proper set phase for DB at GM-mode creature/GO spawn
 
         void Say(const std::string& text, const uint32 language);
@@ -1217,8 +1233,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool CanNoReagentCast(SpellEntry const* spellInfo) const;
         bool HasItemOrGemWithIdEquipped(uint32 item, uint32 count, uint8 except_slot = NULL_SLOT) const;
         bool HasItemOrGemWithLimitCategoryEquipped(uint32 limitCategory, uint32 count, uint8 except_slot = NULL_SLOT) const;
-        InventoryResult CanTakeMoreSimilarItems(Item* pItem) const { return _CanTakeMoreSimilarItems(pItem->GetEntry(), pItem->GetCount(), pItem); }
-        InventoryResult CanTakeMoreSimilarItems(uint32 entry, uint32 count) const { return _CanTakeMoreSimilarItems(entry, count, NULL); }
+        InventoryResult CanTakeMoreSimilarItems(Item* pItem, uint32* itemLimitCategory = NULL) const { return _CanTakeMoreSimilarItems(pItem->GetEntry(), pItem->GetCount(), pItem, NULL, itemLimitCategory); }
+        InventoryResult CanTakeMoreSimilarItems(uint32 entry, uint32 count, uint32* itemLimitCategory = NULL) const { return _CanTakeMoreSimilarItems(entry, count, NULL, NULL, itemLimitCategory); }
         InventoryResult CanStoreNewItem(uint8 bag, uint8 slot, ItemPosCountVec& dest, uint32 item, uint32 count, uint32* no_space_count = NULL) const
         {
             return _CanStoreItem(bag, slot, dest, item, count, NULL, false, no_space_count);
@@ -1231,7 +1247,7 @@ class MANGOS_DLL_SPEC Player : public Unit
             return _CanStoreItem(bag, slot, dest, pItem->GetEntry(), count, pItem, swap, NULL);
 
         }
-        InventoryResult CanStoreItems(Item **pItem,int count) const;
+        InventoryResult CanStoreItems(Item** pItem, int count, uint32* itemLimitCategory) const;
         InventoryResult CanEquipNewItem(uint8 slot, uint16 &dest, uint32 item, bool swap) const;
         InventoryResult CanEquipItem(uint8 slot, uint16 &dest, Item *pItem, bool swap, bool direct_action = true) const;
 
@@ -1258,7 +1274,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         Item* ConvertItem(Item* item, uint32 newItemId);
 
-        InventoryResult _CanTakeMoreSimilarItems(uint32 entry, uint32 count, Item* pItem, uint32* no_space_count = NULL) const;
+        InventoryResult _CanTakeMoreSimilarItems(uint32 entry, uint32 count, Item* pItem, uint32* no_space_count = NULL, uint32* itemLimitCategory = NULL) const;
         InventoryResult _CanStoreItem(uint8 bag, uint8 slot, ItemPosCountVec& dest, uint32 entry, uint32 count, Item *pItem = NULL, bool swap = false, uint32* no_space_count = NULL) const;
 
         void ApplyEquipCooldown(Item * pItem);
@@ -1556,6 +1572,7 @@ class MANGOS_DLL_SPEC Player : public Unit
             MoneyChanged(value);
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_GOLD_VALUE_OWNED);
         }
+        bool HasEnoughMoney(uint32 amount) const { return (GetMoney() >= amount); }
 
         QuestStatusMap const& GetQuestStatusMap() { return mQuestStatus; };
         QuestStatusData* GetQuestStatusData(uint32 questId);
@@ -1681,7 +1698,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         template <class T> T ApplySpellMod(uint32 spellId, SpellModOp op, T &basevalue);
 
         void SendCooldownEvent(SpellEntry const *spellInfo, uint32 itemId = 0);
-        void ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs);
+        void ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs) override;
         void SendClearCooldown(uint32 spell_id, Unit* target);
         void SendModifyCooldown(uint32 spell_id, int32 delta);
 
@@ -1852,6 +1869,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void UpdateArmorPenetration();
         void ApplyManaRegenBonus(int32 amount, bool apply);
         void UpdateManaRegen();
+        void UpdateRuneRegen(uint8 index);
         void ApplyHealthRegenBonus(int32 amount, bool apply);
 
         ObjectGuid const& GetLootGuid() const { return m_lootGuid; }
@@ -2399,10 +2417,11 @@ class MANGOS_DLL_SPEC Player : public Unit
         RuneType GetBaseRune(uint8 index) const { return RuneType(m_runes->runes[index].BaseRune); }
         RuneType GetCurrentRune(uint8 index) const { return RuneType(m_runes->runes[index].CurrentRune); }
         uint16 GetRuneCooldown(uint8 index) const { return m_runes->runes[index].Cooldown; }
+        uint32 GetRuneBaseCooldown(uint8 index) const;
         bool IsBaseRuneSlotsOnCooldown(RuneType runeType) const;
         void SetBaseRune(uint8 index, RuneType baseRune) { m_runes->runes[index].BaseRune = baseRune; }
         void SetCurrentRune(uint8 index, RuneType currentRune) { m_runes->runes[index].CurrentRune = currentRune; }
-        void SetRuneCooldown(uint8 index, uint16 cooldown) { m_runes->runes[index].Cooldown = cooldown; m_runes->SetRuneState(index, (cooldown == 0) ? true : false); }
+        void SetRuneCooldown(uint8 index, uint16 cooldown, bool casted = false);
         void ConvertRune(uint8 index, RuneType newType, uint32 spellid = 0);
         void SetConvertedBy(uint8 index, uint32 spellid) { m_runes->runes[index].ConvertedBy = spellid; }
         void ClearConvertedBy(uint8 index) { m_runes->runes[index].ConvertedBy = 0; }
@@ -2417,10 +2436,15 @@ class MANGOS_DLL_SPEC Player : public Unit
             if (spellid != 0)
                 SetConvertedBy(index, spellid);
         }
-        bool ActivateRunes(RuneType type, uint32 count);
+        bool ActivateRunes(RuneType type, uint32 count, bool forBloodTap = false);
         void ResyncRunes();
         void AddRunePower(uint8 index);
         void InitRunes();
+        void ResetRuneGraceData();
+        uint32 GetRuneTimer(uint8 index) const { return m_runeGraceCooldown[index]; }
+        void SetRuneTimer(uint8 index, uint32 timer) { m_runeGraceCooldown[index] = timer; }
+        uint32 GetLastRuneGraceTimer(uint8 index) const { return m_lastRuneGraceTimers[index]; }
+        void SetLastRuneGraceTimer(uint8 index, uint32 timer) { m_lastRuneGraceTimers[index] = timer; }
 
         AchievementMgr const& GetAchievementMgr() const { return m_achievementMgr; }
         AchievementMgr& GetAchievementMgr() { return m_achievementMgr; }
@@ -2758,6 +2782,10 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint8 m_MirrorTimerFlags;
         uint8 m_MirrorTimerFlagsLast;
         bool m_isInWater;
+
+        // Rune type / Rune timer
+        uint32 m_runeGraceCooldown[MAX_RUNES];
+        uint32 m_lastRuneGraceTimers[MAX_RUNES];
 
         // Current teleport data
         WorldLocation m_teleport_dest;

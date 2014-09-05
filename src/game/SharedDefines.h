@@ -454,7 +454,7 @@ enum SpellAttributesEx5
     SPELL_ATTR_EX5_UNK16                       = 0x00010000,            // 16
     SPELL_ATTR_EX5_USABLE_WHILE_FEARED         = 0x00020000,            // 17 usable while feared
     SPELL_ATTR_EX5_USABLE_WHILE_CONFUSED       = 0x00040000,            // 18 usable while confused
-    SPELL_ATTR_EX5_UNK19                       = 0x00080000,            // 19
+    SPELL_ATTR_EX5_DONT_TURN_DURING_CAST       = 0x00080000,            // 19 Blocks caster's turning when casting (client does not automatically turn caster's model to face UNIT_FIELD_TARGET)
     SPELL_ATTR_EX5_UNK20                       = 0x00100000,            // 20
     SPELL_ATTR_EX5_UNK21                       = 0x00200000,            // 21
     SPELL_ATTR_EX5_UNK22                       = 0x00400000,            // 22
@@ -502,7 +502,7 @@ enum SpellAttributesEx6
     SPELL_ATTR_EX6_UNK28                       = 0x10000000,            // 28 not set in 3.0.3
     SPELL_ATTR_EX6_NO_DMG_MODS                 = 0x20000000,            // 29 do not apply damage mods (usually in cases where it has already been applied)
     SPELL_ATTR_EX6_UNK30                       = 0x40000000,            // 30 not set in 3.0.3
-    SPELL_ATTR_EX6_UNK31                       = 0x80000000,            // 31 not set in 3.0.3
+    SPELL_ATTR_EX6_IGNORE_CAT_COOLDOWN_MODS    = 0x80000000,            // 31 Spells with this attribute skip applying modifiers to category cooldowns
 };
 
 enum SpellAttributesEx7
@@ -3092,7 +3092,7 @@ enum TradeStatus
     TRADE_STATUS_NO_TARGET      = 6,
     TRADE_STATUS_BACK_TO_TRADE  = 7,
     TRADE_STATUS_TRADE_COMPLETE = 8,
-    // 9?
+    TRADE_STATUS_TRADE_REJECTED = 9,
     TRADE_STATUS_TARGET_TO_FAR  = 10,
     TRADE_STATUS_WRONG_FACTION  = 11,
     TRADE_STATUS_CLOSE_WINDOW   = 12,
@@ -3105,8 +3105,8 @@ enum TradeStatus
     TRADE_STATUS_YOU_LOGOUT     = 19,
     TRADE_STATUS_TARGET_LOGOUT  = 20,
     TRADE_STATUS_TRIAL_ACCOUNT  = 21,                       // Trial accounts can not perform that action
-    TRADE_STATUS_ONLY_CONJURED  = 22,                       // You can only trade conjured items... (cross realm BG related).
-    TRADE_STATUS_NOT_ELIGIBLE   = 23                        // Related to trading soulbound loot items
+    TRADE_STATUS_WRONG_REALM    = 22,                       // You can only trade conjured items... (cross realm BG related).
+    TRADE_STATUS_NOT_ON_TAPLIST = 23                        // Related to trading soulbound loot items
 };
 
 enum EncounterCreditType
@@ -3147,6 +3147,7 @@ enum AreaLockStatus
 
 #define CONTACT_DISTANCE            0.5f
 #define INTERACTION_DISTANCE        5.0f
+#define TRADE_DISTANCE              11.11f
 #define ATTACK_DISTANCE             5.0f
 #define MAX_VISIBILITY_DISTANCE     500.0f      // max distance for visible object show, limited in 500 yards
 #define DEFAULT_VISIBILITY_DISTANCE 90.0f       // default visible distance, 90 yards on continents

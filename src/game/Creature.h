@@ -36,6 +36,7 @@ struct SpellEntry;
 class CreatureAI;
 class Quest;
 class Player;
+class Spell;
 class WorldSession;
 
 struct GameEventCreatureData;
@@ -513,8 +514,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
         explicit Creature(CreatureSubtype subtype = CREATURE_SUBTYPE_GENERIC);
         virtual ~Creature();
 
-        void AddToWorld();
-        virtual void RemoveFromWorld(bool remove) override;
+        void AddToWorld() override;
 
         bool Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo const* cinfo, Team team = TEAM_NONE, const CreatureData* data = NULL, GameEventCreatureData const* eventData = NULL);
         bool LoadCreatureAddon(bool reload = false);
@@ -525,7 +525,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
 
         char const* GetSubName() const { return m_creatureInfo->SubName; }
 
-        virtual void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
+        void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
 
         virtual void RegenerateAll(uint32 update_diff);
 
@@ -601,6 +601,10 @@ class MANGOS_DLL_SPEC Creature : public Unit
         void SetRoot(bool enable) override;
         void SetWaterWalk(bool enable) override;
 
+        void SetTargetGuid(ObjectGuid targetGuid) override;
+        void FocusTarget(Spell const* focusSpell, WorldObject* target);
+        void ReleaseFocus(Spell const* focusSpell);
+
         uint32 GetShieldBlockValue() const                  // dunno mob block value
         {
             return (getLevel() / 2 + uint32(GetStat(STAT_STRENGTH) / 20));
@@ -609,7 +613,8 @@ class MANGOS_DLL_SPEC Creature : public Unit
         SpellSchoolMask GetMeleeDamageSchoolMask() const override { return m_meleeDamageSchoolMask; }
         void SetMeleeDamageSchool(SpellSchools school) { m_meleeDamageSchoolMask = SpellSchoolMask(1 << school); }
 
-        bool HasSpell(uint32 spellID);
+        bool HasSpell(uint32 spellId);
+        void ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs) override;
 
         bool UpdateEntry(uint32 entry, Team team = ALLIANCE, const CreatureData* data = NULL, GameEventCreatureData const* eventData = NULL, bool preserveHPAndPower = true);
 
@@ -814,6 +819,8 @@ class MANGOS_DLL_SPEC Creature : public Unit
     private:
         GridReference<Creature> m_gridRef;
         CreatureInfo const* m_creatureInfo;                 // in difficulty mode > 0 can different from ObjMgr::GetCreatureTemplate(GetEntry())
+
+        Spell const* m_focusSpell;                          // Locks the target during spell cast for proper facing
 
         int32 m_modelInhabitType;                           // cached value
 };

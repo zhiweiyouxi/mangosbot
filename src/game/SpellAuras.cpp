@@ -368,7 +368,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNULL,                                      //311 0 spells in 3.3
     &Aura::HandleNULL,                                      //312 0 spells in 3.3
     &Aura::HandleNULL,                                      //313 0 spells in 3.3
-    &Aura::HandleNULL,                                      //314 1 test spell (reduce duration of silince/magic)
+    &Aura::HandlePreventResurrection,                       //314 SPELL_AURA_PREVENT_RESURRECTION
     &Aura::HandleNULL,                                      //315 underwater walking
     &Aura::HandleNoImmediateEffect                          //316 SPELL_AURA_MOD_PERIODIC_HASTE makes haste affect HOT/DOT ticks
 };
@@ -1366,8 +1366,9 @@ void Aura::TriggerSpell()
 //                    // Polymorphic Ray
 //                    case 6965: break;
                     case 9712:                              // Thaumaturgy Channel
-                        trigger_spell_id = 21029;
-                        break;
+                        if (Unit* caster = GetCaster())
+                            caster->CastSpell(caster, 21029, true);
+                        return;
 //                    // Egan's Blaster
 //                    case 17368: break;
 //                    // Haunted
@@ -2735,6 +2736,9 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         target->setFaction(1990);           // Ambient (hostile)
                         target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
                         return;
+                    case 63122:                             // Clear Insane
+                        target->RemoveAurasDueToSpell(GetSpellProto()->CalculateSimpleValue(m_effIndex));
+                        return;
                     case 63322:                             // Saronite Vapors
                         if (Unit* caster = GetCaster())
                         {
@@ -2764,6 +2768,10 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         // Teach Learn Talent Specialization Switches, remove
                         if (target->GetTypeId() == TYPEID_PLAYER)
                             ((Player*)target)->removeSpell(63680);
+                        return;
+                    case 64132:                             // Constrictor Tentacle
+                        if (target->GetTypeId() == TYPEID_PLAYER)
+                            target->CastSpell(target, 64133, true, NULL, this);
                         return;
                     case 68912:                             // Wailing Souls
                         if (Unit* caster = GetCaster())
@@ -5287,14 +5295,50 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
         return;
 
     Unit* target = GetTarget();
+    if (!target || target->IsTaxiFlying())
+        return;
 
     if (apply)
     {
+        // don't allow Seduction on CloackOnShadows
+        if (GetId() == 6358 && target->HasAura(31224, EFFECT_INDEX_0))
+            return;
+
+        // remove stealth for set target
+        if (GetSpellProto()->SpellFamilyName == SPELLFAMILY_ROGUE && GetSpellProto()->GetSpellFamilyFlags().test<CF_ROGUE_SAP>())
+        {
+            if (target->HasStealthAura())
+                target->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
+        }
+
         // Frost stun aura -> freeze/unfreeze target
         if (GetSpellSchoolMask(GetSpellProto()) & SPELL_SCHOOL_MASK_FROST)
             target->ModifyAuraState(AURA_STATE_FROZEN, apply);
 
+        target->addUnitState(UNIT_STAT_STUNNED);
+        target->SetTargetGuid(ObjectGuid());
+        target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
+
         target->CastStop(target->GetObjectGuid() == GetCasterGuid() ? GetId() : 0);
+        if (target->hasUnitState(UNIT_STAT_MELEE_ATTACKING))
+            target->SendMeleeAttackStop(NULL);
+
+        if (target->GetTypeId() == TYPEID_PLAYER)
+        {
+            target->SetRoot(true);
+            target->SetStandState(UNIT_STAND_STATE_STAND); // in 1.5 client
+
+            // Clear unit movement flags
+            target->m_movementInfo.SetMovementFlags(MOVEFLAG_NONE);
+        }
+        else
+        {
+            if (target->IsVehicle()) // for player controlled vehicles
+                target->SetRoot(true);
+
+            target->StopMoving();
+        }
+
         target->GetUnitStateMgr().PushAction(UNIT_ACTION_STUN);
 
         switch (GetId())
@@ -5309,7 +5353,7 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
                         target->RemoveSpellsCausingAura(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
                     }
                 }
-                break;
+                return;
             }
             case 39837: // Impaling Spine
             {
@@ -5326,23 +5370,36 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
                 else
                     delete pObj;
 
-                break;
+                return;
             }
             case 44572: // Deep Freeze damage part
             {
-                if (target->IsCharmerOrOwnerPlayerOrPlayerItself() || target->IsVehicle())
-                    return;
-
-                if (target->IsImmuneToSpellEffect(GetSpellProto(), EFFECT_INDEX_0))
+                if (!(target->IsCharmerOrOwnerPlayerOrPlayerItself() || target->IsVehicle()) && target->IsImmuneToSpellEffect(GetSpellProto(), EFFECT_INDEX_0))
                 {
-                    Unit* caster = GetCaster();
-                    if (!caster)
-                        return;
-
-                    caster->CastSpell(target, 71757, true);
+                    if (Unit* pCaster = GetCaster())
+                        pCaster->CastSpell(target, 71757, true);
                 }
-                break;
+                return;
             }
+        }
+
+        // Pound
+        if (GetSpellProto()->GetSpellIconID() == 66)
+        {
+            Unit* pCaster = GetCaster();
+            if (!pCaster)
+                return;
+
+            uint32 spellId = 0;
+            switch (GetSpellProto()->Id)
+            {
+                case 53472: spellId = 53509; break;
+                case 59433: spellId = 59432; break;
+                default: return;
+            }
+
+            pCaster->CastSpell(target, spellId, true);
+            return;
         }
     }
     else
@@ -5372,9 +5429,11 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
         if (target->HasAuraType(SPELL_AURA_MOD_STUN))
             return;
 
-        target->GetUnitStateMgr().DropAction(UNIT_ACTION_STUN);
+        target->clearUnitState(UNIT_STAT_STUNNED);
+        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
-        if (!target->hasUnitState(UNIT_STAT_ROOT | UNIT_STAT_ON_VEHICLE))       // prevent allow move if have also root effect
+        // prevent allow move if have also root effect
+        if (!target->hasUnitState(UNIT_STAT_ROOT | UNIT_STAT_ON_VEHICLE))
         {
             if (target->isAlive())
             {
@@ -5383,12 +5442,19 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
             }
 
             target->SetRoot(false);
+            target->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
+
+            if (target->GetTypeId() != TYPEID_PLAYER)
+                target->AddEvent(new AttackResumeEvent(*target), ATTACK_DISPLAY_DELAY);
         }
+
+        target->GetUnitStateMgr().DropAction(UNIT_ACTION_STUN);
 
         if (GetId() == 6358) // Seduction
         {
             if (Unit* caster = GetCaster())
                 caster->InterruptSpell(CURRENT_CHANNELED_SPELL, false);
+
             return;
         }
 
@@ -5596,10 +5662,10 @@ void Aura::HandleDetectAmore(bool apply, bool /*real*/)
 void Aura::HandleAuraModRoot(bool apply, bool Real)
 {
     // only at real add/remove aura
-    if(!Real)
+    if (!Real)
         return;
 
-    Unit *target = GetTarget();
+    Unit* target = GetTarget();
 
     if (apply)
     {
@@ -5607,8 +5673,29 @@ void Aura::HandleAuraModRoot(bool apply, bool Real)
         if (GetSpellSchoolMask(GetSpellProto()) & SPELL_SCHOOL_MASK_FROST)
             target->ModifyAuraState(AURA_STATE_FROZEN, apply);
 
-        target->GetUnitStateMgr().PushAction(UNIT_ACTION_ROOT);
+        target->addUnitState(UNIT_STAT_ROOT);
+        target->SetTargetGuid(ObjectGuid());
 
+        // Save last orientation
+        if (Unit* pVictim = target->getVictim())
+            target->SetOrientation(target->GetAngle(pVictim));
+
+        if (target->GetTypeId() == TYPEID_PLAYER)
+        {
+            target->SetRoot(true);
+
+            // Clear unit movement flags
+            target->m_movementInfo.SetMovementFlags(MOVEFLAG_NONE);
+        }
+        else
+        {
+            if (target->IsVehicle()) // for player controlled vehicles
+                target->SetRoot(true);
+
+            target->StopMoving();
+        }
+
+        target->GetUnitStateMgr().PushAction(UNIT_ACTION_ROOT);
     }
     else
     {
@@ -5616,12 +5703,12 @@ void Aura::HandleAuraModRoot(bool apply, bool Real)
         if (GetSpellSchoolMask(GetSpellProto()) & SPELL_SCHOOL_MASK_FROST)
         {
             bool found_another = false;
-            for(AuraType const* itr = &frozenAuraTypes[0]; *itr != SPELL_AURA_NONE; ++itr)
+            for (AuraType const* itr = &frozenAuraTypes[0]; *itr != SPELL_AURA_NONE; ++itr)
             {
                 Unit::AuraList const& auras = target->GetAurasByType(*itr);
-                for(Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+                for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
                 {
-                    if ( GetSpellSchoolMask((*i)->GetSpellProto()) & SPELL_SCHOOL_MASK_FROST)
+                    if (GetSpellSchoolMask((*i)->GetSpellProto()) & SPELL_SCHOOL_MASK_FROST)
                     {
                         found_another = true;
                         break;
@@ -5631,13 +5718,33 @@ void Aura::HandleAuraModRoot(bool apply, bool Real)
                     break;
             }
 
-            if(!found_another)
+            if (!found_another)
                 target->ModifyAuraState(AURA_STATE_FROZEN, apply);
         }
 
         // Real remove called after current aura remove from lists, check if other similar auras active
         if (target->HasAuraType(SPELL_AURA_MOD_ROOT))
             return;
+
+        target->clearUnitState(UNIT_STAT_ROOT);
+
+        // prevent allow move if have also stun effect
+        if (!target->hasUnitState(UNIT_STAT_STUNNED))
+        {
+            if (target->isAlive())
+            {
+                if (Unit* pVictim = target->getVictim())
+                    target->SetTargetGuid(pVictim->GetObjectGuid());
+            }
+
+            if (target->GetTypeId() == TYPEID_PLAYER)
+                target->SetRoot(false);
+
+            target->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
+
+            if (target->GetTypeId() != TYPEID_PLAYER)
+                target->AddEvent(new AttackResumeEvent(*target), ATTACK_DISPLAY_DELAY);
+        }
 
         target->GetUnitStateMgr().DropAction(UNIT_ACTION_ROOT);
 
@@ -7218,9 +7325,16 @@ void Aura::HandleModPowerRegenPCT(bool /*apply*/, bool Real)
     if (GetTarget()->GetTypeId() != TYPEID_PLAYER)
         return;
 
-    // Update manaregen value
-    if (m_modifier.m_miscvalue == POWER_MANA)
-        ((Player*)GetTarget())->UpdateManaRegen();
+    // Update regen value
+    switch (m_modifier.m_miscvalue)
+    {
+        case POWER_MANA:
+            ((Player*)GetTarget())->UpdateManaRegen();
+            break;
+        case POWER_RUNE:
+            ((Player*)GetTarget())->UpdateRuneRegen(RuneType(GetMiscValueB()));
+            break;
+    }
 }
 
 void Aura::HandleModManaRegen(bool /*apply*/, bool Real)
@@ -9825,6 +9939,14 @@ void Aura::PeriodicDummyTick()
                         target->CastSpell(target, 63536, true, NULL, this);
                     return;
                 }
+                case 63050:                                 // Sanity
+                {
+                    if (GetHolder()->GetStackAmount() <= 25 && !target->HasAura(63752))
+                        target->CastSpell(target, 63752, true);
+                    else if (GetHolder()->GetStackAmount() > 25 && target->HasAura(63752))
+                        target->RemoveAurasDueToSpell(63752);
+                    return;
+                }
                 case 63276:                                   // Mark of the Faceless (General Vezax - Ulduar)
                 {
 
@@ -10760,6 +10882,7 @@ m_permanent(false), m_isRemovedOnShapeLost(true), m_deleted(false)
         case 62519:                                         // Attuned to Nature
         case 63050:                                         // Sanity (Ulduar - Yogg Saron)
         case 64455:                                         // Feral Essence
+        case 65294:                                         // Empowered
         case 66228:                                         // Nether Power (ToC: Lord Jaraxxus)
         case 67106:                                         // Nether Power (ToC: Lord Jaraxxus)
         case 67107:                                         // Nether Power (ToC: Lord Jaraxxus)
@@ -12949,4 +13072,19 @@ void Aura::HandleInitializeImages(bool apply, bool real)
         }
         target->SetName(cinfo->Name);
     }
+}
+
+void Aura::HandlePreventResurrection(bool apply, bool real)
+{
+    if (!real)
+        return;
+
+    Unit* target = GetTarget();
+    if (!target || target->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    if (apply)
+        target->RemoveByteFlag(PLAYER_FIELD_BYTES, 0, PLAYER_FIELD_BYTE_RELEASE_TIMER);
+    else if (!target->GetMap()->Instanceable())
+        target->SetByteFlag(PLAYER_FIELD_BYTES, 0, PLAYER_FIELD_BYTE_RELEASE_TIMER);
 }

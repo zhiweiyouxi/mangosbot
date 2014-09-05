@@ -47,6 +47,7 @@
 #include "Mail.h"
 #include "InstanceData.h"
 #include "GridNotifiers.h"
+#include "CellImpl.h"
 
 #include <limits>
 
@@ -7415,11 +7416,15 @@ void ObjectMgr::LoadNPCSpellClickSpells()
             continue;
         }
 
-        SpellEntry const* spellinfo = sSpellStore.LookupEntry(info.spellId);
-        if (!spellinfo)
+        // spell can be 0 for special or custom cases
+        if (info.spellId)
         {
-            sLog.outErrorDb("Table npc_spellclick_spells references unknown spellid %u. Skipping entry.", info.spellId);
-            continue;
+            SpellEntry const* spellinfo = sSpellStore.LookupEntry(info.spellId);
+            if (!spellinfo)
+            {
+                sLog.outErrorDb("Table npc_spellclick_spells references unknown spellid %u. Skipping entry.", info.spellId);
+                continue;
+            }
         }
 
         if (info.conditionId && !sConditionStorage.LookupEntry<PlayerCondition const*>(info.conditionId))
@@ -8634,6 +8639,7 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
         case CONDITION_GENDER:
             return player->getGender() == m_value1;
         case CONDITION_DEAD_OR_AWAY:
+        {
             switch (m_value1)
             {
                 case 0:                                     // Player dead or out of range
@@ -8664,6 +8670,7 @@ bool PlayerCondition::Meets(Player const* player, Map const* map, WorldObject co
                 case 3:                                     // Creature source is dead
                     return !source || source->GetTypeId() != TYPEID_UNIT || !((Unit*)source)->isAlive();
             }
+        }
         case CONDITION_CREATURE_IN_RANGE:
         {
             Creature* creature = NULL;

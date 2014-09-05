@@ -118,6 +118,7 @@ enum EventAI_ActionType
     ACTION_T_THROW_AI_EVENT             = 45,               // EventType, Radius, unused
     ACTION_T_SET_THROW_MASK             = 46,               // EventTypeMask, unused, unused
     ACTION_T_SET_STAND_STATE            = 47,               // StandState, unused, unused
+    ACTION_T_CHANGE_MOVEMENT            = 48,               // MovementType, WanderDistance, unused
 
     ACTION_T_END,
 };
@@ -145,7 +146,7 @@ enum Target
 
     TARGET_T_END,
 
-    //Vehicle-based targets (NULL if owner/target vehicle)
+    // Vehicle-based targets (NULL if owner/target vehicle)
     TARGET_T_VEHICLE_PASSENGER = 50,                        // First current passenger (NULL if not vehicle or not passenger)
     TARGET_T_VEHICLE_PASSENGER_0,                           // Passenger on seat 0 (NULL if not vehicle or not passenger)
     TARGET_T_VEHICLE_PASSENGER_1,                           // Passenger on seat 1 (NULL if not vehicle or not passenger)
@@ -422,6 +423,13 @@ struct CreatureEventAI_Action
             uint32 unused1;
             uint32 unused2;
         } setStandState;
+        // ACTION_T_CHANGE_MOVEMENT                         = 48
+        struct
+        {
+            uint32 movementType;
+            uint32 wanderDistance;
+            uint32 unused1;
+        } changeMovement;
         // RAW
         struct
         {
@@ -629,9 +637,9 @@ class MANGOS_DLL_SPEC CreatureEventAI : public CreatureAI
             m_CreatureEventAIList.clear();
         }
 
-        void GetAIInformation(ChatHandler& reader);
+        void GetAIInformation(ChatHandler& reader) override;
 
-        void JustRespawned();
+        void JustRespawned() override;
         void Reset();
         void JustReachedHome() override;
         void EnterCombat(Unit* enemy) override;

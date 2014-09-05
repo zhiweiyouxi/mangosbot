@@ -148,7 +148,9 @@ class CharacterHandler
         }
         void HandlePlayerLoginCallback(QueryResult* /*dummy*/, SqlQueryHolder* holder)
         {
-            if (!holder) return;
+            if (!holder)
+                return;
+
             WorldSession* session = sWorld.FindSession(((LoginQueryHolder*)holder)->GetAccountId());
             if (!session)
             {
@@ -1100,7 +1102,7 @@ void WorldSession::HandleChangePlayerNameOpcodeCallBack(QueryResult* result, uin
     session->SendPacket(&data);
 
     sWorld.InvalidatePlayer(guid);
-	sAccountMgr.ClearPlayerDataCache(guid);
+    sAccountMgr.ClearPlayerDataCache(guid);
 }
 
 void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
@@ -1115,7 +1117,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
     {
         WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT, 4 + 8);
         data << uint32(1);
-        data << ObjectGuid(guid);
+        data << guid;
         SendPacket(&data);
         return;
     }
@@ -1125,7 +1127,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
     {
         WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT, 4 + 8);
         data << uint32(1);
-        data << ObjectGuid(guid);
+        data << guid;
         SendPacket(&data);
         return;
     }
@@ -1134,7 +1136,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
     {
         WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT, 4 + 8);
         data << uint32(1);
-        data << ObjectGuid(guid);
+        data << guid;
         SendPacket(&data);
         return;
     }
@@ -1148,7 +1150,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
     {
         WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT, 4 + 8);
         data << uint32(1);
-        data << ObjectGuid(guid);
+        data << guid;
         SendPacket(&data);
         return;
     }
@@ -1160,7 +1162,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
         {
             WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT, 4 + 8);
             data << uint32(1);
-            data << ObjectGuid(guid);
+            data << guid;
             SendPacket(&data);
             return;
         }
@@ -1170,7 +1172,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
     {
         WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT, 4 + 8);
         data << uint32(1);
-        data << ObjectGuid(guid);
+        data << guid;
         SendPacket(&data);
         return;
     }
@@ -1186,7 +1188,7 @@ void WorldSession::HandleSetPlayerDeclinedNamesOpcode(WorldPacket& recv_data)
 
     WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT, 4 + 8);
     data << uint32(0);                                      // OK
-    data << ObjectGuid(guid);
+    data << guid;
     SendPacket(&data);
 }
 
@@ -1539,7 +1541,7 @@ void WorldSession::HandleCharFactionOrRaceChangeOpcode(WorldPacket& recv_data)
 
     WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1 + 8 + (newname.size() + 1) + 7);
     data << uint8(RESPONSE_SUCCESS);
-    data << ObjectGuid(guid);
+    data << guid;
     data << newname;
     data << uint8(gender);
     data << uint8(skin);
@@ -1550,7 +1552,7 @@ void WorldSession::HandleCharFactionOrRaceChangeOpcode(WorldPacket& recv_data)
     data << uint8(newRace);
     SendPacket(&data);
 
-	sAccountMgr.ClearPlayerDataCache(guid);
+    sAccountMgr.ClearPlayerDataCache(guid);
 }
 
 void WorldSession::HandleCharCustomizeOpcode(WorldPacket& recv_data)
@@ -1634,7 +1636,7 @@ void WorldSession::HandleCharCustomizeOpcode(WorldPacket& recv_data)
 
     WorldPacket data(SMSG_CHAR_CUSTOMIZE, 1 + 8 + (newname.size() + 1) + 6);
     data << uint8(RESPONSE_SUCCESS);
-    data << ObjectGuid(guid);
+    data << guid;
     data << newname;
     data << uint8(gender);
     data << uint8(skin);
@@ -1644,7 +1646,7 @@ void WorldSession::HandleCharCustomizeOpcode(WorldPacket& recv_data)
     data << uint8(facialHair);
     SendPacket(&data);
 
-	sAccountMgr.ClearPlayerDataCache(guid);
+    sAccountMgr.ClearPlayerDataCache(guid);
 }
 
 void WorldSession::HandleEquipmentSetSaveOpcode(WorldPacket& recv_data)

@@ -745,6 +745,8 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
         case 52987:                                         // Penance heal effect trigger - Rank 3
         case 52988:                                         // Penance heal effect trigger - Rank 4
         case 61716:                                         // Rabbit Costume
+        case 61819:                                         // Manabonked! (item)
+        case 61834:                                         // Manabonked! (minigob)
         case 64343:                                         // Impact
         case 64844:                                         // Divine Hymn
         case 64904:                                         // Hymn of Hope
@@ -775,6 +777,8 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
                 case 54530:                                 // Opening
                 case 56099:                                 // Throw Ice
                 case 62105:                                 // To'kini's Blowgun
+                case 63745:                                 // Sara's Blessing
+                case 63747:                                 // Sara's Fervor
                 case 64402:                                 // Rocket Strike
                     return true;
                 default:
@@ -1058,12 +1062,14 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
             }
             break;
         }
+        case SPELL_AURA_PREVENT_RESURRECTION:
+            return false;
         default:
             break;
     }
 
     // non-positive targets
-    if(!IsPositiveTarget(spellproto->EffectImplicitTargetA[effIndex],spellproto->EffectImplicitTargetB[effIndex]))
+    if (!IsPositiveTarget(spellproto->EffectImplicitTargetA[effIndex],spellproto->EffectImplicitTargetB[effIndex]))
         return false;
 
     // AttributesEx check
@@ -1115,6 +1121,44 @@ bool IsNonPositiveSpell(SpellEntry const* spellProto)
         return false;
 
     return true;
+}
+
+bool IsJumpEffect(SpellEntry const* spellProto, SpellEffectIndex effIndex)
+{
+    if (!spellProto)
+        return false;
+
+    switch (spellProto->Effect[effIndex])
+    {
+        case SPELL_EFFECT_LEAP:
+        case SPELL_EFFECT_JUMP:
+        case SPELL_EFFECT_JUMP2:
+        case SPELL_EFFECT_LEAP_BACK:
+            return true;
+    }
+
+    return false;
+}
+
+bool IsJumpSpell(SpellEntry const* spellProto)
+{
+    // spells with at least one jump effect are considered jump
+    for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
+    {
+        if (spellProto->Effect[i] && IsJumpEffect(spellProto, SpellEffectIndex(i)))
+            return true;
+    }
+
+    return false;
+}
+
+bool IsJumpSpell(uint32 spellId)
+{
+    SpellEntry const* spellProto = sSpellStore.LookupEntry(spellId);
+    if (!spellProto)
+        return false;
+
+    return IsJumpSpell(spellProto);
 }
 
 bool IsSingleTargetSpell(SpellEntry const *spellInfo)
@@ -2304,6 +2348,13 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
             if (MatchedSpellIdPair(62559, 62538))
                 return false;
 
+            // Phase 2 Transform and Shadowy Barrier
+            if (MatchedSpellIdPair(65157, 64775) || MatchedSpellIdPair(65157, 64775))
+                return false;
+
+			// Empowered (dummy) and Empowered
+			if (MatchedSpellIdPair(64161, 65294) || MatchedSpellIdPair(64161, 65294))
+				return false;
             break;
         }
         case SPELLFAMILY_WARLOCK:
@@ -2656,7 +2707,6 @@ uint32 SpellMgr::GetSpellMaxTargetsWithCustom(SpellEntry const* spellInfo, Unit 
                 case 56140:                                 // Summon Power Spark (Eye of Eternity, Malygos)
                 case 57578:                                 // Lava Strike (Obsidian Sanctum, Sartharion)
                 case 59870:                                 // Glare of the Tribunal (h) (Halls of Stone)
-                case 62978:                                 // Summon Guardian (Ulduar - Yogg Saron)
                 case 63713:                                 // Dominate Mind (Ulduar - Yogg Saron)
                 case 63830:                                 // Malady of the Mind (Ulduar - Yogg Saron)
                 case 64465:                                 // Shadow Beacon (Ulduar - Yogg Saron)
@@ -2670,10 +2720,14 @@ uint32 SpellMgr::GetSpellMaxTargetsWithCustom(SpellEntry const* spellInfo, Unit 
                 case 62577:                                 // Blizzard (Ulduar, Thorim)
                 case 62603:                                 // Blizzard (h) (Ulduar, Thorim)
                 case 62797:                                 // Storm Cloud (Ulduar, Hodir)
+                case 62978:                                 // Summon Guardian (Ulduar, Yogg Saron)
                 case 63018:                                 // Searing Light
                 case 63024:                                 // Gravity Bomb (Ulduar, XT-002)
                 case 63342:                                 // Focused Eyebeam Summon Trigger (Ulduar, Kologarn)
                 case 63545:                                 // Icicle Hodir(trigger spell from 62227)
+                case 63744:                                 // Sara's Anger (Ulduar, Yogg-Saron)
+                case 63745:                                 // Sara's Blessing (Ulduar, Yogg-Saron)
+                case 63747:                                 // Sara's Fervor (Ulduar, Yogg-Saron)
                 case 63795:                                 // Psychosis (Ulduar, Yogg-Saron)
                 case 63820:                                 // Summon Scrap Bot Trigger (Ulduar, Mimiron) use for Scrap Bots, hits npc 33856
                 case 64218:                                 // Overcharge
