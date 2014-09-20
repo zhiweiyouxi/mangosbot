@@ -70,9 +70,9 @@
 #include "CreatureLinkingMgr.h"
 #include "LFGMgr.h"
 #include "warden/WardenDataStorage.h"
-#include "ahbot/AhBot.h"
-#include "playerbot/PlayerbotAIConfig.h"
-#include "playerbot/RandomPlayerbotMgr.h"
+#include "../plugins/ahbot/AhBot.h"
+#include "../plugins/playerbot/PlayerbotAIConfig.h"
+#include "../plugins/playerbot/RandomPlayerbotMgr.h"
 
 INSTANTIATE_SINGLETON_1( World );
 

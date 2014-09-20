@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "../game/playerbot/PlayerbotAIConfig.h"
+#include "../plugins/playerbot/PlayerbotAIConfig.h"
 
 DatabaseType WorldDatabase;                                 ///< Accessor to the world database
 DatabaseType CharacterDatabase;                             ///< Accessor to the character database

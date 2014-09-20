@@ -578,6 +578,9 @@
     <ProjectReference Include="game.vcxproj">
       <Project>{1dc6c4da-a028-41f3-877d-d5400c594f88}</Project>
     </ProjectReference>
+    <ProjectReference Include="plugins.vcxproj">
+      <Project>{7799ad7b-357e-4cc2-8d28-acb81cbe1098}</Project>
+    </ProjectReference>
     <ProjectReference Include="realmd.vcxproj">
       <Project>{563e9905-3657-460c-ae63-0ac39d162e23}</Project>
     </ProjectReference>

@@ -35,7 +35,7 @@
 #include "Mail.h"
 
 #include "Policies/Singleton.h"
-#include "ahbot/AhBot.h"
+#include "../plugins/ahbot/AhBot.h"
 
 INSTANTIATE_SINGLETON_1(AuctionHouseMgr);
 

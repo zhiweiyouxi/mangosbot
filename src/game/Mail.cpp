@@ -34,7 +34,7 @@
 #include "Player.h"
 #include "World.h"
 #include "Calendar.h"
-#include "ahbot/AhBot.h"
+#include "../plugins/ahbot/AhBot.h"
 
 /**
  * Creates a new MailSender object.

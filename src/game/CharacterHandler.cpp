@@ -43,8 +43,8 @@
 #include "Calendar.h"
 
 // Playerbot mod:
-#include "playerbot/playerbot.h"
-#include "playerbot/PlayerbotAIConfig.h"
+#include "../plugins/playerbot/playerbot.h"
+#include "../plugins/playerbot/PlayerbotAIConfig.h"
 
 // config option SkipCinematics supported values
 enum CinematicsSkipMode

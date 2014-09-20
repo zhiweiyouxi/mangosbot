@@ -38,7 +38,7 @@
 #include "UpdateFieldFlags.h"
 
 // Playerbot
-#include "playerbot/PlayerbotMgr.h"
+#include "../plugins/playerbot/PlayerbotMgr.h"
 
 #define LOOT_ROLL_TIMEOUT  (1*MINUTE*IN_MILLISECONDS)
 

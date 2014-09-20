@@ -42,4 +42,4 @@
 
 #include <stdexcept>
 
-#include "../game/playerbot/playerbotDefs.h"
+#include "../plugins/playerbot/playerbotDefs.h"

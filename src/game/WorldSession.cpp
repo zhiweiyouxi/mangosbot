@@ -46,7 +46,7 @@
 #include "warden/WardenMac.h"
 
 // Playerbot mod
-#include "playerbot/playerbot.h"
+#include "../plugins/playerbot/playerbot.h"
 
 // select opcodes appropriate for processing in Map::Update context for current session state
 static bool MapSessionFilterHelper(WorldSession* session, OpcodeHandler const& opHandle)

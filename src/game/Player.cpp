@@ -69,7 +69,7 @@
 #include <cmath>
 
 // Playerbot mod:
-#include "playerbot/playerbot.h"
+#include "../plugins/playerbot/playerbot.h"
 
 #include "Config/Config.h"
 

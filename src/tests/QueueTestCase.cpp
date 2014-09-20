@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "aitest.h"
-#include "playerbot/strategy/actions/GenericSpellActions.h"
+#include "../plugins/playerbot/strategy/actions/GenericSpellActions.h"
 
 using namespace ai;
 

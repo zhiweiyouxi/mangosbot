@@ -2,7 +2,7 @@
 
 #include "aitest.h"
 #include "MockPlayerbotAIBase.h"
-#include "playerbot\strategy\ItemVisitors.h"
+#include "../plugins/playerbot/strategy/ItemVisitors.h"
 
 using namespace ai;
 
