@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 
 #include "../plugins/playerbot/strategy/Action.h"
 #include "../plugins/playerbot/strategy/ActionBasket.h"

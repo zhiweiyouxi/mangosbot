@@ -227,7 +227,16 @@ void PlayerbotAI::HandleCommand(uint32 type, const string& text, Player& fromPla
     if (type == CHAT_MSG_ADDON)
         return;
 
-    string filtered = chatFilter.Filter(trim((string&)text));
+    string filtered = text;
+    if (!sPlayerbotAIConfig.commandPrefix.empty())
+    {
+        if (filtered.find(sPlayerbotAIConfig.commandPrefix) != 0)
+            return;
+
+        filtered = filtered.substr(sPlayerbotAIConfig.commandPrefix.size());
+    }
+
+    filtered = chatFilter.Filter(trim((string&)filtered));
     if (filtered.empty())
         return;
 
@@ -862,6 +871,9 @@ bool PlayerbotAI::CanCastSpell(uint32 spellid, Unit* target, bool checkHasSpell)
     if (target->IsImmuneToSpell(spellInfo, false))
         return false;
 
+    if (bot != target && bot->GetDistance(target) > sPlayerbotAIConfig.sightDistance)
+        return false;
+
     ObjectGuid oldSel = bot->GetSelectionGuid();
     bot->SetSelectionGuid(target->GetObjectGuid());
     Spell *spell = new Spell(bot, spellInfo, false );
@@ -994,6 +1006,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target)
     if (!bot->isInFront(faceTo, sPlayerbotAIConfig.sightDistance))
     {
         bot->SetFacingTo(bot->GetAngle(faceTo));
+        SetNextCheckDelay(sPlayerbotAIConfig.globalCoolDown);
         return false;
     }
 

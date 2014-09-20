@@ -48,7 +48,7 @@ bool PlayerbotAIConfig::Initialize()
     maxWaitForMove = config.GetIntDefault("AiPlayerbot.MaxWaitForMove", 3000);
     reactDelay = (uint32) config.GetIntDefault("AiPlayerbot.ReactDelay", 100);
 
-    sightDistance = config.GetFloatDefault("AiPlayerbot.SightDistance", 75.0f);
+    sightDistance = config.GetFloatDefault("AiPlayerbot.SightDistance", 50.0f);
     spellDistance = config.GetFloatDefault("AiPlayerbot.SpellDistance", 30.0f);
     reactDistance = config.GetFloatDefault("AiPlayerbot.ReactDistance", 150.0f);
     grindDistance = config.GetFloatDefault("AiPlayerbot.GrindDistance", 100.0f);
@@ -107,6 +107,8 @@ bool PlayerbotAIConfig::Initialize()
 
     randomBotCombatStrategies = config.GetStringDefault("AiPlayerbot.RandomBotCombatStrategies", "+dps,+attack weak");
     randomBotNonCombatStrategies = config.GetStringDefault("AiPlayerbot.RandomBotNonCombatStrategies", "+grind,+move random,+loot");
+
+    commandPrefix = config.GetStringDefault("AiPlayerbot.CommandPrefix", "");
 
     for (uint32 cls = 0; cls < MAX_CLASSES; ++cls)
     {

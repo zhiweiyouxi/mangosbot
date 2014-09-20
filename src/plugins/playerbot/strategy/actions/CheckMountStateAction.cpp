@@ -17,10 +17,7 @@ bool CheckMountStateAction::Execute(Event event)
 
     if (master->IsMounted() && !bot->IsMounted())
     {
-        if (!master->GetAurasByType(SPELL_AURA_MOUNTED).empty())
-        {
-            return Mount();
-        }
+        return Mount();
     }
     else if (!master->IsMounted() && bot->IsMounted())
     {

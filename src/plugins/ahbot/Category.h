@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 #include "Config/Config.h"
 #include "PricingStrategy.h"
 #include "../../game/ItemPrototype.h"

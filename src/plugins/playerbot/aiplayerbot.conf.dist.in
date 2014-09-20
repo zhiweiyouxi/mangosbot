@@ -49,6 +49,9 @@ AiPlayerbot.RandomClassSpecProbability.11.2 = 45
 # All other parameters are optional but can be changed by uncommenting them here
 #
 
+# Prefix for bot chat commands (e.g. follow, stay)
+AiPlayerbot.CommandPrefix = ~
+
 # Max AI iterations per tick
 #AiPlayerbot.IterationsPerTick = 10
 
@@ -65,7 +68,7 @@ AiPlayerbot.RandomClassSpecProbability.11.2 = 45
 #AiPlayerbot.ReactDelay = 100
 
 # Distances
-#AiPlayerbot.SightDistance = 75.0
+#AiPlayerbot.SightDistance = 50.0
 #AiPlayerbot.SpellDistance = 30.0
 #AiPlayerbot.ReactDistance = 150.0
 #AiPlayerbot.GrindDistance = 100.0

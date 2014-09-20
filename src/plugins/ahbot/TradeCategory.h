@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 #include "Config/Config.h"
 #include "Category.h"
 
