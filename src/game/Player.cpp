@@ -260,7 +260,7 @@ std::string PlayerTaxi::SaveTaxiDestinationsToString()
     bool needDelimiter = false;
     for (size_t i = 0; i < m_TaxiDestinations.size(); ++i)
     {
-        needDelimiter ? ss << ' ' : needDelimiter = true;
+        if (needDelimiter) ss << ' '; else needDelimiter = true;
         ss << m_TaxiDestinations[i];
     }
 
@@ -285,7 +285,7 @@ std::ostringstream& operator << (std::ostringstream& ss, PlayerTaxi const& taxi)
     bool needDelimiter = false;
     for (uint8 i = 0; i < TaxiMaskSize; ++i)
     {
-        needDelimiter ? ss << ' ' : needDelimiter = true;
+        if (needDelimiter) ss << ' '; else needDelimiter = true;
         ss << taxi.m_taximask[i];
     }
     return ss;
@@ -2556,9 +2556,18 @@ void Player::SetGameMaster(bool on)
         setFactionForRace(getRace());
         RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM);
 
-        // restore phase
+        // restore phases
+        uint32 newPhase = 0;
         AuraList const& phases = GetAurasByType(SPELL_AURA_PHASE);
-        SetPhaseMask(!phases.empty() ? phases.front()->GetMiscValue() : PHASEMASK_NORMAL,false);
+        if (!phases.empty())
+        {
+            for (AuraList::const_iterator itr = phases.begin(); itr != phases.end(); ++itr)
+                newPhase |= (*itr)->GetMiscValue();
+        }
+        if (!newPhase)
+            newPhase = PHASEMASK_NORMAL;
+
+        SetPhaseMask(newPhase, false);
 
         CallForAllControlledUnits(SetGameMasterOffHelper(getFaction()), CONTROLLED_PET | CONTROLLED_TOTEMS | CONTROLLED_GUARDIANS | CONTROLLED_CHARM);
 
@@ -8850,7 +8859,7 @@ void Player::SendUpdatedWorldStates(bool force)
 
     if (WorldStateSet* wsSet = sWorldStateMgr.GetUpdatedWorldStatesFor(this, force ? 0 : GetLastWorldStateUpdateTime()))
     {
-        for (uint8 i = 0; i < wsSet->count(); ++i)
+        for (uint32 i = 0; i < wsSet->count(); ++i)
         {
             //DEBUG_LOG("Player::SendUpdatedWorldStates send state %u instance %u value %u to %s",(*itr)->GetId(), (*itr)->GetInstance(),(*itr)->GetValue(),GetObjectGuid().GetString().c_str());
             WorldState* ws = (*wsSet)[i];
@@ -8880,10 +8889,9 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
     data << uint32(GetMapId());                             // mapid
     data << uint32(zoneid);                                 // zone id
     data << uint32(areaid);                                 // area id, new 2.1.0
-
     data << uint16(wsSet->count());
 
-    for (uint8 i = 0; i < wsSet->count(); ++i)
+    for (uint32 i = 0; i < wsSet->count(); ++i)
     {
         WorldState* ws = (*wsSet)[i];
         data << uint32(ws->GetId());
@@ -17915,7 +17923,7 @@ void Player::SaveToDB()
     bool needDelimiter = false;
     for (uint32 i = 0; i < PLAYER_EXPLORED_ZONES_SIZE; ++i) // string
     {
-        needDelimiter ? ss << ' ' : needDelimiter = true;
+        if (needDelimiter) ss << ' '; else needDelimiter = true;
         ss << GetUInt32Value(PLAYER_EXPLORED_ZONES_1 + i);
     }
     uberInsert.addString(ss);
@@ -17923,7 +17931,7 @@ void Player::SaveToDB()
     needDelimiter = false;
     for (uint32 i = 0; i < EQUIPMENT_SLOT_END * 2; ++i)     // string
     {
-        needDelimiter ? ss << ' ' : needDelimiter = true;
+        if (needDelimiter) ss << ' '; else needDelimiter = true;
         ss << GetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + i);
     }
     uberInsert.addString(ss);
@@ -17933,7 +17941,7 @@ void Player::SaveToDB()
     needDelimiter = false;
     for (uint32 i = 0; i < KNOWN_TITLES_SIZE * 2; ++i)      // string
     {
-        needDelimiter ? ss << ' ' : needDelimiter = true;
+        if (needDelimiter) ss << ' '; else needDelimiter = true;
         ss << GetUInt32Value(PLAYER__FIELD_KNOWN_TITLES + i);
     }
     uberInsert.addString(ss);
@@ -21358,7 +21366,6 @@ void Player::UpdateForQuestWorldObjects()
         return;
 
     UpdateData udata;
-    WorldPacket packet;
     for (GuidSet::const_iterator itr = GetClientGuids().begin(); itr != GetClientGuids().end(); ++itr)
     {
         if (itr->IsGameObject())
@@ -21387,6 +21394,8 @@ void Player::UpdateForQuestWorldObjects()
             }
         }
     }
+
+    WorldPacket packet;
     udata.BuildPacket(&packet);
     GetSession()->SendPacket(&packet);
 }
