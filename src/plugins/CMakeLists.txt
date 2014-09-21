@@ -495,8 +495,8 @@ playerbot/strategy/values/NearestAdsValue.cpp
 playerbot/strategy/values/NearestAdsValue.h
 playerbot/strategy/values/NearestCorpsesValue.cpp
 playerbot/strategy/values/NearestCorpsesValue.h
-playerbot/strategy/values/NearestpluginsObjects.cpp
-playerbot/strategy/values/NearestpluginsObjects.h
+playerbot/strategy/values/NearestGameObjects.cpp
+playerbot/strategy/values/NearestGameObjects.h
 playerbot/strategy/values/NearestNpcsValue.cpp
 playerbot/strategy/values/NearestNpcsValue.h
 playerbot/strategy/values/NearestUnitsValue.h
@@ -692,7 +692,7 @@ if(NOT ACE_USE_EXTERNAL)
   add_dependencies(${LIBRARY_NAME} ACE_Project)
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/AuctionHouseBot/ahbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ahbot/ahbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist DESTINATION ${CONF_DIR})
 
 # Generate precompiled header
@@ -709,3 +709,6 @@ if(PCH)
     endif()
   endif()
 endif()
+
+
+

@@ -75,6 +75,7 @@ endif()
 
 target_link_libraries(${EXECUTABLE_NAME}
   game
+  plugins
   shared
   framework
   g3dlite
@@ -122,9 +123,9 @@ install(TARGETS ${EXECUTABLE_NAME} DESTINATION ${BIN_DIR})
 install(FILES run-mangosd DESTINATION ${BIN_DIR})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mangosd.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/mangosd.conf.dist)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mangosd.conf.dist DESTINATION ${CONF_DIR})
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../game/ahbot/ahbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../plugins/ahbot/ahbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ahbot.conf.dist DESTINATION ${CONF_DIR})
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../game/playerbot/aiplayerbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/aiplayerbot.conf.dist)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../plugins/playerbot/aiplayerbot.conf.dist.in ${CMAKE_CURRENT_BINARY_DIR}/aiplayerbot.conf.dist)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/aiplayerbot.conf.dist DESTINATION ${CONF_DIR})
 
 if(WIN32 AND MSVC)
