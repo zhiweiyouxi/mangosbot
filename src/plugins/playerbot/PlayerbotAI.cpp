@@ -1012,7 +1012,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target)
 
     WaitForSpellCast(spellId);
 
-    spell->prepare(&targets, false);
+    spell->prepare(&targets);
     bot->SetSelectionGuid(oldSel);
 
     LastSpellCast& lastSpell = aiObjectContext->GetValue<LastSpellCast&>("last spell cast")->Get();
