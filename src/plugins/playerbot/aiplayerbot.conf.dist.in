@@ -75,9 +75,10 @@ AiPlayerbot.CommandPrefix = ~
 #AiPlayerbot.LootDistance = 20.0
 #AiPlayerbot.FleeDistance = 20.0
 #AiPlayerbot.TooCloseDistance = 7.0
-#AiPlayerbot.MeleeDistance = 2.0
-#AiPlayerbot.FollowDistance = 2.0
+#AiPlayerbot.MeleeDistance = 1.0
+#AiPlayerbot.FollowDistance = 1.5
 #AiPlayerbot.WhisperDistance = 6000.0
+#AiPlayerbot.ContactDistance = 0.5
 
 # Bot can flee for enemy
 #AiPlayerbot.FleeingEnabled = 1
@@ -131,6 +132,9 @@ AiPlayerbot.CommandPrefix = ~
 # Enable LFG for random bots
 #AiPlayerbot.RandomBotJoinLfg = 1
 
+# Level diff between random bots and nearby creatures for random teleports
+AiPlayerbot.RandomBotTeleLevel = 3
+
 # Intervals
 #AiPlayerbot.RandomBotUpdateInterval = 60
 #AiPlayerbot.RandomBotCountChangeMinInterval = 86400
@@ -156,3 +160,5 @@ AiPlayerbot.CommandPrefix = ~
 #AiPlayerbot.LogValuesPerTick = 0
 #AiPlayerbot.RandomChangeMultiplier = 1
 
+# Command server port, 0 - disabled
+#AiPlayerbot.CommandServerPort = 8888

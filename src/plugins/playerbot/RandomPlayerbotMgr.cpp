@@ -239,7 +239,11 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, vector<WorldLocation> &locs
             continue;
 
         sLog.outDetail("Random teleporting bot %s to %s %f,%f,%f", bot->GetName(), area->area_name[0], x, y, z);
-        z = 0.05f + map->GetTerrain()->GetHeightStatic(x, y, 0.05f + z, true, MAX_HEIGHT);
+        float height = map->GetTerrain()->GetHeightStatic(x, y, 0.5f + z, true, MAX_HEIGHT);
+        if (height <= INVALID_HEIGHT)
+            continue;
+
+        z = 0.5f + height;
         map = MapPtr();
 
         bot->GetMotionMaster()->Clear();
@@ -255,10 +259,10 @@ void RandomPlayerbotMgr::RandomTeleportForLevel(Player* bot)
     vector<WorldLocation> locs;
     QueryResult* results = WorldDatabase.PQuery("select map, position_x, position_y, position_z "
         "from (select map, position_x, position_y, position_z, avg(t.maxlevel), avg(t.minlevel), "
-        "(avg(t.maxlevel) + avg(t.minlevel)) / 2 - %u delta "
+        "%u - (avg(t.maxlevel) + avg(t.minlevel)) / 2 delta "
         "from creature c inner join creature_template t on c.id = t.entry group by t.entry) q "
-        "where delta >= 0 and delta <= 1 and map in (%s)",
-        bot->getLevel(), sPlayerbotAIConfig.randomBotMapsAsString.c_str());
+        "where delta >= 0 and delta <= %u and map in (%s)",
+        bot->getLevel(), sPlayerbotAIConfig.randomBotTeleLevel, sPlayerbotAIConfig.randomBotMapsAsString.c_str());
     if (results)
     {
         do

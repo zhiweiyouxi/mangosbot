@@ -20,7 +20,7 @@ public:
     bool allowGuildBots;
     uint32 globalCoolDown, reactDelay, maxWaitForMove;
     float sightDistance, spellDistance, reactDistance, grindDistance, lootDistance,
-        fleeDistance, tooCloseDistance, meleeDistance, followDistance, whisperDistance;
+        fleeDistance, tooCloseDistance, meleeDistance, followDistance, whisperDistance, contactDistance;
     uint32 criticalHealth, lowHealth, mediumHealth, almostFullHealth;
     uint32 lowMana, mediumMana;
 
@@ -43,6 +43,7 @@ public:
     uint32 minRandomBotsPriceChangeInterval, maxRandomBotsPriceChangeInterval;
     bool randomBotJoinLfg;
     bool randomBotLoginAtStartup;
+    uint32 randomBotTeleLevel;
     bool logInGroupOnly, logValuesPerTick;
     bool fleeingEnabled;
     std::string randomBotCombatStrategies, randomBotNonCombatStrategies;
@@ -52,6 +53,8 @@ public:
     std::string commandPrefix;
 
     uint32 iterationsPerTick;
+
+    int commandServerPort;
 
     std::string GetValue(std::string name);
     void SetValue(std::string name, std::string value);

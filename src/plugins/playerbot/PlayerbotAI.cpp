@@ -73,6 +73,7 @@ PlayerbotAI::PlayerbotAI(Player* bot) :
     engines[BOT_STATE_NON_COMBAT] = AiFactory::createNonCombatEngine(bot, this, aiObjectContext);
     engines[BOT_STATE_DEAD] = AiFactory::createDeadEngine(bot, this, aiObjectContext);
     currentEngine = engines[BOT_STATE_NON_COMBAT];
+    currentState = BOT_STATE_NON_COMBAT;
 
     masterIncomingPacketHandlers.AddHandler(CMSG_GAMEOBJ_REPORT_USE, "use game object");
     masterIncomingPacketHandlers.AddHandler(CMSG_AREATRIGGER, "area trigger");
@@ -393,6 +394,7 @@ void PlayerbotAI::ChangeEngine(BotState type)
     if (currentEngine != engine)
     {
         currentEngine = engine;
+        currentState = type;
         ReInitCurrentEngine();
 
         switch (type)
@@ -445,9 +447,10 @@ void PlayerbotAI::DoNextAction()
     }
 
     if (currentEngine != engines[BOT_STATE_DEAD] && !bot->isAlive())
-    {
         ChangeEngine(BOT_STATE_DEAD);
-    }
+
+    if (currentEngine == engines[BOT_STATE_DEAD] && bot->isAlive())
+        ChangeEngine(BOT_STATE_NON_COMBAT);
 
     Group *group = bot->GetGroup();
     if (!master && group)

@@ -6,6 +6,7 @@
 #include "../../PlayerbotAIConfig.h"
 #include "../../../ahbot/AhBot.h"
 #include "../../RandomPlayerbotMgr.h"
+#include "../values/ItemUsageValue.h"
 
 using namespace ai;
 
@@ -87,7 +88,7 @@ void TradeStatusAction::BeginTrade()
         uint32 discount = sRandomPlayerbotMgr.GetTradeDiscount(bot);
         if (discount)
         {
-            ostringstream out; out << "Free trade: " << chat->formatMoney(discount);
+            ostringstream out; out << "Discount up to: " << chat->formatMoney(discount);
             ai->TellMaster(out);
         }
     }
@@ -114,23 +115,55 @@ bool TradeStatusAction::CheckTrade()
         }
 
         item = master->GetTradeData()->GetItem((TradeSlots)slot);
-        if (item && !auctionbot.GetBuyPrice(item->GetProto()))
+        if (item)
         {
-            ostringstream out;
-            out << chat->formatItem(item->GetProto()) << " - I don't need this";
-            ai->TellMaster(out);
-            return false;
+            ostringstream out; out << item->GetProto()->ItemId;
+            ItemUsage usage = AI_VALUE2(ItemUsage, "item usage", out.str());
+			if (!auctionbot.GetBuyPrice(item->GetProto()) || usage == ITEM_USAGE_NONE)
+            {
+                ostringstream out;
+				out << chat->formatItem(item->GetProto()) << " - I don't need this";
+                ai->TellMaster(out);
+                return false;
+            }
         }
     }
 
-    int32 botMoney = CalculateCost(bot->GetTradeData(), true);
-    int32 playerMoney = CalculateCost(master->GetTradeData(), false);
+    int32 botItemsMoney = CalculateCost(bot->GetTradeData(), true);
+    int32 botMoney = bot->GetTradeData()->GetMoney() + botItemsMoney;
+    int32 playerItemsMoney = CalculateCost(master->GetTradeData(), false);
+    int32 playerMoney = master->GetTradeData()->GetMoney() + playerItemsMoney;
 
-    int32 discount = sRandomPlayerbotMgr.GetTradeDiscount(bot);
+    if (!botMoney && !playerMoney)
+        return true;
+
+    if (!botItemsMoney && !playerItemsMoney)
+    {
+        ai->TellMaster("There are no items to trade");
+        return false;
+    }
+
+    int32 discount = min(botItemsMoney, (int32)sRandomPlayerbotMgr.GetTradeDiscount(bot));
     botMoney = max(0, botMoney - discount);
 
     if (playerMoney >= botMoney)
+    {
+        switch (urand(0, 4)) {
+        case 0:
+            ai->TellMaster("A pleasure doing business with you");
+            break;
+        case 1:
+            ai->TellMaster("Fair trade");
+            break;
+        case 2:
+            ai->TellMaster("Thanks");
+            break;
+        case 3:
+            ai->TellMaster("Off with you");
+            break;
+        }
         return true;
+    }
 
     ostringstream out;
     out << "I want " << chat->formatMoney(botMoney - playerMoney) << " for this";
@@ -143,7 +176,7 @@ int32 TradeStatusAction::CalculateCost(TradeData* data, bool sell)
     if (!data)
         return 0;
 
-    uint32 sum = data->GetMoney();
+    uint32 sum = 0;
     for (uint32 slot = 0; slot < TRADE_SLOT_TRADED_COUNT; ++slot)
     {
         Item* item = data->GetItem((TradeSlots)slot);

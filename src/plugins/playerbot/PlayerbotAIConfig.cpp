@@ -55,9 +55,10 @@ bool PlayerbotAIConfig::Initialize()
     lootDistance = config.GetFloatDefault("AiPlayerbot.LootDistance", 20.0f);
     fleeDistance = config.GetFloatDefault("AiPlayerbot.FleeDistance", 20.0f);
     tooCloseDistance = config.GetFloatDefault("AiPlayerbot.TooCloseDistance", 7.0f);
-    meleeDistance = config.GetFloatDefault("AiPlayerbot.MeleeDistance", 2.0f);
-    followDistance = config.GetFloatDefault("AiPlayerbot.FollowDistance", 2.0f);
+    meleeDistance = config.GetFloatDefault("AiPlayerbot.MeleeDistance", 1.5f);
+    followDistance = config.GetFloatDefault("AiPlayerbot.FollowDistance", 1.5f);
     whisperDistance = config.GetFloatDefault("AiPlayerbot.WhisperDistance", 6000.0f);
+    contactDistance = config.GetFloatDefault("AiPlayerbot.ContactDistance", 0.5f);
 
     criticalHealth = config.GetIntDefault("AiPlayerbot.CriticalHealth", 20);
     lowHealth = config.GetIntDefault("AiPlayerbot.LowHealth", 50);
@@ -102,6 +103,7 @@ bool PlayerbotAIConfig::Initialize()
     randomBotMinLevel = config.GetIntDefault("AiPlayerbot.RandomBotMinLevel", 1);
     randomBotMaxLevel = config.GetIntDefault("AiPlayerbot.RandomBotMaxLevel", 255);
     randomBotLoginAtStartup = config.GetBoolDefault("AiPlayerbot.RandomBotLoginAtStartup", true);
+    randomBotTeleLevel = config.GetIntDefault("AiPlayerbot.RandomBotTeleLevel", 3);
 
     randomChangeMultiplier = config.GetFloatDefault("AiPlayerbot.RandomChangeMultiplier", 1.0);
 
@@ -109,6 +111,8 @@ bool PlayerbotAIConfig::Initialize()
     randomBotNonCombatStrategies = config.GetStringDefault("AiPlayerbot.RandomBotNonCombatStrategies", "+grind,+move random,+loot");
 
     commandPrefix = config.GetStringDefault("AiPlayerbot.CommandPrefix", "");
+
+    commandServerPort = config.GetIntDefault("AiPlayerbot.CommandServerPort", 0);
 
     for (uint32 cls = 0; cls < MAX_CLASSES; ++cls)
     {

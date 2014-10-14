@@ -184,11 +184,14 @@ bool LfgAcceptAction::Execute(Event event)
     uint32 id = AI_VALUE(uint32, "lfg proposal");
     if (id)
     {
-        if (urand(0, 1 + 10 / sPlayerbotAIConfig.randomChangeMultiplier))
+        if (bot->IsInCombat())
+        {
+            sLFGMgr.Leave(bot);
             return false;
+        }
 
         sLog.outDetail("Bot %s updated proposal %d", bot->GetName(), id);
-        ai->GetAiObjectContext()->GetValue<uint32>("lfg proposal")->Set(0);
+        if (urand(0, 1 + 10 / sPlayerbotAIConfig.randomChangeMultiplier))
         sLFGMgr.UpdateProposal(id, bot->GetObjectGuid(), true);
 
         ai->Reset();
@@ -196,8 +199,10 @@ bool LfgAcceptAction::Execute(Event event)
         {
             sRandomPlayerbotMgr.Refresh(bot);
             ai->ResetStrategies();
-            bot->TeleportToHomebind();
+            ai->ChangeStrategy("-grind", BOT_STATE_NON_COMBAT);
         }
+
+        ai->GetAiObjectContext()->GetValue<uint32>("lfg proposal")->Set(0);
         return true;
     }
 

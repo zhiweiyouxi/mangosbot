@@ -320,6 +320,8 @@ playerbot/strategy/generic/UsePotionsStrategy.cpp
 playerbot/strategy/generic/UsePotionsStrategy.h
 playerbot/strategy/generic/WorldPacketHandlerStrategy.cpp
 playerbot/strategy/generic/WorldPacketHandlerStrategy.h
+playerbot/strategy/generic/MoveRandomStrategy.cpp
+playerbot/strategy/generic/MoveRandomStrategy.h
 playerbot/strategy/hunter/DpsHunterStrategy.cpp
 playerbot/strategy/hunter/DpsHunterStrategy.h
 playerbot/strategy/hunter/GenericHunterNonCombatStrategy.cpp
@@ -541,6 +543,8 @@ playerbot/strategy/values/Formations.cpp
 playerbot/strategy/values/Formations.h
 playerbot/strategy/values/formations/Arrow.cpp
 playerbot/strategy/values/formations/Arrow.h
+playerbot/strategy/values/ItemUsageValue.cpp
+playerbot/strategy/values/ItemUsageValue.h
 playerbot/strategy/warlock/DpsWarlockStrategy.cpp
 playerbot/strategy/warlock/DpsWarlockStrategy.h
 playerbot/strategy/warlock/GenericWarlockNonCombatStrategy.cpp

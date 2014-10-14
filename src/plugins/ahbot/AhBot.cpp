@@ -66,7 +66,8 @@ bool ChatHandler::HandleAhBotCommand(char* args)
 
 INSTANTIATE_SINGLETON_1( ahbot::AhBot );
 
-uint32 AhBot::auctionIds[MAX_AUCTIONS] = {1,2,3,4,5,6,7};
+uint32 AhBot::auctionIds[MAX_AUCTIONS] = {1,6,7};
+uint32 AhBot::auctioneers[MAX_AUCTIONS] = {79707,4656,23442};
 map<uint32, uint32> AhBot::factions;
 
 void AhBot::Init()
@@ -269,7 +270,7 @@ int AhBot::Answer(int auction, Category* category, ItemBag* inAuctionItems)
             continue;
         }
 
-        uint32 answerCount = GetAnswerCount(proto->ItemId, auctionIds[auction], sAhBotConfig.itemBuyInterval);
+        uint32 answerCount = GetAnswerCount(proto->ItemId, auctionIds[auction], sAhBotConfig.itemBuyMaxInterval);
         uint32 maxAnswerCount = category->GetMaxAllowedItemAuctionCount(proto);
         if (maxAnswerCount && answerCount > maxAnswerCount)
         {
@@ -423,8 +424,8 @@ uint32 AhBot::GetBuyTime(uint32 entry, uint32 itemId, uint32 auctionHouse, Categ
     if (itemTime < time(0)) itemTime = time(0);
 
     double rarity = category->GetPricingStrategy()->GetRarityPriceMultiplier(itemId);
-    categoryTime += urand(sAhBotConfig.updateInterval, sAhBotConfig.itemBuyInterval / 2) * priceLevel / rarity;
-    itemTime += urand(sAhBotConfig.updateInterval, sAhBotConfig.itemBuyInterval) * priceLevel / rarity;
+    categoryTime += urand(sAhBotConfig.itemBuyMinInterval, sAhBotConfig.itemBuyMaxInterval) * priceLevel;
+    itemTime += urand(sAhBotConfig.itemBuyMinInterval, sAhBotConfig.itemBuyMaxInterval) * priceLevel / rarity;
     entryTime = max(categoryTime, itemTime);
 
     SetTime(categoryName, 0, auctionHouse, AHBOT_WON_DELAY, categoryTime);
@@ -454,8 +455,8 @@ uint32 AhBot::GetSellTime(uint32 itemId, uint32 auctionHouse, Category*& categor
     if (itemTime < time(0)) itemTime = time(0);
 
     double rarity = category->GetPricingStrategy()->GetRarityPriceMultiplier(itemId);
-    categoryTime += urand(sAhBotConfig.updateInterval, sAhBotConfig.itemSellInterval / 2) * rarity;
-    itemTime += urand(sAhBotConfig.updateInterval, sAhBotConfig.itemSellInterval) * rarity;
+    categoryTime += urand(sAhBotConfig.itemSellMinInterval, sAhBotConfig.itemSellMaxInterval);
+    itemTime += urand(sAhBotConfig.itemSellMinInterval, sAhBotConfig.itemSellMaxInterval) * rarity;
     itemTime = max(itemTime, categoryTime);
 
     SetTime(categoryName, 0, auctionHouse, AHBOT_SELL_DELAY, categoryTime);
@@ -510,14 +511,6 @@ int AhBot::AddAuctions(int auction, Category* category, ItemBag* inAuctionItems)
 
 int AhBot::AddAuction(int auction, Category* category, ItemPrototype const* proto)
 {
-    Item* item = Item::CreateItem(proto->ItemId, 1, NULL);
-    if (!item)
-        return 0;
-
-    uint32 randomPropertyId = Item::GenerateItemRandomPropertyId(proto->ItemId);
-    if (randomPropertyId)
-        item->SetItemRandomProperties(randomPropertyId);
-
     uint32 price = category->GetPricingStrategy()->GetSellPrice(proto, auctionIds[auction]);
 
     sLog.outDebug("AddAuction: market price adjust");
@@ -534,7 +527,14 @@ int AhBot::AddAuction(int auction, Category* category, ItemPrototype const* prot
 
     uint32 bidPrice = stackCount * price;
     uint32 buyoutPrice = stackCount * urand(price, 4 * price / 3);
-    item->SetCount(stackCount);
+
+    Item* item = Item::CreateItem(proto->ItemId, stackCount);
+    if (!item)
+        return 0;
+
+    uint32 randomPropertyId = Item::GenerateItemRandomPropertyId(proto->ItemId);
+    if (randomPropertyId)
+        item->SetItemRandomProperties(randomPropertyId);
 
     AuctionHouseEntry const* ahEntry = sAuctionHouseStore.LookupEntry(auctionIds[auction]);
     if(!ahEntry)
@@ -565,6 +565,9 @@ int AhBot::AddAuction(int auction, Category* category, ItemPrototype const* prot
     item->SaveToDB();
 
     sAuctionMgr.AddAItem(item);
+
+
+    auctionHouse->AddAuction(auctionEntry);
 
     auctionHouse->AddAuction(auctionEntry);
     auctionEntry->SaveToDB();

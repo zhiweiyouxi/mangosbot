@@ -255,6 +255,8 @@
     <ClCompile Include="..\src\plugins\playerbot\strategy\warrior\WarriorAiObjectContext.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\warrior\WarriorMultipliers.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\warrior\WarriorTriggers.cpp" />
+    <ClCompile Include="..\src\plugins\playerbot\strategy\generic\MoveRandomStrategy.cpp" />
+    <ClCompile Include="..\src\plugins\playerbot\strategy\values\ItemUsageValue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\plugins\ahbot\ahbot.conf.dist.in" />
@@ -579,5 +581,7 @@
     <ClInclude Include="..\src\plugins\playerbot\strategy\warrior\WarriorAiObjectContext.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\warrior\WarriorMultipliers.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\warrior\WarriorTriggers.h" />
+    <ClInclude Include="..\src\plugins\playerbot\strategy\generic\MoveRandomStrategy.h" />
+    <ClInclude Include="..\src\plugins\playerbot\strategy\values\ItemUsageValue.h" />
   </ItemGroup>
 </Project>

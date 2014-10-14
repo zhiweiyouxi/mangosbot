@@ -169,6 +169,7 @@ protected:
     AiObjectContext* aiObjectContext;
     Engine* currentEngine;
     Engine* engines[BOT_STATE_MAX];
+    BotState currentState;
     ChatHelper chatHelper;
     stack<ChatCommandHolder> chatCommands;
     PacketHandlingHelper botOutgoingPacketHandlers;

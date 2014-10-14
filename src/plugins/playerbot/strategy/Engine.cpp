@@ -74,8 +74,14 @@ void Engine::Reset()
     do
     {
         action = queue.Pop();
+        delete action;
     } while (action);
 
+    for (list<TriggerNode*>::iterator i = triggers.begin(); i != triggers.end(); i++)
+    {
+        TriggerNode* trigger = *i;
+        delete trigger;
+    }
     triggers.clear();
 
     for (list<Multiplier*>::iterator i = multipliers.begin(); i != multipliers.end(); i++)
@@ -276,15 +282,22 @@ ActionResult Engine::ExecuteAction(string name)
         return ACTION_RESULT_UNKNOWN;
 
     if (!action->isPossible())
+    {
+        delete actionNode;
         return ACTION_RESULT_IMPOSSIBLE;
+    }
 
     if (!action->isUseful())
+    {
+        delete actionNode;
         return ACTION_RESULT_USELESS;
+    }
 
     action->MakeVerbose();
     Event emptyEvent;
     result = ListenAndExecute(action, emptyEvent);
     MultiplyAndPush(action->getContinuers(), 0.0f, false, emptyEvent);
+    delete actionNode;
 	return result ? ACTION_RESULT_OK : ACTION_RESULT_FAILED;
 }
 
@@ -466,6 +479,7 @@ void Engine::LogAction(const char* format, ...)
     va_start(ap, format);
     vsprintf(buf, format, ap);
     va_end(ap);
+    lastAction = buf;
 
     if (testMode)
     {

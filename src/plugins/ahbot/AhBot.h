@@ -7,7 +7,7 @@
 #include "../../game/ObjectGuid.h"
 #include "../../game/WorldSession.h"
 
-#define MAX_AUCTIONS 7
+#define MAX_AUCTIONS 3
 #define AHBOT_WON_EXPIRE 0
 #define AHBOT_WON_PLAYER 1
 #define AHBOT_WON_SELF 2
@@ -69,6 +69,7 @@ namespace ahbot
 
     public:
         static uint32 auctionIds[MAX_AUCTIONS];
+        static uint32 auctioneers[MAX_AUCTIONS];
         static map<uint32, uint32> factions;
 
     private:

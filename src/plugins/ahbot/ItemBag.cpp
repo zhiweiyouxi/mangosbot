@@ -123,7 +123,7 @@ bool ItemBag::Add(ItemPrototype const* proto)
     if (sAhBotConfig.ignoreItemIds.find(proto->ItemId) != sAhBotConfig.ignoreItemIds.end())
         return false;
 
-    if (strstri(proto->Name1, "qa") || strstri(proto->Name1, "test"))
+    if (strstri(proto->Name1, "qa") || strstri(proto->Name1, "test") || strstri(proto->Name1, "deprecated"))
         return false;
 
     for (int i = 0; i < CategoryList::instance.size(); i++)

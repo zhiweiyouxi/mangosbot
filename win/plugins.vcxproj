@@ -495,6 +495,7 @@
     <ClCompile Include="..\src\plugins\playerbot\strategy\generic\KiteStrategy.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\generic\LootNonCombatStrategy.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\generic\MeleeCombatStrategy.cpp" />
+    <ClCompile Include="..\src\plugins\playerbot\strategy\generic\MoveRandomStrategy.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\generic\NonCombatStrategy.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\generic\PassiveStrategy.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\generic\PullStrategy.cpp" />
@@ -588,6 +589,7 @@
     <ClCompile Include="..\src\plugins\playerbot\strategy\values\InvalidTargetValue.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\values\ItemCountValue.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\values\ItemForSpellValue.cpp" />
+    <ClCompile Include="..\src\plugins\playerbot\strategy\values\ItemUsageValue.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\values\LeastHpTargetValue.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\values\LineTargetValue.cpp" />
     <ClCompile Include="..\src\plugins\playerbot\strategy\values\NearestAdsValue.cpp" />
@@ -771,6 +773,7 @@
     <ClInclude Include="..\src\plugins\playerbot\strategy\generic\KiteStrategy.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\generic\LootNonCombatStrategy.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\generic\MeleeCombatStrategy.h" />
+    <ClInclude Include="..\src\plugins\playerbot\strategy\generic\MoveRandomStrategy.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\generic\NonCombatStrategy.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\generic\PassiveStrategy.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\generic\PassTroughStrategy.h" />
@@ -892,6 +895,7 @@
     <ClInclude Include="..\src\plugins\playerbot\strategy\values\IsMovingValue.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\values\ItemCountValue.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\values\ItemForSpellValue.h" />
+    <ClInclude Include="..\src\plugins\playerbot\strategy\values\ItemUsageValue.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\values\LastMovementValue.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\values\LastSpellCastTimeValue.h" />
     <ClInclude Include="..\src\plugins\playerbot\strategy\values\LastSpellCastValue.h" />
