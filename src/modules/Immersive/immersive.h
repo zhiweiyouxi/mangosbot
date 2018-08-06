@@ -15,6 +15,8 @@ namespace immersive
         static void OnGossipSelect(Player *player, uint32 gossipListId, GossipMenuItemData *menuData);
         static float GetFallDamage(float zdist);
         static void OnDeath(Player *player);
+        static void OnGiveXP(Player *player, uint32 xp, Unit* victim);
+        static void OnReputationChange(Player* player, FactionEntry const* factionEntry, int32& standing, bool incremental);
 
     private:
         static void PrintHelp(Player *player, bool detailed = false);

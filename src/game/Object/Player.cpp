@@ -2320,6 +2320,9 @@ void Player::GiveXP(uint32 xp, Unit* victim)
 #ifdef ENABLE_ELUNA
     sEluna->OnGiveXP(this, xp, victim);
 #endif /* ENABLE_ELUNA */
+#ifdef ENABLE_IMMERSIVE
+    sImmersive.OnGiveXP(this, xp, victim);
+#endif /* ENABLE_IMMERSIVE */
 
     // XP to money conversion processed in Player::RewardQuest
     if (level >= sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL))

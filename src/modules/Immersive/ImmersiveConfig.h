@@ -16,6 +16,9 @@ public:
     bool Initialize();
 
     int serverPort;
+    bool manualAttributes;
+    float sharedXpPercent;
+    float sharedRepPercent;
 
 private:
     Config config;

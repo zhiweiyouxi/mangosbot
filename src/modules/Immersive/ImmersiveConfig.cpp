@@ -21,6 +21,9 @@ bool ImmersiveConfig::Initialize()
     }
 
     serverPort = config.GetIntDefault("Immersive.ServerPort", 0);
+    manualAttributes = config.GetBoolDefault("Immersive.ManualAttributes", true);
+    sharedXpPercent = config.GetFloatDefault("Immersive.sharedXpPercent", 90.0f);
+    sharedRepPercent = config.GetFloatDefault("Immersive.sharedRepPercent", 90.0f);
 
     sLog.outString("Immersive configuration loaded");
     return true;

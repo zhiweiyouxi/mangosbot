@@ -70,6 +70,8 @@ Immersive::Immersive()
 
 void Immersive::GetPlayerLevelInfo(Player *player, PlayerLevelInfo* info)
 {
+    if (!sImmersiveConfig.manualAttributes) return;
+
 #ifdef ENABLE_PLAYERBOTS
     uint32 account = sObjectMgr.GetPlayerAccountIdByGUID(player->GetObjectGuid());
     if (sPlayerbotAIConfig.IsInRandomAccountList(account))
@@ -308,6 +310,57 @@ void Immersive::SendMessage(Player *player, string message)
 #endif
     ChatHandler &chat = ChatHandler(player->GetSession());
     chat.PSendSysMessage(message.c_str());
+}
+
+void Immersive::OnGiveXP(Player *player, uint32 xp, Unit* victim)
+{
+    if (sImmersiveConfig.sharedXpPercent < 0.01f || !player->GetPlayerbotMgr() || player->GetGroup()) return;
+
+    uint32 bonus_xp = xp + (victim ? player->GetXPRestBonus(xp) : 0);
+    uint32 botXp = (uint32) (bonus_xp * sImmersiveConfig.sharedXpPercent / 100.0f);
+    if (botXp < 1) return;
+
+    ostringstream out;
+    bool first = true;
+    for (PlayerBotMap::const_iterator i = player->GetPlayerbotMgr()->GetPlayerBotsBegin(); i != player->GetPlayerbotMgr()->GetPlayerBotsEnd(); ++i)
+    {
+        Player *bot = i->second;
+        if ((int)player->getLevel() - (int)bot->getLevel() > 1)
+        {
+            bot->GiveXP(botXp, NULL);
+            if (!first)  out << ", "; else first = false;
+            out << bot->GetName();
+        }
+    }
+
+    if (out.str().empty()) return;
+    out << ": " << botXp << " experience gained";
+    SendMessage(player, out.str());
+}
+
+void Immersive::OnReputationChange(Player* player, FactionEntry const* factionEntry, int32& standing, bool incremental)
+{
+    if (sImmersiveConfig.sharedRepPercent < 0.01f || !player->GetPlayerbotMgr() || player->GetGroup() || !incremental) return;
+
+    int32 botXp = (uint32) (standing * sImmersiveConfig.sharedRepPercent / 100.0f);
+    if (botXp < 1) return;
+
+    ostringstream out;
+    bool first = true;
+    for (PlayerBotMap::const_iterator i = player->GetPlayerbotMgr()->GetPlayerBotsBegin(); i != player->GetPlayerbotMgr()->GetPlayerBotsEnd(); ++i)
+    {
+        Player *bot = i->second;
+        if ((int)player->getLevel() - (int)bot->getLevel() > 1)
+        {
+            bot->GetReputationMgr().ModifyReputation(factionEntry, standing);
+            if (!first)  out << ", "; else first = false;
+            out << bot->GetName();
+        }
+    }
+
+    if (out.str().empty()) return;
+    out << ": " << botXp << " reputation gained";
+    SendMessage(player, out.str());
 }
 
 INSTANTIATE_SINGLETON_1( immersive::Immersive );
