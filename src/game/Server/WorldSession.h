@@ -444,7 +444,7 @@ class WorldSession
         void HandleLogoutRequestOpcode(WorldPacket& recvPacket);
         void HandlePlayerLogoutOpcode(WorldPacket& recvPacket);
         void HandleLogoutCancelOpcode(WorldPacket& recvPacket);
-        
+
         void HandleGMTicketGetTicketOpcode(WorldPacket& recvPacket);
         void HandleGMTicketCreateOpcode(WorldPacket& recvPacket);
         void HandleGMTicketSystemStatusOpcode(WorldPacket& recvPacket);
@@ -810,6 +810,11 @@ class WorldSession
         void HandleSetGuildBankTabText(WorldPacket& recv_data);
 
         void HandleGetMirrorimageData(WorldPacket& recv_data);
+
+#ifdef ENABLE_PLAYERBOTS
+        void HandleBotPackets();
+#endif
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);

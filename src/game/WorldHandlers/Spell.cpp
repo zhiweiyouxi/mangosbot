@@ -1003,7 +1003,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
                 }
             }
         }
-    
+
 
     // All calculated do it!
     // Do healing and triggers
@@ -2884,9 +2884,9 @@ void Spell::cast(bool skipCheck)
             // Blood Fury (Racial)
             else if (m_spellInfo->SpellIconID == 1662 && m_spellInfo->AttributesEx & 0x20)
                 AddPrecastSpell(23230);                     // Blood Fury - Healing Reduction
-            // Weak Alcohol  
-            else if (m_spellInfo->SpellIconID == 1306 && m_spellInfo->SpellVisual == 11359)  
-                AddTriggeredSpell(51655);                   // BOTM - Create Empty Brew Bottle  
+            // Weak Alcohol
+            else if (m_spellInfo->SpellIconID == 1306 && m_spellInfo->SpellVisual == 11359)
+                AddTriggeredSpell(51655);                   // BOTM - Create Empty Brew Bottle
 
             break;
         }
@@ -3388,6 +3388,11 @@ void Spell::finish(bool ok)
     // Stop Attack for some spells
     if (m_spellInfo->HasAttribute(SPELL_ATTR_STOP_ATTACK_TARGET))
         { m_caster->AttackStop(); }
+
+#ifdef ENABLE_PLAYERBOTS
+    if(!m_caster->GetMapId())
+        return;
+#endif
 }
 
 void Spell::SendCastResult(SpellCastResult result)
@@ -4501,8 +4506,8 @@ SpellCastResult Spell::CheckCast(bool strict)
         if (non_caster_target && m_spellInfo->HasAttribute(SPELL_ATTR_EX_NOT_IN_COMBAT_TARGET) && target->IsInCombat())
             { return SPELL_FAILED_TARGET_AFFECTING_COMBAT; }
 
-        // check if target is affected by Spirit of Redemption (Aura: 27827)  
-        if (target->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))  
+        // check if target is affected by Spirit of Redemption (Aura: 27827)
+        if (target->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
             { return SPELL_FAILED_BAD_TARGETS; }
 
     }
@@ -5299,8 +5304,8 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (expectedTarget->GetTypeId() == TYPEID_PLAYER)
                 {
                     Player const* player = static_cast<Player const*>(expectedTarget);
-                    
-                    // Player is not allowed to cast water walk on shapeshifted/mounted player 
+
+                    // Player is not allowed to cast water walk on shapeshifted/mounted player
                     if (player->GetShapeshiftForm() != FORM_NONE || player->IsMounted())
                         { return SPELL_FAILED_BAD_TARGETS; }
                 }

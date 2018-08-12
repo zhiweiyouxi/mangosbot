@@ -71,6 +71,12 @@
 #ifdef ENABLE_ELUNA
 #include "LuaEngine.h"
 #endif /* ENABLE_ELUNA */
+#ifdef ENABLE_PLAYERBOTS
+#include "playerbot.h"
+#endif
+#ifdef ENABLE_IMMERSIVE
+#include "immersive.h"
+#endif
 
 #include <cmath>
 
@@ -555,6 +561,10 @@ Player::Player(WorldSession* session): Unit(), m_mover(this), m_camera(this), m_
 
     m_lastFallTime = 0;
     m_lastFallZ = 0;
+#ifdef ENABLE_PLAYERBOTS
+    m_playerbotAI = NULL;
+    m_playerbotMgr = NULL;
+#endif
 }
 
 Player::~Player()
@@ -587,6 +597,17 @@ Player::~Player()
 
     for (size_t x = 0; x < ItemSetEff.size(); ++x)
         { delete ItemSetEff[x]; }
+
+#ifdef ENABLE_PLAYERBOTS
+    if (m_playerbotAI) {
+        delete m_playerbotAI;
+        m_playerbotAI = 0;
+    }
+    if (m_playerbotMgr) {
+        delete m_playerbotMgr;
+        m_playerbotMgr = 0;
+    }
+#endif
 
     // clean up player-instance binds, may unload some instance saves
     for (uint8 i = 0; i < MAX_DIFFICULTY; ++i)
@@ -1364,6 +1385,13 @@ void Player::Update(uint32 update_diff, uint32 p_time)
 
     if (IsHasDelayedTeleport())
         { TeleportTo(m_teleport_dest, m_teleport_options); }
+
+#ifdef ENABLE_PLAYERBOTS
+    if (m_playerbotAI)
+        m_playerbotAI->UpdateAI(p_time);
+    if (m_playerbotMgr)
+        m_playerbotMgr->UpdateAI(p_time);
+#endif
 }
 
 void Player::SetDeathState(DeathState s)
@@ -2347,6 +2375,9 @@ void Player::GiveXP(uint32 xp, Unit* victim)
 #ifdef ENABLE_ELUNA
     sEluna->OnGiveXP(this, xp, victim);
 #endif /* ENABLE_ELUNA */
+#ifdef ENABLE_IMMERSIVE
+    sImmersive.OnGiveXP(this, xp, victim);
+#endif /* ENABLE_IMMERSIVE */
 
     // XP to money conversion processed in Player::RewardQuest
     if (level >= sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL))
@@ -2390,6 +2421,9 @@ void Player::GiveLevel(uint32 level)
 
     PlayerLevelInfo info;
     sObjectMgr.GetPlayerLevelInfo(getRace(), getClass(), level, &info);
+#ifdef ENABLE_IMMERSIVE
+    sImmersive.GetPlayerLevelInfo(this, &info);
+#endif
 
     PlayerClassLevelInfo classInfo;
     sObjectMgr.GetPlayerClassLevelInfo(getClass(), level, &classInfo);
@@ -2509,6 +2543,9 @@ void Player::InitStatsForLevel(bool reapplyMods)
 
     PlayerLevelInfo info;
     sObjectMgr.GetPlayerLevelInfo(getRace(), getClass(), getLevel(), &info);
+#ifdef ENABLE_IMMERSIVE
+    sImmersive.GetPlayerLevelInfo(this, &info);
+#endif
 
     SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL));
     SetUInt32Value(PLAYER_NEXT_LEVEL_XP, sObjectMgr.GetXPForLevel(getLevel()));
@@ -2996,7 +3033,7 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool dependen
                 if (lowerRank->state == PLAYERSPELL_REMOVED || !lowerRank->active)
                     continue;
 
-                SpellEntry const *spell_old = sSpellStore.LookupEntry(prev_spell_id); 
+                SpellEntry const *spell_old = sSpellStore.LookupEntry(prev_spell_id);
                 SpellEntry const *spell_new = spellInfo;
 
                 if (sSpellMgr.IsRankedSpellNonStackableInSpellBook(spell_old))
@@ -3898,7 +3935,7 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
     CharacterDatabase.PExecute("DELETE FROM character_ticket "
                                "WHERE resolved = 0 AND guid = %u",
                                playerguid.GetCounter());
-    
+
     // for nonexistent account avoid update realm
     if (accountId == 0)
         { updateRealmChars = false; }
@@ -4724,6 +4761,9 @@ void Player::RepopAtGraveyard()
         if (updateVisibility && IsInWorld())
             { UpdateVisibilityAndView(); }
     }
+#ifdef ENABLE_IMMERSIVE
+    sImmersive.OnDeath(this);
+#endif
 }
 
 void Player::JoinedChannel(Channel* c)
@@ -6761,7 +6801,7 @@ void Player::DuelComplete(DuelCompleteType type)
     if (GameObject* obj = GetMap()->GetGameObject(GetGuidValue(PLAYER_DUEL_ARBITER)))
         duel->initiator->RemoveGameObject(obj, true);
 
-    /* remove auras */ 
+    /* remove auras */
     // TODO: Needs a simpler method
     std::vector<uint32> auras2remove;
     SpellAuraHolderMap const& vAuras = duel->opponent->GetSpellAuraHolderMap();
@@ -9777,8 +9817,8 @@ InventoryResult Player::CanEquipItem(uint8 slot, uint16& dest, Item* pItem, bool
                 if (IsNonMeleeSpellCasted(false))
                     { return EQUIP_ERR_CANT_DO_RIGHT_NOW; }
 
-                // prevent equip item in Spirit of Redemption (Aura: 27827)  
-                if (HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))  
+                // prevent equip item in Spirit of Redemption (Aura: 27827)
+                if (HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
                     { return EQUIP_ERR_CANT_DO_RIGHT_NOW; }
             }
 
@@ -12198,6 +12238,9 @@ void Player::PrepareGossipMenu(WorldObject* pSource, uint32 menuId)
                 case GOSSIP_OPTION_PETITIONER:
                 case GOSSIP_OPTION_TABARDDESIGNER:
                 case GOSSIP_OPTION_AUCTIONEER:
+#ifdef ENABLE_IMMERSIVE
+                case GOSSIP_OPTION_IMMERSIVE:
+#endif
                     break;                                  // no checks
                 default:
                     sLog.outErrorDb("Creature entry %u have unknown gossip option %u for menu %u", pCreature->GetEntry(), itr->second.option_id, itr->second.menu_id);
@@ -12434,6 +12477,12 @@ void Player::OnGossipSelect(WorldObject* pSource, uint32 gossipListId, uint32 me
             GetSession()->SendBattlegGroundList(guid, bgTypeId);
             break;
         }
+#ifdef ENABLE_IMMERSIVE
+        case GOSSIP_OPTION_IMMERSIVE:
+            sImmersive.OnGossipSelect(this, gossipListId, &pMenuData);
+            PlayerTalkClass->CloseGossip();
+            break;
+#endif
     }
 
     if (pMenuData.m_gAction_script)
@@ -15136,7 +15185,7 @@ bool Player::isAllowedToLoot(Creature* creature)
                     /* If the assigned looter's GUID is equal to ours */
                     else if (creature->assignedLooter == GetGUIDLow())
                         { return true; }
-                    /* If the creature already has an assigned looter and that looter isn't us */                    
+                    /* If the creature already has an assigned looter and that looter isn't us */
                     else if (creature->assignedLooter != 0 && !hasSharedLoot && !hasStartingQuestLoot)
                         { return false; }
 
@@ -15144,10 +15193,10 @@ bool Player::isAllowedToLoot(Creature* creature)
 
                     /* This is the player that will be given permission to loot */
                     Player* final_looter = recipient;
-                    
+
                     /* Iterate through the valid party members */
                     Group::MemberSlotList slots = plr_group->GetMemberSlots();
-                    
+
                     for (Group::MemberSlotList::iterator itr = slots.begin(); itr != slots.end(); ++itr)
                     {
                         /* Get the player data */
@@ -15170,18 +15219,18 @@ bool Player::isAllowedToLoot(Creature* creature)
 
                     /* We have our looter, update their loot time */
                     final_looter->lastTimeLooted = time(NULL);
-                    
+
                     /* Update the creature with the looter that has been assigned to them */
                     creature->assignedLooter = final_looter->GetGUIDLow();
                     final_looter->GetGroup()->SetLooterGuid(final_looter->GetGUID());
-                    
+
                     /* Finally, return if we are the assigned looter */
                     return (final_looter->GetGUIDLow() == GetGUIDLow() || hasSharedLoot || hasStartingQuestLoot);
                     /* End of switch statement */
                 }
                 default:
                     // Something went wrong, avoid crash
-                    
+
                     return false;
             }
         }
@@ -17214,24 +17263,24 @@ void Player::TextEmote(const std::string& text)
     SendMessageToSetInRange(&data, sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_TEXTEMOTE), true, !sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_CHAT));
 }
 
-void Player::LogWhisper(const std::string& text, ObjectGuid receiver) 
+void Player::LogWhisper(const std::string& text, ObjectGuid receiver)
 {
     WhisperLoggingLevels loggingLevel = WhisperLoggingLevels(sWorld.getConfig(CONFIG_UINT32_LOG_WHISPERS));
 
     if (loggingLevel == WHISPER_LOGGING_NONE)
         return;
-    
+
     //Try to find ticket by either this player or the receiver
     GMTicket* ticket = sTicketMgr.GetGMTicket(GetObjectGuid());
     if (!ticket)
         ticket = sTicketMgr.GetGMTicket(receiver);
-    
+
     uint32 ticketId = 0;
     if (ticket)
         ticketId = ticket->GetId();
-    
+
     bool isSomeoneGM = false;
-    
+
     //Find out if at least one of them is a GM for ticket logging
     if (GetSession()->GetSecurity() >= SEC_GAMEMASTER)
         isSomeoneGM = true;
@@ -17241,7 +17290,7 @@ void Player::LogWhisper(const std::string& text, ObjectGuid receiver)
         if (pRecvPlayer && pRecvPlayer->GetSession()->GetSecurity() >= SEC_GAMEMASTER)
             isSomeoneGM = true;
     }
-    
+
     if ((loggingLevel == WHISPER_LOGGING_TICKETS && ticket && isSomeoneGM)
         || loggingLevel == WHISPER_LOGGING_EVERYTHING)
     {
@@ -20560,7 +20609,13 @@ void Player::HandleFall(MovementInfo const& movementInfo)
 
     // Players with low fall distance, Feather Fall or physical immunity (charges used) are ignored
     // 14.57 can be calculated by resolving damageperc formula below to 0
-    if (z_diff >= 14.57f && !IsDead() && !isGameMaster() && !HasMovementFlag(MOVEFLAG_ONTRANSPORT) &&
+    if (
+#ifdef ENABLE_IMMERSIVE
+        z_diff >= 4.57f &&
+#else
+        z_diff >= 14.57f &&
+#endif
+            !IsDead() && !isGameMaster() && !HasMovementFlag(MOVEFLAG_ONTRANSPORT) &&
             !HasAuraType(SPELL_AURA_HOVER) && !HasAuraType(SPELL_AURA_FEATHER_FALL) &&
             !HasAuraType(SPELL_AURA_FLY) && !IsImmuneToDamage(SPELL_SCHOOL_MASK_NORMAL))
     {
@@ -20568,6 +20623,9 @@ void Player::HandleFall(MovementInfo const& movementInfo)
         int32 safe_fall = GetTotalAuraModifier(SPELL_AURA_SAFE_FALL);
 
         float damageperc = 0.018f * (z_diff - safe_fall) - 0.2426f;
+#ifdef ENABLE_IMMERSIVE
+        damageperc = sImmersive.GetFallDamage(z_diff - safe_fall);
+#endif
 
         if (damageperc > 0)
         {

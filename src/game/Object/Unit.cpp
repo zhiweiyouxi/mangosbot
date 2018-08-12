@@ -56,6 +56,10 @@
 #include "LuaEngine.h"
 #include "ElunaEventMgr.h"
 #endif /* ENABLE_ELUNA */
+#ifdef ENABLE_PLAYERBOTS
+#include "playerbot.h"
+#include "GuildTaskMgr.h"
+#endif
 
 #include <math.h>
 
@@ -1103,6 +1107,9 @@ void Unit::JustKilledCreature(Creature* victim, Player* responsiblePlayer)
         {
             bg->HandleKillUnit(victim, responsiblePlayer);
 
+#ifdef ENABLE_PLAYERBOTS
+        sGuildTaskMgr.CheckKillTask(responsiblePlayer, victim);
+#endif
             // Used by Eluna
 #ifdef ENABLE_ELUNA
             sEluna->OnCreatureKill(responsiblePlayer, victim);
@@ -3378,7 +3385,7 @@ void Unit::SetCurrentCastedSpell(Spell* pSpell)
     m_currentSpells[CSpellType] = pSpell;
     pSpell->SetReferencedFromCurrent(true);
 
-    pSpell->SetSelfContainer(&(m_currentSpells[pSpell->GetCurrentContainer()])); 
+    pSpell->SetSelfContainer(&(m_currentSpells[pSpell->GetCurrentContainer()]));
     // previous and faulty version of the following code. If the above proves to work, then delete this instruction
     //   pSpell->m_selfContainer = &(m_currentSpells[pSpell->GetCurrentContainer()]);
 }

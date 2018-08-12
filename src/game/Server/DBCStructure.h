@@ -55,8 +55,8 @@ struct AreaTableEntry
     uint32  ID;                                             // 0        m_ID - ID of the Area within the DBC.
     uint32  mapid;                                          // 1        m_ContinentID - ID of the Continent in DBC (0 = Azeroth, 1 = Kalimdor, ...)
     uint32  zone;                                           // 2        m_ParentAreaID - ID of the parent area.
-    uint32  exploreFlag;                                    // 3        m_AreaBit - 
-    uint32  flags;                                          // 4        m_flags - 
+    uint32  exploreFlag;                                    // 3        m_AreaBit -
+    uint32  flags;                                          // 4        m_flags -
     // 5        m_SoundProviderPref
     // 6        m_SoundProviderPrefUnderwater
     // 7        m_AmbienceID
@@ -151,7 +151,7 @@ struct BattlemasterListEntry
 
 /**
 * \struct CharStartOutfitEntry
-* \brief 
+* \brief
 *
 */
 struct CharStartOutfitEntry
@@ -215,7 +215,7 @@ struct ChrClassesEntry
 
 /**
 * \struct ChrRacesEntry
-* \brief Entry rerepsenting 
+* \brief Entry rerepsenting
 */
 struct ChrRacesEntry
 {
@@ -394,6 +394,46 @@ struct EmotesTextEntry
     //          m_emoteText
 };
 
+#ifdef ENABLE_PLAYERBOTS
+/**
+* \struct EmotesTextSoundEntry
+* \brief Entry repsenting the text sound for given emote.
+*/
+struct EmotesTextSoundEntry
+{
+    uint32 Id;                                              // 0
+    uint32 EmotesTextId;                                    // 1
+    uint32 RaceId;                                          // 2
+    uint32 SexId;                                           // 3, 0 male / 1 female
+    uint32 SoundId;                                         // 4
+};
+enum CharSectionFlags
+{
+    SECTION_FLAG_PLAYER       = 0x01
+};
+
+enum CharSectionType
+{
+    SECTION_TYPE_SKIN         = 0,
+    SECTION_TYPE_FACE         = 1,
+    SECTION_TYPE_FACIAL_HAIR  = 2,
+    SECTION_TYPE_HAIR         = 3,
+    SECTION_TYPE_UNDERWEAR    = 4
+};
+
+struct CharSectionsEntry
+{
+    //uint32 Id;
+    uint32 Race;
+    uint32 Gender;
+    uint32 GenType;
+    //char* TexturePath[3];
+    uint32 Type;
+    uint32 Color;
+    uint32 Flags;
+};
+#endif
+
 /**
 * \struct FactionEntry
 * \brief Entry representing all the factions available.
@@ -402,7 +442,7 @@ struct FactionEntry
 {
     uint32      ID;                                         // 0        m_ID - ID in DBC.
     int32       reputationListID;                           // 1        m_reputationIndex - ID of the Reputation List.
-    uint32      BaseRepRaceMask[4];                         // 2-5      m_reputationRaceMask - 
+    uint32      BaseRepRaceMask[4];                         // 2-5      m_reputationRaceMask -
     uint32      BaseRepClassMask[4];                        // 6-9      m_reputationClassMask
     int32       BaseRepValue[4];                            // 10-13    m_reputationBase
     uint32      ReputationFlags[4];                         // 14-17    m_reputationFlags
@@ -955,7 +995,7 @@ struct ClassFamilyMask
 *
 * This structure also contains flags about spell family, attributes, spell effects
 * enchantement, cast conditions, proc conditions, mechanic, cast time, damage range, ...
-* 
+*
 * All we need to know about spells is represented by such entry and used for every effect within the game
 * such as elixir, potion, buff, heal, damage, ..
 */

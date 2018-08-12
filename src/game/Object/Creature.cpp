@@ -1777,7 +1777,7 @@ bool Creature::IsImmuneToSpell(SpellEntry const* spellInfo, bool castOnSelf)
     {
         if (GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->Mechanic - 1)))
             { return true; }
-        
+
         if (GetCreatureInfo()->SchoolImmuneMask & spellInfo->SchoolMask)
             { return true; }
     }

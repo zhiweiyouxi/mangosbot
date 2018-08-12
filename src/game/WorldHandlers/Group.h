@@ -422,8 +422,13 @@ class Group
         InstanceGroupBind* GetBoundInstance(Map* aMap, Difficulty difficulty);
         BoundInstancesMap& GetBoundInstances(Difficulty difficulty)
         {
-            return m_boundInstances[difficulty]; 
+            return m_boundInstances[difficulty];
         }
+
+#ifdef ENABLE_PLAYERBOTS
+        ObjectGuid GetTargetIcon(int index) { return m_targetIcons[index]; }
+        Rolls GetRolls() { return RollId; }
+#endif
 
     protected:
         bool _addMember(ObjectGuid guid, const char* name, bool isAssistant = false);
