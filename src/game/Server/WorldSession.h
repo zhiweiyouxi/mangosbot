@@ -149,12 +149,7 @@ class WorldSession
         Player* GetPlayer() const { return _player; }
         char const* GetPlayerName() const;
         void SetSecurity(AccountTypes security) { _security = security; }
-#ifdef BUILD_PLAYERBOT
-        // Players connected without socket are bot
-        const std::string GetRemoteAddress() const { return m_Socket ? m_Socket->GetRemoteAddress() : "bot"; }
-#else
         const std::string GetRemoteAddress() const { return m_Socket->GetRemoteAddress(); }
-#endif
         void SetPlayer(Player* plr) { _player = plr; }
 
         /// Session in auth.queue currently
@@ -649,6 +644,9 @@ class WorldSession
 
         void HandleSetTaxiBenchmarkOpcode(WorldPacket& recv_data);
 
+#ifdef ENABLE_PLAYERBOTS
+        void HandleBotPackets();
+#endif
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);

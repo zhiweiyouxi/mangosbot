@@ -35,7 +35,11 @@
 #include "Pools/PoolManager.h"
 #include "GameEvents/GameEventMgr.h"
 #include "AuctionHouseBot/AuctionHouseBot.h"
-
+#ifdef ENABLE_PLAYERBOTS
+#include "AhBot.h"
+#include "playerbot.h"
+#include "GuildTaskMgr.h"
+#endif /* ENABLE_PLAYERBOTS */
 #include <cstdarg>
 
 // Supported shift-links (client generated and server side)
@@ -727,7 +731,14 @@ ChatCommand* ChatHandler::getCommandTable()
     {
         { "account",        SEC_PLAYER,         true,  nullptr,                                           "", accountCommandTable  },
         { "auction",        SEC_ADMINISTRATOR,  false, nullptr,                                           "", auctionCommandTable  },
+#ifndef ENABLE_PLAYERBOTS
         { "ahbot",          SEC_ADMINISTRATOR,  true,  nullptr,                                           "", ahbotCommandTable    },
+#else
+        { "ahbot",            SEC_GAMEMASTER,    true,  &ChatHandler::HandleAhBotCommand,                      "" },
+        { "rndbot",           SEC_GAMEMASTER,    true,  &ChatHandler::HandleRandomPlayerbotCommand,     "" },
+        { "bot",              SEC_PLAYER,        false, &ChatHandler::HandlePlayerbotCommand,               "" },
+        { "gtask",            SEC_GAMEMASTER,    true,  &ChatHandler::HandleGuildTaskCommand,           "" },
+#endif
         { "cast",           SEC_ADMINISTRATOR,  false, nullptr,                                           "", castCommandTable     },
         { "character",      SEC_GAMEMASTER,     true,  nullptr,                                           "", characterCommandTable},
         { "debug",          SEC_MODERATOR,      true,  nullptr,                                           "", debugCommandTable    },
@@ -754,6 +765,7 @@ ChatCommand* ChatHandler::getCommandTable()
         { "tele",           SEC_MODERATOR,      true,  nullptr,                                           "", teleCommandTable     },
         { "trigger",        SEC_GAMEMASTER,     false, nullptr,                                           "", triggerCommandTable  },
         { "wp",             SEC_GAMEMASTER,     false, nullptr,                                           "", wpCommandTable       },
+
 
         { "aura",           SEC_ADMINISTRATOR,  false, &ChatHandler::HandleAuraCommand,                "", nullptr },
         { "unaura",         SEC_ADMINISTRATOR,  false, &ChatHandler::HandleUnAuraCommand,              "", nullptr },
@@ -814,9 +826,6 @@ ChatCommand* ChatHandler::getCommandTable()
         { "waterwalk",      SEC_GAMEMASTER,     false, &ChatHandler::HandleWaterwalkCommand,           "", nullptr },
         { "quit",           SEC_CONSOLE,        true,  &ChatHandler::HandleQuitCommand,                "", nullptr },
         { "mmap",           SEC_GAMEMASTER,     false, nullptr,                                        "", mmapCommandTable },
-#ifdef BUILD_PLAYERBOT
-        { "bot",            SEC_PLAYER,         false, &ChatHandler::HandlePlayerbotCommand,           "", nullptr },
-#endif
         { nullptr,          0,                  false, nullptr,                                        "", nullptr }
     };
 

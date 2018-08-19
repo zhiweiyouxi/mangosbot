@@ -47,6 +47,10 @@
 #include "Movement/MoveSpline.h"
 #include "Entities/CreatureLinkingMgr.h"
 #include "Tools/Formulas.h"
+#ifdef ENABLE_PLAYERBOTS
+#include "playerbot.h"
+#include "GuildTaskMgr.h"
+#endif
 
 #include <math.h>
 #include <array>
@@ -903,7 +907,7 @@ uint32 Unit::DealDamage(Unit* pVictim, uint32 damage, CleanDamage const* cleanDa
         // proc only once for victim
         if (Unit* owner = GetOwner())
             owner->ProcDamageAndSpell(ProcSystemArguments(pVictim, PROC_FLAG_KILL, PROC_FLAG_NONE, PROC_EX_NONE, 0));
-        
+
         ProcDamageAndSpell(ProcSystemArguments(pVictim, PROC_FLAG_KILL, PROC_FLAG_KILLED, PROC_EX_NONE, 0));
 
         // Reward player, his pets, and group/raid members
@@ -1211,6 +1215,10 @@ void Unit::JustKilledCreature(Creature* victim, Player* responsiblePlayer)
     if (responsiblePlayer)                                  // killedby Player, inform BG
         if (BattleGround* bg = responsiblePlayer->GetBattleGround())
             bg->HandleKillUnit(victim, responsiblePlayer);
+
+#ifdef ENABLE_PLAYERBOTS
+        sGuildTaskMgr.CheckKillTask(responsiblePlayer, victim);
+#endif
 
     // Notify the outdoor pvp script
     if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(responsiblePlayer ? responsiblePlayer->GetCachedZoneId() : GetZoneId()))
@@ -3716,7 +3724,7 @@ void Unit::SetCurrentCastedSpell(Spell* pSpell)
             {
                 if(!pSpell->m_spellInfo->HasAttribute(SPELL_ATTR_EX4_CAN_CAST_WHILE_CASTING))
                     InterruptSpell(CURRENT_CHANNELED_SPELL, false);
-            }            
+            }
 
             // autorepeat breaking
             if (m_currentSpells[CURRENT_AUTOREPEAT_SPELL])
@@ -5318,7 +5326,7 @@ bool Unit::CanInitiateAttack() const
     if (HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE))
         if (GetTypeId() != TYPEID_UNIT || (GetTypeId() == TYPEID_UNIT && !((Creature*)this)->GetForceAttackingCapability()))
             return false;
-           
+
     if (GetTypeId() == TYPEID_UNIT && !((Creature*)this)->CanAggro())
         return false;
 
