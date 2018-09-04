@@ -392,7 +392,6 @@ void PoolGroup<Creature>::Spawn1Object(MapPersistentState& mapState, PoolObject*
                 if (!pCreature->LoadFromDB(obj->guid, dataMap))
                 {
                     delete pCreature;
-                    return;
                 }
                 else
                 {
@@ -436,7 +435,6 @@ void PoolGroup<GameObject>::Spawn1Object(MapPersistentState& mapState, PoolObjec
                 if (!pGameobject->LoadFromDB(obj->guid, dataMap))
                 {
                     delete pGameobject;
-                    return;
                 }
                 else
                 {
@@ -567,12 +565,9 @@ void PoolManager::LoadFromDB()
         sLog.outString();
         return;
     }
-    else
-    {
-        Field* fields = result->Fetch();
-        max_pool_id = fields[0].GetUInt16();
-        delete result;
-    }
+    Field* fields = result->Fetch();
+    max_pool_id = fields[0].GetUInt16();
+    delete result;
 
     mPoolTemplate.resize(max_pool_id + 1);
 
@@ -591,7 +586,7 @@ void PoolManager::LoadFromDB()
     do
     {
         ++count;
-        Field* fields = result->Fetch();
+        fields = result->Fetch();
 
         bar.step();
 
@@ -631,7 +626,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field* fields = result->Fetch();
+            fields = result->Fetch();
 
             bar2.step();
 
@@ -692,7 +687,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field* fields = result->Fetch();
+            fields = result->Fetch();
 
             bar2.step();
 
@@ -769,7 +764,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field* fields = result->Fetch();
+            fields = result->Fetch();
 
             bar2.step();
 
@@ -831,7 +826,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field* fields = result->Fetch();
+            fields = result->Fetch();
 
             bar2.step();
 
@@ -906,7 +901,7 @@ void PoolManager::LoadFromDB()
         BarGoLink bar2(result->GetRowCount());
         do
         {
-            Field* fields = result->Fetch();
+            fields = result->Fetch();
 
             bar2.step();
 
@@ -974,8 +969,8 @@ void PoolManager::LoadFromDB()
                 {
                     std::ostringstream ss;
                     ss << "The pool(s) ";
-                    for (std::set<uint16>::const_iterator itr = checkedPools.begin(); itr != checkedPools.end(); ++itr)
-                        ss << *itr << " ";
+                    for (uint16 checkedPool : checkedPools)
+                        ss << checkedPool << " ";
                     ss << "create(s) a circular reference, which can cause the server to freeze.\nRemoving the last link between mother pool "
                        << poolItr->first << " and child pool " << poolItr->second;
                     sLog.outErrorDb("%s", ss.str().c_str());

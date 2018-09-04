@@ -518,19 +518,18 @@ bool ThreatManager::HasThreat(Unit * victim, bool alsoSearchOfflineList)
     HostileReference* ref = iThreatContainer.getReferenceByTarget(victim);
     if (!ref && alsoSearchOfflineList)
         ref = iThreatOfflineContainer.getReferenceByTarget(victim);
-    return bool(ref);
+    return ref != nullptr;
 }
 
 //============================================================
 
 void ThreatManager::TauntUpdate()
 {
-    HostileReference* taunterRef = nullptr;
     const Unit::AuraList& tauntAuras = iOwner->GetAurasByType(SPELL_AURA_MOD_TAUNT);
     std::unordered_map<ObjectGuid, TauntState> tauntStates;
     uint32 state = STATE_TAUNTED;
-    for (Unit::AuraList::const_iterator aura = tauntAuras.begin(); aura != tauntAuras.end(); ++aura)
-        tauntStates[(*aura)->GetCasterGuid()] = TauntState(state++);
+    for (auto tauntAura : tauntAuras)
+        tauntStates[tauntAura->GetCasterGuid()] = TauntState(state++);
 
     for (auto& ref : iThreatContainer.getThreatList())
     {

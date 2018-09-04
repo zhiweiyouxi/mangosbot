@@ -167,10 +167,10 @@ struct CreatureInfo
     {
         if (CreatureTypeFlags & CREATURE_TYPEFLAGS_HERBLOOT)
             return SKILL_HERBALISM;
-        else if (CreatureTypeFlags & CREATURE_TYPEFLAGS_MININGLOOT)
+        if (CreatureTypeFlags & CREATURE_TYPEFLAGS_MININGLOOT)
             return SKILL_MINING;
-        else
-            return SKILL_SKINNING;                          // normal case
+
+        return SKILL_SKINNING;                          // normal case
     }
 
     bool isTameable() const
@@ -265,6 +265,14 @@ struct CreatureModelInfo
     uint8 gender;
     uint32 modelid_other_gender;                            // The oposite gender for this modelid (male/female)
     uint32 modelid_other_team;                              // The oposite team. Generally for alliance totem
+};
+
+struct CreatureConditionalSpawn
+{
+    uint32 Guid;
+    uint32 EntryAlliance;
+    uint32 EntryHorde;
+    // Note: future condition flags to be added
 };
 
 // GCC have alternative #pragma pack() syntax and old gcc version not support pack(pop), also any gcc version not support it at some platform
@@ -540,7 +548,7 @@ class Creature : public Unit
 
         char const* GetSubName() const { return GetCreatureInfo()->SubName; }
 
-        void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
+        void Update(uint32 update_diff, uint32 diff) override;  // overwrite Unit::Update
 
         virtual void RegenerateAll(uint32 update_diff);
         uint32 GetEquipmentId() const { return m_equipmentId; }
@@ -557,17 +565,17 @@ class Creature : public Unit
         void ReduceCorpseDecayTimer();
         uint32 GetCorpseDecayTimer() const { return m_corpseDecayTimer; }
         bool IsRacialLeader() const { return GetCreatureInfo()->RacialLeader; }
-        bool IsCivilian() const { return !!GetCreatureInfo()->civilian; }
-        bool IsNoAggroOnSight() const { return (GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_NO_AGGRO_ON_SIGHT); }
-        bool IsGuard() const { return !!(GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_GUARD); }
+        bool IsCivilian() const { return GetCreatureInfo()->civilian != 0; }
+        bool IsNoAggroOnSight() const { return (GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_NO_AGGRO_ON_SIGHT) != 0; }
+        bool IsGuard() const { return (GetCreatureInfo()->ExtraFlags & CREATURE_EXTRA_FLAG_GUARD) != 0; }
 
-        bool CanWalk() const { return !!(GetCreatureInfo()->InhabitType & INHABIT_GROUND); }
-        bool CanSwim() const { return !!(GetCreatureInfo()->InhabitType & INHABIT_WATER); }
+        bool CanWalk() const { return (GetCreatureInfo()->InhabitType & INHABIT_GROUND) != 0; }
+        bool CanSwim() const { return (GetCreatureInfo()->InhabitType & INHABIT_WATER) != 0; }
         bool IsSwimming() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_SWIMMING); }
         bool CanFly() const override { return (GetCreatureInfo()->InhabitType & INHABIT_AIR) || m_movementInfo.HasMovementFlag((MovementFlags)(MOVEFLAG_LEVITATING | MOVEFLAG_HOVER | MOVEFLAG_CAN_FLY)); }
         bool IsFlying() const { return m_movementInfo.HasMovementFlag((MovementFlags)(MOVEFLAG_FLYING | MOVEFLAG_HOVER | MOVEFLAG_LEVITATING)); }
-        bool IsTrainerOf(Player* player, bool msg) const;
-        bool CanInteractWithBattleMaster(Player* player, bool msg) const;
+        bool IsTrainerOf(Player* pPlayer, bool msg) const;
+        bool CanInteractWithBattleMaster(Player* pPlayer, bool msg) const;
         bool CanTrainAndResetTalentsOf(Player* pPlayer) const;
 
         void FillGuidsListFromThreatList(GuidVector& guids, uint32 maxamount = 0);
@@ -597,8 +605,17 @@ class Creature : public Unit
 
         bool AIM_Initialize();
 
-        virtual UnitAI* AI() override { if (m_charmInfo && m_charmInfo->GetAI()) return m_charmInfo->GetAI(); else return m_ai.get(); }
-        virtual CombatData* GetCombatData() override { if (m_charmInfo && m_charmInfo->GetCombatData()) return m_charmInfo->GetCombatData(); else return m_combatData; }
+        virtual UnitAI* AI() override
+        {
+            if (m_charmInfo && m_charmInfo->GetAI()) return m_charmInfo->GetAI();
+            return m_ai.get();
+        }
+
+        virtual CombatData* GetCombatData() override
+        {
+            if (m_charmInfo && m_charmInfo->GetCombatData()) return m_charmInfo->GetCombatData();
+            return m_combatData;
+        }
 
         void SetWalk(bool enable, bool asDefault = true);
         void SetLevitate(bool enable) override;
@@ -617,7 +634,7 @@ class Creature : public Unit
 
         bool HasSpell(uint32 spellID) const override;
 
-        bool UpdateEntry(uint32 entry, Team team = ALLIANCE, const CreatureData* data = nullptr, GameEventCreatureData const* eventData = nullptr, bool preserveHPAndPower = true);
+        bool UpdateEntry(uint32 Entry, Team team = ALLIANCE, const CreatureData* data = nullptr, GameEventCreatureData const* eventData = nullptr, bool preserveHPAndPower = true);
 
         void ApplyGameEventSpells(GameEventCreatureData const* eventData, bool activated);
         bool UpdateStats(Stats stat) override;
@@ -652,11 +669,11 @@ class Creature : public Unit
         uint32 GetScriptId() const;
 
         // overwrite WorldObject function for proper name localization
-        const char* GetNameForLocaleIdx(int32 locale_idx) const override;
+        const char* GetNameForLocaleIdx(int32 loc_idx) const override;
 
         void SetDeathState(DeathState s) override;          // overwrite virtual Unit::SetDeathState
 
-        bool LoadFromDB(uint32 guid, Map* map);
+        bool LoadFromDB(uint32 guidlow, Map* map);
         virtual void SaveToDB();
         // overwrited in Pet
         virtual void SaveToDB(uint32 mapid);
@@ -673,7 +690,7 @@ class Creature : public Unit
         Player* GetLootRecipient() const;                   // use group cases as prefered
         Group* GetGroupLootRecipient() const;
         bool HasLootRecipient() const { return m_lootGroupRecipientId || m_lootRecipientGuid; }
-        bool IsGroupLootRecipient() const { return !!m_lootGroupRecipientId; }
+        bool IsGroupLootRecipient() const { return m_lootGroupRecipientId != 0; }
         void SetLootRecipient(Unit* unit);
         Player* GetOriginalLootRecipient() const;           // ignore group changes/etc, not for looting
 
@@ -734,15 +751,14 @@ class Creature : public Unit
         bool HasInvolvedQuest(uint32 quest_id)  const override;
 
         GridReference<Creature>& GetGridRef() { return m_gridRef; }
-        bool IsRegeneratingHealth() const { return !!(GetCreatureInfo()->RegenerateStats & REGEN_FLAG_HEALTH); }
-        bool IsRegeneratingPower() const { return !!(GetCreatureInfo()->RegenerateStats & REGEN_FLAG_POWER); }
+        bool IsRegeneratingHealth() const { return (GetCreatureInfo()->RegenerateStats & REGEN_FLAG_HEALTH) != 0; }
+        bool IsRegeneratingPower() const { return (GetCreatureInfo()->RegenerateStats & REGEN_FLAG_POWER) != 0; }
         virtual uint8 GetPetAutoSpellSize() const { return CREATURE_MAX_SPELLS; }
         virtual uint32 GetPetAutoSpellOnPos(uint8 pos) const
         {
             if (pos >= CREATURE_MAX_SPELLS || m_charmInfo->GetCharmSpell(pos)->GetType() != ACT_ENABLED)
                 return 0;
-            else
-                return m_charmInfo->GetCharmSpell(pos)->GetAction();
+            return m_charmInfo->GetCharmSpell(pos)->GetAction();
         }
 
         void SetCombatStartPosition(float x, float y, float z, float o) { m_combatStartPos.x = x; m_combatStartPos.y = y; m_combatStartPos.z = z; m_combatStartPos.o = o; }
@@ -772,7 +788,7 @@ class Creature : public Unit
         void OnEventHappened(uint16 eventId, bool activate, bool resume) override { return AI()->OnEventHappened(eventId, activate, resume); }
 
         void SetForceAttackingCapability(bool state) { m_forceAttackingCapability = state; }
-        bool GetForceAttackingCapability() { return m_forceAttackingCapability; }
+        bool GetForceAttackingCapability() const { return m_forceAttackingCapability; }
 
         void SetIgnoreRangedTargets(bool state) { m_ignoreRangedTargets = state; }
         bool IsIgnoringRangedTargets() override { return m_ignoreRangedTargets; }
@@ -789,8 +805,9 @@ class Creature : public Unit
         bool MeetsSelectAttackingRequirement(Unit* pTarget, SpellEntry const* pSpellInfo, uint32 selectFlags, SelectAttackingTargetParams params) const;
 
         bool CreateFromProto(uint32 guidlow, CreatureInfo const* cinfo, Team team, const CreatureData* data = nullptr, GameEventCreatureData const* eventData = nullptr);
-        bool InitEntry(uint32 entry, Team team = ALLIANCE, const CreatureData* data = nullptr, GameEventCreatureData const* eventData = nullptr);
+        bool InitEntry(uint32 Entry, Team team = ALLIANCE, const CreatureData* data = nullptr, GameEventCreatureData const* eventData = nullptr);
 
+        uint32 GetCreatureConditionalSpawnEntry(uint32 guidlow, Map* map) const;
 
         void UnsummonCleanup(); // cleans up data before unsummon of various creatures
 

@@ -25,7 +25,7 @@
 #include "Spells/SpellMgr.h"
 #include "Server/DBCStores.h"
 
-DynamicObject::DynamicObject() : WorldObject(), m_spellId(0), m_effIndex(), m_aliveDuration(0), m_radius(0), m_positive(false)
+DynamicObject::DynamicObject() : WorldObject(), m_spellId(0), m_effIndex(), m_aliveDuration(0), m_radius(0), m_positive(false), m_target()
 {
     m_objectType |= TYPEMASK_DYNAMICOBJECT;
     m_objectTypeId = TYPEID_DYNAMICOBJECT;
@@ -209,16 +209,14 @@ bool DynamicObject::IsHostileTo(Unit const* unit) const
 {
     if (Unit* owner = GetCaster())
         return owner->IsHostileTo(unit);
-    else
-        return false;
+    return false;
 }
 
 bool DynamicObject::IsFriendlyTo(Unit const* unit) const
 {
     if (Unit* owner = GetCaster())
         return owner->IsFriendlyTo(unit);
-    else
-        return true;
+    return true;
 }
 
 void DynamicObject::OnPersistentAreaAuraEnd()

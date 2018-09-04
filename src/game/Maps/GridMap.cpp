@@ -71,7 +71,7 @@ GridMap::~GridMap()
     unloadData();
 }
 
-bool GridMap::loadData(char* filename)
+bool GridMap::loadData(char const* filename)
 {
     // Unload old data if exist
     unloadData();
@@ -712,8 +712,8 @@ TerrainInfo::TerrainInfo(uint32 mapid) : m_mapId(mapid)
 TerrainInfo::~TerrainInfo()
 {
     for (int k = 0; k < MAX_NUMBER_OF_GRIDS; ++k)
-        for (int i = 0; i < MAX_NUMBER_OF_GRIDS; ++i)
-            delete m_GridMaps[i][k];
+        for (auto& m_GridMap : m_GridMaps)
+            delete m_GridMap[k];
 
     VMAP::VMapFactory::createOrGetVMapManager()->unloadMap(m_mapId);
     MMAP::MMapFactory::createOrGetMMapManager()->unloadMap(m_mapId);
@@ -854,8 +854,8 @@ float TerrainInfo::GetHeightStatic(float x, float y, float z, bool useVmaps/*=tr
             // we are already under the surface or vmap height above map heigt
             if (z < mapHeight || vmapHeight > mapHeight)
                 return vmapHeight;
-            else
-                return mapHeight;                           // better use .map surface height
+            return mapHeight;
+            // better use .map surface height
         }
         else
             return vmapHeight;                              // we have only vmapHeight (if have)
@@ -866,7 +866,7 @@ float TerrainInfo::GetHeightStatic(float x, float y, float z, bool useVmaps/*=tr
 
 inline bool IsOutdoorWMO(uint32 mogpFlags)
 {
-    return !!(mogpFlags & 0x8000);
+    return (mogpFlags & 0x8000) != 0;
 }
 
 bool TerrainInfo::IsOutdoors(float x, float y, float z) const
@@ -942,8 +942,7 @@ uint8 TerrainInfo::GetTerrainType(float x, float y) const
 {
     if (GridMap* gmap = const_cast<TerrainInfo*>(this)->GetGrid(x, y))
         return gmap->getTerrainType(x, y);
-    else
-        return 0;
+    return 0;
 }
 
 uint32 TerrainInfo::GetAreaId(float x, float y, float z) const
@@ -1190,8 +1189,8 @@ TerrainManager::TerrainManager()
 
 TerrainManager::~TerrainManager()
 {
-    for (TerrainDataMap::iterator it = i_TerrainMap.begin(); it != i_TerrainMap.end(); ++it)
-        delete it->second;
+    for (auto& it : i_TerrainMap)
+        delete it.second;
 }
 
 TerrainInfo* TerrainManager::LoadTerrain(const uint32 mapId)
@@ -1220,7 +1219,7 @@ void TerrainManager::UnloadTerrain(const uint32 mapId)
     {
         TerrainInfo* ptr = (*iter).second;
         // lets check if this object can be actually freed
-        if (ptr->IsReferenced() == false)
+        if (!ptr->IsReferenced())
         {
             i_TerrainMap.erase(iter);
             delete ptr;
@@ -1231,14 +1230,14 @@ void TerrainManager::UnloadTerrain(const uint32 mapId)
 void TerrainManager::Update(const uint32 diff)
 {
     // global garbage collection for GridMap objects and VMaps
-    for (TerrainDataMap::iterator iter = i_TerrainMap.begin(); iter != i_TerrainMap.end(); ++iter)
-        iter->second->CleanUpGrids(diff);
+    for (auto& iter : i_TerrainMap)
+        iter.second->CleanUpGrids(diff);
 }
 
 void TerrainManager::UnloadAll()
 {
-    for (TerrainDataMap::iterator it = i_TerrainMap.begin(); it != i_TerrainMap.end(); ++it)
-        delete it->second;
+    for (auto& it : i_TerrainMap)
+        delete it.second;
 
     i_TerrainMap.clear();
 }
@@ -1249,8 +1248,7 @@ uint32 TerrainManager::GetAreaIdByAreaFlag(uint16 areaflag, uint32 map_id)
 
     if (entry)
         return entry->ID;
-    else
-        return 0;
+    return 0;
 }
 
 uint32 TerrainManager::GetZoneIdByAreaFlag(uint16 areaflag, uint32 map_id)
@@ -1259,8 +1257,7 @@ uint32 TerrainManager::GetZoneIdByAreaFlag(uint16 areaflag, uint32 map_id)
 
     if (entry)
         return (entry->zone != 0) ? entry->zone : entry->ID;
-    else
-        return 0;
+    return 0;
 }
 
 void TerrainManager::GetZoneAndAreaIdByAreaFlag(uint32& zoneid, uint32& areaid, uint16 areaflag, uint32 map_id)

@@ -615,9 +615,9 @@ struct npc_artoriusAI : public ScriptedAI
             {
                 ThreatList const& tList = m_creature->getThreatManager().getThreatList();
 
-                for (ThreatList::const_iterator itr = tList.begin(); itr != tList.end(); ++itr)
+                for (auto itr : tList)
                 {
-                    if (Unit* pUnit = m_creature->GetMap()->GetUnit((*itr)->getUnitGuid()))
+                    if (Unit* pUnit = m_creature->GetMap()->GetUnit(itr->getUnitGuid()))
                     {
                         if (pUnit->isAlive())
                         {
@@ -731,9 +731,7 @@ UnitAI* GetAI_npc_artorius(Creature* pCreature)
 
 void AddSC_winterspring()
 {
-    Script* pNewScript;
-
-    pNewScript = new Script;
+    Script* pNewScript = new Script;
     pNewScript->Name = "npc_ranshalla";
     pNewScript->GetAI = &GetAI_npc_ranshalla;
     pNewScript->pQuestAcceptNPC = &QuestAccept_npc_ranshalla;

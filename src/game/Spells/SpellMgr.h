@@ -91,8 +91,8 @@ WeaponAttackType GetWeaponAttackType(SpellEntry const* spellInfo);
 
 inline bool IsSpellHaveEffect(SpellEntry const* spellInfo, SpellEffects effect)
 {
-    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
-        if (SpellEffects(spellInfo->Effect[i]) == effect)
+    for (unsigned int i : spellInfo->Effect)
+        if (SpellEffects(i) == effect)
             return true;
     return false;
 }
@@ -616,23 +616,21 @@ inline bool IsAreaAuraEffect(uint32 effect)
 
 inline bool HasAreaAuraEffect(SpellEntry const* spellInfo)
 {
-    for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
-        if (IsAreaAuraEffect(spellInfo->Effect[i]))
+    for (unsigned int i : spellInfo->Effect)
+        if (IsAreaAuraEffect(i))
             return true;
     return false;
 }
 
 inline bool IsPersistentAuraEffect(uint32 effect)
 {
-    if (effect == SPELL_EFFECT_PERSISTENT_AREA_AURA)
-        return true;
-    return false;
+    return effect == SPELL_EFFECT_PERSISTENT_AREA_AURA;
 }
 
 inline bool HasPersistentAuraEffect(SpellEntry const* spellInfo)
 {
-    for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
-        if (IsPersistentAuraEffect(spellInfo->Effect[i]))
+    for (unsigned int i : spellInfo->Effect)
+        if (IsPersistentAuraEffect(i))
             return true;
     return false;
 }
@@ -661,6 +659,16 @@ inline bool IsOnlySelfTargeting(SpellEntry const* spellInfo)
         }
     }
     return true;
+}
+
+inline bool IsUnitTargetTarget(uint32 target)
+{
+    switch (target)
+    {
+        case TARGET_CHAIN_DAMAGE:
+        case TARGET_DUELVSPLAYER: return true;
+        default: return false;
+    }
 }
 
 inline bool IsScriptTarget(uint32 target)
@@ -847,15 +855,13 @@ inline bool IsPositiveEffectTargetMode(const SpellEntry* entry, SpellEffectIndex
 
     if ((!a && !b) || IsEffectTargetPositive(a, b) || IsEffectTargetScript(a, b))
         return true;
-    else if (IsEffectTargetNegative(a, b))
+    if (IsEffectTargetNegative(a, b))
     {
         // Workaround: Passive talents with negative target modes are getting removed by ice block and similar effects
         // TODO: Fix removal of passives in appropriate places and remove the check below afterwards
-        if (entry->HasAttribute(SPELL_ATTR_PASSIVE))
-            return true;
-        return false;
+        return entry->HasAttribute(SPELL_ATTR_PASSIVE);
     }
-    else if (IsEffectTargetNeutral(a, b))
+    if (IsEffectTargetNeutral(a, b))
         return (IsPointEffectTarget(Targets(b ? b : a)) || IsNeutralEffectTargetPositive((b ? b : a), caster, target));
 
     // If we ever get to this point, we have unhandled target. Gotta say something about it.
@@ -878,10 +884,8 @@ inline bool IsPositiveEffect(const SpellEntry* spellproto, SpellEffectIndex effI
         case SPELL_EFFECT_CREATE_ITEM:
         case SPELL_EFFECT_SUMMON_CHANGE_ITEM:
             return true;
-            break;
         case SPELL_EFFECT_APPLY_AREA_AURA_ENEMY:    // Always hostile effects
             return false;
-            break;
         case SPELL_EFFECT_DUMMY:
             // some explicitly required dummy effect sets
             switch (spellproto->Id)
@@ -1204,9 +1208,9 @@ inline uint32 GetAllSpellMechanicMask(SpellEntry const* spellInfo)
     uint32 mask = 0;
     if (spellInfo->Mechanic)
         mask |= 1 << (spellInfo->Mechanic - 1);
-    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
-        if (spellInfo->EffectMechanic[i])
-            mask |= 1 << (spellInfo->EffectMechanic[i] - 1);
+    for (unsigned int i : spellInfo->EffectMechanic)
+        if (i)
+            mask |= 1 << (i - 1);
     return mask;
 }
 
@@ -1224,8 +1228,7 @@ inline uint32 GetDispellMask(DispelType dispel)
     // If dispell all
     if (dispel == DISPEL_ALL)
         return DISPEL_ALL_MASK;
-    else
-        return (1 << dispel);
+    return (1 << dispel);
 }
 
 inline bool IsAuraAddedBySpell(uint32 auraType, uint32 spellId)
@@ -1261,9 +1264,9 @@ inline bool IsPartyOrRaidTarget(uint32 target)
 
 inline bool IsGroupBuff(SpellEntry const* spellInfo)
 {
-    for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
+    for (unsigned int i : spellInfo->EffectImplicitTargetA)
     {
-        if (IsPartyOrRaidTarget(spellInfo->EffectImplicitTargetA[i]))
+        if (IsPartyOrRaidTarget(i))
             return true;
     }
 
@@ -1807,7 +1810,7 @@ struct SpellTargetEntry
     uint32 targetEntry;
     uint32 inverseEffectMask;
 
-    bool CanNotHitWithSpellEffect(SpellEffectIndex effect) const { return !!(inverseEffectMask & (1 << effect)); }
+    bool CanNotHitWithSpellEffect(SpellEffectIndex effect) const { return (inverseEffectMask & (1 << effect)) != 0; }
 };
 
 // coordinates for spells (accessed using SpellMgr functions)
@@ -1843,14 +1846,10 @@ class PetAura
             std::map<uint32, uint32>::const_iterator itr = auras.find(petEntry);
             if (itr != auras.end())
                 return itr->second;
-            else
-            {
-                std::map<uint32, uint32>::const_iterator itr2 = auras.find(0);
-                if (itr2 != auras.end())
-                    return itr2->second;
-                else
-                    return 0;
-            }
+            std::map<uint32, uint32>::const_iterator itr2 = auras.find(0);
+            if (itr2 != auras.end())
+                return itr2->second;
+            return 0;
         }
 
         void AddAura(uint32 petEntry, uint32 aura)
@@ -1998,8 +1997,7 @@ class SpellMgr
                 return SPELL_FLASK_ELIXIR;
             else if (mask & ELIXIR_WELL_FED)
                 return SPELL_WELL_FED;
-            else
-                return SPELL_NORMAL;
+            return SPELL_NORMAL;
         }
 
         SpellSpecific GetSpellFoodSpecific(const SpellEntry* entry) const
@@ -2232,7 +2230,7 @@ class SpellMgr
 
         bool IsRankSpellDueToSpell(SpellEntry const* spellInfo_1, uint32 spellId_2) const;
         bool IsNoStackSpellDueToSpell(SpellEntry const* spellInfo_1, SpellEntry const* spellInfo_2) const;
-        bool IsSingleTargetSpell(SpellEntry const* entry)
+        bool IsSingleTargetSpell(SpellEntry const* entry) const
         {
             // Pre-TBC: SPELL_ATTR_EX5_SINGLE_TARGET_SPELL substitute code
             // Not AoE
@@ -2263,7 +2261,7 @@ class SpellMgr
             return false;
         }
 
-        bool IsSingleTargetSpells(SpellEntry const* entry1, SpellEntry const* entry2)
+        bool IsSingleTargetSpells(SpellEntry const* entry1, SpellEntry const* entry2) const
         {
             if (!IsSingleTargetSpell(entry1) || !IsSingleTargetSpell(entry2))
                 return false;
@@ -2287,7 +2285,7 @@ class SpellMgr
         // return true if spell1 can affect spell2
         bool IsSpellCanAffectSpell(SpellEntry const* spellInfo_1, SpellEntry const* spellInfo_2) const;
 
-        SpellEntry const* SelectAuraRankForLevel(SpellEntry const* spellInfo, uint32 Level) const;
+        SpellEntry const* SelectAuraRankForLevel(SpellEntry const* spellInfo, uint32 level) const;
 
         // Spell learning
         SpellLearnSkillNode const* GetSpellLearnSkill(uint32 spell_id) const
@@ -2295,8 +2293,7 @@ class SpellMgr
             SpellLearnSkillMap::const_iterator itr = mSpellLearnSkills.find(spell_id);
             if (itr != mSpellLearnSkills.end())
                 return &itr->second;
-            else
-                return nullptr;
+            return nullptr;
         }
 
         bool IsSpellLearnSpell(uint32 spell_id) const

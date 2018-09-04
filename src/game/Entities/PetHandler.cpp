@@ -251,11 +251,11 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
             if (!petUnit->IsSpellReady(*spellInfo))
                 return;
 
-            for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+            for (unsigned int i : spellInfo->EffectImplicitTargetA)
             {
-                if (spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA
-                        || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_INSTANT
-                        || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_CHANNELED)
+                if (i == TARGET_ALL_ENEMY_IN_AREA
+                        || i == TARGET_ALL_ENEMY_IN_AREA_INSTANT
+                        || i == TARGET_ALL_ENEMY_IN_AREA_CHANNELED)
                     return;
             }
 
@@ -408,7 +408,6 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
     DETAIL_LOG("HandlePetSetAction. CMSG_PET_SET_ACTION");
 
     ObjectGuid petGuid;
-    uint8  count;
 
     recv_data >> petGuid;
 
@@ -434,7 +433,7 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
         return;
     }
 
-    count = (recv_data.size() == 24) ? 2 : 1;
+    uint8 count = (recv_data.size() == 24) ? 2 : 1;
 
     uint32 position[2];
     uint32 data[2];
@@ -686,11 +685,11 @@ void WorldSession::HandlePetSpellAutocastOpcode(WorldPacket& recvPacket)
 
     if (petUnit->HasCharmer())
         // state can be used as boolean
-        petUnit->GetCharmInfo()->ToggleCreatureAutocast(spellid, !!state);
+        petUnit->GetCharmInfo()->ToggleCreatureAutocast(spellid, state != 0);
     else if (pet)
-        pet->ToggleAutocast(spellid, !!state);
+        pet->ToggleAutocast(spellid, state != 0);
 
-    charmInfo->SetSpellAutocast(spellid, !!state);
+    charmInfo->SetSpellAutocast(spellid, state != 0);
 }
 
 void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)

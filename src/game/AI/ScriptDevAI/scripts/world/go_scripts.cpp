@@ -119,7 +119,7 @@ struct go_ai_bell : public GameObjectAI
     uint32 m_uiBellTimer;
     PlayPacketSettings m_playTo;
 
-    uint32 GetBellSound(GameObject* pGo)
+    uint32 GetBellSound(GameObject* pGo) const
     {
         uint32 soundId;
         switch (pGo->GetEntry())
@@ -158,7 +158,7 @@ struct go_ai_bell : public GameObjectAI
         return soundId;
     }
 
-    PlayPacketSettings GetBellZoneOrArea(GameObject* pGo)
+    PlayPacketSettings GetBellZoneOrArea(GameObject* pGo) const
     {
         PlayPacketSettings playTo = PLAY_AREA;
         switch (pGo->GetEntry())
@@ -319,6 +319,8 @@ struct go_elemental_rift : public GameObjectAI
             case GO_FIRE_ELEMENTAL_RIFT:
                 elementalEntry = NPC_BLAZING_INVADER;
                 break;
+            default:
+                return;
         }
 
         std::list<Creature*> lElementalList;

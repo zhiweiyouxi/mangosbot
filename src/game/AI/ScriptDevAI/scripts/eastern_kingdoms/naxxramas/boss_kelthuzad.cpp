@@ -188,9 +188,9 @@ struct boss_kelthuzadAI : public ScriptedAI
     {
         if (m_pInstance)
         {
-            for (GuidSet::const_iterator itr = m_lIntroMobsSet.begin(); itr != m_lIntroMobsSet.end(); ++itr)
+            for (auto itr : m_lIntroMobsSet)
             {
-                if (Creature* pCreature = m_pInstance->instance->GetCreature(*itr))
+                if (Creature* pCreature = m_pInstance->instance->GetCreature(itr))
                     pCreature->ForcedDespawn();
             }
         }
@@ -202,9 +202,9 @@ struct boss_kelthuzadAI : public ScriptedAI
     {
         if (m_pInstance)
         {
-            for (GuidSet::const_iterator itr = m_lAddsSet.begin(); itr != m_lAddsSet.end(); ++itr)
+            for (auto itr : m_lAddsSet)
             {
-                if (Creature* pCreature = m_pInstance->instance->GetCreature(*itr))
+                if (Creature* pCreature = m_pInstance->instance->GetCreature(itr))
                 {
                     if (pCreature->isAlive())
                     {
@@ -218,7 +218,7 @@ struct boss_kelthuzadAI : public ScriptedAI
         m_lAddsSet.clear();
     }
 
-    float GetLocationAngle(uint32 uiId)
+    float GetLocationAngle(uint32 uiId) const
     {
         switch (uiId)
         {
@@ -390,7 +390,7 @@ struct boss_kelthuzadAI : public ScriptedAI
                         case 0: DoScriptText(SAY_AGGRO1, m_creature); break;
                         case 1: DoScriptText(SAY_AGGRO2, m_creature); break;
                         case 2: DoScriptText(SAY_AGGRO3, m_creature); break;
-                    };
+                    }
                 }
                 else
                     m_uiPhase1Timer -= uiDiff;
@@ -557,9 +557,7 @@ UnitAI* GetAI_boss_kelthuzad(Creature* pCreature)
 
 void AddSC_boss_kelthuzad()
 {
-    Script* pNewScript;
-
-    pNewScript = new Script;
+    Script* pNewScript = new Script;
     pNewScript->Name = "boss_kelthuzad";
     pNewScript->GetAI = &GetAI_boss_kelthuzad;
     pNewScript->RegisterSelf();

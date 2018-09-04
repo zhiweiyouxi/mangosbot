@@ -101,7 +101,7 @@ uint32 GetSpellCastTime(SpellEntry const* spellInfo, Spell const* spell)
     if (spell)
     {
         // Workaround for custom cast time
-        switch (spellInfo->Id)
+        /*switch (spellInfo->Id)
         {
             case 3366:  // Opening - seems to have a settable timer per usage
                 if (spell->m_CastItem)
@@ -115,7 +115,7 @@ uint32 GetSpellCastTime(SpellEntry const* spellInfo, Spell const* spell)
                 break;
             default:
                 break;
-        }
+        }*/
 
         // some triggered spells have data only usable for client
         if (spell->IsTriggeredSpellWithRedundantCastTime())
@@ -334,13 +334,14 @@ WeaponAttackType GetWeaponAttackType(SpellEntry const* spellInfo)
             return RANGED_ATTACK;
         default:
             // Wands
+        {
+            // Wands
             if (spellInfo->HasAttribute(SPELL_ATTR_EX2_AUTOREPEAT_FLAG))
                 return RANGED_ATTACK;
-            else if (spellInfo->HasAttribute(SPELL_ATTR_EX3_REQ_OFFHAND))
+            if (spellInfo->HasAttribute(SPELL_ATTR_EX3_REQ_OFFHAND))
                 return OFF_ATTACK;
-            else
-                return BASE_ATTACK;
-            break;
+            return BASE_ATTACK;
+        }
     }
 }
 
@@ -505,7 +506,7 @@ SpellCastResult GetErrorAtShapeshiftedCast(SpellEntry const* spellInfo, uint32 f
     {
         if (spellInfo->HasAttribute(SPELL_ATTR_NOT_SHAPESHIFT)) // not while shapeshifted
             return SPELL_FAILED_NOT_SHAPESHIFT;
-        else if (spellInfo->Stances != 0)                   // needs other shapeshift
+        if (spellInfo->Stances != 0)                   // needs other shapeshift
             return SPELL_FAILED_ONLY_SHAPESHIFT;
     }
     else
@@ -624,11 +625,8 @@ struct SpellRankHelper
                 if (!worker.IsValidCustomRank(entry, spell_id, first_id))
                     return;
                 // for later check that first rank also added
-                else
-                {
-                    firstRankSpellsWithCustomRanks.insert(first_id);
-                    ++customRank;
-                }
+                firstRankSpellsWithCustomRanks.insert(first_id);
+                ++customRank;
             }
         }
 
@@ -751,7 +749,7 @@ struct DoSpellProcEvent
         if (!spe.schoolMask && !spe.procFlags &&
                 !spe.procEx && !spe.ppmRate && !spe.customChance && !spe.cooldown)
         {
-            bool empty = !spe.spellFamilyName ? true : false;
+            bool empty = spe.spellFamilyName == 0;
             for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
             {
                 if (spe.spellFamilyMask[i])
@@ -1234,7 +1232,7 @@ struct DoSpellThreat
         }
         ++count;
     }
-    bool HasEntry(uint32 spellId) { return threatMap.count(spellId) > 0; }
+    bool HasEntry(uint32 spellId) const { return threatMap.count(spellId) > 0; }
     bool SetStateToEntry(uint32 spellId) { return (state = threatMap.find(spellId)) != threatMap.end(); }
 
     SpellThreatMap& threatMap;
@@ -2092,7 +2090,6 @@ void SpellMgr::LoadSpellScriptTarget()
                 {
                     sLog.outErrorDb("Table `spell_script_target`: gameobject template entry %u does not exist.", itr->targetEntry);
                     sSpellScriptTargetStorage.EraseEntry(itr->spellId);
-                    continue;
                 }
                 break;
             }
@@ -2102,7 +2099,6 @@ void SpellMgr::LoadSpellScriptTarget()
                 {
                     sLog.outErrorDb("Table `spell_script_target`: creature entry %u does not exist.", itr->targetEntry);
                     sSpellScriptTargetStorage.EraseEntry(itr->spellId);
-                    continue;
                 }
                 break;
             }
@@ -2119,14 +2115,12 @@ void SpellMgr::LoadSpellScriptTarget()
                     {
                         sLog.outErrorDb("Table `spell_script_target` has creature %u as a target of spellid 30427, but this creature has no SkinningLootId. Gas extraction will not work!", cInfo->Entry);
                         sSpellScriptTargetStorage.EraseEntry(itr->spellId);
-                        continue;
                     }
                 }
                 else
                 {
                     sLog.outErrorDb("Table `spell_script_target`: creature template entry %u does not exist.", itr->targetEntry);
                     sSpellScriptTargetStorage.EraseEntry(itr->spellId);
-                    continue;
                 }
                 break;
         }
@@ -2293,16 +2287,16 @@ bool SpellMgr::IsSpellValid(SpellEntry const* spellInfo, Player* pl, bool msg)
 
     if (need_check_reagents)
     {
-        for (int j = 0; j < MAX_SPELL_REAGENTS; ++j)
+        for (int j : spellInfo->Reagent)
         {
-            if (spellInfo->Reagent[j] > 0 && !ObjectMgr::GetItemPrototype(spellInfo->Reagent[j]))
+            if (j > 0 && !ObjectMgr::GetItemPrototype(j))
             {
                 if (msg)
                 {
                     if (pl)
-                        ChatHandler(pl).PSendSysMessage("Craft spell %u requires reagent item (Entry: %u) but item does not exist in item_template.", spellInfo->Id, spellInfo->Reagent[j]);
+                        ChatHandler(pl).PSendSysMessage("Craft spell %u requires reagent item (Entry: %u) but item does not exist in item_template.", spellInfo->Id, j);
                     else
-                        sLog.outErrorDb("Craft spell %u requires reagent item (Entry: %u) but item does not exist in item_template.", spellInfo->Id, spellInfo->Reagent[j]);
+                        sLog.outErrorDb("Craft spell %u requires reagent item (Entry: %u) but item does not exist in item_template.", spellInfo->Id, j);
                 }
                 return false;
             }
@@ -2399,7 +2393,7 @@ void SpellMgr::LoadSpellAreas()
             sLog.outErrorDb("Spell %u listed in `spell_area` have wrong conditionId (%u) requirement", spell, spellArea.conditionId);
             continue;
         }
-        else if (!spellArea.conditionId)
+        if (!spellArea.conditionId)
         {
             if (spellArea.questStart && !sObjectMgr.GetQuestTemplate(spellArea.questStart))
             {
@@ -2776,7 +2770,6 @@ void SpellMgr::CheckUsedSpells(char const* table) const
                 if (auraType >= 0 && spellEntry->EffectApplyAuraName[effectIdx] != uint32(auraType))
                 {
                     sLog.outError("Spell %u '%s' aura%d <> %u but used in %s.", spell, name.c_str(), effectIdx + 1, auraType, code.c_str());
-                    continue;
                 }
             }
             else
@@ -2790,7 +2783,6 @@ void SpellMgr::CheckUsedSpells(char const* table) const
                 if (auraType >= 0 && !IsSpellHaveAura(spellEntry, AuraType(auraType)))
                 {
                     sLog.outError("Spell %u '%s' not have aura %u but used in %s.", spell, name.c_str(), auraType, code.c_str());
-                    continue;
                 }
             }
         }
@@ -2860,7 +2852,6 @@ void SpellMgr::CheckUsedSpells(char const* table) const
                 else
                     sLog.outError("Spells '%s' not found for family %i (" UI64FMTD ") icon(%i) visual(%i) category(%i) effect(%i) aura(%i) but used in %s",
                                   name.c_str(), family, familyMask, spellIcon, spellVisual, category, effectType, auraType, code.c_str());
-                continue;
             }
         }
     }
@@ -3056,9 +3047,8 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
         if (auraSpell > 0)
             // have expected aura
             return player->HasAura(auraSpell);
-        else
             // not have expected aura
-            return !player->HasAura(-auraSpell);
+        return !player->HasAura(-auraSpell);
     }
 
     return true;

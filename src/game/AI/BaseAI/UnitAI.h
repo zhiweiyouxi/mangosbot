@@ -338,7 +338,7 @@ class UnitAI
          * @param uiCastFlags Some flags to define how to cast, see enum CastFlags
          * @param OriginalCasterGuid the original caster of the spell if required, empty by default
          */
-        CanCastResult DoCastSpellIfCan(Unit* target, uint32 spellId, uint32 castFlags = 0, ObjectGuid originalCasterGuid = ObjectGuid()) const;
+        CanCastResult DoCastSpellIfCan(Unit* target, uint32 spellId, uint32 castFlags = 0, ObjectGuid originalCasterGUID = ObjectGuid()) const;
 
         /// Set combat movement (on/off), also sets UNIT_STAT_NO_COMBAT_MOVEMENT
         void SetCombatMovement(bool enable, bool stopOrStartMovement = false);
@@ -402,7 +402,7 @@ class UnitAI
 
         void CheckForHelp(Unit* /*who*/, Unit* /*me*/, float /*dist*/);
         void DetectOrAttack(Unit* who);
-        bool CanTriggerStealthAlert(Unit* who, float attackRadius);
+        bool CanTriggerStealthAlert(Unit* who, float attackRadius) const;
 
         virtual void HandleMovementOnAttackStart(Unit* victim) const;
 
@@ -422,7 +422,7 @@ class UnitAI
 
         virtual bool CanExecuteCombatAction();
         void SetCombatScriptStatus(bool state) { m_combatScriptHappening = state; };
-        bool GetCombatScriptStatus() { return m_combatScriptHappening; }
+        bool GetCombatScriptStatus() const { return m_combatScriptHappening; }
 
         void SetMeleeEnabled(bool state);
 

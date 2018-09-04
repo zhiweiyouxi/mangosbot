@@ -950,9 +950,9 @@ bool ChatHandler::hasStringAbbr(const char* name, const char* part) const
         {
             if (!*part)
                 return true;
-            else if (!*name)
+            if (!*name)
                 return false;
-            else if (tolower(*name) != tolower(*part))
+            if (tolower(*name) != tolower(*part))
                 return false;
             ++name; ++part;
         }
@@ -1113,7 +1113,7 @@ ChatCommand const* ChatHandler::FindCommand(char const* text)
  */
 ChatCommandSearchResult ChatHandler::FindCommand(ChatCommand* table, char const*& text, ChatCommand*& command, ChatCommand** parentCommand /*= nullptr*/, std::string* cmdNamePtr /*= nullptr*/, bool allAvailable /*= false*/, bool exactlyName /*= false*/) const
 {
-    std::string cmd = "";
+    std::string cmd;
 
     // skip whitespaces
     while (*text != ' ' && *text != '\0')
@@ -1628,7 +1628,7 @@ bool ChatHandler::isValidChatMessage(const char* message) const
 
                     int32 propertyId = 0;
                     bool negativeNumber = false;
-                    char c;
+                    char c = '\0';
                     for (uint8 i = 0; i < randomPropertyPosition; ++i)
                     {
                         propertyId = 0;
@@ -1863,9 +1863,9 @@ bool ChatHandler::isValidChatMessage(const char* message) const
                             }
 
                             bool foundName = false;
-                            for (uint8 i = 0; i < ql->Title.size(); ++i)
+                            for (const auto& i : ql->Title)
                             {
-                                if (ql->Title[i] == buffer)
+                                if (i == buffer)
                                 {
                                     foundName = true;
                                     break;
@@ -2708,8 +2708,7 @@ GameTele const* ChatHandler::ExtractGameTeleFromLink(char** text)
     uint32 id;
     if (ExtractUInt32(&cId, id))
         return sObjectMgr.GetGameTele(id);
-    else
-        return sObjectMgr.GetGameTele(cId);
+    return sObjectMgr.GetGameTele(cId);
 }
 
 enum GuidLinkType
@@ -2761,8 +2760,7 @@ ObjectGuid ChatHandler::ExtractGuidFromLink(char** text)
 
             if (CreatureData const* data = sObjectMgr.GetCreatureData(lowguid))
                 return data->GetObjectGuid(lowguid);
-            else
-                return ObjectGuid();
+            return ObjectGuid();
         }
         case GUID_LINK_GAMEOBJECT:
         {
@@ -2772,8 +2770,7 @@ ObjectGuid ChatHandler::ExtractGuidFromLink(char** text)
 
             if (GameObjectData const* data = sObjectMgr.GetGOData(lowguid))
                 return ObjectGuid(HIGHGUID_GAMEOBJECT, data->id, lowguid);
-            else
-                return ObjectGuid();
+            return ObjectGuid();
         }
     }
 
@@ -2898,8 +2895,7 @@ bool ChatHandler::ExtractLocationFromLink(char** text, uint32& mapid, float& x, 
                 z = data->posZ;
                 return true;
             }
-            else
-                return false;
+            return false;
         }
         case LOCATION_LINK_GAMEOBJECT:
         {
@@ -2915,8 +2911,7 @@ bool ChatHandler::ExtractLocationFromLink(char** text, uint32& mapid, float& x, 
                 z = data->posZ;
                 return true;
             }
-            else
-                return false;
+            return false;
         }
         case LOCATION_LINK_CREATURE_ENTRY:
         {
@@ -2938,11 +2933,9 @@ bool ChatHandler::ExtractLocationFromLink(char** text, uint32& mapid, float& x, 
                     z = dataPair->second.posZ;
                     return true;
                 }
-                else
-                    return false;
-            }
-            else
                 return false;
+            }
+            return false;
         }
         case LOCATION_LINK_GAMEOBJECT_ENTRY:
         {
@@ -2964,11 +2957,9 @@ bool ChatHandler::ExtractLocationFromLink(char** text, uint32& mapid, float& x, 
                     z = dataPair->second.posZ;
                     return true;
                 }
-                else
-                    return false;
-            }
-            else
                 return false;
+            }
+            return false;
         }
         case LOCATION_LINK_AREATRIGGER:
         {
@@ -3336,7 +3327,7 @@ void ChatHandler::ShowNpcOrGoSpawnInformation(uint32 guid)
 template <typename T>
 std::string ChatHandler::PrepareStringNpcOrGoSpawnInformation(uint32 guid) const
 {
-    std::string str = "";
+    std::string str;
     if (uint16 pool_id = sPoolMgr.IsPartOfAPool<T>(guid))
     {
         uint16 top_pool_id = sPoolMgr.IsPartOfTopPool<T>(guid);

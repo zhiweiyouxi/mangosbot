@@ -117,7 +117,7 @@ class Map : public GridRefManager<NGridType>
         template<class T> void Add(T*);
         template<class T> void Remove(T*, bool);
 
-        static void DeleteFromWorld(Player* player);        // player object will deleted at call
+        static void DeleteFromWorld(Player* pl);        // player object will deleted at call
 
         virtual void Update(const uint32&);
 
@@ -138,8 +138,8 @@ class Map : public GridRefManager<NGridType>
         // function for setting up visibility distance for maps on per-type/per-Id basis
         virtual void InitVisibilityDistance();
 
-        void PlayerRelocation(Player*, float x, float y, float z, float angl);
-        void CreatureRelocation(Creature* creature, float x, float y, float z, float orientation);
+        void PlayerRelocation(Player*, float x, float y, float z, float orientation);
+        void CreatureRelocation(Creature* creature, float x, float y, float z, float ang);
 
         template<class T, class CONTAINER> void Visit(const Cell& cell, TypeContainerVisitor<T, CONTAINER>& visitor);
 
@@ -192,7 +192,7 @@ class Map : public GridRefManager<NGridType>
 
         void AddObjectToRemoveList(WorldObject* obj);
 
-        void UpdateObjectVisibility(WorldObject* obj, Cell cell, CellPair cellpair);
+        void UpdateObjectVisibility(WorldObject* obj, Cell cell, const CellPair& cellpair);
 
         void resetMarkedCells() { marked_cells.reset(); }
         bool isCellMarked(uint32 pCellId) const { return marked_cells.test(pCellId); }
@@ -301,14 +301,14 @@ class Map : public GridRefManager<NGridType>
         bool GetRandomPointInTheAir(float& x, float& y, float& z, float radius) const;
         bool GetRandomPointUnderWater(float& x, float& y, float& z, float radius, GridMapLiquidData& liquid_status) const;
 
-        void AddMessage(std::function<void(Map*)> message);
+        void AddMessage(const std::function<void(Map*)>& message);
 
         uint32 SpawnedCountForEntry(uint32 entry);
         void AddToSpawnCount(const ObjectGuid& guid);
         void RemoveFromSpawnCount(const ObjectGuid& guid);
 
-        TimePoint GetCurrentClockTime();
-        uint32 GetCurrentDiff();
+        TimePoint GetCurrentClockTime() const;
+        uint32 GetCurrentDiff() const;
 
     private:
         void LoadMapAndVMap(int gx, int gy);
@@ -320,7 +320,7 @@ class Map : public GridRefManager<NGridType>
         void SendInitTransports(Player* player) const;
         void SendRemoveTransports(Player* player) const;
 
-        bool CreatureCellRelocation(Creature* creature, const Cell& new_cell);
+        bool CreatureCellRelocation(Creature* c, const Cell& new_cell);
 
         bool loaded(const GridPair&) const;
         void EnsureGridCreated(const GridPair&);
@@ -439,6 +439,8 @@ class DungeonMap : public Map
         void SetResetSchedule(bool on);
         uint32 GetMaxPlayers() const;
 
+        Team GetInstanceTeam() { return m_team; };
+
         // can't be nullptr for loaded map
         DungeonPersistentState* GetPersistanceState() const;
 
@@ -446,6 +448,7 @@ class DungeonMap : public Map
     private:
         bool m_resetAfterUnload;
         bool m_unloadWhenEmpty;
+        Team m_team;
 };
 
 class BattleGroundMap : public Map

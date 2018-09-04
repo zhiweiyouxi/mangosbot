@@ -113,17 +113,17 @@ World::World(): mail_timer(0), mail_timer_expires(0)
     m_defaultDbcLocale = LOCALE_enUS;
     m_availableDbcLocaleMask = 0;
 
-    for (int i = 0; i < CONFIG_UINT32_VALUE_COUNT; ++i)
-        m_configUint32Values[i] = 0;
+    for (unsigned int& m_configUint32Value : m_configUint32Values)
+        m_configUint32Value = 0;
 
-    for (int i = 0; i < CONFIG_INT32_VALUE_COUNT; ++i)
-        m_configInt32Values[i] = 0;
+    for (int& m_configInt32Value : m_configInt32Values)
+        m_configInt32Value = 0;
 
-    for (int i = 0; i < CONFIG_FLOAT_VALUE_COUNT; ++i)
-        m_configFloatValues[i] = 0.0f;
+    for (float& m_configFloatValue : m_configFloatValues)
+        m_configFloatValue = 0.0f;
 
-    for (int i = 0; i < CONFIG_BOOL_VALUE_COUNT; ++i)
-        m_configBoolValues[i] = false;
+    for (bool& m_configBoolValue : m_configBoolValues)
+        m_configBoolValue = false;
 }
 
 /// World destructor
@@ -161,8 +161,7 @@ WorldSession* World::FindSession(uint32 id) const
 
     if (itr != m_sessions.end())
         return itr->second;                                 // also can return nullptr for kicked session
-    else
-        return nullptr;
+    return nullptr;
 }
 
 /// Remove a given session
@@ -982,6 +981,9 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading Pet Create Spells...");
     sObjectMgr.LoadPetCreateSpells();
 
+    sLog.outString("Loading Creature Conditional Spawn Data...");  // must be after LoadCreatureTemplates and before LoadCreatures
+    sObjectMgr.LoadCreatureConditionalSpawn();
+
     sLog.outString("Loading Creature Data...");
     sObjectMgr.LoadCreatures();
 
@@ -1229,10 +1231,9 @@ void World::SetInitialWorldSettings()
     m_gameTime = time(nullptr);
     m_startTime = m_gameTime;
 
-    tm local;
     time_t curr;
     time(&curr);
-    local = *(localtime(&curr));                            // dereference and assign
+    tm local = *(localtime(&curr));                            // dereference and assign
     char isoDate[128];
     sprintf(isoDate, "%04d-%02d-%02d %02d:%02d:%02d",
             local.tm_year + 1900, local.tm_mon + 1, local.tm_mday, local.tm_hour, local.tm_min, local.tm_sec);
@@ -1379,12 +1380,12 @@ void World::Update(uint32 diff)
     m_currentDiff = diff;
 
     ///- Update the different timers
-    for (int i = 0; i < WUPDATE_COUNT; ++i)
+    for (auto& m_timer : m_timers)
     {
-        if (m_timers[i].GetCurrent() >= 0)
-            m_timers[i].Update(diff);
+        if (m_timer.GetCurrent() >= 0)
+            m_timer.Update(diff);
         else
-            m_timers[i].SetCurrent(0);
+            m_timer.SetCurrent(0);
     }
 
     ///- Update the game time and check for shutdown time
@@ -1588,8 +1589,8 @@ void World::SendWorldTextToAboveSecurity(uint32 securityLevel, int32 string_id, 
         {
             Player* player = session->GetPlayer();
             if (player && player->IsInWorld())
-                if (WorldSession* session = player->GetSession())
-                    if (uint32(session->GetSecurity()) >= securityLevel)
+                if (WorldSession* playerSession = player->GetSession())
+                    if (uint32(playerSession->GetSecurity()) >= securityLevel)
                         wt_do(player);
         }
     }
@@ -1600,9 +1601,9 @@ void World::SendWorldTextToAboveSecurity(uint32 securityLevel, int32 string_id, 
 /// Sends a packet to all players with optional team and instance restrictions
 void World::SendGlobalMessage(WorldPacket const& packet) const
 {
-    for (SessionMap::const_iterator itr = m_sessions.cbegin(); itr != m_sessions.cend(); ++itr)
+    for (const auto& m_session : m_sessions)
     {
-        if (WorldSession* session = itr->second)
+        if (WorldSession* session = m_session.second)
         {
             Player* player = session->GetPlayer();
             if (player && player->IsInWorld())
@@ -1718,8 +1719,8 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, uint32 duration_
     {
         if (mode == BAN_IP)
             return BAN_SUCCESS;                             // ip correctly banned but nobody affected (yet)
-        else
-            return BAN_NOTFOUND;                            // Nobody to ban
+        return BAN_NOTFOUND;
+        // Nobody to ban
     }
 
     ///- Disconnect all affected players (for IP it can be several)

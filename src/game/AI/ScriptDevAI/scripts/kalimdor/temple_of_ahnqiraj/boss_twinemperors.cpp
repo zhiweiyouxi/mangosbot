@@ -248,18 +248,12 @@ struct boss_veknilashAI : public boss_twin_emperorsAI
 
     bool DoHandleBugAbility()
     {
-        if (DoCastSpellIfCan(m_creature, SPELL_MUTATE_BUG) == CAST_OK)
-            return true;
-
-        return false;
+        return DoCastSpellIfCan(m_creature, SPELL_MUTATE_BUG) == CAST_OK;
     }
 
     bool DoHandleBerserk()
     {
-        if (DoCastSpellIfCan(m_creature, SPELL_BERSERK) == CAST_OK)
-            return true;
-
-        return false;
+        return DoCastSpellIfCan(m_creature, SPELL_BERSERK) == CAST_OK;
     }
 
     // Only Vek'nilash handles the teleport for both of them
@@ -270,9 +264,9 @@ struct boss_veknilashAI : public boss_twin_emperorsAI
 
         if (Creature* pVeklor = m_pInstance->GetSingleCreatureFromStorage(NPC_VEKLOR))
         {
-            float fTargetX, fTargetY, fTargetZ, fTargetOrient;
+            float fTargetX, fTargetY, fTargetZ;
             pVeklor->GetPosition(fTargetX, fTargetY, fTargetZ);
-            fTargetOrient = pVeklor->GetOrientation();
+            float fTargetOrient = pVeklor->GetOrientation();
 
             pVeklor->NearTeleportTo(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), m_creature->GetOrientation(), true);
             m_creature->NearTeleportTo(fTargetX, fTargetY, fTargetZ, fTargetOrient, true);
@@ -369,18 +363,12 @@ struct boss_veklorAI : public boss_twin_emperorsAI
 
     bool DoHandleBugAbility()
     {
-        if (DoCastSpellIfCan(m_creature, SPELL_EXPLODE_BUG) == CAST_OK)
-            return true;
-
-        return false;
+        return DoCastSpellIfCan(m_creature, SPELL_EXPLODE_BUG) == CAST_OK;
     }
 
     bool DoHandleBerserk()
     {
-        if (DoCastSpellIfCan(m_creature, SPELL_FRENZY) == CAST_OK)
-            return true;
-
-        return false;
+        return DoCastSpellIfCan(m_creature, SPELL_FRENZY) == CAST_OK;
     }
 
     bool UpdateEmperorAI(const uint32 uiDiff)
@@ -428,9 +416,7 @@ UnitAI* GetAI_boss_veklor(Creature* pCreature)
 
 void AddSC_boss_twinemperors()
 {
-    Script* pNewScript;
-
-    pNewScript = new Script;
+    Script* pNewScript = new Script;
     pNewScript->Name = "boss_veknilash";
     pNewScript->GetAI = &GetAI_boss_veknilash;
     pNewScript->RegisterSelf();
