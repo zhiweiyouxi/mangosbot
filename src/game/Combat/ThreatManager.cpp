@@ -71,7 +71,7 @@ float ThreatCalcHelper::CalcThreat(Unit* hatedUnit, Unit* /*pHatingUnit*/, float
 //================= HostileReference ==========================
 //============================================================
 
-HostileReference::HostileReference(Unit* unit, ThreatManager* threatManager, float threat) : 
+HostileReference::HostileReference(Unit* unit, ThreatManager* threatManager, float threat) :
     m_tauntState(STATE_NONE)
 {
     iThreat = threat;
@@ -456,7 +456,7 @@ void ThreatManager::addThreat(Unit* victim, float threat, bool crit, SpellSchool
     // not to dead and not for dead
     if (!victim->isAlive() || !getOwner()->isAlive())
         return;
- 
+
     float calculatedThreat = ThreatCalcHelper::CalcThreat(victim, iOwner, threat, crit, schoolMask, threatSpell);
 
     if (calculatedThreat > 0.0f)
@@ -530,19 +530,18 @@ bool ThreatManager::HasThreat(Unit * victim, bool alsoSearchOfflineList)
     HostileReference* ref = iThreatContainer.getReferenceByTarget(victim);
     if (!ref && alsoSearchOfflineList)
         ref = iThreatOfflineContainer.getReferenceByTarget(victim);
-    return bool(ref);
+    return ref != nullptr;
 }
 
 //============================================================
 
 void ThreatManager::TauntUpdate()
 {
-    HostileReference* taunterRef = nullptr;
     const Unit::AuraList& tauntAuras = iOwner->GetAurasByType(SPELL_AURA_MOD_TAUNT);
     std::unordered_map<ObjectGuid, TauntState> tauntStates;
     uint32 state = STATE_TAUNTED;
-    for (Unit::AuraList::const_iterator aura = tauntAuras.begin(); aura != tauntAuras.end(); ++aura)
-        tauntStates[(*aura)->GetCasterGuid()] = TauntState(state++);
+    for (auto tauntAura : tauntAuras)
+        tauntStates[tauntAura->GetCasterGuid()] = TauntState(state++);
 
     for (auto& ref : iThreatContainer.getThreatList())
     {

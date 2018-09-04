@@ -998,11 +998,10 @@ struct npc_lord_illidan_stormrageAI : public Scripted_NoMovementAI
 
         for (uint8 i = 0; i < uiCount; ++i)
         {
-            float fLocX, fLocY, fLocZ, fOrient;
-            fLocX = SpawnLocation[uiLocIndex + i].fLocX;
-            fLocY = SpawnLocation[uiLocIndex + i].fLocY;
-            fLocZ = SpawnLocation[uiLocIndex + i].fLocZ;
-            fOrient = SpawnLocation[uiLocIndex + i].fOrient;
+            float fLocX = SpawnLocation[uiLocIndex + i].fLocX;
+            float fLocY = SpawnLocation[uiLocIndex + i].fLocY;
+            float fLocZ = SpawnLocation[uiLocIndex + i].fLocZ;
+            float fOrient = SpawnLocation[uiLocIndex + i].fOrient;
 
             if (Creature* pSpawn = m_creature->SummonCreature(WavesInfo[m_uiWaveCount].uiCreatureId, fLocX, fLocY, fLocZ, fOrient, TEMPSPAWN_CORPSE_TIMED_DESPAWN, 15000))
             {
@@ -1511,20 +1510,20 @@ struct npc_shadowlord_deathwailAI : public ScriptedAI
         if (both)
         {
             // Wave starting indoors
-            Creature* pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupOneSpawnCoords[0].xCoord, WaveGroupOneSpawnCoords[0].yCoord, WaveGroupOneSpawnCoords[0].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 1);
-            pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupOneSpawnCoords[1].xCoord, WaveGroupOneSpawnCoords[1].yCoord, WaveGroupOneSpawnCoords[1].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 2);
-            pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupOneSpawnCoords[2].xCoord, WaveGroupOneSpawnCoords[2].yCoord, WaveGroupOneSpawnCoords[2].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 3);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupOneSpawnCoords[0].xCoord, WaveGroupOneSpawnCoords[0].yCoord, WaveGroupOneSpawnCoords[0].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 1);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupOneSpawnCoords[1].xCoord, WaveGroupOneSpawnCoords[1].yCoord, WaveGroupOneSpawnCoords[1].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 2);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupOneSpawnCoords[2].xCoord, WaveGroupOneSpawnCoords[2].yCoord, WaveGroupOneSpawnCoords[2].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 3);
         
             // Wave starting outdoors
-            pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupTwoSpawnCoords[0].xCoord, WaveGroupTwoSpawnCoords[0].yCoord, WaveGroupTwoSpawnCoords[0].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 4);
-            pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupTwoSpawnCoords[1].xCoord, WaveGroupTwoSpawnCoords[1].yCoord, WaveGroupTwoSpawnCoords[1].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 5);
-            pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupTwoSpawnCoords[2].xCoord, WaveGroupTwoSpawnCoords[2].yCoord, WaveGroupTwoSpawnCoords[2].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 6);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupTwoSpawnCoords[0].xCoord, WaveGroupTwoSpawnCoords[0].yCoord, WaveGroupTwoSpawnCoords[0].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 4);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupTwoSpawnCoords[1].xCoord, WaveGroupTwoSpawnCoords[1].yCoord, WaveGroupTwoSpawnCoords[1].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 5);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupTwoSpawnCoords[2].xCoord, WaveGroupTwoSpawnCoords[2].yCoord, WaveGroupTwoSpawnCoords[2].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 6);
         }
         else
         {
-            Creature* pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupThreeSpawnCoords[0].xCoord, WaveGroupThreeSpawnCoords[0].yCoord, WaveGroupThreeSpawnCoords[0].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 1);
-            pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupThreeSpawnCoords[1].xCoord, WaveGroupThreeSpawnCoords[1].yCoord, WaveGroupThreeSpawnCoords[1].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 2);
-            pSummoned = m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupThreeSpawnCoords[2].xCoord, WaveGroupThreeSpawnCoords[2].yCoord, WaveGroupThreeSpawnCoords[2].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 3);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupThreeSpawnCoords[0].xCoord, WaveGroupThreeSpawnCoords[0].yCoord, WaveGroupThreeSpawnCoords[0].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 1);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupThreeSpawnCoords[1].xCoord, WaveGroupThreeSpawnCoords[1].yCoord, WaveGroupThreeSpawnCoords[1].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 2);
+            m_creature->SummonCreature(NPC_SHADOWMOON_RETAINER, WaveGroupThreeSpawnCoords[2].xCoord, WaveGroupThreeSpawnCoords[2].yCoord, WaveGroupThreeSpawnCoords[2].zCoord, 0.0f, TEMPSPAWN_TIMED_OOC_DESPAWN, RETAINER_DESPAWN_TIME, true, true, 3);
         }
     }
 
@@ -1564,7 +1563,9 @@ struct npc_shadowlord_deathwailAI : public ScriptedAI
                     goHoF->SetRespawnTime(5 * MINUTE);
                     goHoF->Refresh();
                 }
-                if (m_cHOFVisualTrigger || (m_cHOFVisualTrigger = GetClosestCreatureWithEntry(m_creature, NPC_HOF_VISUAL_TRIGGER, 175.0f)))
+                if (!m_cHOFVisualTrigger)
+                    m_cHOFVisualTrigger = GetClosestCreatureWithEntry(m_creature, NPC_HOF_VISUAL_TRIGGER, 175.0f);
+                if (m_cHOFVisualTrigger)
                     m_cHOFVisualTrigger->ForcedDespawn();
 
                 m_creature->GetMotionMaster()->Clear(false, true);
@@ -1589,13 +1590,13 @@ struct npc_shadowlord_deathwailAI : public ScriptedAI
             std::list<Creature*> lOtherChannelers;
             GetCreatureListWithEntryInGrid(lOtherChannelers, m_creature, NPC_SHADOWMOON_SOULSTEALER, 175.0f);
 
-            for (std::list<Creature*>::iterator itr = lOtherChannelers.begin(); itr != lOtherChannelers.end(); ++itr)
-                if ((*itr)->isAlive())
+            for (auto& lOtherChanneler : lOtherChannelers)
+                if (lOtherChanneler->isAlive())
                 {
-                    (*itr)->SetInCombatWith(attacker);
-                    attacker->SetInCombatWith((*itr));
-                    (*itr)->SetActiveObjectState(true);
-                    (*itr)->AddThreat(attacker);
+                    lOtherChanneler->SetInCombatWith(attacker);
+                    attacker->SetInCombatWith(lOtherChanneler);
+                    lOtherChanneler->SetActiveObjectState(true);
+                    lOtherChanneler->AddThreat(attacker);
 
                     // agro on party members
                     if (Player* player = m_creature->GetMap()->GetPlayer(attacker->GetObjectGuid()))
@@ -1605,13 +1606,13 @@ struct npc_shadowlord_deathwailAI : public ScriptedAI
                                 Player* member = ref->getSource();
                                 if (member && member->isAlive() && m_cHOFVisualTrigger && m_cHOFVisualTrigger->IsWithinDistInMap(member, MAX_PLAYER_DISTANCE))
                                 {
-                                    (*itr)->SetInCombatWith(member);
-                                    member->SetInCombatWith((*itr));
-                                    (*itr)->AddThreat(member);
+                                    lOtherChanneler->SetInCombatWith(member);
+                                    member->SetInCombatWith(lOtherChanneler);
+                                    lOtherChanneler->AddThreat(member);
                                 }
                             }
 
-                    m_lSoulstealers.push_back((*itr));
+                    m_lSoulstealers.push_back(lOtherChanneler);
                 }
 
             m_playerGuid = attacker->GetObjectGuid();
@@ -1627,7 +1628,7 @@ struct npc_shadowlord_deathwailAI : public ScriptedAI
     {
         m_lSoulstealers.remove(unit);
 
-        if (m_bEventInProgress && !m_bDeathwailGrounded && m_lSoulstealers.size() == 0)
+        if (m_bEventInProgress && !m_bDeathwailGrounded && m_lSoulstealers.empty())
             DoBeginDescent();
     }
 
@@ -1658,7 +1659,7 @@ struct npc_shadowlord_deathwailAI : public ScriptedAI
         {
             ThreatList const& threatList = soulstealer->getThreatManager().getThreatList();
 
-            if (threatList.size() == 0)
+            if (threatList.empty())
                 return false;
         }
 
@@ -2640,15 +2641,12 @@ struct npc_disobedient_dragonmaw_peonAI : public ScriptedAI
     void HandleAngry()
     {
         DoCastSpellIfCan(nullptr, SPELL_DEFIANT_AND_ENRAGED);
-        uint32 textId = 0;
         switch (urand(0, 4))
         {
-            case 0: textId = SAY_IDLE1; break;
-            case 1: textId = SAY_IDLE2; break;
+            case 0: DoScriptText(SAY_IDLE1, m_creature); break;
+            case 1: DoScriptText(SAY_IDLE2, m_creature); break;
             default: break;
         }
-        if (textId)
-            DoScriptText(textId, m_creature);
     }
 
     void HandleBooterang(Unit* caster)
@@ -2659,20 +2657,18 @@ struct npc_disobedient_dragonmaw_peonAI : public ScriptedAI
         Player* player = static_cast<Player*>(caster);
         m_lastPlayerGuid = player->GetObjectGuid();
 
-        uint32 textId = 0;
         switch (urand(0, 5))
         {
-            case 0: textId = SAY_BOOTERANG1; break;
-            case 1: textId = SAY_BOOTERANG2; break;
-            case 2: textId = SAY_BOOTERANG3; break;
-            case 3: textId = SAY_BOOTERANG4; break;
-            case 4: textId = SAY_BOOTERANG5; break;
-            case 5: textId = SAY_BOOTERANG6; break;
+            case 0: DoScriptText(SAY_BOOTERANG1, m_creature, player); break;
+            case 1: DoScriptText(SAY_BOOTERANG2, m_creature, player); break;
+            case 2: DoScriptText(SAY_BOOTERANG3, m_creature, player); break;
+            case 3: DoScriptText(SAY_BOOTERANG4, m_creature, player); break;
+            case 4: DoScriptText(SAY_BOOTERANG5, m_creature, player); break;
+            case 5: DoScriptText(SAY_BOOTERANG6, m_creature, player); break;
         }
         float angle = m_creature->GetAngle(player);
         m_creature->SetOrientation(angle);
         m_creature->SetFacingTo(angle);
-        DoScriptText(textId, m_creature, player);
 
         DoCastSpellIfCan(nullptr, SPELL_PEON_CLEAR_ALL); // clears combat and removes aura
         m_creature->setFaction(FACTION_WHACKED);
@@ -2723,9 +2719,7 @@ UnitAI* GetAI_npc_disobedient_dragonmaw_peon(Creature* pCreature)
 
 void AddSC_shadowmoon_valley()
 {
-    Script* pNewScript;
-
-    pNewScript = new Script;
+    Script* pNewScript = new Script;
     pNewScript->Name = "mob_mature_netherwing_drake";
     pNewScript->GetAI = &GetAI_mob_mature_netherwing_drake;
     pNewScript->RegisterSelf();

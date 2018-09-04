@@ -205,7 +205,7 @@ struct boss_thekalAI : public boss_thekalBaseAI
     }
 
     // Only call in context where m_pInstance is valid
-    bool CanPreventAddsResurrect()
+    bool CanPreventAddsResurrect() const
     {
         // If any add is alive, return false
         if (m_pInstance->GetData(TYPE_ZATH) != SPECIAL || m_pInstance->GetData(TYPE_LORKHAN) != SPECIAL)
@@ -438,9 +438,9 @@ struct mob_zealot_lorkhanAI : public boss_thekalBaseAI
                     Creature* dispelTarget = nullptr;
 
                     if (!pList.empty())
-                        for (std::list<Creature*>::iterator itr = pList.begin(); itr != pList.end(); ++itr)
+                        for (auto& itr : pList)
                         {
-                            dispelTarget = (*itr);
+                            dispelTarget = itr;
                             break;
                         }
 
@@ -664,9 +664,7 @@ UnitAI* GetAI_mob_zealot_zath(Creature* pCreature)
 
 void AddSC_boss_thekal()
 {
-    Script* pNewScript;
-
-    pNewScript = new Script;
+    Script* pNewScript = new Script;
     pNewScript->Name = "boss_thekal";
     pNewScript->GetAI = &GetAI_boss_thekal;
     pNewScript->pEffectDummyNPC = &EffectDummyCreature_thekal_resurrection;

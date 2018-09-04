@@ -400,7 +400,7 @@ struct npc_squire_roweAI : public npc_escortAI, private DialogueHelper
     }
 
     // Check if the event is already running
-    bool IsStormwindQuestActive() { return m_bIsEventInProgress; }
+    bool IsStormwindQuestActive() const { return m_bIsEventInProgress; }
 
     void UpdateEscortAI(const uint32 uiDiff) { DialogueUpdate(uiDiff); }
 };
@@ -442,7 +442,7 @@ bool GossipSelect_npc_squire_rowe(Player* pPlayer, Creature* pCreature, uint32 /
     if (uiAction == GOSSIP_ACTION_INFO_DEF + 1)
     {
         if (npc_squire_roweAI* pRoweAI = dynamic_cast<npc_squire_roweAI*>(pCreature->AI()))
-            pRoweAI->Start(true, pPlayer, 0, true, false);
+            pRoweAI->Start(true, pPlayer, nullptr, true, false);
 
         pPlayer->CLOSE_GOSSIP_MENU();
     }
@@ -985,7 +985,7 @@ struct npc_reginald_windsorAI : public npc_escortAI, private DialogueHelper
         m_playerGuid = pPlayer->GetObjectGuid();
     }
 
-    bool IsKeepEventReady() { return m_bIsKeepReady; }
+    bool IsKeepEventReady() const { return m_bIsKeepReady; }
 
     void UpdateEscortAI(const uint32 uiDiff) override
     {
@@ -1095,9 +1095,7 @@ bool GossipSelect_npc_reginald_windsor(Player* pPlayer, Creature* pCreature, uin
 
 void AddSC_stormwind_city()
 {
-    Script* pNewScript;
-
-    pNewScript = new Script;
+    Script* pNewScript = new Script;
     pNewScript->Name = "npc_bartleby";
     pNewScript->GetAI = &GetAI_npc_bartleby;
     pNewScript->pQuestAcceptNPC = &QuestAccept_npc_bartleby;

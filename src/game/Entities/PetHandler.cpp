@@ -251,11 +251,11 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
             if (!petUnit->IsSpellReady(*spellInfo))
                 return;
 
-            for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+            for (unsigned int i : spellInfo->EffectImplicitTargetA)
             {
-                if (spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA
-                        || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_INSTANT
-                        || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_CHANNELED)
+                if (i == TARGET_ALL_ENEMY_IN_AREA
+                        || i == TARGET_ALL_ENEMY_IN_AREA_INSTANT
+                        || i == TARGET_ALL_ENEMY_IN_AREA_CHANNELED)
                     return;
             }
 
@@ -403,8 +403,8 @@ void WorldSession::SendPetNameQuery(ObjectGuid petguid, uint32 petnumber) const
     if (pet->IsPet() && ((Pet*)pet)->GetDeclinedNames())
     {
         data << uint8(1);
-        for (int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
-            data << ((Pet*)pet)->GetDeclinedNames()->name[i];
+        for (const auto& i : ((Pet*)pet)->GetDeclinedNames()->name)
+            data << i;
     }
     else
         data << uint8(0);
@@ -417,7 +417,6 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
     DETAIL_LOG("HandlePetSetAction. CMSG_PET_SET_ACTION");
 
     ObjectGuid petGuid;
-    uint8  count;
 
     recv_data >> petGuid;
 
@@ -443,7 +442,7 @@ void WorldSession::HandlePetSetAction(WorldPacket& recv_data)
         return;
     }
 
-    count = (recv_data.size() == 24) ? 2 : 1;
+    uint8 count = (recv_data.size() == 24) ? 2 : 1;
 
     uint32 position[2];
     uint32 data[2];
@@ -571,9 +570,9 @@ void WorldSession::HandlePetRename(WorldPacket& recv_data)
 
     if (isdeclined)
     {
-        for (int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
+        for (auto& i : declinedname.name)
         {
-            recv_data >> declinedname.name[i];
+            recv_data >> i;
         }
 
         std::wstring wname;
@@ -588,8 +587,8 @@ void WorldSession::HandlePetRename(WorldPacket& recv_data)
     CharacterDatabase.BeginTransaction();
     if (isdeclined)
     {
-        for (int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
-            CharacterDatabase.escape_string(declinedname.name[i]);
+        for (auto& i : declinedname.name)
+            CharacterDatabase.escape_string(i);
         CharacterDatabase.PExecute("DELETE FROM character_pet_declinedname WHERE owner = '%u' AND id = '%u'", _player->GetGUIDLow(), pet->GetCharmInfo()->GetPetNumber());
         CharacterDatabase.PExecute("INSERT INTO character_pet_declinedname (id, owner, genitive, dative, accusative, instrumental, prepositional) VALUES ('%u','%u','%s','%s','%s','%s','%s')",
                                    pet->GetCharmInfo()->GetPetNumber(), _player->GetGUIDLow(), declinedname.name[0].c_str(), declinedname.name[1].c_str(), declinedname.name[2].c_str(), declinedname.name[3].c_str(), declinedname.name[4].c_str());
@@ -724,11 +723,11 @@ void WorldSession::HandlePetSpellAutocastOpcode(WorldPacket& recvPacket)
 
     if (petUnit->HasCharmer())
         // state can be used as boolean
-        petUnit->GetCharmInfo()->ToggleCreatureAutocast(spellid, !!state);
+        petUnit->GetCharmInfo()->ToggleCreatureAutocast(spellid, state != 0);
     else if (pet)
-        pet->ToggleAutocast(spellid, !!state);
+        pet->ToggleAutocast(spellid, state != 0);
 
-    charmInfo->SetSpellAutocast(spellid, !!state);
+    charmInfo->SetSpellAutocast(spellid, state != 0);
 }
 
 void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)
@@ -809,8 +808,8 @@ void WorldSession::SendPetNameInvalid(uint32 error, const std::string& name, Dec
     if (declinedName)
     {
         data << uint8(1);
-        for (uint32 i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
-            data << declinedName->name[i];
+        for (const auto& i : declinedName->name)
+            data << i;
     }
     else
         data << uint8(0);

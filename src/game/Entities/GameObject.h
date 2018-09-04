@@ -394,8 +394,8 @@ struct GameObjectInfo
     {
         switch (type)
         {
-            case GAMEOBJECT_TYPE_CHEST:  return !!chest.consumable;
-            case GAMEOBJECT_TYPE_GOOBER: return !!goober.consumable;
+            case GAMEOBJECT_TYPE_CHEST:  return chest.consumable != 0;
+            case GAMEOBJECT_TYPE_GOOBER: return goober.consumable != 0;
             default: return false;
         }
     }
@@ -423,11 +423,11 @@ struct GameObjectInfo
     {
         switch (type)
         {
-            case GAMEOBJECT_TYPE_DOOR:       return !!door.noDamageImmune;
-            case GAMEOBJECT_TYPE_BUTTON:     return !!button.noDamageImmune;
-            case GAMEOBJECT_TYPE_GOOBER:     return !!goober.noDamageImmune;
-            case GAMEOBJECT_TYPE_FLAGSTAND:  return !!flagstand.noDamageImmune;
-            case GAMEOBJECT_TYPE_FLAGDROP:   return !!flagdrop.noDamageImmune;
+            case GAMEOBJECT_TYPE_DOOR:       return door.noDamageImmune != 0;
+            case GAMEOBJECT_TYPE_BUTTON:     return button.noDamageImmune != 0;
+            case GAMEOBJECT_TYPE_GOOBER:     return goober.noDamageImmune != 0;
+            case GAMEOBJECT_TYPE_FLAGSTAND:  return flagstand.noDamageImmune != 0;
+            case GAMEOBJECT_TYPE_FLAGDROP:   return flagdrop.noDamageImmune != 0;
             default: return true;
         }
     }
@@ -611,7 +611,7 @@ class GameObject : public WorldObject
         void UpdateRotationFields(float rotation2 = 0.0f, float rotation3 = 0.0f);
 
         // overwrite WorldObject function for proper name localization
-        const char* GetNameForLocaleIdx(int32 locale_idx) const override;
+        const char* GetNameForLocaleIdx(int32 loc_idx) const override;
 
         void SaveToDB() const;
         void SaveToDB(uint32 mapid, uint8 spawnMask) const;
@@ -636,8 +636,7 @@ class GameObject : public WorldObject
             time_t now = time(nullptr);
             if (m_respawnTime > now)
                 return m_respawnTime;
-            else
-                return now;
+            return now;
         }
 
         void SetRespawnTime(time_t respawn)
@@ -677,7 +676,7 @@ class GameObject : public WorldObject
         void Use(Unit* user);
 
         LootState GetLootState() const { return m_lootState; }
-        void SetLootState(LootState s);
+        void SetLootState(LootState state);
 
         void AddToSkillupList(Player* player);
         bool IsInSkillupList(Player* player) const;
@@ -706,8 +705,9 @@ class GameObject : public WorldObject
         uint32 GetLootGroupRecipientId() const { return m_lootGroupRecipientId; }
         Player* GetLootRecipient() const;                   // use group cases as prefered
         Group* GetGroupLootRecipient() const;
-        bool HasLootRecipient() const { return !!m_lootGroupRecipientId || !!m_lootRecipientGuid; }
-        bool IsGroupLootRecipient() const { return !!m_lootGroupRecipientId; }
+        bool HasLootRecipient() const { return m_lootGroupRecipientId || !m_lootRecipientGuid.IsEmpty(); }
+        bool IsGroupLootRecipient() const { return m_lootGroupRecipientId != 0; }
+
         void SetLootRecipient(Unit* pUnit);
         Player* GetOriginalLootRecipient() const;           // ignore group changes/etc, not for looting
 
@@ -748,7 +748,7 @@ class GameObject : public WorldObject
         uint32 GetScriptId() const;
         void AIM_Initialize();
         void OnEventHappened(uint16 eventId, bool activate, bool resume) override { return AI()->OnEventHappened(eventId, activate, resume); }
-        GameObjectAI* AI() { return m_AI.get(); }
+        GameObjectAI* AI() const { return m_AI.get(); }
 
         GameObjectModel* m_model;
 

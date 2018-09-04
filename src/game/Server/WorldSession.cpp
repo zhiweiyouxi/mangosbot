@@ -386,16 +386,16 @@ void WorldSession::LogoutPlayer(bool Save)
 
             // build set of player who attack _player or who have pet attacking of _player
             std::set<Player*> aset;
-            for (Unit::AttackerSet::const_iterator itr = _player->getAttackers().begin(); itr != _player->getAttackers().end(); ++itr)
+            for (auto itr : _player->getAttackers())
             {
-                Unit* owner = (*itr)->GetOwner();           // including player controlled case
+                Unit* owner = itr->GetOwner();           // including player controlled case
                 if (owner)
                 {
                     if (owner->GetTypeId() == TYPEID_PLAYER)
                         aset.insert((Player*)owner);
                 }
-                else if ((*itr)->GetTypeId() == TYPEID_PLAYER)
-                    aset.insert((Player*)(*itr));
+                else if (itr->GetTypeId() == TYPEID_PLAYER)
+                    aset.insert((Player*)itr);
             }
 
             _player->SetPvPDeath(!aset.empty());
@@ -568,7 +568,7 @@ void WorldSession::SendMotd()
     WorldPacket data(SMSG_MOTD, 4);
     data << (uint32) lines.size();
 
-    for (std::string line : lines)
+    for (const std::string& line : lines)
         data << line;
 
     SendPacket(data);
@@ -680,8 +680,8 @@ void WorldSession::SendAuthWaitQue(uint32 position) const
 
 void WorldSession::LoadTutorialsData()
 {
-    for (int aX = 0 ; aX < 8 ; ++aX)
-        m_Tutorials[ aX ] = 0;
+    for (unsigned int& m_Tutorial : m_Tutorials)
+        m_Tutorial = 0;
 
     QueryResult* result = CharacterDatabase.PQuery("SELECT tut0,tut1,tut2,tut3,tut4,tut5,tut6,tut7 FROM character_tutorial WHERE account = '%u'", GetAccountId());
 
@@ -708,8 +708,8 @@ void WorldSession::LoadTutorialsData()
 void WorldSession::SendTutorialsData()
 {
     WorldPacket data(SMSG_TUTORIAL_FLAGS, 4 * 8);
-    for (uint32 i = 0; i < 8; ++i)
-        data << m_Tutorials[i];
+    for (unsigned int m_Tutorial : m_Tutorials)
+        data << m_Tutorial;
     SendPacket(data);
 }
 
@@ -723,8 +723,8 @@ void WorldSession::SaveTutorialsData()
         case TUTORIALDATA_CHANGED:
         {
             SqlStatement stmt = CharacterDatabase.CreateStatement(updTutorial, "UPDATE character_tutorial SET tut0=?, tut1=?, tut2=?, tut3=?, tut4=?, tut5=?, tut6=?, tut7=? WHERE account = ?");
-            for (int i = 0; i < 8; ++i)
-                stmt.addUInt32(m_Tutorials[i]);
+            for (unsigned int m_Tutorial : m_Tutorials)
+                stmt.addUInt32(m_Tutorial);
 
             stmt.addUInt32(GetAccountId());
             stmt.Execute();
@@ -736,8 +736,8 @@ void WorldSession::SaveTutorialsData()
             SqlStatement stmt = CharacterDatabase.CreateStatement(insTutorial, "INSERT INTO character_tutorial (account,tut0,tut1,tut2,tut3,tut4,tut5,tut6,tut7) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             stmt.addUInt32(GetAccountId());
-            for (int i = 0; i < 8; ++i)
-                stmt.addUInt32(m_Tutorials[i]);
+            for (unsigned int m_Tutorial : m_Tutorials)
+                stmt.addUInt32(m_Tutorial);
 
             stmt.Execute();
         }
