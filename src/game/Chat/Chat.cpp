@@ -756,6 +756,7 @@ ChatCommand* ChatHandler::getCommandTable()
         { "rndbot",           SEC_GAMEMASTER,    true,  &ChatHandler::HandleRandomPlayerbotCommand,     "" },
         { "bot",              SEC_PLAYER,        false, &ChatHandler::HandlePlayerbotCommand,               "" },
         { "gtask",            SEC_GAMEMASTER,    true,  &ChatHandler::HandleGuildTaskCommand,           "" },
+        { "pmon",             SEC_GAMEMASTER,    true,  &ChatHandler::HandlePerfMonCommand,           "" },
 #endif
         { "cast",           SEC_ADMINISTRATOR,  false, nullptr,                                        "", castCommandTable     },
         { "character",      SEC_GAMEMASTER,     true,  nullptr,                                        "", characterCommandTable},
