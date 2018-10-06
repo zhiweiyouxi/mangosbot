@@ -1366,9 +1366,9 @@ void Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask, bool isReflected)
 
     Unit* realCaster = GetAffectiveCaster();
 
+    const bool traveling = (GetSpellSpeed() > 0.0f);
+
     // Recheck immune (only for delayed spells)
-    const float speed = GetSpellSpeed();
-    const bool traveling = (speed > 0.0f);
     if (traveling && (
                 unit->IsImmuneToDamage(GetSpellSchoolMask(m_spellInfo)) ||
                 unit->IsImmuneToSpell(m_spellInfo, unit == realCaster)))
@@ -1380,13 +1380,12 @@ void Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask, bool isReflected)
         return;
     }
 
-    if (realCaster && realCaster != unit)
+    if (traveling && realCaster && realCaster != unit)
     {
         // Recheck  UNIT_FLAG_NON_ATTACKABLE for delayed spells
-        if (traveling &&
-                unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE) &&
-                unit->GetMasterGuid() != m_caster->GetObjectGuid())
+        if (unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE) && unit->GetMasterGuid() != m_caster->GetObjectGuid())
         {
+            realCaster->SendSpellMiss(unit, m_spellInfo->Id, SPELL_MISS_EVADE);
             ResetEffectDamageAndHeal();
             return;
         }
@@ -1394,9 +1393,12 @@ void Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask, bool isReflected)
         if (realCaster->CanAttack(unit))
         {
             // for delayed spells ignore not visible explicit target
-            if (traveling && unit == m_targets.getUnitTarget() &&
-                    !unit->isVisibleForOrDetect(m_caster, m_caster, false))
+            if (unit == m_targets.getUnitTarget() && !unit->isVisibleForOrDetect(m_caster, m_caster, false))
             {
+                // Workaround: do not send evade if caster/unit are dead to prevent combat log errors
+                // TODO: Visibility check clearly lackluster if we end up here like this, to be fixed later
+                if (unit->isAlive() && realCaster->isAlive())
+                    realCaster->SendSpellMiss(unit, m_spellInfo->Id, SPELL_MISS_EVADE);
                 ResetEffectDamageAndHeal();
                 return;
             }
@@ -1404,8 +1406,9 @@ void Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask, bool isReflected)
         else
         {
             // for delayed spells ignore negative spells (after duel end) for friendly targets
-            if (traveling && !IsPositiveSpell(m_spellInfo->Id, realCaster, unit))
+            if (!IsPositiveSpell(m_spellInfo->Id, realCaster, unit))
             {
+                realCaster->SendSpellMiss(unit, m_spellInfo->Id, SPELL_MISS_IMMUNE);
                 ResetEffectDamageAndHeal();
                 return;
             }
@@ -1702,7 +1705,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
 
     GetSpellRangeAndRadius(effIndex, radius, EffectChainTarget);
 
-    std::list<GameObject*> tempTargetGOList;
+    GameObjectList tempTargetGOList;
 
     switch (targetMode)
     {
@@ -2138,9 +2141,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         }
         case TARGET_AREAEFFECT_CUSTOM:
         {
-            if (m_spellInfo->Effect[effIndex] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
-                break;
-            if (m_spellInfo->Effect[effIndex] == SPELL_EFFECT_SUMMON)
+            if (IsDestinationOnlyEffect(m_spellInfo, effIndex))
             {
                 targetUnitMap.push_back(m_caster);
                 break;
@@ -2975,7 +2976,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         {
             // make sure one go is always removed per iteration
             uint32 removed_utarget = 0;
-            for (std::list<GameObject*>::iterator itr = tempTargetGOList.begin(), next; itr != tempTargetGOList.end(); itr = next)
+            for (GameObjectList::iterator itr = tempTargetGOList.begin(), next; itr != tempTargetGOList.end(); itr = next)
             {
                 next = itr;
                 ++next;
@@ -2991,7 +2992,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             while (tempTargetGOList.size() > unMaxTargets - removed_utarget)
             {
                 uint32 poz = urand(0, tempTargetGOList.size() - 1);
-                for (std::list<GameObject*>::iterator itr = tempTargetGOList.begin(); itr != tempTargetGOList.end(); ++itr, --poz)
+                for (GameObjectList::iterator itr = tempTargetGOList.begin(); itr != tempTargetGOList.end(); ++itr, --poz)
                 {
                     if (!*itr) continue;
 
@@ -3004,7 +3005,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             }
         }
 
-        for (std::list<GameObject*>::iterator iter = tempTargetGOList.begin(); iter != tempTargetGOList.end();)
+        for (GameObjectList::iterator iter = tempTargetGOList.begin(); iter != tempTargetGOList.end();)
         {
             if (CheckTargetGOScript(*iter, SpellEffectIndex(effIndex)))
                 ++iter;
@@ -3193,8 +3194,7 @@ void Spell::cancel()
         //(no break)
         case SPELL_STATE_TRAVELING:
         {
-            SendInterrupted(0);
-
+            SendInterrupted(SPELL_FAILED_INTERRUPTED);
             if (sendInterrupt)
                 SendCastResult(SPELL_FAILED_INTERRUPTED);
         } break;
@@ -3216,8 +3216,7 @@ void Spell::cancel()
             }
 
             SendChannelUpdate(0);
-            SendInterrupted(0);
-
+            SendInterrupted(SPELL_FAILED_INTERRUPTED);
             if (sendInterrupt)
                 SendCastResult(SPELL_FAILED_INTERRUPTED);
         } break;
@@ -3273,6 +3272,7 @@ void Spell::cast(bool skipCheck)
     if (castResult != SPELL_CAST_OK)
     {
         SendCastResult(castResult);
+        SendInterrupted(castResult);
         finish(false);
         m_caster->DecreaseCastCounter();
         SetExecutedCurrently(false);
@@ -3286,6 +3286,7 @@ void Spell::cast(bool skipCheck)
         if (castResult != SPELL_CAST_OK)
         {
             SendCastResult(castResult);
+            SendInterrupted(castResult);
             finish(false);
             m_caster->DecreaseCastCounter();
             SetExecutedCurrently(false);
@@ -4143,12 +4144,12 @@ void Spell::WriteSpellGoTargets(WorldPacket& data)
         m_needAliveTargetMask = 0;
 }
 
-void Spell::SendInterrupted(uint8 result) const
+void Spell::SendInterrupted(SpellCastResult result) const
 {
     WorldPacket data(SMSG_SPELL_FAILURE, (8 + 4 + 1));
     data << m_caster->GetPackGUID();
     data << m_spellInfo->Id;
-    data << result;
+    data << uint8(result);
     m_caster->SendMessageToSet(data, true);
 
     data.Initialize(SMSG_SPELL_FAILED_OTHER, (8 + 4));
@@ -4874,20 +4875,14 @@ SpellCastResult Spell::CheckCast(bool strict)
             {
                 // Exclusion for Pounce: Facing Limitation was removed in 2.0.1, but it still uses the same, old Ex-Flags
                 if (!m_spellInfo->IsFitToFamily(SPELLFAMILY_DRUID, uint64(0x0000000000020000)))
-                {
-                    SendInterrupted(2);
                     return SPELL_FAILED_NOT_BEHIND;
-                }
             }
 
             // Caster must be facing the targets front
             if (((m_spellInfo->Attributes == (SPELL_ATTR_ABILITY | SPELL_ATTR_NOT_SHAPESHIFT | SPELL_ATTR_DONT_AFFECT_SHEATH_STATE | SPELL_ATTR_STOP_ATTACK_TARGET)) && !m_caster->IsFacingTargetsFront(target))
                 // Caster must be facing the target!
                 || (m_spellInfo->HasAttribute(SPELL_ATTR_EX_FACING_TARGET) && !m_caster->HasInArc(target)))
-            {
-                SendInterrupted(2);
                 return SPELL_FAILED_NOT_INFRONT;
-            }
 
             // check if target is in combat
             if (non_caster_target && m_spellInfo->HasAttribute(SPELL_ATTR_EX_NOT_IN_COMBAT_TARGET) && target->isInCombat())
@@ -5006,8 +5001,8 @@ SpellCastResult Spell::CheckCast(bool strict)
                     range = m_caster->GetMap()->IsDungeon() ? DEFAULT_VISIBILITY_INSTANCE : DEFAULT_VISIBILITY_DISTANCE;
 
                 uint32 targetCount = std::max(m_spellInfo->EffectChainTarget[j], uint32(1));
-                std::list<Creature*> foundScriptCreatureTargets;
-                std::list<GameObject*> foundScriptGOTargets;
+                CreatureList foundScriptCreatureTargets;
+                GameObjectList foundScriptGOTargets;
                 std::set<uint32> entriesToUse;
                 uint32 type = MAX_SPELL_TARGET_TYPE;
                 bool foundButOutOfRange = false;
@@ -7000,7 +6995,7 @@ bool Spell::CheckTargetScript(Unit* target, SpellEffectIndex eff) const
                     pBunnyId = creature->AI()->GetScriptData();
             }
 
-            std::list<Player*> playerList;
+            PlayerList playerList;
             MaNGOS::AnyPlayerInObjectRangeCheck checkPlayer(target, 4.f);
             MaNGOS::PlayerListSearcher<MaNGOS::AnyPlayerInObjectRangeCheck> playerSearcher(playerList, checkPlayer);
             Cell::VisitWorldObjects(target, playerSearcher, 4.f);
@@ -7463,6 +7458,9 @@ WorldObject* Spell::GetCastingObject() const
 {
     if (m_originalCasterGUID.IsGameObject())
         return m_caster->IsInWorld() ? m_caster->GetMap()->GetGameObject(m_originalCasterGUID) : nullptr;
+    else if (m_originalCasterGUID.IsDynamicObject())
+        return m_caster->IsInWorld() ? m_caster->GetMap()->GetDynamicObject(m_originalCasterGUID) : nullptr;
+
     return m_caster;
 }
 

@@ -313,6 +313,7 @@ enum eConfigBoolValues
     CONFIG_BOOL_CHAT_STRICT_LINK_CHECKING_KICK,
     CONFIG_BOOL_ADDON_CHANNEL,
     CONFIG_BOOL_CORPSE_EMPTY_LOOT_SHOW,
+    CONFIG_BOOL_CORPSE_ALLOW_ALL_ITEMS_SHOW_IN_MASTER_LOOT,
     CONFIG_BOOL_DEATH_CORPSE_RECLAIM_DELAY_PVP,
     CONFIG_BOOL_DEATH_CORPSE_RECLAIM_DELAY_PVE,
     CONFIG_BOOL_DEATH_BONES_WORLD,
@@ -470,7 +471,7 @@ class World
         typedef std::list<WorldSession*> Queue;
         void AddQueuedSession(WorldSession*);
         bool RemoveQueuedSession(WorldSession* sess);
-        int32 GetQueuedSessionPos(WorldSession*);
+        int32 GetQueuedSessionPos(WorldSession const* sess) const;
 
         /// \todo Actions on m_allowMovement still to be implemented
         /// Is movement allowed?

@@ -532,6 +532,8 @@ struct go_brewfest_music : public GameObjectAI
                 case HORDE:
                     PlayHordeMusic();
                     break;
+                default:
+                    break;
             }
             m_musicStartTimer = 5000;
         }
@@ -699,7 +701,7 @@ struct go_elemental_rift : public GameObjectAI
                 return;
         }
 
-        std::list<Creature*> lElementalList;
+        CreatureList lElementalList;
         GetCreatureListWithEntryInGrid(lElementalList, m_go, elementalEntry, 35.0f);
         // Do nothing if at least three elementals are found nearby
         if (lElementalList.size() >= 3)

@@ -24,6 +24,7 @@
 #include "Entities/UpdateFields.h"
 #include "Entities/UpdateData.h"
 #include "Entities/ObjectGuid.h"
+#include "Entities/EntitiesMgr.h"
 #include "Globals/SharedDefines.h"
 #include "Camera.h"
 #include "Server/DBCStructure.h"
@@ -121,10 +122,6 @@ class ChatHandler;
 struct SpellEntry;
 
 typedef std::unordered_map<Player*, UpdateData> UpdateDataMapType;
-
-// cooldown system
-typedef std::chrono::system_clock Clock;
-typedef std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> TimePoint;
 
 class CooldownData
 {
@@ -438,7 +435,6 @@ class Object
         void SetStatFloatValue(uint16 index, float value);
         void SetStatInt32Value(uint16 index, int32 value);
         void ForceValuesUpdateAtIndex(uint32 index);
-
         void ApplyModUInt32Value(uint16 index, int32 val, bool apply);
         void ApplyModInt32Value(uint16 index, int32 val, bool apply);
         void ApplyModPositiveFloatValue(uint16 index, float val, bool apply);
@@ -817,9 +813,6 @@ class WorldObject : public Object
 
         void SendObjectDeSpawnAnim(ObjectGuid guid) const;
         void SendGameObjectCustomAnim(ObjectGuid guid, uint32 animId = 0) const;
-
-        virtual bool IsHostileTo(Unit const* unit) const = 0;
-        virtual bool IsFriendlyTo(Unit const* unit) const = 0;
 
         virtual ReputationRank GetReactionTo(Unit const* unit) const;
         virtual ReputationRank GetReactionTo(Corpse const* corpse) const;

@@ -1355,14 +1355,20 @@ void ObjectMgr::LoadCreatures()
         data.is_dead            = fields[15].GetBool();
         data.movementType       = fields[16].GetUInt8();
         data.spawnMask          = fields[17].GetUInt8();
-        int16 gameEvent         = fields[18].GetInt16();
-        int16 GuidPoolId        = fields[19].GetInt16();
-        int16 EntryPoolId       = fields[20].GetInt16();
+        data.gameEvent          = fields[18].GetInt16();
+        data.GuidPoolId         = fields[19].GetInt16();
+        data.EntryPoolId        = fields[20].GetInt16();
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapid);
         if (!mapEntry)
         {
             sLog.outErrorDb("Table `creature` have creature (GUID: %u) that spawned at nonexistent map (Id: %u), skipped.", guid, data.mapid);
+            continue;
+        }
+
+        if (!MaNGOS::IsValidMapCoord(data.posX, data.posY, data.posZ))
+        {
+            sLog.outErrorDb("Table `creature` have creature (GUID: %u) that spawned at not valid coordinate (x:%5.2f, y:%5.2f, z:%5.2f) skipped.", guid, data.posX, data.posY, data.posZ);
             continue;
         }
 
@@ -1441,7 +1447,15 @@ void ObjectMgr::LoadCreatures()
             }
         }
 
-        if (gameEvent == 0 && GuidPoolId == 0 && EntryPoolId == 0) // if not this is to be managed by GameEvent System or Pool system
+        if (mapEntry->IsContinent())
+        {
+            auto terrainInfo = sTerrainMgr.LoadTerrain(data.mapid);
+            data.OriginalZoneId = terrainInfo->GetZoneId(data.posX, data.posY, data.posZ);
+        }
+        else
+            data.OriginalZoneId = 0;
+
+        if (data.IsNotPartOfPoolOrEvent()) // if not this is to be managed by GameEvent System or Pool system
         {
             AddCreatureToGrid(guid, &data);
 
@@ -1559,14 +1573,20 @@ void ObjectMgr::LoadGameObjects()
         data.animprogress     = fields[13].GetUInt32();
         uint32 go_state       = fields[14].GetUInt32();
         data.spawnMask        = fields[15].GetUInt8();
-        int16 gameEvent       = fields[16].GetInt16();
-        int16 GuidPoolId      = fields[17].GetInt16();
-        int16 EntryPoolId     = fields[18].GetInt16();
+        data.gameEvent        = fields[16].GetInt16();
+        data.GuidPoolId       = fields[17].GetInt16();
+        data.EntryPoolId      = fields[18].GetInt16();
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapid);
         if (!mapEntry)
         {
             sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) that spawned at nonexistent map (Id: %u), skip", guid, data.id, data.mapid);
+            continue;
+        }
+
+        if (!MaNGOS::IsValidMapCoord(data.posX, data.posY, data.posZ))
+        {
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u) that spawned at not valid coordinate (x:%5.2f, y:%5.2f, z:%5.2f) skipped.", guid, data.posX, data.posY, data.posZ);
             continue;
         }
 
@@ -1630,12 +1650,16 @@ void ObjectMgr::LoadGameObjects()
             continue;
         }
 
-        if (gameEvent == 0 && GuidPoolId == 0 && EntryPoolId == 0) // if not this is to be managed by GameEvent System or Pool system
-            AddGameobjectToGrid(guid, &data);
+        if (mapEntry->IsContinent())
+        {
+            auto terrainInfo = sTerrainMgr.LoadTerrain(data.mapid);
+            data.OriginalZoneId = terrainInfo->GetZoneId(data.posX, data.posY, data.posZ);
+        }
+        else
+            data.OriginalZoneId = 0;
 
-        //uint32 zoneId, areaId;
-        //sTerrainMgr.LoadTerrain(data.mapid)->GetZoneAndAreaId(zoneId, areaId, data.posX, data.posY, data.posZ);
-        //sLog.outErrorDb("UPDATE gameobject SET zone_id=%u, area_id=%u WHERE guid=%u;", zoneId, areaId, guid);
+        if (data.IsNotPartOfPoolOrEvent()) // if not this is to be managed by GameEvent System or Pool system
+            AddGameobjectToGrid(guid, &data);
 
         ++count;
     }
@@ -9178,25 +9202,6 @@ void ObjectMgr::LoadVendorTemplates()
  */
 void ObjectMgr::LoadActiveEntities(Map* _map)
 {
-    // Special case on startup - load continents
-    if (!_map)
-    {
-        uint32 continents[] = {0, 1, 530};
-        for (unsigned int continent : continents)
-        {
-            _map = sMapMgr.FindMap(continent);
-            if (!_map)
-                _map = sMapMgr.CreateMap(continent, nullptr);
-
-            if (_map)
-                LoadActiveEntities(_map);
-            else
-                sLog.outError("ObjectMgr::LoadActiveEntities - Unable to create Map %u", continent);
-        }
-
-        return;
-    }
-
     // Load active objects for _map
     if (sWorld.isForceLoadMap(_map->GetId()))
     {
@@ -9866,7 +9871,7 @@ void ObjectMgr::LoadCreatureTemplateSpells()
         }
         for (uint8 i = 0; i < CREATURE_MAX_SPELLS; ++i)
         {
-            if (itr->spells[i] && !sSpellTemplate.LookupEntry<SpellEntry>(itr->spells[i]))
+            if (itr->spells[i] && !sSpellTemplate.LookupEntry<SpellEntry>(itr->spells[i]) && itr->spells[i] != 2) // 2 is attack which is hardcoded in client
             {
                 sLog.outErrorDb("LoadCreatureTemplateSpells: Spells found for creature entry %u, assigned spell %u does not exist, set to 0", itr->entry, itr->spells[i]);
                 const_cast<CreatureTemplateSpells*>(*itr)->spells[i] = 0;

@@ -1017,7 +1017,7 @@ class Player : public Unit
         bool ActivateTaxiPathTo(uint32 path_id, uint32 spellid = 0);
 
         // New taxi system
-        void TaxiFlightResume();
+        void TaxiFlightResume(bool forceRenewMoveGen = false);
         bool TaxiFlightInterrupt(bool cancel = true);
 
         bool IsTaxiDebug() const { return m_taxiTracker.m_debug; }
@@ -1478,6 +1478,7 @@ class Player : public Unit
         PlayerSpellMap&       GetSpellMap()       { return m_spells; }
 
         void AddSpellMod(SpellModifier* mod, bool apply);
+        void SendAllSpellMods(SpellModType modType);
         bool IsAffectedBySpellmod(SpellEntry const* spellInfo, SpellModifier* mod, Spell const* spell = nullptr);
         template <class T> void ApplySpellMod(uint32 spellId, SpellModOp op, T& basevalue, Spell const* spell = nullptr);
         SpellModifier* GetSpellMod(SpellModOp op, uint32 spellId) const;
@@ -1570,6 +1571,8 @@ class Player : public Unit
         void AddNewInstanceId(uint32 instanceId);
         void UpdateNewInstanceIdTimers(TimePoint const& now);
 
+        void UpdateClientAuras();
+        void SendPetBar();
         bool UpdateSkill(uint32 skill_id, uint32 step);
         bool UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step);
 
@@ -1595,7 +1598,8 @@ class Player : public Unit
         void UpdateAttackPowerAndDamage(bool ranged = false) override;
         void UpdateShieldBlockValue();
         void UpdateDamagePhysical(WeaponAttackType attType) override;
-        void UpdateSpellDamageAndHealingBonus();
+        void UpdateSpellHealingBonus();
+        void UpdateSpellDamageBonus();
         void ApplyRatingMod(CombatRating cr, int32 value, bool apply);
         void UpdateRating(CombatRating cr);
         void UpdateAllRatings();
@@ -2034,7 +2038,7 @@ class Player : public Unit
         void UpdateVisibilityOf(WorldObject const* viewPoint, WorldObject* target);
 
         template<class T>
-        void UpdateVisibilityOf(WorldObject const* viewPoint, T* target, UpdateData& data, std::set<WorldObject*>& visibleNow);
+        void UpdateVisibilityOf(WorldObject const* viewPoint, T* target, UpdateData& data, WorldObjectSet& visibleNow);
 
         // Stealth detection system
         void HandleStealthedUnitsDetection();

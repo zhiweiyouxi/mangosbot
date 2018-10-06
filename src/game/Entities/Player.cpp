@@ -547,7 +547,7 @@ Player::~Player()
     for (auto& x : ItemSetEff)
         delete x;
 
-#ifdef BUILD_PLAYERBOT
+#ifdef ENABLE_PLAYERBOTS
     if (m_playerbotAI)
     {
         delete m_playerbotAI;
@@ -3386,9 +3386,9 @@ void Player::removeSpell(uint32 spell_id, bool disabled, bool learn_low_rank, bo
 
 void Player::RemoveArenaSpellCooldowns()
 {
-    // remove cooldowns on spells that has < 15 min CD
+    // remove cooldowns on spells that has < 15 min CD - has to by in sync with spell check
     const uint32 MaxCDDelay = 15 * MINUTE * IN_MILLISECONDS;
-    auto cdCheck = [&](SpellEntry const & spellEntry) -> bool { return (spellEntry.RecoveryTime < MaxCDDelay && (spellEntry.CategoryRecoveryTime < MaxCDDelay)); };
+    auto cdCheck = [&](SpellEntry const & spellEntry) -> bool { return (spellEntry.RecoveryTime <= MaxCDDelay && (spellEntry.CategoryRecoveryTime <= MaxCDDelay)); };
     RemoveSomeCooldown(cdCheck);
 }
 
@@ -17196,6 +17196,29 @@ void Player::AddSpellMod(SpellModifier* mod, bool apply)
     }
 }
 
+void Player::SendAllSpellMods(SpellModType modType)
+{
+    Opcodes opcode = (modType == SPELLMOD_FLAT) ? SMSG_SET_FLAT_SPELL_MODIFIER : SMSG_SET_PCT_SPELL_MODIFIER;
+    for (uint32 eff = 0; eff < 64; ++eff)
+    {
+        for (uint32 op = 0; op < MAX_SPELLMOD; ++op)
+        {
+            uint64 _mask = uint64(1) << eff;
+            int32 val = 0;
+            for (SpellModifier* modifier : m_spellMods[op])
+            {
+                if (modifier->type == modType && (modifier->mask.IsFitToFamilyMask(_mask)))
+                    val += modifier->value;
+            }
+            WorldPacket data(opcode, (1 + 1 + 4));
+            data << uint8(eff);
+            data << uint8(op);
+            data << int32(val);
+            SendDirectMessage(data);
+        }
+    }
+}
+
 SpellModifier* Player::GetSpellMod(SpellModOp op, uint32 spellId) const
 {
     for (auto aura : m_spellMods[op])
@@ -17356,7 +17379,7 @@ void Player::SetRestBonus(float rest_bonus_new)
 
 void Player::HandleStealthedUnitsDetection()
 {
-    std::list<Unit*> stealthedUnits;
+    UnitList stealthedUnits;
 
     MaNGOS::AnyStealthedCheck u_check(this);
     MaNGOS::UnitListSearcher<MaNGOS::AnyStealthedCheck > searcher(stealthedUnits, u_check);
@@ -17364,7 +17387,7 @@ void Player::HandleStealthedUnitsDetection()
 
     WorldObject const* viewPoint = GetCamera().GetBody();
 
-    for (std::list<Unit*>::const_iterator i = stealthedUnits.begin(); i != stealthedUnits.end(); ++i)
+    for (UnitList::const_iterator i = stealthedUnits.begin(); i != stealthedUnits.end(); ++i)
     {
         if ((*i) == this)
             continue;
@@ -17532,7 +17555,7 @@ bool Player::ActivateTaxiPathTo(uint32 path_id, uint32 spellid /*= 0*/)
     return ActivateTaxiPathTo({ entry->from, entry->to }, nullptr, spellid);
 }
 
-void Player::TaxiFlightResume()
+void Player::TaxiFlightResume(bool forceRenewMoveGen /*= false*/)
 {
     if (m_taxiTracker.GetState() < Taxi::TRACKER_STANDBY)
         return;
@@ -17543,7 +17566,8 @@ void Player::TaxiFlightResume()
     if (hasUnitState(UNIT_STAT_TAXI_FLIGHT))
     {
         UpdateClientControl(this, IsClientControlled(this));
-        return;
+        if (!forceRenewMoveGen)
+            return;
     }
 
     GetMotionMaster()->MoveTaxiFlight();
@@ -18568,7 +18592,7 @@ inline void UpdateVisibilityOf_helper(GuidSet& s64, GameObject* target)
 }
 
 template<class T>
-void Player::UpdateVisibilityOf(WorldObject const* viewPoint, T* target, UpdateData& data, std::set<WorldObject*>& visibleNow)
+void Player::UpdateVisibilityOf(WorldObject const* viewPoint, T* target, UpdateData& data, WorldObjectSet& visibleNow)
 {
     if (HaveAtClient(target))
     {
@@ -18597,11 +18621,11 @@ void Player::UpdateVisibilityOf(WorldObject const* viewPoint, T* target, UpdateD
     }
 }
 
-template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, Player*        target, UpdateData& data, std::set<WorldObject*>& visibleNow);
-template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, Creature*      target, UpdateData& data, std::set<WorldObject*>& visibleNow);
-template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, Corpse*        target, UpdateData& data, std::set<WorldObject*>& visibleNow);
-template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, GameObject*    target, UpdateData& data, std::set<WorldObject*>& visibleNow);
-template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, DynamicObject* target, UpdateData& data, std::set<WorldObject*>& visibleNow);
+template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, Player*        target, UpdateData& data, WorldObjectSet& visibleNow);
+template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, Creature*      target, UpdateData& data, WorldObjectSet& visibleNow);
+template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, Corpse*        target, UpdateData& data, WorldObjectSet& visibleNow);
+template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, GameObject*    target, UpdateData& data, WorldObjectSet& visibleNow);
+template void Player::UpdateVisibilityOf(WorldObject const* viewPoint, DynamicObject* target, UpdateData& data, WorldObjectSet& visibleNow);
 
 void Player::InitPrimaryProfessions()
 {
@@ -18741,7 +18765,8 @@ void Player::SendInitialPacketsBeforeAddToMap()
     if (IsFreeFlying() || IsTaxiFlying())
         m_movementInfo.AddMovementFlag(MOVEFLAG_FLYING);
 
-    SetMover(this);
+    if(!GetSession()->PlayerLoading())
+        SetMover(this);
 }
 
 void Player::SendInitialPacketsAfterAddToMap()
@@ -18811,10 +18836,14 @@ void Player::SendTransferAbortedByLockStatus(MapEntry const* mapEntry, AreaTrigg
             case AREA_LOCKSTATUS_TOO_LOW_LEVEL:
             case AREA_LOCKSTATUS_QUEST_NOT_COMPLETED:
             case AREA_LOCKSTATUS_RAID_LOCKED:
+            {
                 std::string message = at->status_failed_text;
                 sObjectMgr.GetAreaTriggerLocales(at->entry, GetSession()->GetSessionDbLocaleIndex(), &message);
                 GetSession()->SendAreaTriggerMessage(message.data(), miscRequirement);
                 return;
+            }
+            default:
+                break;
         }
     }
 
@@ -21239,5 +21268,24 @@ void Player::UpdateNewInstanceIdTimers(TimePoint const& now)
             iter = m_enteredInstances.erase(iter);
         else
             ++iter;
+    }
+}
+
+void Player::UpdateClientAuras()
+{
+    for (const auto& iter : m_spellAuraHolders)
+        iter.second->UpdateAuraDuration();
+}
+
+void Player::SendPetBar()
+{
+    if (Pet* pet = GetPet())
+        PetSpellInitialize();
+    else if (Unit* charm = GetCharm())
+    {
+        if (charm->hasUnitState(UNIT_STAT_POSSESSED))
+            PossessSpellInitialize();
+        else
+            CharmSpellInitialize();
     }
 }

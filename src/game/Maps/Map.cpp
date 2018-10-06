@@ -90,6 +90,11 @@ Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode)
       i_gridExpiry(expiry), m_TerrainData(sTerrainMgr.LoadTerrain(id)),
       i_data(nullptr), i_script_id(0)
 {
+    m_weatherSystem = new WeatherSystem(this);
+}
+
+void Map::Initialize(bool loadInstanceData /*= true*/)
+{
     m_CreatureGuids.Set(sObjectMgr.GetFirstTemporaryCreatureLowGuid());
     m_GameObjectGuids.Set(sObjectMgr.GetFirstTemporaryGameObjectLowGuid());
 
@@ -109,10 +114,13 @@ Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode)
     // add reference for TerrainData object
     m_TerrainData->AddRef();
 
+    CreateInstanceData(loadInstanceData);
+
     m_persistentState = sMapPersistentStateMgr.AddPersistentState(i_mapEntry, GetInstanceId(), GetDifficulty(), 0, IsDungeon());
     m_persistentState->SetUsedByMapState(this);
+    m_persistentState->InitPools();
 
-    m_weatherSystem = new WeatherSystem(this);
+    sObjectMgr.LoadActiveEntities(this);
 }
 
 void Map::InitVisibilityDistance()
@@ -298,6 +306,20 @@ void Map::ForceLoadGrid(float x, float y)
         EnsureGridLoadedAtEnter(cell);
         getNGrid(cell.GridX(), cell.GridY())->setUnloadExplicitLock(true);
     }
+}
+
+void Map::CreatePlayerOnClient(Player* player)
+{
+    // update player state for other player and visa-versa
+    CellPair p = MaNGOS::ComputeCellPair(player->GetPositionX(), player->GetPositionY());
+    Cell cell(p);
+
+    SendInitSelf(player);
+    SendInitTransports(player);
+
+    NGridType* grid = getNGrid(cell.GridX(), cell.GridY());
+    player->GetViewPoint().Event_AddedToWorld(&(*grid)(cell.CellX(), cell.CellY()));
+    UpdateObjectVisibility(player, cell, p);
 }
 
 bool Map::Add(Player* player)
@@ -1636,6 +1658,11 @@ BattleGroundMap::~BattleGroundMap()
 {
 }
 
+void BattleGroundMap::Initialize(bool)
+{
+    Map::Initialize(false);
+}
+
 void BattleGroundMap::Update(const uint32& diff)
 {
     Map::Update(diff);
@@ -2319,11 +2346,9 @@ bool Map::GetReachableRandomPosition(Unit* unit, float& x, float& y, float& z, f
             return false;
     }
 
-    if (radius < 0.1f)
-    {
-        sLog.outError("Map::GetReachableRandomPosition> Unsupported unit type is passed!");
-        return false;
-    }
+    // define 1 as minimum radius for random position
+    if (radius < 1.0f)
+        radius = 1.0f;
 
     bool newDestAssigned;   // used to check if new random destination is found
     if (isFlying)
