@@ -99,7 +99,6 @@ class Map : public GridRefManager<NGridType>
 
     protected:
         Map(uint32 id, time_t, uint32 InstanceId);
-
     public:
         virtual ~Map();
 
@@ -111,6 +110,8 @@ class Map : public GridRefManager<NGridType>
             m_unloadTimer -= diff;
             return false;
         }
+
+        virtual void Initialize(bool loadInstanceData = true);
 
         virtual bool Add(Player*);
         virtual void Remove(Player*, bool);
@@ -233,6 +234,7 @@ class Map : public GridRefManager<NGridType>
 
         Player* GetPlayer(ObjectGuid guid);
         Creature* GetCreature(ObjectGuid guid);
+        Creature* GetCreatureByEntry(uint32 entry);
         Pet* GetPet(ObjectGuid guid);
         Creature* GetAnyTypeCreature(ObjectGuid guid);      // normal creature or pet
         GameObject* GetGameObject(ObjectGuid guid);
@@ -310,6 +312,9 @@ class Map : public GridRefManager<NGridType>
         TimePoint GetCurrentClockTime() const;
         uint32 GetCurrentDiff() const;
 
+
+        void CreatePlayerOnClient(Player* player);
+
     private:
         void LoadMapAndVMap(int gx, int gy);
 
@@ -356,7 +361,7 @@ class Map : public GridRefManager<NGridType>
         MapRefManager m_mapRefManager;
         MapRefManager::iterator m_mapRefIter;
 
-        typedef std::set<WorldObject*> ActiveNonPlayers;
+        typedef WorldObjectSet ActiveNonPlayers;
         ActiveNonPlayers m_activeNonPlayers;
         ActiveNonPlayers::iterator m_activeNonPlayersIter;
         MapStoredObjectTypesContainer m_objectsStore;
@@ -364,8 +369,8 @@ class Map : public GridRefManager<NGridType>
         std::vector<std::function<void(Map*)>> m_messageVector;
         std::mutex m_messageMutex;
 
-        std::set<WorldObject*> m_onEventNotifiedObjects;
-        std::set<WorldObject*>::iterator m_onEventNotifiedIter;
+        WorldObjectSet m_onEventNotifiedObjects;
+        WorldObjectSet::iterator m_onEventNotifiedIter;
 
     private:
         time_t i_gridExpiry;
@@ -378,7 +383,7 @@ class Map : public GridRefManager<NGridType>
 
         std::bitset<TOTAL_NUMBER_OF_CELLS_PER_MAP* TOTAL_NUMBER_OF_CELLS_PER_MAP> marked_cells;
 
-        std::set<WorldObject*> i_objectsToRemove;
+        WorldObjectSet i_objectsToRemove;
 
         typedef std::multimap<time_t, ScriptAction> ScriptScheduleMap;
         ScriptScheduleMap m_scriptSchedule;
@@ -459,6 +464,7 @@ class BattleGroundMap : public Map
         BattleGroundMap(uint32 id, time_t, uint32 InstanceId);
         ~BattleGroundMap();
 
+        virtual void Initialize(bool) override;
         void Update(const uint32&) override;
         bool Add(Player*) override;
         void Remove(Player*, bool) override;

@@ -889,7 +889,7 @@ uint32 Unit::DealDamage(Unit* pVictim, uint32 damage, CleanDamage const* cleanDa
         // call kill spell proc event (before real die and combat stop to triggering auras removed at death/combat stop)
         if (damagetype != INSTAKILL)
         {
-            if (pKiller && pKiller != pVictim && (pKiller == pTapper || pKiller->GetGroup() == pTapperGroup && pTapperGroup))
+            if (pKiller && pKiller != pVictim && (pKiller == pTapper || (pTapperGroup &&  pKiller->GetGroup() == pTapperGroup)))
             {
                 WorldPacket data(SMSG_PARTYKILLLOG, (8 + 8));   // send event PARTY_KILL
                 data << pKiller->GetObjectGuid();            // player with killing blow
@@ -1014,8 +1014,8 @@ uint32 Unit::DealDamage(Unit* pVictim, uint32 damage, CleanDamage const* cleanDa
 
         pVictim->ModifyHealth(- (int32)damage);
 
-        if (CanAttack(pVictim) && (!spellProto || !spellProto->HasAttribute(SPELL_ATTR_EX3_NO_INITIAL_AGGRO) &&
-            !spellProto->HasAttribute(SPELL_ATTR_EX_NO_THREAT)))
+        if (CanAttack(pVictim) && (!spellProto || (!spellProto->HasAttribute(SPELL_ATTR_EX3_NO_INITIAL_AGGRO) &&
+            !spellProto->HasAttribute(SPELL_ATTR_EX_NO_THREAT))))
         {
             float threat = damage * sSpellMgr.GetSpellThreatMultiplier(spellProto);
             pVictim->AddThreat(this, threat, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
@@ -1895,8 +1895,25 @@ void Unit::DealMeleeDamage(CalcDamageInfo* calcDamageInfo, bool durabilityLoss)
                 if (alreadyDone.find(*i) == alreadyDone.end())
                 {
                     alreadyDone.insert(*i);
-                    uint32 damage = (*i)->GetModifier()->m_amount;
+
                     SpellEntry const* i_spellProto = (*i)->GetSpellProto();
+
+                    // Damage shield can be resisted...
+                    if (SpellMissInfo missInfo = pVictim->SpellHitResult(this, i_spellProto, false))
+                    {
+                        pVictim->SendSpellMiss(this, i_spellProto->Id, missInfo);
+                        continue;
+                    }
+
+                    // ...or immuned
+                    if (IsImmuneToDamage(GetSpellSchoolMask(i_spellProto)))
+                    {
+                        pVictim->SendSpellOrDamageImmune(this, i_spellProto->Id);
+                        continue;
+                    }
+
+                    uint32 damage = (*i)->GetModifier()->m_amount;
+
                     // Calculate absorb resist ??? no data in opcode for this possibly unable to absorb or resist?
                     // uint32 absorb;
                     // uint32 resist;
@@ -2130,7 +2147,7 @@ void Unit::CalculateDamageAbsorbAndResist(Unit* pCaster, SpellSchoolMask schoolM
             uint32 splitted_absorb = 0;
             pCaster->DealDamageMods(caster, splitted, &splitted_absorb, DIRECT_DAMAGE, (*i)->GetSpellProto());
 
-            pCaster->SendSpellNonMeleeDamageLog(caster, (*i)->GetSpellProto()->Id, splitted, schoolMask, splitted_absorb, 0, false, 0, false);
+            pCaster->SendSpellNonMeleeDamageLog(caster, (*i)->GetSpellProto()->Id, splitted, schoolMask, splitted_absorb, 0, (damagetype == DOT), 0, false, true);
 
             CleanDamage cleanDamage = CleanDamage(splitted, BASE_ATTACK, MELEE_HIT_NORMAL);
             pCaster->DealDamage(caster, splitted, &cleanDamage, DIRECT_DAMAGE, schoolMask, (*i)->GetSpellProto(), false);
@@ -2163,7 +2180,7 @@ void Unit::CalculateDamageAbsorbAndResist(Unit* pCaster, SpellSchoolMask schoolM
             uint32 split_absorb = 0;
             pCaster->DealDamageMods(caster, splitted, &split_absorb, DIRECT_DAMAGE, (*i)->GetSpellProto());
 
-            pCaster->SendSpellNonMeleeDamageLog(caster, (*i)->GetSpellProto()->Id, splitted, schoolMask, split_absorb, 0, false, 0, false);
+            pCaster->SendSpellNonMeleeDamageLog(caster, (*i)->GetSpellProto()->Id, splitted, schoolMask, split_absorb, 0, (damagetype == DOT), 0, false, true);
 
             CleanDamage cleanDamage = CleanDamage(splitted, BASE_ATTACK, MELEE_HIT_NORMAL);
             pCaster->DealDamage(caster, splitted, &cleanDamage, DIRECT_DAMAGE, schoolMask, (*i)->GetSpellProto(), false);
@@ -5172,7 +5189,7 @@ void Unit::SendSpellNonMeleeDamageLog(SpellNonMeleeDamage* log) const
     data << uint8(log->school);                             // damage school
     data << uint32(log->absorb);                            // AbsorbedDamage
     data << uint32(log->resist);                            // resist
-    data << uint8(log->physicalLog);                        // if 1, then client show spell name (example: %s's ranged shot hit %s for %u school or %s suffers %u school damage from %s's spell_name
+    data << uint8(log->periodicLog);                        // if 1, then client show spell name (example: %s's ranged shot hit %s for %u school or %s suffers %u school damage from %s's spell_name
     data << uint8(log->unused);                             // unused
     data << uint32(log->blocked);                           // blocked
     data << uint32(log->HitInfo);
@@ -5180,17 +5197,19 @@ void Unit::SendSpellNonMeleeDamageLog(SpellNonMeleeDamage* log) const
     SendMessageToSet(data, true);
 }
 
-void Unit::SendSpellNonMeleeDamageLog(Unit* target, uint32 SpellID, uint32 Damage, SpellSchoolMask damageSchoolMask, uint32 AbsorbedDamage, uint32 Resist, bool PhysicalDamage, uint32 Blocked, bool CriticalHit)
+void Unit::SendSpellNonMeleeDamageLog(Unit* target, uint32 spellID, uint32 damage, SpellSchoolMask damageSchoolMask, uint32 absorbedDamage, uint32 resist, bool isPeriodic, uint32 blocked, bool criticalHit, bool split)
 {
-    SpellNonMeleeDamage log(this, target, SpellID, GetFirstSchoolInMask(damageSchoolMask));
-    log.damage = Damage - AbsorbedDamage - Resist - Blocked;
-    log.absorb = AbsorbedDamage;
-    log.resist = Resist;
-    log.physicalLog = PhysicalDamage;
-    log.blocked = Blocked;
-    log.HitInfo = SPELL_HIT_TYPE_UNK1 | SPELL_HIT_TYPE_UNK3 | SPELL_HIT_TYPE_UNK6;
-    if (CriticalHit)
+    SpellNonMeleeDamage log(this, target, spellID, GetFirstSchoolInMask(damageSchoolMask));
+    log.damage = damage - absorbedDamage - resist - blocked;
+    log.absorb = absorbedDamage;
+    log.resist = resist;
+    log.periodicLog = isPeriodic;
+    log.blocked = blocked;
+    log.HitInfo = 0;
+    if (criticalHit)
         log.HitInfo |= SPELL_HIT_TYPE_CRIT;
+    if (split)
+        log.HitInfo |= SPELL_HIT_TYPE_SPLIT;
     SendSpellNonMeleeDamageLog(&log);
 }
 
@@ -5247,6 +5266,16 @@ void Unit::SendSpellMiss(Unit* target, uint32 spellID, SpellMissInfo missInfo) c
     data << target->GetObjectGuid();                        // target GUID
     data << uint8(missInfo);
     // end loop
+    SendMessageToSet(data, true);
+}
+
+void Unit::SendSpellOrDamageImmune(Unit* target, uint32 spellID) const
+{
+    WorldPacket data(SMSG_SPELLORDAMAGE_IMMUNE, (8 + 8 + 4 + 1));
+    data << GetObjectGuid();
+    data << target->GetObjectGuid();
+    data << uint32(spellID);
+    data << uint8(0);
     SendMessageToSet(data, true);
 }
 
@@ -5436,247 +5465,6 @@ FactionTemplateEntry const* Unit::getFactionTemplateEntry() const
         }
     }
     return entry;
-}
-
-bool Unit::IsHostileTo(Unit const* unit) const
-{
-    // always non-hostile to self
-    if (unit == this)
-        return false;
-
-    // always non-hostile to GM in GM mode
-    if (unit->GetTypeId() == TYPEID_PLAYER && ((Player const*)unit)->isGameMaster())
-        return false;
-
-    // always hostile to enemy
-    if (getVictim() == unit || unit->getVictim() == this)
-        return true;
-
-    // test pet/charm masters instead pers/charmeds
-    const Unit* testerCharmer = GetCharmer();
-    const Unit* testerOwner = testerCharmer ? testerCharmer : GetOwner(nullptr, true);
-    const Unit* targetCharmer = unit->GetCharmer();
-    const Unit* targetOwner = targetCharmer ? targetCharmer : unit->GetOwner(nullptr, true);
-
-    // always hostile to owner's enemy
-    if (testerOwner && (testerOwner->getVictim() == unit || unit->getVictim() == testerOwner))
-        return true;
-
-    // always hostile to enemy owner
-    if (targetOwner && (getVictim() == targetOwner || targetOwner->getVictim() == this))
-        return true;
-
-    // always hostile to owner of owner's enemy
-    if (testerOwner && targetOwner && (testerOwner->getVictim() == targetOwner || targetOwner->getVictim() == testerOwner))
-        return true;
-
-    Unit const* tester = testerOwner ? testerOwner : this;
-    Unit const* target = targetOwner ? targetOwner : unit;
-
-    // always non-hostile to target with common owner, or to owner/pet
-    if (tester == target)
-        return false;
-
-    // special cases (Duel, etc)
-    if (tester->GetTypeId() == TYPEID_PLAYER && target->GetTypeId() == TYPEID_PLAYER)
-    {
-        Player const* pTester = (Player const*)tester;
-        Player const* pTarget = (Player const*)target;
-
-        // Duel
-        if (pTester->IsInDuelWith(pTarget))
-            return true;
-
-        // Group
-        if (pTester->GetGroup() && pTester->GetGroup() == pTarget->GetGroup())
-            return false;
-
-        // Sanctuary
-        if (pTarget->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_SANCTUARY) && pTester->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_SANCTUARY))
-            return false;
-
-        // PvP FFA state
-        if (pTester->IsPvPFreeForAll() && pTarget->IsPvPFreeForAll())
-            return true;
-
-        //= PvP states
-        // Green/Blue (can't attack)
-        if (pTester->GetTeam() == pTarget->GetTeam())
-            return false;
-
-        // Red (can attack) if true, Blue/Yellow (can't attack) in another case
-        return pTester->IsPvP() && pTarget->IsPvP();
-    }
-
-    // faction base cases
-    FactionTemplateEntry const* tester_faction = tester->getFactionTemplateEntry();
-    FactionTemplateEntry const* target_faction = target->getFactionTemplateEntry();
-    if (!tester_faction || !target_faction)
-        return false;
-
-    if (target->IsPvPContested() && tester->IsContestedGuard())
-        return true;
-
-    // PvC forced reaction and reputation case
-    if (tester->GetTypeId() == TYPEID_PLAYER)
-    {
-        if (target_faction->faction)
-        {
-            // forced reaction
-            if (ReputationRank const* force = ((Player*)tester)->GetReputationMgr().GetForcedRankIfAny(target_faction))
-                return *force <= REP_HOSTILE;
-
-            // if faction have reputation then hostile state for tester at 100% dependent from at_war state
-            if (FactionEntry const* raw_target_faction = sFactionStore.LookupEntry(target_faction->faction))
-                if (FactionState const* factionState = ((Player*)tester)->GetReputationMgr().GetState(raw_target_faction))
-                    return (factionState->Flags & FACTION_FLAG_AT_WAR) != 0;
-        }
-    }
-    // CvP forced reaction and reputation case
-    else if (target->GetTypeId() == TYPEID_PLAYER)
-    {
-        if (tester_faction->faction)
-        {
-            // forced reaction
-            if (ReputationRank const* force = ((Player*)target)->GetReputationMgr().GetForcedRankIfAny(tester_faction))
-                return *force <= REP_HOSTILE;
-
-            // apply reputation state
-            FactionEntry const* raw_tester_faction = sFactionStore.LookupEntry(tester_faction->faction);
-            if (raw_tester_faction && raw_tester_faction->reputationListID >= 0)
-                return ((Player const*)target)->GetReputationMgr().GetRank(raw_tester_faction) <= REP_HOSTILE;
-        }
-    }
-
-    // common faction based case (CvC,PvC,CvP)
-    return tester_faction->IsHostileTo(*target_faction);
-}
-
-bool Unit::IsFriendlyTo(Unit const* unit) const
-{
-    // always friendly to self
-    if (unit == this)
-        return true;
-
-    // always friendly to GM in GM mode
-    if (unit->GetTypeId() == TYPEID_PLAYER && ((Player const*)unit)->isGameMaster())
-        return true;
-
-    // always non-friendly to enemy
-    if (getVictim() == unit || unit->getVictim() == this)
-        return false;
-
-    // test pet/charm masters instead pers/charmeds
-    const Unit* testerCharmer = GetCharmer();
-    const Unit* testerOwner = testerCharmer ? testerCharmer : GetOwner(nullptr, true);
-    const Unit* targetCharmer = unit->GetCharmer();
-    const Unit* targetOwner = targetCharmer ? targetCharmer : unit->GetOwner(nullptr, true);
-
-    // always non-friendly to owner's enemy
-    if (testerOwner && (testerOwner->getVictim() == unit || unit->getVictim() == testerOwner))
-        return false;
-
-    // always non-friendly to enemy owner
-    if (targetOwner && (getVictim() == targetOwner || targetOwner->getVictim() == this))
-        return false;
-
-    // always non-friendly to owner of owner's enemy
-    if (testerOwner && targetOwner && (testerOwner->getVictim() == targetOwner || targetOwner->getVictim() == testerOwner))
-        return false;
-
-    Unit const* tester = testerOwner ? testerOwner : this;
-    Unit const* target = targetOwner ? targetOwner : unit;
-
-    // always friendly to target with common owner, or to owner/pet
-    if (tester == target)
-        return true;
-
-    // special cases (Duel)
-    if (tester->GetTypeId() == TYPEID_PLAYER && target->GetTypeId() == TYPEID_PLAYER)
-    {
-        Player const* pTester = (Player const*)tester;
-        Player const* pTarget = (Player const*)target;
-
-        // Duel
-        if (pTester->IsInDuelWith(pTarget))
-            return false;
-
-        // Group
-        if (pTester->GetGroup() && pTester->GetGroup() == pTarget->GetGroup())
-            return true;
-
-        // Sanctuary
-        if (pTarget->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_SANCTUARY) && pTester->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_SANCTUARY))
-            return true;
-
-        // PvP FFA state
-        if (pTester->IsPvPFreeForAll() && pTarget->IsPvPFreeForAll())
-            return false;
-
-        //= PvP states
-        // Green/Blue (non-attackable)
-        if (pTester->GetTeam() == pTarget->GetTeam())
-            return true;
-
-        // Blue (friendly/non-attackable) if not PVP, or Yellow/Red in another case (attackable)
-        return !pTarget->IsPvP();
-    }
-
-    // faction base cases
-    FactionTemplateEntry const* tester_faction = tester->getFactionTemplateEntry();
-    FactionTemplateEntry const* target_faction = target->getFactionTemplateEntry();
-    if (!tester_faction || !target_faction)
-        return false;
-
-    if (target->IsPvPContested() && tester->IsContestedGuard())
-        return false;
-
-    // PvC forced reaction and reputation case
-    if (tester->GetTypeId() == TYPEID_PLAYER)
-    {
-        if (target_faction->faction)
-        {
-            // forced reaction
-            if (ReputationRank const* force = ((Player*)tester)->GetReputationMgr().GetForcedRankIfAny(target_faction))
-                return *force >= REP_FRIENDLY;
-
-            // if faction have reputation then friendly state for tester at 100% dependent from at_war state
-            if (FactionEntry const* raw_target_faction = sFactionStore.LookupEntry(target_faction->faction))
-                if (FactionState const* factionState = ((Player*)tester)->GetReputationMgr().GetState(raw_target_faction))
-                    return !(factionState->Flags & FACTION_FLAG_AT_WAR);
-        }
-    }
-    // CvP forced reaction and reputation case
-    else if (target->GetTypeId() == TYPEID_PLAYER)
-    {
-        if (tester_faction->faction)
-        {
-            // forced reaction
-            if (ReputationRank const* force = ((Player*)target)->GetReputationMgr().GetForcedRankIfAny(tester_faction))
-                return *force >= REP_FRIENDLY;
-
-            // apply reputation state
-            if (FactionEntry const* raw_tester_faction = sFactionStore.LookupEntry(tester_faction->faction))
-                if (raw_tester_faction->reputationListID >= 0)
-                    return ((Player const*)target)->GetReputationMgr().GetRank(raw_tester_faction) >= REP_FRIENDLY;
-        }
-    }
-
-    // common faction based case (CvC,PvC,CvP)
-    return tester_faction->IsFriendlyTo(*target_faction);
-}
-
-bool Unit::IsHostileToPlayers() const
-{
-    FactionTemplateEntry const* my_faction = getFactionTemplateEntry();
-    if (!my_faction || !my_faction->faction)
-        return false;
-
-    FactionEntry const* raw_faction = sFactionStore.LookupEntry(my_faction->faction);
-    if (raw_faction && raw_faction->reputationListID >= 0)
-        return false;
-
-    return my_faction->IsHostileToPlayers();
 }
 
 bool Unit::IsNeutralToAll() const
@@ -6033,7 +5821,7 @@ Unit* Unit::GetCharm(WorldObject const* pov /*= nullptr*/) const
             }
             // Bugcheck
             sLog.outDebug("Unit::GetCharm: Guid field management continuity violation for %s, can't look up %s while accessor is outside of the world",
-                          GetObjectGuid().GetString().c_str(), guid.GetString().c_str());
+                          GetGuidStr().c_str(), guid.GetString().c_str());
             return nullptr;
         }
         // We need a unit in the same map only
@@ -6041,7 +5829,7 @@ Unit* Unit::GetCharm(WorldObject const* pov /*= nullptr*/) const
             return unit;
         // Bugcheck
         sLog.outDebug("Unit::GetCharm: Guid field management continuity violation for %s in map '%s', %s does not exist in this instance",
-                      GetObjectGuid().GetString().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
+                      GetGuidStr().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
         // const_cast<Unit*>(this)->SetCharm(nullptr);
     }
     return nullptr;
@@ -6062,7 +5850,7 @@ Unit* Unit::GetCharmer(WorldObject const* pov /*= nullptr*/) const
             }
             // Bugcheck
             sLog.outDebug("Unit::GetCharmer: Guid field management continuity violation for %s, can't look up %s while accessor is outside of the world",
-                          GetObjectGuid().GetString().c_str(), guid.GetString().c_str());
+                          GetGuidStr().c_str(), guid.GetString().c_str());
             return nullptr;
         }
         // We need a unit in the same map only
@@ -6070,7 +5858,7 @@ Unit* Unit::GetCharmer(WorldObject const* pov /*= nullptr*/) const
             return unit;
         // Bugcheck
         sLog.outDebug("Unit::GetCharmer: Guid field management continuity violation for %s in map '%s', %s does not exist in this instance",
-                      GetObjectGuid().GetString().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
+                      GetGuidStr().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
         // const_cast<Unit*>(this)->SetCharmer(nullptr);
     }
     return nullptr;
@@ -6091,7 +5879,7 @@ Unit* Unit::GetCreator(WorldObject const* pov /*= nullptr*/) const
             }
             // Bugcheck
             sLog.outDebug("Unit::GetCreator: Guid field management continuity violation for %s, can't look up %s while accessor is outside of the world",
-                          GetObjectGuid().GetString().c_str(), guid.GetString().c_str());
+                          GetGuidStr().c_str(), guid.GetString().c_str());
             return nullptr;
         }
         // We need a unit in the same map only
@@ -6099,7 +5887,7 @@ Unit* Unit::GetCreator(WorldObject const* pov /*= nullptr*/) const
             return unit;
         // Bugcheck
         sLog.outDebug("Unit::GetCreator: Guid field management continuity violation for %s in map '%s', %s does not exist in this instance",
-                      GetObjectGuid().GetString().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
+                      GetGuidStr().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
         // const_cast<Unit*>(this)->SetCreator(nullptr);
     }
     return nullptr;
@@ -6120,7 +5908,7 @@ Unit* Unit::GetTarget(WorldObject const* pov /*= nullptr*/) const
             }
             // Bugcheck
             sLog.outDebug("Unit::GetTarget: Guid field management continuity violation for %s, can't look up %s while accessor is outside of the world",
-                          GetObjectGuid().GetString().c_str(), guid.GetString().c_str());
+                          GetGuidStr().c_str(), guid.GetString().c_str());
             return nullptr;
         }
         // We need a unit in the same map only
@@ -6128,7 +5916,7 @@ Unit* Unit::GetTarget(WorldObject const* pov /*= nullptr*/) const
             return unit;
         // Bugcheck
         sLog.outDebug("Unit::GetTarget: Guid field management continuity violation for %s in map '%s', %s does not exist in this instance",
-                      GetObjectGuid().GetString().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
+                      GetGuidStr().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
         // const_cast<Unit*>(this)->SetTarget(nullptr);
     }
     return nullptr;
@@ -6149,7 +5937,7 @@ Unit* Unit::GetChannelObject(WorldObject const* pov /*= nullptr*/) const
             }
             // Bugcheck
             sLog.outDebug("Unit::GetChannelObject: Guid field management continuity violation for %s, can't look up %s while accessor is outside of the world",
-                          GetObjectGuid().GetString().c_str(), guid.GetString().c_str());
+                          GetGuidStr().c_str(), guid.GetString().c_str());
             return nullptr;
         }
         // We need a unit in the same map only
@@ -6157,7 +5945,7 @@ Unit* Unit::GetChannelObject(WorldObject const* pov /*= nullptr*/) const
             return unit;
         // Bugcheck
         sLog.outDebug("Unit::GetChannelObject: Guid field management continuity violation for %s in map '%s', %s does not exist in this instance",
-                      GetObjectGuid().GetString().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
+                      GetGuidStr().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
         // const_cast<Unit*>(this)->SetChannelObject(nullptr);
     }
     return nullptr;
@@ -6197,7 +5985,7 @@ Unit* Unit::GetSpawner(WorldObject const* pov /*= nullptr*/) const
             }
             // Bugcheck
             sLog.outDebug("Unit::GetSpawner: Guid field management continuity violation for %s, can't look up %s while accessor is outside of the world",
-                          GetObjectGuid().GetString().c_str(), guid.GetString().c_str());
+                          GetGuidStr().c_str(), guid.GetString().c_str());
             return nullptr;
         }
         // We need a unit in the same map only
@@ -6205,7 +5993,7 @@ Unit* Unit::GetSpawner(WorldObject const* pov /*= nullptr*/) const
             return unit;
         // Bugcheck
         sLog.outDebug("Unit::GetSpawner: Guid field management continuity violation for %s in map '%s', %s does not exist in this instance",
-                      GetObjectGuid().GetString().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
+                      GetGuidStr().c_str(), accessor->GetMap()->GetMapName(), guid.GetString().c_str());
     }
     return nullptr;
 }
@@ -6793,7 +6581,7 @@ int32 Unit::SpellBaseHealingBonusDone(SpellSchoolMask schoolMask)
 
     AuraList const& mHealingDone = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE);
     for (auto i : mHealingDone)
-        if ((!i->GetModifier()->m_miscvalue & schoolMask) != 0)
+        if ((i->GetModifier()->m_miscvalue & schoolMask) != 0)
             AdvertisedBenefit += i->GetModifier()->m_amount;
 
     // Healing bonus of spirit, intellect and strength
@@ -6948,7 +6736,7 @@ uint32 Unit::MeleeDamageBonusDone(Unit* pVictim, uint32 pdamage, WeaponAttackTyp
     int32 APbonus   = 0;
 
     // ..done flat, already included in weapon damage based spells
-    if (!isWeaponDamageBasedSpell || spellProto && schoolMask &~ SPELL_SCHOOL_MASK_NORMAL)
+    if (!isWeaponDamageBasedSpell || (spellProto && (schoolMask &~ SPELL_SCHOOL_MASK_NORMAL) != 0))
     {
         AuraList const& mModDamageDone = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE);
         for (auto i : mModDamageDone)
@@ -7019,7 +6807,7 @@ uint32 Unit::MeleeDamageBonusDone(Unit* pVictim, uint32 pdamage, WeaponAttackTyp
     float DoneTotal = 0.0f;
 
     // scaling of non weapon based spells
-    if (!isWeaponDamageBasedSpell || spellProto && schoolMask &~ SPELL_SCHOOL_MASK_NORMAL)
+    if (!isWeaponDamageBasedSpell || (spellProto && (schoolMask &~ SPELL_SCHOOL_MASK_NORMAL) !=0))
     {
         // apply ap bonus and benefit affected by spell power implicit coeffs and spell level penalties
         DoneTotal = SpellBonusWithCoeffs(spellProto, DoneTotal, DoneFlat, APbonus, damagetype, true);
@@ -7050,7 +6838,7 @@ uint32 Unit::MeleeDamageBonusDone(Unit* pVictim, uint32 pdamage, WeaponAttackTyp
     if (!flat)
         DoneTotal = 0.0f;
 
-    float tmpDamage = float(int32(pdamage) + DoneTotal * int32(stack)) * DonePercent;
+    float tmpDamage = (int32(pdamage) + DoneTotal * int32(stack)) * DonePercent;
 
     // apply spellmod to Done damage
     if (spellProto)
@@ -7110,7 +6898,7 @@ uint32 Unit::MeleeDamageBonusTaken(Unit* pCaster, uint32 pdamage, WeaponAttackTy
     // =================
 
     // scaling of non weapon based spells
-    if (!isWeaponDamageBasedSpell || spellProto && schoolMask &~ SPELL_SCHOOL_MASK_NORMAL)
+    if (!isWeaponDamageBasedSpell || (spellProto && (schoolMask &~ SPELL_SCHOOL_MASK_NORMAL) != 0))
     {
         // apply benefit affected by spell power implicit coeffs and spell level penalties
         TakenAdvertisedBenefit = pCaster->SpellBonusWithCoeffs(spellProto, 0, TakenAdvertisedBenefit, 0, damagetype, false);
@@ -7119,7 +6907,7 @@ uint32 Unit::MeleeDamageBonusTaken(Unit* pCaster, uint32 pdamage, WeaponAttackTy
     if (!flat)
         TakenFlat = 0.0f;
 
-    float tmpDamage = (pdamage + (TakenFlat + TakenAdvertisedBenefit) * int32(stack)) * TakenPercent;
+    float tmpDamage = (int32(pdamage) + (TakenFlat + TakenAdvertisedBenefit) * int32(stack)) * TakenPercent;
 
     // bonus result can be negative
     return tmpDamage > 0 ? uint32(tmpDamage) : 0;
@@ -7362,7 +7150,7 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
     if (!isAlive())
         return;
 
-    if (PvP || GetTypeId() == TYPEID_UNIT && ((Creature*)this)->IsTotem())
+    if (PvP || (GetTypeId() == TYPEID_UNIT && ((Creature*)this)->IsTotem()))
         m_CombatTimer = 5000;
 
     bool creatureNotInCombat = GetTypeId() == TYPEID_UNIT && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
@@ -9661,7 +9449,7 @@ void Unit::UpdateReactives(uint32 p_time)
 
 Unit* Unit::SelectRandomUnfriendlyTarget(Unit* except /*= nullptr*/, float radius /*= ATTACK_DISTANCE*/) const
 {
-    std::list<Unit*> targets;
+    UnitList targets;
 
     MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(this, radius);
     MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
@@ -9672,11 +9460,11 @@ Unit* Unit::SelectRandomUnfriendlyTarget(Unit* except /*= nullptr*/, float radiu
         targets.remove(except);
 
     // remove not LoS targets
-    for (std::list<Unit*>::iterator tIter = targets.begin(); tIter != targets.end();)
+    for (UnitList::iterator tIter = targets.begin(); tIter != targets.end();)
     {
         if (!IsWithinLOSInMap(*tIter))
         {
-            std::list<Unit*>::iterator tIter2 = tIter;
+            UnitList::iterator tIter2 = tIter;
             ++tIter;
             targets.erase(tIter2);
         }
@@ -9690,7 +9478,7 @@ Unit* Unit::SelectRandomUnfriendlyTarget(Unit* except /*= nullptr*/, float radiu
 
     // select random
     uint32 rIdx = urand(0, targets.size() - 1);
-    std::list<Unit*>::const_iterator tcIter = targets.begin();
+    UnitList::const_iterator tcIter = targets.begin();
     for (uint32 i = 0; i < rIdx; ++i)
         ++tcIter;
 
@@ -9699,7 +9487,7 @@ Unit* Unit::SelectRandomUnfriendlyTarget(Unit* except /*= nullptr*/, float radiu
 
 Unit* Unit::SelectRandomFriendlyTarget(Unit* except /*= nullptr*/, float radius /*= ATTACK_DISTANCE*/) const
 {
-    std::list<Unit*> targets;
+    UnitList targets;
 
     MaNGOS::AnyFriendlyUnitInObjectRangeCheck u_check(this, nullptr, radius);
     MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
@@ -9711,11 +9499,11 @@ Unit* Unit::SelectRandomFriendlyTarget(Unit* except /*= nullptr*/, float radius 
         targets.remove(except);
 
     // remove not LoS targets
-    for (std::list<Unit*>::iterator tIter = targets.begin(); tIter != targets.end();)
+    for (UnitList::iterator tIter = targets.begin(); tIter != targets.end();)
     {
         if (!IsWithinLOSInMap(*tIter))
         {
-            std::list<Unit*>::iterator tIter2 = tIter;
+            UnitList::iterator tIter2 = tIter;
             ++tIter;
             targets.erase(tIter2);
         }
@@ -9729,7 +9517,7 @@ Unit* Unit::SelectRandomFriendlyTarget(Unit* except /*= nullptr*/, float radius 
 
     // select random
     uint32 rIdx = urand(0, targets.size() - 1);
-    std::list<Unit*>::const_iterator tcIter = targets.begin();
+    UnitList::const_iterator tcIter = targets.begin();
     for (uint32 i = 0; i < rIdx; ++i)
         ++tcIter;
 
@@ -10801,7 +10589,7 @@ float Unit::GetAttackDistance(Unit const* pl) const
 
 void Unit::InterruptSpellsCastedOnMe(bool killDelayed)
 {
-    std::list<Unit*> targets;
+    UnitList targets;
     // Maximum spell range=100m ?
     MaNGOS::AnyUnitInObjectRangeCheck u_check(this, 100.0f);
     MaNGOS::UnitListSearcher<MaNGOS::AnyUnitInObjectRangeCheck> searcher(targets, u_check);

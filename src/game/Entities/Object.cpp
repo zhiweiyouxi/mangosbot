@@ -305,31 +305,6 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* u
 
     bool IsActivateToQuest = false;
     bool IsPerCasterAuraState = false;
-    bool sendPercent = false;
-
-    if (isType(TYPEMASK_UNIT))
-    {
-        if (!static_cast<Unit const*>(this)->IsTargetUnderControl(*target))
-        {
-            if (m_objectTypeId == TYPEID_UNIT)
-            {
-                if (!static_cast<Creature const*>(this)->IsPet() && !target->IsFriendlyTo(static_cast<Unit const*>(this)))
-                    sendPercent = true;
-            }
-            else
-            {
-                if (target != this && m_objectTypeId == TYPEID_PLAYER)
-                {
-                    if (static_cast<Player const*>(this)->GetTeam() != static_cast<Player const*>(target)->GetTeam() ||
-                            !target->IsFriendlyTo(static_cast<Unit const*>(this)))
-                    {
-                        // not same faction or not friendly
-                        sendPercent = true;
-                    }
-                }
-            }
-        }
-    }
 
     if (updatetype == UPDATETYPE_CREATE_OBJECT || updatetype == UPDATETYPE_CREATE_OBJECT2)
     {
@@ -411,18 +386,6 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* u
 
                     *data << uint32(appendValue);
                 }
-                else if (sendPercent && index == UNIT_FIELD_HEALTH)
-                {
-                    // send health percentage instead of real value to enemy
-                    if (m_uint32Values[UNIT_FIELD_HEALTH] == 0)
-                        *data << uint32(0);
-                    else
-                        *data << uint32(ceil(m_uint32Values[UNIT_FIELD_HEALTH] * 100 / float(m_uint32Values[UNIT_FIELD_MAXHEALTH]))); // never less than 1 as health is not zero
-                }
-                else if (sendPercent && index == UNIT_FIELD_MAXHEALTH)
-                {
-                    *data << uint32(100);
-                }
                 // FIXME: Some values at server stored in float format but must be sent to client in uint32 format
                 else if (index >= UNIT_FIELD_BASEATTACKTIME && index <= UNIT_FIELD_RANGEDATTACKTIME)
                 {
@@ -488,7 +451,7 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* u
                         {
                             // creature is not in combat so its not tapped
                             dynflagsValue = dynflagsValue & ~UNIT_DYNFLAG_TAPPED;
-                            //sLog.outString(">> %s is not in combat so not tapped by %s", this->GetObjectGuid().GetString().c_str(), target->GetObjectGuid().GetString().c_str());
+                            //sLog.outString(">> %s is not in combat so not tapped by %s", this->GetGuidStr().c_str(), target->GetGuidStr().c_str());
                         }
                     }
                     else
@@ -498,13 +461,13 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* u
                         {
                             // creature is dead and this player can loot it
                             dynflagsValue = dynflagsValue | UNIT_DYNFLAG_LOOTABLE;
-                            //sLog.outString(">> %s is lootable for %s", this->GetObjectGuid().GetString().c_str(), target->GetObjectGuid().GetString().c_str());
+                            //sLog.outString(">> %s is lootable for %s", this->GetGuidStr().c_str(), target->GetGuidStr().c_str());
                         }
                         else
                         {
                             // creature is dead but this player cannot loot it
                             dynflagsValue = dynflagsValue & ~UNIT_DYNFLAG_LOOTABLE;
-                            //sLog.outString(">> %s is not lootable for %s", this->GetObjectGuid().GetString().c_str(), target->GetObjectGuid().GetString().c_str());
+                            //sLog.outString(">> %s is not lootable for %s", this->GetGuidStr().c_str(), target->GetGuidStr().c_str());
                         }
 
                         // as creature is died we have to manage tap flags
@@ -518,13 +481,13 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* u
                         {
                             // creature is in combat or died and tapped by this player
                             dynflagsValue = dynflagsValue & ~UNIT_DYNFLAG_TAPPED;
-                            //sLog.outString(">> %s is tapped by %s", this->GetObjectGuid().GetString().c_str(), target->GetObjectGuid().GetString().c_str());
+                            //sLog.outString(">> %s is tapped by %s", this->GetGuidStr().c_str(), target->GetGuidStr().c_str());
                         }
                         else
                         {
                             // creature is in combat or died but not tapped by this player
                             dynflagsValue = dynflagsValue | UNIT_DYNFLAG_TAPPED;
-                            //sLog.outString(">> %s is not tapped by %s", this->GetObjectGuid().GetString().c_str(), target->GetObjectGuid().GetString().c_str());
+                            //sLog.outString(">> %s is not tapped by %s", this->GetGuidStr().c_str(), target->GetGuidStr().c_str());
                         }
                     }
 

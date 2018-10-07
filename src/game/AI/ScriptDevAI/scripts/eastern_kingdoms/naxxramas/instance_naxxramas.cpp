@@ -500,7 +500,7 @@ void instance_naxxramas::Load(const char* chrIn)
                >> m_auiEncounter[8] >> m_auiEncounter[9] >> m_auiEncounter[10] >> m_auiEncounter[11]
                >> m_auiEncounter[12] >> m_auiEncounter[13] >> m_auiEncounter[14] >> m_auiEncounter[15];
 
-    for (unsigned int& i : m_auiEncounter)
+    for (uint32& i : m_auiEncounter)
     {
         if (i == IN_PROGRESS)
             i = NOT_STARTED;
@@ -624,7 +624,7 @@ Creature* instance_naxxramas::GetClosestAnchorForGoth(Creature* pSource, bool bR
     return nullptr;
 }
 
-void instance_naxxramas::GetGothSummonPointCreatures(std::list<Creature*>& lList, bool bRightSide)
+void instance_naxxramas::GetGothSummonPointCreatures(CreatureList& lList, bool bRightSide)
 {
     for (auto& itr : m_mGothTriggerMap)
     {

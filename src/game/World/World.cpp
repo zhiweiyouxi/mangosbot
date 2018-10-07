@@ -192,6 +192,12 @@ World::AddSession_(WorldSession* s)
 {
     MANGOS_ASSERT(s);
 
+    if (FindSession(s->GetAccountId()))
+    {
+        sLog.outError("Trying to add an already existing session");
+        return;
+    }
+
     // NOTE - Still there is race condition in WorldSession* being used in the Sockets
 
     ///- kick already loaded player with same account (if any) and remove session
@@ -646,12 +652,13 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_UINT32_CHAT_STRICT_LINK_CHECKING_SEVERITY, "ChatStrictLinkChecking.Severity", 0);
     setConfig(CONFIG_UINT32_CHAT_STRICT_LINK_CHECKING_KICK,     "ChatStrictLinkChecking.Kick", 0);
 
-    setConfig(CONFIG_BOOL_CORPSE_EMPTY_LOOT_SHOW,      "Corpse.EmptyLootShow", true);
-    setConfig(CONFIG_UINT32_CORPSE_DECAY_NORMAL,    "Corpse.Decay.NORMAL",    300);
-    setConfig(CONFIG_UINT32_CORPSE_DECAY_RARE,      "Corpse.Decay.RARE",      900);
-    setConfig(CONFIG_UINT32_CORPSE_DECAY_ELITE,     "Corpse.Decay.ELITE",     600);
-    setConfig(CONFIG_UINT32_CORPSE_DECAY_RAREELITE, "Corpse.Decay.RAREELITE", 1200);
-    setConfig(CONFIG_UINT32_CORPSE_DECAY_WORLDBOSS, "Corpse.Decay.WORLDBOSS", 3600);
+    setConfig(CONFIG_BOOL_CORPSE_EMPTY_LOOT_SHOW,                     "Corpse.EmptyLootShow",                  true);
+    setConfig(CONFIG_BOOL_CORPSE_ALLOW_ALL_ITEMS_SHOW_IN_MASTER_LOOT, "Corpse.AllowAllItemsShowInMasterLoot", false);
+    setConfig(CONFIG_UINT32_CORPSE_DECAY_NORMAL,                      "Corpse.Decay.NORMAL",                    300);
+    setConfig(CONFIG_UINT32_CORPSE_DECAY_RARE,                        "Corpse.Decay.RARE",                      900);
+    setConfig(CONFIG_UINT32_CORPSE_DECAY_ELITE,                       "Corpse.Decay.ELITE",                     600);
+    setConfig(CONFIG_UINT32_CORPSE_DECAY_RAREELITE,                   "Corpse.Decay.RAREELITE",                1200);
+    setConfig(CONFIG_UINT32_CORPSE_DECAY_WORLDBOSS,                   "Corpse.Decay.WORLDBOSS",                3600);
 
     setConfig(CONFIG_INT32_DEATH_SICKNESS_LEVEL, "Death.SicknessLevel", 11);
 
@@ -1299,10 +1306,6 @@ void World::SetInitialWorldSettings()
     sLog.outString("Starting Game Event system...");
     uint32 nextGameEvent = sGameEventMgr.Initialize();
     m_timers[WUPDATE_EVENTS].SetInterval(nextGameEvent);    // depend on next event
-    sLog.outString();
-
-    sLog.outString("Loading grids for active creatures or transports...");
-    sObjectMgr.LoadActiveEntities(nullptr);
     sLog.outString();
 
     // Delete all characters which have been deleted X days before

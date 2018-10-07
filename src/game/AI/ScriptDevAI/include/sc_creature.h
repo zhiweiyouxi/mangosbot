@@ -188,10 +188,10 @@ struct ScriptedAI : public CreatureAI
         void DoTeleportPlayer(Unit* unit, float x, float y, float z, float ori);
 
         // Returns a list of friendly CC'd units within range
-        std::list<Creature*> DoFindFriendlyCC(float range);
+        CreatureList DoFindFriendlyCC(float range);
 
         // Returns a list of all friendly units missing a specific buff within range
-        std::list<Creature*> DoFindFriendlyMissingBuff(float range, uint32 spellId);
+        CreatureList DoFindFriendlyMissingBuff(float range, uint32 spellId);
 
         // Return a player with at least minimumRange from m_creature
         Player* GetPlayerAtMinimumRange(float minimumRange) const;
@@ -205,6 +205,9 @@ struct ScriptedAI : public CreatureAI
         void SetEquipmentSlots(bool loadDefault, int32 mainHand = EQUIP_NO_CHANGE, int32 offHand = EQUIP_NO_CHANGE, int32 ranged = EQUIP_NO_CHANGE);
 
         bool EnterEvadeIfOutOfCombatArea(const uint32 diff);
+
+    protected:
+        std::string GetAIName() override { return m_creature->GetAIName(); }
 
     private:
         uint32 m_uiEvadeCheckCooldown;

@@ -16,23 +16,4 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef MANGOS_CRITTERAI_H
-#define MANGOS_CRITTERAI_H
-
-#include "CreatureAI.h"
-#include "Entities/ObjectGuid.h"
-
-class CritterAI : public CreatureAI
-{
-    public:
-
-        explicit CritterAI(Creature* creature) : CreatureAI(creature) {}
-
-        void EnterCombat(Unit* /*enemy*/) override;
-        void UpdateAI(const uint32 /*diff*/) override;
-
-        static int Permissible(const Creature* creature);
-    protected:
-        std::string GetAIName() override { return "CritterAI"; }
-};
-#endif
+#include "EntitiesMgr.h"

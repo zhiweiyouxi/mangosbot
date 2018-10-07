@@ -988,7 +988,7 @@ class Player : public Unit
         bool ActivateTaxiPathTo(uint32 path_id, uint32 spellid = 0);
 
         // New taxi system
-        void TaxiFlightResume();
+        void TaxiFlightResume(bool forceRenewMoveGen = false);
         bool TaxiFlightInterrupt(bool cancel = true);
 
         bool IsTaxiDebug() const { return m_taxiTracker.m_debug; }
@@ -1505,6 +1505,8 @@ class Player : public Unit
         void AddNewInstanceId(uint32 instanceId);
         void UpdateNewInstanceIdTimers(TimePoint const& now);
 
+        void UpdateClientAuras();
+        void SendPetBar();
         bool UpdateSkill(uint32 skill_id, uint32 step);
         bool UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step);
 
@@ -1529,7 +1531,7 @@ class Player : public Unit
         void UpdateMaxPower(Powers power) override;
         void UpdateAttackPowerAndDamage(bool ranged = false) override;
         void UpdateDamagePhysical(WeaponAttackType attType) override;
-        void UpdateSpellDamageAndHealingBonus();
+        void UpdateSpellDamageBonus();
 
         void CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, float& min_damage, float& max_damage, uint8 index = 0);
 
@@ -1988,7 +1990,7 @@ class Player : public Unit
         void UpdateVisibilityOf(WorldObject const* viewPoint, WorldObject* target);
 
         template<class T>
-        void UpdateVisibilityOf(WorldObject const* viewPoint, T* target, UpdateData& data, std::set<WorldObject*>& visibleNow);
+        void UpdateVisibilityOf(WorldObject const* viewPoint, T* target, UpdateData& data, WorldObjectSet& visibleNow);
 
         // Stealth detection system
         void HandleStealthedUnitsDetection();

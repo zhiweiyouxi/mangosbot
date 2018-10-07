@@ -402,7 +402,7 @@ void AreaAura::Update(uint32 diff)
             Unit* owner = caster->GetMaster();
             if (!owner)
                 owner = caster;
-            Spell::UnitList targets;
+            UnitList targets;
 
             switch (m_areaAuraType)
             {
@@ -1125,7 +1125,7 @@ void Aura::TriggerSpell()
                         break;
                 }
                 uint32 curCount = 0;
-                std::list<Player*> playerList;
+                PlayerList playerList;
                 GetPlayerListWithEntryInWorld(playerList, target, range); // official range
                 for (Player* player : playerList)
                     if (target != player && player->HasAura(auraId))
@@ -1731,7 +1731,10 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
 
             switch (form)
             {
-                case FORM_CAT:
+                case FORM_CAT: // need to cast Track Humanoids if no other tracking is on
+                    if (target->HasSpell(5225) && !target->HasAura(2383) && !target->HasAura(2580))
+                        target->CastSpell(nullptr, 5225, TRIGGERED_OLD_TRIGGERED);
+                    // no break
                 case FORM_BEAR:
                 case FORM_DIREBEAR:
                 {
@@ -3286,7 +3289,7 @@ void Aura::HandleModSpellDamagePercentFromStat(bool /*apply*/, bool /*Real*/)
     // Magic damage modifiers implemented in Unit::SpellDamageBonusDone
     // This information for client side use only
     // Recalculate bonus
-    ((Player*)GetTarget())->UpdateSpellDamageAndHealingBonus();
+    ((Player*)GetTarget())->UpdateSpellDamageBonus();
 }
 
 void Aura::HandleModSpellHealingPercentFromStat(bool /*apply*/, bool /*Real*/)
@@ -3295,7 +3298,7 @@ void Aura::HandleModSpellHealingPercentFromStat(bool /*apply*/, bool /*Real*/)
         return;
 
     // Recalculate bonus
-    ((Player*)GetTarget())->UpdateSpellDamageAndHealingBonus();
+    //((Player*)GetTarget())->UpdateSpellHealingBonus(); //Not implemented on classic
 }
 
 void Aura::HandleModHealingDone(bool /*apply*/, bool /*Real*/)
@@ -3304,7 +3307,7 @@ void Aura::HandleModHealingDone(bool /*apply*/, bool /*Real*/)
         return;
     // implemented in Unit::SpellHealingBonusDone
     // this information is for client side only
-    ((Player*)GetTarget())->UpdateSpellDamageAndHealingBonus();
+    //((Player*)GetTarget())->UpdateSpellHealingBonus(); //Not implemented on classic
 }
 
 void Aura::HandleModTotalPercentStat(bool apply, bool /*Real*/)
@@ -4285,7 +4288,10 @@ void Aura::PeriodicTick()
 
             // Check for immune (not use charges)
             if (target->IsImmuneToDamage(GetSpellSchoolMask(spellProto)))
+            {
+                pCaster->SendSpellOrDamageImmune(target, spellProto->Id);
                 return;
+            }
 
             uint32 absorb = 0;
             uint32 resist = 0;
@@ -4366,7 +4372,10 @@ void Aura::PeriodicTick()
 
             // Check for immune
             if (target->IsImmuneToDamage(GetSpellSchoolMask(spellProto)))
+            {
+                pCaster->SendSpellOrDamageImmune(target, spellProto->Id);
                 return;
+            }
 
             uint32 absorb = 0;
             uint32 resist = 0;
@@ -4386,7 +4395,7 @@ void Aura::PeriodicTick()
 
             pCaster->DealDamageMods(target, pdamage, &absorb, DOT, spellProto);
 
-            pCaster->SendSpellNonMeleeDamageLog(target, GetId(), pdamage, GetSpellSchoolMask(spellProto), absorb, resist, false, 0);
+            pCaster->SendSpellNonMeleeDamageLog(target, GetId(), pdamage, GetSpellSchoolMask(spellProto), absorb, resist, true, 0);
 
             float multiplier = spellProto->EffectMultipleValue[GetEffIndex()] > 0 ? spellProto->EffectMultipleValue[GetEffIndex()] : 1;
 
@@ -4438,7 +4447,10 @@ void Aura::PeriodicTick()
                 return;
 
             if (target->IsImmuneToSchool(spellProto))
+            {
+                pCaster->SendSpellOrDamageImmune(target, spellProto->Id);
                 return;
+            }
 
             // ignore non positive values (can be result apply spellmods to aura damage
             uint32 amount = m_modifier.m_amount > 0 ? m_modifier.m_amount : 0;
@@ -4478,7 +4490,7 @@ void Aura::PeriodicTick()
                 pCaster->DealDamageMods(pCaster, damage, &absorb, NODAMAGE, spellProto);
                 if (pCaster->GetHealth() > damage)
                 {
-                    pCaster->SendSpellNonMeleeDamageLog(pCaster, GetId(), damage, GetSpellSchoolMask(spellProto), absorb, 0, false, 0, false);
+                    pCaster->SendSpellNonMeleeDamageLog(pCaster, GetId(), damage, GetSpellSchoolMask(spellProto), absorb, 0, true, 0, false);
                     CleanDamage cleanDamage = CleanDamage(0, BASE_ATTACK, MELEE_HIT_NORMAL);
                     pCaster->DealDamage(pCaster, damage, &cleanDamage, NODAMAGE, GetSpellSchoolMask(spellProto), spellProto, true);
                 }
@@ -4522,7 +4534,10 @@ void Aura::PeriodicTick()
 
             // Check for immune (not use charges)
             if (target->IsImmuneToDamage(GetSpellSchoolMask(spellProto)))
+            {
+                pCaster->SendSpellOrDamageImmune(target, spellProto->Id);
                 return;
+            }
 
             // ignore non positive values (can be result apply spellmods to aura damage
             uint32 pdamage = m_modifier.m_amount > 0 ? m_modifier.m_amount : 0;
@@ -4574,6 +4589,17 @@ void Aura::PeriodicTick()
             if (!target->isAlive())
                 return;
 
+            Unit* pCaster = GetCaster();
+
+            if (pCaster)
+            {
+                if (target->IsImmuneToSchool(spellProto))
+                {
+                    pCaster->SendSpellOrDamageImmune(target, spellProto->Id);
+                    return;
+                }
+            }
+
             // ignore non positive values (can be result apply spellmods to aura damage
             uint32 pdamage = m_modifier.m_amount > 0 ? m_modifier.m_amount : 0;
 
@@ -4593,7 +4619,7 @@ void Aura::PeriodicTick()
 
             int32 gain = target->ModifyPower(power, pdamage);
 
-            if (Unit* pCaster = GetCaster())
+            if (pCaster)
                 target->getHostileRefManager().threatAssist(pCaster, float(gain) * 0.5f * sSpellMgr.GetSpellThreatMultiplier(spellProto), spellProto);
             break;
         }
@@ -4602,6 +4628,17 @@ void Aura::PeriodicTick()
             // don't energize target if not alive, possible death persistent effects
             if (!target->isAlive())
                 return;
+
+            Unit* pCaster = GetCaster();
+
+            if (pCaster)
+            {
+                if (target->IsImmuneToSchool(spellProto))
+                {
+                    pCaster->SendSpellOrDamageImmune(target, spellProto->Id);
+                    return;
+                }
+            }
 
             // ignore non positive values (can be result apply spellmods to aura damage
             uint32 amount = m_modifier.m_amount > 0 ? m_modifier.m_amount : 0;
@@ -4619,7 +4656,7 @@ void Aura::PeriodicTick()
 
             int32 gain = target->ModifyPower(POWER_MANA, pdamage);
 
-            if (Unit* pCaster = GetCaster())
+            if (pCaster)
                 target->getHostileRefManager().threatAssist(pCaster, float(gain) * 0.5f * sSpellMgr.GetSpellThreatMultiplier(spellProto), spellProto);
             break;
         }
@@ -4635,7 +4672,10 @@ void Aura::PeriodicTick()
 
             // Check for immune (not use charges)
             if (target->IsImmuneToDamage(GetSpellSchoolMask(spellProto)))
+            {
+                pCaster->SendSpellOrDamageImmune(target, spellProto->Id);
                 return;
+            }
 
             int32 pdamage = m_modifier.m_amount > 0 ? m_modifier.m_amount : 0;
 
@@ -4649,8 +4689,9 @@ void Aura::PeriodicTick()
             gain = uint32(gain * spellProto->EffectMultipleValue[GetEffIndex()]);
 
             // maybe has to be sent different to client, but not by SMSG_PERIODICAURALOG
-
             SpellNonMeleeDamage spellDamageInfo(pCaster, target, spellProto->Id, SpellSchools(spellProto->School));
+            spellDamageInfo.periodicLog = true;
+
             pCaster->CalculateSpellDamage(&spellDamageInfo, gain, spellProto);
 
             spellDamageInfo.target->CalculateAbsorbResistBlock(pCaster, &spellDamageInfo, spellProto);

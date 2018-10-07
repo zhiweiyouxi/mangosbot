@@ -518,8 +518,15 @@ struct GameObjectData
     int32 spawntimesecsmax;
     uint32 animprogress;
     GOState go_state;
+    uint16 gameEvent;
+    uint16 GuidPoolId;
+    uint16 EntryPoolId;
+    uint16 OriginalZoneId;
 
     uint32 GetRandomRespawnTime() const { return urand(uint32(spawntimesecsmin), uint32(spawntimesecsmax)); }
+
+    // return false if it should be handled by GameEventMgr or PoolMgr
+    bool IsNotPartOfPoolOrEvent() const { return (!gameEvent && !GuidPoolId && !EntryPoolId); }
 };
 
 // For containers:  [GO_NOT_READY]->GO_READY (close)->GO_ACTIVATED (open) ->GO_JUST_DEACTIVATED->GO_READY        -> ...
@@ -692,9 +699,6 @@ class GameObject : public WorldObject
         void UseDoorOrButton(uint32 time_to_restore = 0, bool alternative = false);
         // 0 = use `gameobject`.`spawntimesecs`
         void ResetDoorOrButton();
-
-        bool IsHostileTo(Unit const* unit) const override;
-        bool IsFriendlyTo(Unit const* unit) const override;
 
         ReputationRank GetReactionTo(Unit const* unit) const override;
 

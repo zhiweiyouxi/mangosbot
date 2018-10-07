@@ -623,7 +623,7 @@ void Creature::RegenerateAll(uint32 update_diff)
     if (m_regenTimer != 0)
         return;
 
-    if (isInCombat() && IsEvadeRegen() || !isInCombat() || IsPolymorphed())
+    if (!isInCombat() || IsPolymorphed() || IsEvadeRegen())
         RegenerateHealth();
 
     RegeneratePower();
@@ -704,21 +704,7 @@ void Creature::RegenerateHealth()
     if (curValue >= maxValue)
         return;
 
-    uint32 addvalue;
-
-    // Not only pet, but any controlled creature
-    if (GetMasterGuid())
-    {
-        float HealthIncreaseRate = sWorld.getConfig(CONFIG_FLOAT_RATE_HEALTH);
-        float Spirit = GetStat(STAT_SPIRIT);
-
-        if (GetPower(POWER_MANA) > 0)
-            addvalue = uint32(Spirit * 0.25 * HealthIncreaseRate);
-        else
-            addvalue = uint32(Spirit * 0.80 * HealthIncreaseRate);
-    }
-    else
-        addvalue = maxValue / 3;
+    uint32 addvalue = maxValue / 3;
 
     ModifyHealth(addvalue);
 }
@@ -1808,9 +1794,9 @@ SpellEntry const* Creature::ReachWithSpellCure(Unit* pVictim)
         }
 
         bool bcontinue = true;
-        for (unsigned int j : spellInfo->Effect)
+        for (uint32 j : spellInfo->Effect)
         {
-            if ((j == SPELL_EFFECT_HEAL))
+            if (j == uint32(SPELL_EFFECT_HEAL))
             {
                 bcontinue = false;
                 break;
@@ -2142,17 +2128,25 @@ bool Creature::MeetsSelectAttackingRequirement(Unit* pTarget, SpellEntry const* 
 
         switch (pSpellInfo->rangeIndex)
         {
-            case SPELL_RANGE_IDX_SELF_ONLY: return false;
             case SPELL_RANGE_IDX_ANYWHERE:  return true;
             case SPELL_RANGE_IDX_COMBAT:    return CanReachWithMeleeAttack(pTarget);
         }
 
-        SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(pSpellInfo->rangeIndex);
-        float max_range = GetSpellMaxRange(srange);
-        float min_range = GetSpellMinRange(srange);
-        float dist = GetDistance(pTarget, true, DIST_CALC_COMBAT_REACH);
-
-        return dist < max_range && dist >= min_range;
+        if (selectFlags & SELECT_FLAG_USE_EFFECT_RADIUS)
+        {
+            SpellRadiusEntry const* srange = sSpellRadiusStore.LookupEntry(pSpellInfo->EffectRadiusIndex[0]);
+            float max_range = GetSpellRadius(srange);
+            float dist = pTarget->GetDistance(GetPositionX(), GetPositionY(), GetPositionZ());
+            return dist < max_range;
+        }
+        else
+        {
+            SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(pSpellInfo->rangeIndex);
+            float max_range = GetSpellMaxRange(srange);
+            float min_range = GetSpellMinRange(srange);
+            float dist = GetDistance(pTarget, true, DIST_CALC_COMBAT_REACH);
+            return dist < max_range && dist >= min_range;
+        }
     }
 
     return true;
@@ -2234,7 +2228,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
         case ATTACKING_TARGET_NEAREST_BY:
         case ATTACKING_TARGET_FARTHEST_AWAY:
         {
-            std::list<Unit*> suitableUnits;
+            UnitList suitableUnits;
 
             for (; itr != threatlist.end(); ++itr)
             {
@@ -2256,11 +2250,17 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
                     suitableUnits.sort(TargetDistanceOrderFarAway(this));
             }
 
-            std::list<Unit*>::iterator itr2 = suitableUnits.begin();
+            UnitList::iterator itr2 = suitableUnits.begin();
             if (position)
                 std::advance(itr2, position);
             return *itr2;
         }
+        case ATTACKING_TARGET_ALL_SUITABLE:
+            //TODO:: This should not happen
+            sLog.outError("Creature::SelectAttackingTarget> Target have unimplemented value 'ATTACKING_TARGET_ALL_SUITABLE'!");
+            break;
+        default:
+            break;
     }
 
     return nullptr;
@@ -2299,6 +2299,15 @@ void Creature::SelectAttackingTargets(std::vector<Unit*>& selectedTargets, Attac
             }
             break;
         }
+        case ATTACKING_TARGET_RANDOM:
+        case ATTACKING_TARGET_TOPAGGRO:
+        case ATTACKING_TARGET_BOTTOMAGGRO:
+        case ATTACKING_TARGET_NEAREST_BY:
+        case ATTACKING_TARGET_FARTHEST_AWAY:
+        default:
+            //TODO:: This should not happen
+            sLog.outError("Creature::SelectAttackingTarget> Target have unimplemented value!");
+            break;
     }
 }
 

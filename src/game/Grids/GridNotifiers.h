@@ -37,7 +37,7 @@ namespace MaNGOS
         Camera& i_camera;
         UpdateData i_data;
         GuidSet i_clientGUIDs;
-        std::set<WorldObject*> i_visibleNow;
+        WorldObjectSet i_visibleNow;
 
         explicit VisibleNotifier(Camera& c) : i_camera(c), i_clientGUIDs(c.GetOwner()->m_clientGUIDs) {}
         template<class T> void Visit(GridRefManager<T>& m);
@@ -217,10 +217,10 @@ namespace MaNGOS
     template<class Check>
     struct WorldObjectListSearcher
     {
-        std::list<WorldObject*>& i_objects;
+        WorldObjectList& i_objects;
         Check& i_check;
 
-        WorldObjectListSearcher(std::list<WorldObject*>& objects, Check& check) : i_objects(objects), i_check(check) {}
+        WorldObjectListSearcher(WorldObjectList& objects, Check& check) : i_objects(objects), i_check(check) {}
 
         void Visit(PlayerMapType& m);
         void Visit(CreatureMapType& m);
@@ -302,10 +302,10 @@ namespace MaNGOS
     template<class Check>
     struct GameObjectListSearcher
     {
-        std::list<GameObject*>& i_objects;
+        GameObjectList& i_objects;
         Check& i_check;
 
-        GameObjectListSearcher(std::list<GameObject*>& objects, Check& check) : i_objects(objects), i_check(check) {}
+        GameObjectListSearcher(GameObjectList& objects, Check& check) : i_objects(objects), i_check(check) {}
 
         void Visit(GameObjectMapType& m);
 
@@ -348,10 +348,10 @@ namespace MaNGOS
     template<class Check>
     struct UnitListSearcher
     {
-        std::list<Unit*>& i_objects;
+        UnitList& i_objects;
         Check& i_check;
 
-        UnitListSearcher(std::list<Unit*>& objects, Check& check) : i_objects(objects), i_check(check) {}
+        UnitListSearcher(UnitList& objects, Check& check) : i_objects(objects), i_check(check) {}
 
         void Visit(PlayerMapType& m);
         void Visit(CreatureMapType& m);
@@ -391,10 +391,10 @@ namespace MaNGOS
     template<class Check>
     struct CreatureListSearcher
     {
-        std::list<Creature*>& i_objects;
+        CreatureList& i_objects;
         Check& i_check;
 
-        CreatureListSearcher(std::list<Creature*>& objects, Check& check) : i_objects(objects), i_check(check) {}
+        CreatureListSearcher(CreatureList& objects, Check& check) : i_objects(objects), i_check(check) {}
 
         void Visit(CreatureMapType& m);
 
@@ -435,10 +435,10 @@ namespace MaNGOS
     template<class Check>
     struct PlayerListSearcher
     {
-        std::list<Player*>& i_objects;
+        PlayerList& i_objects;
         Check& i_check;
 
-        PlayerListSearcher(std::list<Player*>& objects, Check& check)
+        PlayerListSearcher(PlayerList& objects, Check& check)
             : i_objects(objects), i_check(check) {}
 
         void Visit(PlayerMapType& m);
@@ -865,8 +865,7 @@ namespace MaNGOS
             WorldObject const& GetFocusObject() const { return *i_obj; }
             bool operator()(Unit* u) const
             {
-                return u->isAlive() && (i_controlledByPlayer ? !i_obj->IsFriendlyTo(u) && i_obj->CanAttackSpell(u) : i_obj->IsHostileTo(u))
-                    && i_obj->IsWithinDistInMap(u, i_range);
+                return u->isAlive() && i_obj->CanAttackSpell(u) && i_obj->IsWithinDistInMap(u, i_range);
             }
         private:
             WorldObject const* i_obj;
@@ -981,24 +980,29 @@ namespace MaNGOS
     class NearestAttackableUnitInObjectRangeCheck
     {
         public:
-            NearestAttackableUnitInObjectRangeCheck(Unit const* funit, float range) : i_funit(funit), i_range(range) {}
-            Unit const& GetFocusObject() const { return *i_funit; }
-            bool operator()(Unit* u)
+            NearestAttackableUnitInObjectRangeCheck(Unit* source, Unit* owner, float range) : m_source(source), m_owner(owner), m_range(range) {}
+            NearestAttackableUnitInObjectRangeCheck(NearestAttackableUnitInObjectRangeCheck const&) =  delete;
+
+            Unit const& GetFocusObject() const { return *m_source; }
+
+            bool operator()(Unit* currUnit)
             {
-                if (i_funit->CanAttack(u) && u->isVisibleForOrDetect(i_funit, i_funit, false) && i_funit->IsWithinDistInMap(u, i_range))
+                if (currUnit->isAlive() && (m_source->IsAttackedBy(currUnit) || (m_owner && m_owner->IsAttackedBy(currUnit)) || m_source->IsEnemy(currUnit))
+                    && m_source->CanAttack(currUnit)
+                    && currUnit->isVisibleForOrDetect(m_source, m_source, false)
+                    && m_source->IsWithinDistInMap(currUnit, m_range))
                 {
-                    i_range = i_funit->GetDistance(u);        // use found unit range as new range limit for next check
+                    m_range = m_source->GetDistance(currUnit);        // use found unit range as new range limit for next check
                     return true;
                 }
 
                 return false;
             }
-            // prevent clone this object
-            NearestAttackableUnitInObjectRangeCheck(NearestAttackableUnitInObjectRangeCheck const&);
 
         private:
-            Unit const* i_funit;
-            float i_range;
+            Unit*       m_source;
+            Unit*       m_owner;
+            float       m_range;
     };
 
     class AnyAoETargetUnitInObjectRangeCheck

@@ -219,10 +219,17 @@ struct CreatureData
     uint32 curmana;
     bool  is_dead;
     uint8 movementType;
+    uint16 gameEvent;
+    uint16 GuidPoolId;
+    uint16 EntryPoolId;
+    uint16 OriginalZoneId;
 
     // helper function
     ObjectGuid GetObjectGuid(uint32 lowguid) const { return ObjectGuid(CreatureInfo::GetHighGuid(), id, lowguid); }
     uint32 GetRandomRespawnTime() const { return urand(spawntimesecsmin, spawntimesecsmax); }
+
+    // return false if it should be handled by GameEventMgr or PoolMgr
+    bool IsNotPartOfPoolOrEvent() const { return (!gameEvent && !GuidPoolId && !EntryPoolId); }
 };
 
 enum SplineFlags
@@ -351,6 +358,7 @@ enum SelectFlags
     SELECT_FLAG_RANGE_RANGE         = 0x0400,               // For direct targeted abilities like charge or frostbolt
     SELECT_FLAG_RANGE_AOE_RANGE     = 0x0800,               // For AOE targeted abilities like frost nova
     SELECT_FLAG_POWER_NOT_MANA      = 0x1000,               // Used in some dungeon encounters
+    SELECT_FLAG_USE_EFFECT_RADIUS   = 0x2000,               // For AOE targeted abilities which have correct data in effect index 0
 };
 
 enum RegenStatsFlags
@@ -829,7 +837,7 @@ class Creature : public Unit
 
         CreatureSubtype m_subtype;                          // set in Creatures subclasses for fast it detect without dynamic_cast use
         void RegeneratePower();
-        void RegenerateHealth();
+        virtual void RegenerateHealth();
         MovementGeneratorType m_defaultMovementType;
         Cell m_currentCell;                                 // store current cell where creature listed
         uint32 m_equipmentId;
