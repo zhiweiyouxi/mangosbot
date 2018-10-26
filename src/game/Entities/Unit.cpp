@@ -10578,7 +10578,9 @@ float Unit::GetAttackDistance(Unit const* pl) const
     uint32 creaturelevel = GetLevelForTarget(pl);
 
     int32 leveldif = int32(playerlevel) - int32(creaturelevel);
-
+#ifdef ENABLE_IMMERSIVE
+    leveldif += sImmersive.CalculateEffectiveChance(leveldif, this, pl, immersive::IMMERSIVE_EFFECTIVE_ATTACK_DISTANCE);
+#endif
     // "The maximum Aggro Radius has a cap of 25 levels under. Example: A level 30 char has the same Aggro Radius of a level 5 char on a level 60 mob."
     if (leveldif < -25)
         leveldif = -25;
