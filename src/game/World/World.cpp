@@ -1316,8 +1316,8 @@ void World::SetInitialWorldSettings()
     sLog.outString();
 
 #ifdef ENABLE_PLAYERBOTS
-    auctionbot.Init();
     sPlayerbotAIConfig.Initialize();
+    auctionbot.Init();
 #endif
 
     sLog.outString("---------------------------------------");
