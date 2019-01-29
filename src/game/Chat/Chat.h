@@ -227,8 +227,10 @@ class ChatHandler
         bool HandleDebugTaxiCommand(char* /*args*/);
         bool HandleDebugUpdateWorldStateCommand(char* args);
         bool HandleDebugWaypoint(char* args);
+        bool HandleDebugByteFields(char* args);
         bool HandleDebugSpellVisual(char* args);
         bool HandleDebugMoveflags(char* args);
+        bool HandleDebugLootDropStats(char* args);
 
         bool HandleDebugPlayCinematicCommand(char* args);
         bool HandleDebugPlaySoundCommand(char* args);
@@ -242,10 +244,12 @@ class ChatHandler
         bool HandleDebugSendEquipErrorCommand(char* args);
         bool HandleDebugSendOpcodeCommand(char* args);
         bool HandleDebugSendPoiCommand(char* args);
+        bool HandleDebugSendQuestFailedMsgCommand(char* args);
         bool HandleDebugSendQuestPartyMsgCommand(char* args);
         bool HandleDebugSendQuestInvalidMsgCommand(char* args);
         bool HandleDebugSendSellErrorCommand(char* args);
         bool HandleDebugSendSpellFailCommand(char* args);
+        bool HandleDebugSendWorldState(char* args);
 
         bool HandleEventListCommand(char* args);
         bool HandleEventStartCommand(char* args);
@@ -368,6 +372,7 @@ class ChatHandler
         bool HandleNpcPlayEmoteCommand(char* args);
         bool HandleNpcSayCommand(char* args);
         bool HandleNpcSetDeathStateCommand(char* args);
+        bool HandleNpcShowLootCommand(char* args);
         bool HandleNpcSetModelCommand(char* args);
         bool HandleNpcSetMoveTypeCommand(char* args);
         bool HandleNpcSpawnDistCommand(char* args);
@@ -571,6 +576,7 @@ class ChatHandler
         bool HandleCooldownClearClientSideCommand(char* args);
         bool HandleUnLearnCommand(char* args);
         bool HandleGetDistanceCommand(char* args);
+        bool HandleGetLosCommand(char* args);
         bool HandleModifyStandStateCommand(char* args);
         bool HandleDieCommand(char* args);
         bool HandleDamageCommand(char* args);

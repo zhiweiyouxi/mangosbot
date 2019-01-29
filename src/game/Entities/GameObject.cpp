@@ -93,6 +93,10 @@ void GameObject::AddToWorld()
 
     // After Object::AddToWorld so that for initial state the GO is added to the world (and hence handled correctly)
     UpdateCollisionState();
+
+    if (IsSpawned()) // need to prevent linked trap addition due to Pool system Map::Add abuse
+        if (GameObject* linkedGO = SummonLinkedTrapIfAny())
+            SetLinkedTrap(linkedGO);
 }
 
 void GameObject::RemoveFromWorld()
@@ -207,7 +211,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map* map, float x, float
     return true;
 }
 
-void GameObject::Update(uint32 update_diff, uint32 p_time)
+void GameObject::Update(const uint32 diff)
 {
     if (GetObjectGuid().IsMOTransport())
     {
@@ -286,6 +290,10 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
                 {
                     m_respawnTime = 0;
                     ClearAllUsesData();
+
+                    // If nearby linked trap exists, respawn it
+                    if (GameObject* linkedTrap = GetLinkedTrap())
+                        linkedTrap->SetLootState(GO_READY);
 
                     switch (GetGoType())
                     {
@@ -456,7 +464,7 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
                     }
                     break;
                 case GAMEOBJECT_TYPE_CAPTURE_POINT:
-                    m_captureTimer += p_time;
+                    m_captureTimer += diff;
                     if (m_captureTimer >= 5000)
                     {
                         TickCapturePoint();
@@ -470,6 +478,10 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
         }
         case GO_JUST_DEACTIVATED:
         {
+            // If nearby linked trap exists, despawn it
+            if (GameObject* linkedTrap = GetLinkedTrap())
+                linkedTrap->SetLootState(GO_JUST_DEACTIVATED);
+
             switch (GetGoType())
             {
                 case GAMEOBJECT_TYPE_GOOBER:
@@ -558,7 +570,14 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
 
             // if part of pool, let pool system schedule new spawn instead of just scheduling respawn
             if (uint16 poolid = sPoolMgr.IsPartOfAPool<GameObject>(GetGUIDLow()))
+            {
                 sPoolMgr.UpdatePool<GameObject>(*GetMap()->GetPersistentState(), poolid, GetGUIDLow());
+                if (GameObject* linkedTrap = GetLinkedTrap())
+                {
+                    linkedTrap->SetLootState(GO_JUST_DEACTIVATED);
+                    linkedTrap->Delete();
+                }
+            }
 
             // can be not in world at pool despawn
             if (IsInWorld())
@@ -570,17 +589,17 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
 
     if (m_delayedActionTimer)
     {
-        if (m_delayedActionTimer <= update_diff)
+        if (m_delayedActionTimer <= diff)
         {
             m_delayedActionTimer = 0;
             TriggerDelayedAction();
         }
         else
-            m_delayedActionTimer -= update_diff;
+            m_delayedActionTimer -= diff;
     }
 
     if (m_AI)
-        m_AI->UpdateAI(update_diff);
+        m_AI->UpdateAI(diff);
 }
 
 void GameObject::Refresh()
@@ -614,6 +633,12 @@ void GameObject::Delete()
         sPoolMgr.UpdatePool<GameObject>(*GetMap()->GetPersistentState(), poolid, GetGUIDLow());
     else
         AddObjectToRemoveList();
+
+    if (GameObject* linkedTrap = GetLinkedTrap())
+    {
+        linkedTrap->SetLootState(GO_JUST_DEACTIVATED);
+        linkedTrap->Delete();
+    }
 }
 
 void GameObject::SaveToDB() const
@@ -905,7 +930,7 @@ bool GameObject::isVisibleForInState(Player const* u, WorldObject const* viewPoi
         }
 
         // Smuggled Mana Cell required 10 invisibility type detection/state
-        if (GetEntry() == 187039 && ((u->m_detectInvisibilityMask | u->m_invisibilityMask) & (1 << 10)) == 0)
+        if (GetEntry() == 187039 && ((u->GetInvisibilityDetectMask() | u->GetInvisibilityMask()) & (1 << 10)) == 0)
             return false;
     }
 
@@ -1004,21 +1029,21 @@ bool GameObject::ActivateToQuest(Player* pTarget) const
     return false;
 }
 
-void GameObject::SummonLinkedTrapIfAny() const
+GameObject* GameObject::SummonLinkedTrapIfAny() const
 {
     uint32 linkedEntry = GetGOInfo()->GetLinkedGameObjectEntry();
     if (!linkedEntry)
-        return;
+        return nullptr;
 
     GameObject* linkedGO = new GameObject;
     if (!linkedGO->Create(GetMap()->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), linkedEntry, GetMap(),
                           GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, GO_ANIMPROGRESS_DEFAULT, GO_STATE_READY))
     {
         delete linkedGO;
-        return;
+        return nullptr;
     }
 
-    linkedGO->SetRespawnTime(GetRespawnDelay());
+    linkedGO->m_respawnDelayTime = 0;
     linkedGO->SetSpellId(GetSpellId());
 
     if (GetOwnerGuid())
@@ -1029,6 +1054,8 @@ void GameObject::SummonLinkedTrapIfAny() const
 
     GetMap()->Add(linkedGO);
     linkedGO->AIM_Initialize();
+
+    return linkedGO;
 }
 
 void GameObject::TriggerLinkedGameObject(Unit* target) const
@@ -1867,6 +1894,11 @@ void GameObject::SetLootRecipient(Unit* pUnit)
         m_lootGroupRecipientId = group->GetId();
 }
 
+GameObject* GameObject::GetLinkedTrap()
+{
+    return GetMap()->GetGameObject(m_linkedTrap);
+}
+
 float GameObject::GetObjectBoundingRadius() const
 {
     // 1.12.1 GameObjectDisplayInfo.dbc not have any info related to size
@@ -2210,7 +2242,7 @@ void GameObject::TriggerSummoningRitual()
         ClearAllUsesData();
 
     if (caster)
-        caster->CastSpell(sObjectMgr.GetPlayer(m_actionTarget), info->summoningRitual.spellId, TRIGGERED_OLD_TRIGGERED, nullptr, nullptr, GetObjectGuid());
+        caster->CastSpell(sObjectMgr.GetPlayer(m_actionTarget), info->summoningRitual.spellId, TRIGGERED_OLD_TRIGGERED | TRIGGERED_INSTANT_CAST, nullptr, nullptr, GetObjectGuid());
 }
 
 void GameObject::TriggerDelayedAction()
