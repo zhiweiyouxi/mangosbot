@@ -437,7 +437,6 @@ struct TrainerSpell
 
     // helpers
     bool IsCastable() const { return learnedSpell != spell; }
-#endif
 };
 
 typedef std::unordered_map < uint32 /*spellid*/, TrainerSpell > TrainerSpellMap;
