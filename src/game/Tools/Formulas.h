@@ -22,6 +22,8 @@
 #include "World/World.h"
 // TODO: Required for classic honor system type HonorStandingList, needs redesign:
 #include "Globals/ObjectMgr.h"
+#include "PlayerbotAIConfig.h"
+#include "RandomPlayerbotMgr.h"
 
 struct HonorScores
 {
@@ -348,6 +350,12 @@ namespace MaNGOS
                 else
                     xp_gain *= 2;
             }
+
+
+			if (sRandomPlayerbotMgr.IsRandomBot(player) && !player->GetGroup())
+			{
+				xp_gain *= sPlayerbotAIConfig.playerbotsXPrate;
+			}
 
             xp_gain *= target->GetCreatureInfo()->ExperienceMultiplier;
 
