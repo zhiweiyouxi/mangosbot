@@ -2,7 +2,7 @@
  * MaNGOS is a full featured server for World of Warcraft, supporting
  * the following clients: 1.12.x, 2.4.3, 3.3.5a, 4.3.4a and 5.4.8
  *
- * Copyright (C) 2005-2018  MaNGOS project <https://getmangos.eu>
+ * Copyright (C) 2005-2019  MaNGOS project <https://getmangos.eu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,8 @@ const char ItemPrototypedstfmt[] = "iiisiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 const char PageTextfmt[] = "isi";
 const char InstanceTemplatesrcfmt[] = "iiiiiiiff";
 const char InstanceTemplatedstfmt[] = "iiiiiiiff";
-const char ConditionsSrcFmt[] = "iiii";
-const char ConditionsDstFmt[] = "iiii";
+const char ConditionsSrcFmt[] = "iiiix";
+const char ConditionsDstFmt[] = "iiiix";
 const char CreatureTemplateSpellsFmt[] = "iiiii";
 const char SpellScriptTargetFmt[] = "iiii";
 

@@ -2,7 +2,7 @@
  * MaNGOS is a full featured server for World of Warcraft, supporting
  * the following clients: 1.12.x, 2.4.3, 3.3.5a, 4.3.4a and 5.4.8
  *
- * Copyright (C) 2005-2018  MaNGOS project <https://getmangos.eu>
+ * Copyright (C) 2005-2019  MaNGOS project <https://getmangos.eu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2340,7 +2340,7 @@ bool Map::GetReachableRandomPosition(Unit* unit, float& x, float& y, float& z, f
     float i_y = y;
     float i_z = z;
 
-	bool isFlying;
+    bool isFlying;
     bool isSwimming = true;
     switch (unit->GetTypeId())
     {
@@ -2362,8 +2362,8 @@ bool Map::GetReachableRandomPosition(Unit* unit, float& x, float& y, float& z, f
         return false;
     }
 
-	bool newDestAssigned;
-	if (isFlying)
+    bool newDestAssigned;
+    if (isFlying)
     {
         newDestAssigned = GetRandomPointInTheAir(i_x, i_y, i_z, radius);
     }

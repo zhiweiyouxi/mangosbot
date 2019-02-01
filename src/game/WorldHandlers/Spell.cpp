@@ -2,7 +2,7 @@
  * MaNGOS is a full featured server for World of Warcraft, supporting
  * the following clients: 1.12.x, 2.4.3, 3.3.5a, 4.3.4a and 5.4.8
  *
- * Copyright (C) 2005-2018  MaNGOS project <https://getmangos.eu>
+ * Copyright (C) 2005-2019  MaNGOS project <https://getmangos.eu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1575,7 +1575,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                     Cell::VisitAllObjects(m_caster, searcher, max_range);
                     break;
                 }
-				case TARGET_RANDOM_UNIT_CHAIN_IN_AREA: // This works the same as Target_random_friend_chain_in_area but is named differently for some reason
+                case TARGET_RANDOM_UNIT_CHAIN_IN_AREA: // This works the same as Target_random_friend_chain_in_area but is named differently for some reason
                 case TARGET_RANDOM_FRIEND_CHAIN_IN_AREA:
                 {
                     MaNGOS::AnyFriendlyUnitInObjectRangeCheck u_check(m_caster, max_range);
@@ -6515,7 +6515,7 @@ bool Spell::IsLockInRange(GameObject* go)
 {
     const SpellRangeEntry* srange = sSpellRangeStore.LookupEntry(m_spellInfo->rangeIndex);
 
-	
+    
     // This check is not related to bounding radius
     float dx = m_caster->GetPositionX() - go->GetPositionX();
     float dy = m_caster->GetPositionY() - go->GetPositionY();

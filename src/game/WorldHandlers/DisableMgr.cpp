@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2018  MaNGOS project <http://getmangos.eu>
+ * Copyright (C) 2015-2019  MaNGOS project <http://getmangos.eu>
  * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -22,6 +22,7 @@
 #include "OutdoorPvPMgr.h"
 #include "SpellMgr.h"
 #include "Player.h"
+#include "ProgressBar.h"
 #include "World.h"
 #include "BattleGroundMgr.h"
 

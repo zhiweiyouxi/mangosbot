@@ -2,7 +2,7 @@
  * MaNGOS is a full featured server for World of Warcraft, supporting
  * the following clients: 1.12.x, 2.4.3, 3.3.5a, 4.3.4a and 5.4.8
  *
- * Copyright (C) 2005-2018  MaNGOS project <https://getmangos.eu>
+ * Copyright (C) 2005-2019  MaNGOS project <https://getmangos.eu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -288,12 +288,17 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recv_data)
 
     // check present spell in trainer spell list
     TrainerSpellData const* cSpells = unit->GetTrainerSpells();
+    TrainerSpellData const* tSpells = unit->GetTrainerTemplateSpells();
 
-    if (!cSpells)
+    if (!cSpells && !tSpells)
         { return; }
 
     // Try find spell in npc_trainer
     TrainerSpell const* trainer_spell = cSpells ? cSpells->Find(spellId) : NULL;
+
+    // Not found, try find in npc_trainer_template
+    if (!trainer_spell && tSpells)
+        { trainer_spell = tSpells->Find(spellId); }
 
     // Not found anywhere, cheating?
     if (!trainer_spell)

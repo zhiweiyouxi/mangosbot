@@ -2,7 +2,7 @@
 * MaNGOS is a full featured server for World of Warcraft, supporting
 * the following clients: 1.12.x, 2.4.3, 3.3.5a, 4.3.4a and 5.4.8
 *
-* Copyright (C) 2005-2018  MaNGOS project <http://getmangos.eu>
+* Copyright (C) 2005-2019  MaNGOS project <http://getmangos.eu>
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,11 @@
 
 #ifndef MANGOS_H_PLAYERLOGGER
 #define MANGOS_H_PLAYERLOGGER
+
+#include "Platform/Define.h"
+#include <vector>
+class Player;
+class ObjectGuid;
 
 enum PlayerLogEntity
 {
@@ -147,7 +152,7 @@ struct PlayerLogProgress : public PlayerLogPosition // 18+4=22 bytes
 class PlayerLogger
 {
 public:
-    PlayerLogger(ObjectGuid);
+    PlayerLogger(ObjectGuid const & guid);
     ~PlayerLogger();
 
     static inline PlayerLogMask CalcLogMask(PlayerLogEntity entity) { return PlayerLogMask(1 << entity); }
@@ -178,10 +183,10 @@ public:
     void CheckAndTruncate(PlayerLogMask, uint32 maxRecords);
 
     // logging itself
-    void LogDamage(bool done, uint16 damage, uint16 heal, ObjectGuid unitGuid, uint16 spell);
-    void LogLooting(LootSourceType type, ObjectGuid droppedBy, ObjectGuid itemGuid, uint32 id);
-    void LogTrading(bool aquire, ObjectGuid partner, ObjectGuid itemGuid);
-    void LogKilling(bool killedEnemy, ObjectGuid unitGuid);
+    void LogDamage(bool done, uint16 damage, uint16 heal, ObjectGuid const & unitGuid, uint16 spell);
+    void LogLooting(LootSourceType type, ObjectGuid const & droppedBy, ObjectGuid const & itemGuid, uint32 id);
+    void LogTrading(bool aquire, ObjectGuid const & partner, ObjectGuid const & itemGuid);
+    void LogKilling(bool killedEnemy, ObjectGuid const & unitGuid);
     void LogPosition();
     void LogProgress(ProgressType type, uint8 achieve, uint16 misc = 0);
 
