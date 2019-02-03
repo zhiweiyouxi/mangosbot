@@ -94,6 +94,7 @@ float World::m_VisibleObjectGreyDistance      = 0;
 float  World::m_relocation_lower_limit_sq     = 10.f * 10.f;
 uint32 World::m_relocation_ai_notify_delay    = 1000u;
 
+uint32 World::m_currentMSTime = 0;
 TimePoint World::m_currentTime = TimePoint();
 uint32 World::m_currentDiff = 0;
 
@@ -246,14 +247,6 @@ World::AddSession_(WorldSession* s)
         return;
     }
 
-    // Checked for 1.12.2
-    WorldPacket packet(SMSG_AUTH_RESPONSE, 1 + 4 + 1 + 4);
-    packet << uint8(AUTH_OK);
-    packet << uint32(0);                                    // BillingTimeRemaining
-    packet << uint8(0);                                     // BillingPlanFlags
-    packet << uint32(0);                                    // BillingTimeRested
-    s->SendPacket(packet);
-
     UpdateMaxSessionCounters();
 
     // Updates the population
@@ -287,16 +280,6 @@ void World::AddQueuedSession(WorldSession* sess)
 {
     sess->SetInQueue(true);
     m_QueuedSessions.push_back(sess);
-
-    // [-ZERO] Possible wrong
-    // The 1st SMSG_AUTH_RESPONSE needs to contain other info too.
-    WorldPacket packet(SMSG_AUTH_RESPONSE, 1 + 4 + 1 + 4 + 4);
-    packet << uint8(AUTH_WAIT_QUEUE);
-    packet << uint32(0);                                    // BillingTimeRemaining
-    packet << uint8(0);                                     // BillingPlanFlags
-    packet << uint32(0);                                    // BillingTimeRested
-    packet << uint32(GetQueuedSessionPos(sess));            // position in queue
-    sess->SendPacket(packet);
 }
 
 bool World::RemoveQueuedSession(WorldSession* sess)
@@ -877,6 +860,10 @@ void World::SetInitialWorldSettings()
     DetectDBCLang();
     sObjectMgr.SetDBCLocaleIndex(GetDefaultDbcLocale());    // Get once for all the locale index of DBC language (console/broadcasts)
 
+    // Loading cameras for characters creation cinematic
+    sLog.outString("Loading cinematic...");
+    LoadM2Cameras(m_dataPath);
+
     sLog.outString("Loading Script Names...");
     sScriptDevAIMgr.LoadScriptNames();
 
@@ -886,8 +873,8 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading InstanceTemplate...");
     sObjectMgr.LoadInstanceTemplate();
 
-    sLog.outString("Loading SkillLineAbilityMultiMap Data...");
-    sSpellMgr.LoadSkillLineAbilityMap();
+    sLog.outString("Loading SkillLineAbilityMultiMaps Data...");
+    sSpellMgr.LoadSkillLineAbilityMaps();
 
     sLog.outString("Loading SkillRaceClassInfoMultiMap Data...");
     sSpellMgr.LoadSkillRaceClassInfoMap();
@@ -918,6 +905,9 @@ void World::SetInitialWorldSettings()
 
     sLog.outString("Loading Spell Chain Data...");
     sSpellMgr.LoadSpellChains();
+
+    sLog.outString("Checking Spell Cone Data...");
+    sObjectMgr.CheckSpellCones();
 
     sLog.outString("Loading Spell Elixir types...");
     sSpellMgr.LoadSpellElixirs();
@@ -1272,6 +1262,10 @@ void World::SetInitialWorldSettings()
     AIRegistry::Initialize();
     Player::InitVisibleBits();
 
+    ///- Initialize Outdoor PvP
+    sLog.outString("Starting Outdoor PvP System");          // should be before loading maps
+    sOutdoorPvPMgr.InitOutdoorPvP();
+
     ///- Initialize MapManager
     sLog.outString("Starting Map System");
     sMapMgr.Initialize();
@@ -1280,10 +1274,6 @@ void World::SetInitialWorldSettings()
     ///- Initialize Battlegrounds
     sLog.outString("Starting BattleGround System");
     sBattleGroundMgr.CreateInitialBattleGrounds();
-
-    ///- Initialize Outdoor PvP
-    sLog.outString("Starting Outdoor PvP System");
-    sOutdoorPvPMgr.InitOutdoorPvP();
 
     // Not sure if this can be moved up in the sequence (with static data loading) as it uses MapManager
     sLog.outString("Loading Transports...");
@@ -1379,6 +1369,7 @@ void World::DetectDBCLang()
 /// Update the World !
 void World::Update(uint32 diff)
 {
+    m_currentMSTime = WorldTimer::getMSTime();
     m_currentTime = std::chrono::time_point_cast<std::chrono::milliseconds>(Clock::now());
     m_currentDiff = diff;
 

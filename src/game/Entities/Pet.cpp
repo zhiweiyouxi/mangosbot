@@ -51,7 +51,7 @@ Pet::Pet(PetType type) :
     Creature(CREATURE_SUBTYPE_PET),
     m_TrainingPoints(0), m_resetTalentsCost(0), m_resetTalentsTime(0),
     m_removed(false), m_happinessTimer(7500), m_loyaltyTimer(12000), m_petType(type), m_duration(0),
-    m_loyaltyPoints(0), m_bonusdamage(0), m_auraUpdateMask(0), m_loading(false),
+    m_loyaltyPoints(0), m_bonusdamage(0), m_loading(false),
     m_xpRequiredForNextLoyaltyLevel(0),
     m_petModeFlags(PET_MODE_DEFAULT), m_originalCharminfo(nullptr)
 {
@@ -352,7 +352,6 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry /*= 0*/, uint32 petnumber
     LearnPetPassives();
     CastPetAuras(current);
     CastOwnerTalentAuras();
-    InitTamedPetPassives(owner);
     UpdateAllStats();
 
     // The following call was moved here to fix health is not full after pet invocation (before, they where placed after map->Add())
@@ -651,7 +650,7 @@ void Pet::SetDeathState(DeathState s)                       // overwrite virtual
     CastOwnerTalentAuras();
 }
 
-void Pet::Update(uint32 update_diff, uint32 diff)
+void Pet::Update(const uint32 diff)
 {
     if (m_removed)                                          // pet already removed, just wait in remove queue, no updates
         return;
@@ -660,7 +659,7 @@ void Pet::Update(uint32 update_diff, uint32 diff)
     {
         case CORPSE:
         {
-            if (m_corpseDecayTimer <= update_diff)
+            if (IsCorpseExpired())
             {
                 // pet is dead so it doesn't have to be shown at character login
                 Unsummon(PET_SAVE_NOT_IN_SLOT);
@@ -691,8 +690,8 @@ void Pet::Update(uint32 update_diff, uint32 diff)
 
             if (m_duration > 0)
             {
-                if (m_duration > (int32)update_diff)
-                    m_duration -= (int32)update_diff;
+                if (m_duration > (int32)diff)
+                    m_duration -= (int32)diff;
                 else
                 {
                     Unsummon(getPetType() != SUMMON_PET ? PET_SAVE_AS_DELETED : PET_SAVE_NOT_IN_SLOT, owner);
@@ -705,7 +704,7 @@ void Pet::Update(uint32 update_diff, uint32 diff)
             break;
     }
 
-    Creature::Update(update_diff, diff);
+    Creature::Update(diff);
 }
 
 void Pet::RegenerateAll(uint32 update_diff)
@@ -713,7 +712,7 @@ void Pet::RegenerateAll(uint32 update_diff)
     // regenerate focus
     if (m_regenTimer <= update_diff)
     {
-        if (!isInCombat() || IsPolymorphed())
+        if (!isInCombat())
             RegenerateHealth();
 
         RegeneratePower();
@@ -943,7 +942,7 @@ int32 Pet::GetTPForSpell(uint32 spellid) const
 {
     uint32 basetrainp = 0;
 
-    SkillLineAbilityMapBounds bounds = sSpellMgr.GetSkillLineAbilityMapBounds(spellid);
+    SkillLineAbilityMapBounds bounds = sSpellMgr.GetSkillLineAbilityMapBoundsBySpellId(spellid);
 
     for (SkillLineAbilityMap::const_iterator _spell_idx = bounds.first; _spell_idx != bounds.second; ++_spell_idx)
     {
@@ -964,7 +963,7 @@ int32 Pet::GetTPForSpell(uint32 spellid) const
 
         if (sSpellMgr.GetFirstSpellInChain(itr->first) == chainstart)
         {
-            SkillLineAbilityMapBounds _bounds = sSpellMgr.GetSkillLineAbilityMapBounds(itr->first);
+            SkillLineAbilityMapBounds _bounds = sSpellMgr.GetSkillLineAbilityMapBoundsBySpellId(itr->first);
 
             for (SkillLineAbilityMap::const_iterator _spell_idx2 = _bounds.first; _spell_idx2 != _bounds.second; ++_spell_idx2)
             {
@@ -1919,10 +1918,10 @@ bool Pet::addSpell(uint32 spell_id, ActiveStates active /*= ACT_DECIDE*/, PetSpe
 
             uint32 const oldspell_id = itr2->first;
 
-            if (sSpellMgr.IsRankSpellDueToSpell(spellInfo, oldspell_id))
+            if (sSpellMgr.IsSpellAnotherRankOfSpell(spell_id, oldspell_id))
             {
                 // replace by new high rank
-                if (sSpellMgr.IsHighRankOfSpell(spell_id, oldspell_id))
+                if (sSpellMgr.IsSpellHigherRankOfSpell(spell_id, oldspell_id))
                 {
                     newspell.active = itr2->second.active;
 
@@ -1933,7 +1932,7 @@ bool Pet::addSpell(uint32 spell_id, ActiveStates active /*= ACT_DECIDE*/, PetSpe
                     break;
                 }
                 // ignore new lesser rank
-                if (sSpellMgr.IsHighRankOfSpell(oldspell_id, spell_id))
+                if (sSpellMgr.IsSpellHigherRankOfSpell(oldspell_id, spell_id))
                     return false;
             }
         }
@@ -2301,42 +2300,6 @@ void Pet::SetModeFlags(PetModeFlags mode)
     data << GetObjectGuid();
     data << uint32(m_petModeFlags);
     ((Player*)owner)->GetSession()->SendPacket(data);
-}
-
-void Pet::InitTamedPetPassives(Unit* player)
-{
-    switch (player->getClass())
-    {
-        case CLASS_HUNTER:
-        {
-            // case 13481: Tame Beast
-            player->CastSpell(this, 8875, TRIGGERED_OLD_TRIGGERED);
-            break;
-        }
-        case CLASS_WARLOCK:
-        {
-            switch (GetUInt32Value(UNIT_CREATED_BY_SPELL))
-            {
-                case 688: // imp
-                    player->CastSpell(this, 18728, TRIGGERED_OLD_TRIGGERED);
-                    break;
-                case 691: // felhunter
-                    player->CastSpell(this, 18730, TRIGGERED_OLD_TRIGGERED);
-                    break;
-                case 697: // voidwalker
-                    player->CastSpell(this, 18727, TRIGGERED_OLD_TRIGGERED);
-                    break;
-                case 712: // succubus
-                    player->CastSpell(this, 18729, TRIGGERED_OLD_TRIGGERED);
-                    break;
-                default:
-                    break;
-            }
-            break;
-        }
-        default:
-            break;
-    }
 }
 
 void Pet::RegenerateHealth()
