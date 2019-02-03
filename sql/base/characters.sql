@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `character_db_version`;
 CREATE TABLE `character_db_version` (
-  `required_s2376_01_characters_taxi_system_format_update` bit(1) DEFAULT NULL
+  `required_s2389_00_characters_cooldown` bit(1) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Last applied sql update to DB';
 
 --
@@ -641,13 +641,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `character_spell_cooldown`;
 CREATE TABLE `character_spell_cooldown` (
-  `LowGuid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier, Low part',
+  `guid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier, Low part',
   `SpellId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Spell Identifier',
   `SpellExpireTime` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Spell cooldown expire time',
   `Category` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Spell category',
   `CategoryExpireTime` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Spell category cooldown expire time',
   `ItemId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Item Identifier',
-  PRIMARY KEY (`LowGuid`,`SpellId`)
+  PRIMARY KEY (`guid`,`SpellId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1545,8 +1545,7 @@ CREATE TABLE `petition_sign` (
 DROP TABLE IF EXISTS `playerbot_saved_data`;
 CREATE TABLE `playerbot_saved_data` (
   `guid` int(11) unsigned NOT NULL DEFAULT '0',
-  `bot_primary_order` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `bot_secondary_order` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `combat_order` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `primary_target` int(11) unsigned NOT NULL DEFAULT '0',
   `secondary_target` int(11) unsigned NOT NULL DEFAULT '0',
   `pname` varchar(12) NOT NULL DEFAULT '',
