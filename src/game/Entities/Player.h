@@ -1485,7 +1485,8 @@ class Player : public Unit
         void UpdatePvP(bool state, bool overriding = false);
         void UpdatePvPContested(bool state, bool overriding = false);
 
-        void UpdateZone(uint32 newZone, uint32 newArea);
+        // forced update needed for on-resurrection event
+        void UpdateZone(uint32 newZone, uint32 newArea, bool force = false);
         void UpdateArea(uint32 newArea);
         uint32 GetCachedZoneId() const { return m_zoneUpdateId; }
 
@@ -2126,6 +2127,7 @@ class Player : public Unit
         }
 
         void UpdateEverything();
+
 #ifdef ENABLE_PLAYERBOTS
         //EquipmentSets& GetEquipmentSets() { return m_EquipmentSets; }
         void SetPlayerbotAI(PlayerbotAI* ai) { assert(!m_playerbotAI && !m_playerbotMgr); m_playerbotAI = ai; }
