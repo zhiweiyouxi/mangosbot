@@ -231,6 +231,10 @@ class ChatHandler
         bool HandleDebugSpellVisual(char* args);
         bool HandleDebugMoveflags(char* args);
         bool HandleDebugLootDropStats(char* args);
+        bool HandleDebugOverflowCommand(char* args);
+
+        bool HandleDebugHaveAtClientCommand(char* args);
+        bool HandleDebugIsVisibleCommand(char* args);
 
         bool HandleDebugPlayCinematicCommand(char* args);
         bool HandleDebugPlaySoundCommand(char* args);
@@ -569,7 +573,10 @@ class ChatHandler
         bool HandlePInfoCommand(char* args);
         bool HandleMuteCommand(char* args);
         bool HandleUnmuteCommand(char* args);
+
         bool HandleMovegensCommand(char* args);
+        bool HandleComeToMeCommand(char* args);
+        bool HandleMovespeedShowCommand(char* args);
 
         bool HandleCooldownListCommand(char* args);
         bool HandleCooldownClearCommand(char* args);
@@ -602,7 +609,6 @@ class ChatHandler
         bool HandleMaxSkillCommand(char* args);
         bool HandleSetSkillCommand(char* args);
         bool HandleRespawnCommand(char* args);
-        bool HandleComeToMeCommand(char* args);
         bool HandleCombatStopCommand(char* args);
         bool HandleRepairitemsCommand(char* args);
         bool HandleStableCommand(char* args);

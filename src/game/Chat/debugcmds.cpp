@@ -1370,3 +1370,49 @@ bool ChatHandler::HandleDebugSendWorldState(char* args)
     player->SendUpdateWorldState(worldState, value);
     return true;
 }
+
+bool ChatHandler::HandleDebugHaveAtClientCommand(char* args)
+{
+    Player* player = m_session->GetPlayer();
+    Unit* target = getSelectedUnit();
+    if (!target)
+    {
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+        return false;
+    }
+
+    if (player->HaveAtClient(target))
+        PSendSysMessage("Target %s is at your client.", target->GetName());
+    else
+        PSendSysMessage("Target %s is not at your client.", target->GetName());
+
+    return true;
+}
+
+bool ChatHandler::HandleDebugIsVisibleCommand(char* args)
+{
+    Player* player = m_session->GetPlayer();
+    Unit* target = getSelectedUnit();
+    if (!target)
+    {
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+        return false;
+    }
+
+    Camera& camera = player->GetCamera();
+    if (target->isVisibleForInState(player, camera.GetBody(), player->HaveAtClient(target)))
+        PSendSysMessage("Target %s should be visible at client.", target->GetName());
+    else
+        PSendSysMessage("Target %s should not be visible at client.", target->GetName());
+
+    return true;
+}
+
+bool ChatHandler::HandleDebugOverflowCommand(char* args)
+{
+    std::string name("\360\222\214\245\360\222\221\243\360\222\221\251\360\223\213\215\360\223\213\210\360\223\211\241\360\222\214\245\360\222\221\243\360\222\221\251\360\223\213\215\360\223\213\210\360\223\211\241");
+    // Overflow: \xd808\xdf25\xd809\xdc63\xd809\xdc69\xd80c\xdecd\xd80c\xdec8\xd80c\xde61\000\xdf25\xd809\xdc63
+
+    normalizePlayerName(name);
+    return true;
+}
