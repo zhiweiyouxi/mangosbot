@@ -1139,7 +1139,7 @@ class Player : public Unit
         Item* StoreItem(ItemPosCountVec const& dest, Item* pItem, bool update);
         Item* EquipNewItem(uint16 pos, uint32 item, bool update);
         Item* EquipItem(uint16 pos, Item* pItem, bool update);
-        void AutoUnequipOffhandIfNeed();
+        void AutoUnequipOffhandIfNeed(uint8 bag = NULL_BAG);
         bool StoreNewItemInBestSlots(uint32 titem_id, uint32 titem_amount);
         Item* StoreNewItemInInventorySlot(uint32 itemEntry, uint32 amount);
 
@@ -1480,6 +1480,9 @@ class Player : public Unit
 
         void SendProficiency(ItemClass itemClass, uint32 itemSubclassMask) const;
         void SendInitialSpells() const;
+        void SendUnlearnSpells() const;
+        void SendSupercededSpell(uint32 oldSpell, uint32 newSpell) const;
+        void SendRemovedSpell(uint32 spellId) const;
         bool addSpell(uint32 spell_id, bool active, bool learning, bool dependent, bool disabled);
         void learnSpell(uint32 spell_id, bool dependent, bool talent = false);
         void removeSpell(uint32 spell_id, bool disabled = false, bool learn_low_rank = true, bool sendUpdate = true);
@@ -1511,6 +1514,8 @@ class Player : public Unit
         SpellModifier* GetSpellMod(SpellModOp op, uint32 spellId) const;
         void RemoveSpellMods(Spell const* spell);
         void ResetSpellModsDueToCanceledSpell(Spell const* spell);
+        void SetSpellClass(uint8 playerClass);
+        SpellFamily GetSpellClass() const { return m_spellClassName; } // client function equivalent - says what player can cast
 
         void setResurrectRequestData(ObjectGuid guid, uint32 mapId, float X, float Y, float Z, uint32 health, uint32 mana)
         {
@@ -1614,8 +1619,6 @@ class Player : public Unit
         float GetMeleeCritFromAgility() const;
         float GetDodgeFromAgility(float amount) const;
         float GetSpellCritFromIntellect() const;
-        float OCTRegenHPPerSpirit() const;
-        float OCTRegenMPPerSpirit() const;
 
         void UpdateBlockPercentage();
         void UpdateCritPercentage(WeaponAttackType attType);
@@ -1720,6 +1723,7 @@ class Player : public Unit
         void UpdateSkillTrainedSpells(uint16 id, uint16 currVal);                                   // learns/unlearns spells dependent on a skill
         void UpdateSpellTrainedSkills(uint32 spellId, bool apply);                                  // learns/unlearns skills dependent on a spell
         void LearnDefaultSkills();
+        virtual uint32 GetSpellRank(SpellEntry const* spellInfo) override;
 
         WorldLocation& GetTeleportDest() { return m_teleport_dest; }
         bool IsBeingTeleported() const { return mSemaphoreTeleport_Near || mSemaphoreTeleport_Far; }
@@ -1846,7 +1850,7 @@ class Player : public Unit
         void ApplyEquipSpell(SpellEntry const* spellInfo, Item* item, bool apply, bool form_change = false);
         void UpdateEquipSpellsAtFormChange();
         void CastItemCombatSpell(Unit* Target, WeaponAttackType attType, bool spellProc = false);
-        void CastItemUseSpell(Item* item, SpellCastTargets const& targets, uint8 spell_index);
+        void CastItemUseSpell(Item* item, SpellCastTargets& targets, uint8 spell_index);
 
         void SendInitWorldStates(uint32 zoneid) const;
         void SendUpdateWorldState(uint32 Field, uint32 Value) const;
@@ -2058,6 +2062,7 @@ class Player : public Unit
         void   SaveRecallPosition();
 
         void SetHomebindToLocation(WorldLocation const& loc, uint32 area_id);
+        void GetHomebindLocation(float &x, float &y, float &z) { x = m_homebindX; y = m_homebindY; z = m_homebindZ; }
         void RelocateToHomebind() { SetLocationMapId(m_homebindMapId); Relocate(m_homebindX, m_homebindY, m_homebindZ); }
         bool TeleportToHomebind(uint32 options = 0) { return TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, GetOrientation(), options); }
 
@@ -2185,6 +2190,9 @@ class Player : public Unit
         }
 
         void UpdateEverything();
+
+        // Public Save system functions
+        void SaveItemToInventory(Item* item); // optimization for gift wrapping
 
 #ifdef ENABLE_PLAYERBOTS
         //EquipmentSets& GetEquipmentSets() { return m_EquipmentSets; }
@@ -2336,6 +2344,7 @@ class Player : public Unit
 
         SpellModList m_spellMods[MAX_SPELLMOD];
         int32 m_SpellModRemoveCount;
+        SpellFamily m_spellClassName; // s_spellClassSet
         EnchantDurationList m_enchantDuration;
         ItemDurationList m_itemDuration;
 
@@ -2498,13 +2507,11 @@ void RemoveItemsSetItem(Player* player, ItemPrototype const* proto);
 template <class T> void Player::ApplySpellMod(uint32 spellId, SpellModOp op, T& basevalue, Spell const* spell)
 {
     SpellEntry const* spellInfo = sSpellTemplate.LookupEntry<SpellEntry>(spellId);
-    if (!spellInfo) return;
+    if (!spellInfo || spellInfo->SpellFamilyName != GetSpellClass() || spellInfo->HasAttribute(SPELL_ATTR_EX3_NO_DONE_BONUS)) return; // client condition
     int32 totalpct = 100;
     int32 totalflat = 0;
-    for (SpellModList::iterator itr = m_spellMods[op].begin(); itr != m_spellMods[op].end(); ++itr)
+    for (SpellModifier* mod : m_spellMods[op])
     {
-        SpellModifier* mod = *itr;
-
         if (!IsAffectedBySpellmod(spellInfo, mod, spell))
             continue;
         if (mod->type == SPELLMOD_FLAT)

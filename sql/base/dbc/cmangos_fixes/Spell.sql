@@ -39,5 +39,18 @@ UPDATE `spell_template` SET `AttributesEx`=0 WHERE `id`=28370;
 -- Hurricane Spell From Druid And NPC must be interruptable
 UPDATE `spell_template` SET `InterruptFlags`=15 WHERE `id`=16914 OR `id`=17401 OR `id`=17402;
 
+-- Stun Self - vanilla spell - 44355 - Fel Crystal Visual - entry 24722 - has SPELL_ATTR_EX5_USABLE_WHILE_STUNNED confirmed with sniffs
+UPDATE spell_template SET Mechanic=12 WHERE Id IN(25900);
+
 -- sweeping strikes should not be lost on stance change to defensive
 UPDATE spell_template SET Attributes=Attributes|0x00010000 WHERE Id IN(12328);
+
+-- targeting section
+-- Draw Spirit - Lethon - both effects need to have same radius index - faulty data
+UPDATE spell_template SET EffectRadiusIndex1=EffectRadiusIndex2 WHERE Id IN(24811);
+-- Opening Termite Barrel - target flags for GO/ITEM, effect targets GO/ITEM yet target targets units - fixes apparent typo
+UPDATE spell_template SET EffectImplicitTargetA1=26 WHERE Id IN(18952);
+
+-- Mangletooth - These spells need to ignore LOS
+UPDATE spell_template SET AttributesEx2 = AttributesEx2|4 WHERE id IN (7764, 16618, 10767, 16610, 16612, 17013);
+
