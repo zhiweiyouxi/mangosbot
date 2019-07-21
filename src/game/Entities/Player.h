@@ -2193,7 +2193,6 @@ class Player : public Unit
 
         // Public Save system functions
         void SaveItemToInventory(Item* item); // optimization for gift wrapping
-
 #ifdef ENABLE_PLAYERBOTS
         //EquipmentSets& GetEquipmentSets() { return m_EquipmentSets; }
         void SetPlayerbotAI(PlayerbotAI* ai) { assert(!m_playerbotAI && !m_playerbotMgr); m_playerbotAI = ai; }
