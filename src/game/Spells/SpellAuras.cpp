@@ -252,7 +252,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS] =
 
 static AuraType const frozenAuraTypes[] = { SPELL_AURA_MOD_ROOT, SPELL_AURA_MOD_STUN, SPELL_AURA_NONE };
 
-Aura::Aura(SpellEntry const* spellproto, SpellEffectIndex eff, int32* currentBasePoints, SpellAuraHolder* holder, Unit* target, Unit* caster, Item* castItem) :
+Aura::Aura(SpellEntry const* spellproto, SpellEffectIndex eff, int32 const* currentDamage, int32 const* currentBasePoints, SpellAuraHolder* holder, Unit* target, Unit* caster, Item* /*castItem*/) :
     m_spellmod(nullptr), m_periodicTimer(0), m_periodicTick(0), m_removeMode(AURA_REMOVE_BY_DEFAULT),
     m_effIndex(eff), m_positive(false), m_isPeriodic(false), m_isAreaAura(false),
     m_isPersistent(false), m_magnetUsed(false), m_spellAuraHolder(holder)
@@ -265,13 +265,7 @@ Aura::Aura(SpellEntry const* spellproto, SpellEffectIndex eff, int32* currentBas
     m_positive = IsPositiveAuraEffect(spellproto, m_effIndex, caster, target);
     m_applyTime = time(nullptr);
 
-    int32 damage;
-    if (!caster)
-        damage = m_currentBasePoints;
-    else
-    {
-        damage = caster->CalculateSpellDamage(target, spellproto, m_effIndex, &m_currentBasePoints);
-    }
+    int32 damage = currentDamage ? *currentDamage : m_currentBasePoints;
 
     DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Aura: construct Spellid : %u, Aura : %u Target : %d Damage : %d", spellproto->Id, spellproto->EffectApplyAuraName[eff], spellproto->EffectImplicitTargetA[eff], damage);
 
@@ -291,9 +285,9 @@ Aura::~Aura()
 {
 }
 
-AreaAura::AreaAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32* currentBasePoints, SpellAuraHolder* holder, Unit* target,
+AreaAura::AreaAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32 const* currentDamage, int32 const* currentBasePoints, SpellAuraHolder* holder, Unit* target,
                    Unit* caster, Item* castItem, uint32 originalRankSpellId)
-    : Aura(spellproto, eff, currentBasePoints, holder, target, caster, castItem), m_originalRankSpellId(originalRankSpellId)
+    : Aura(spellproto, eff, currentDamage, currentBasePoints, holder, target, caster, castItem), m_originalRankSpellId(originalRankSpellId)
 {
     m_isAreaAura = true;
 
@@ -327,8 +321,8 @@ AreaAura::~AreaAura()
 {
 }
 
-PersistentAreaAura::PersistentAreaAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32* currentBasePoints, SpellAuraHolder* holder, Unit* target,
-                                       Unit* caster, Item* castItem) : Aura(spellproto, eff, currentBasePoints, holder, target, caster, castItem)
+PersistentAreaAura::PersistentAreaAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32 const* currentDamage, int32 const* currentBasePoints, SpellAuraHolder* holder, Unit* target,
+                                       Unit* caster, Item* castItem) : Aura(spellproto, eff, currentDamage, currentBasePoints, holder, target, caster, castItem)
 {
     m_isPersistent = true;
 }
@@ -337,8 +331,8 @@ PersistentAreaAura::~PersistentAreaAura()
 {
 }
 
-SingleEnemyTargetAura::SingleEnemyTargetAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32* currentBasePoints, SpellAuraHolder* holder, Unit* target,
-        Unit* caster, Item* castItem) : Aura(spellproto, eff, currentBasePoints, holder, target, caster, castItem)
+SingleEnemyTargetAura::SingleEnemyTargetAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32 const* currentDamage, int32 const* currentBasePoints, SpellAuraHolder* holder, Unit* target,
+        Unit* caster, Item* castItem) : Aura(spellproto, eff, currentDamage, currentBasePoints, holder, target, caster, castItem)
 {
     if (caster)
         m_castersTargetGuid = caster->GetSelectionGuid();
@@ -353,12 +347,12 @@ Unit* SingleEnemyTargetAura::GetTriggerTarget() const
     return ObjectAccessor::GetUnit(*(m_spellAuraHolder->GetTarget()), m_castersTargetGuid);
 }
 
-Aura* CreateAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32* currentBasePoints, SpellAuraHolder* holder, Unit* target, Unit* caster, Item* castItem)
+Aura* CreateAura(SpellEntry const* spellproto, SpellEffectIndex eff, int32 const* currentDamage, int32 const* currentBasePoints, SpellAuraHolder* holder, Unit* target, Unit* caster, Item* castItem)
 {
     if (IsAreaAuraEffect(spellproto->Effect[eff]))
-        return new AreaAura(spellproto, eff, currentBasePoints, holder, target, caster, castItem);
+        return new AreaAura(spellproto, eff, currentDamage, currentBasePoints, holder, target, caster, castItem);
 
-    return new Aura(spellproto, eff, currentBasePoints, holder, target, caster, castItem);
+    return new Aura(spellproto, eff, currentDamage, currentBasePoints, holder, target, caster, castItem);
 }
 
 SpellAuraHolder* CreateSpellAuraHolder(SpellEntry const* spellproto, Unit* target, WorldObject* caster, Item* castItem /*= nullptr*/, SpellEntry const* triggeredBy /*= nullptr*/)
@@ -366,13 +360,13 @@ SpellAuraHolder* CreateSpellAuraHolder(SpellEntry const* spellproto, Unit* targe
     return new SpellAuraHolder(spellproto, target, caster, castItem, triggeredBy);
 }
 
-void Aura::SetModifier(AuraType t, int32 a, uint32 pt, int32 miscValue)
+void Aura::SetModifier(AuraType type, int32 amount, uint32 periodicTime, int32 miscValue)
 {
-    m_modifier.m_auraname = t;
-    m_modifier.m_amount = a;
-    m_modifier.m_baseAmount = a;
+    m_modifier.m_auraname = type;
+    m_modifier.m_amount = amount * GetStackAmount();
+    m_modifier.m_baseAmount = amount;
     m_modifier.m_miscvalue = miscValue;
-    m_modifier.periodictime = pt;
+    m_modifier.periodictime = periodicTime;
 }
 
 void Aura::Update(uint32 diff)
@@ -520,6 +514,7 @@ void AreaAura::Update(uint32 diff)
                     continue;
 
                 int32 actualBasePoints = m_currentBasePoints;
+                int32 actualDamage = m_modifier.m_baseAmount;
                 // recalculate basepoints for lower rank (all AreaAura spell not use custom basepoints?)
                 if (actualSpellInfo != GetSpellProto())
                     actualBasePoints = actualSpellInfo->CalculateSimpleValue(m_effIndex);
@@ -535,7 +530,7 @@ void AreaAura::Update(uint32 diff)
 
                 holder->SetAuraDuration(GetAuraDuration());
 
-                AreaAura* aur = new AreaAura(actualSpellInfo, m_effIndex, &actualBasePoints, holder, target, caster, nullptr, GetSpellProto()->Id);
+                AreaAura* aur = new AreaAura(actualSpellInfo, m_effIndex, &actualDamage, &actualBasePoints, holder, target, caster, nullptr, GetSpellProto()->Id);
                 holder->AddAura(aur, m_effIndex);
 
                 if (addedToExisting)
@@ -744,7 +739,7 @@ void Aura::ReapplyAffectedPassiveAuras()
         case SPELLMOD_COOLDOWN:
         case SPELLMOD_COST:
         case SPELLMOD_ACTIVATION_TIME:
-        case SPELLMOD_CASTING_TIME_OLD:
+        case SPELLMOD_GLOBAL_COOLDOWN:
         case SPELLMOD_SPEED:
         case SPELLMOD_HASTE:
         case SPELLMOD_ATTACK_POWER:
@@ -1991,7 +1986,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         ((Player*)target)->InitDataForForm();
 }
 
-void Aura::HandleAuraTransform(bool apply, bool Real)
+void Aura::HandleAuraTransform(bool apply, bool /*Real*/)
 {
     Unit* target = GetTarget();
     if (apply)
@@ -2775,7 +2770,7 @@ void Aura::HandleAuraModTotalThreat(bool apply, bool Real)
     target->getHostileRefManager().threatTemporaryFade(caster, m_modifier.m_amount, apply);
 }
 
-void Aura::HandleModTaunt(bool apply, bool Real)
+void Aura::HandleModTaunt(bool /*apply*/, bool Real)
 {
     // only at real add/remove aura
     if (!Real)
@@ -2823,7 +2818,7 @@ void Aura::HandleAuraModIncreaseSwimSpeed(bool /*apply*/, bool Real)
     GetTarget()->UpdateSpeed(MOVE_SWIM, true);
 }
 
-void Aura::HandleAuraModDecreaseSpeed(bool apply, bool Real)
+void Aura::HandleAuraModDecreaseSpeed(bool /*apply*/, bool Real)
 {
     // all applied/removed only at real aura add/remove
     if (!Real)
@@ -5591,7 +5586,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
     }
 }
 
-void Aura::HandleAuraSafeFall(bool Apply, bool Real)
+void Aura::HandleAuraSafeFall(bool /*Apply*/, bool /*Real*/)
 {
     // implemented in WorldSession::HandleMovementOpcodes
 }

@@ -78,7 +78,7 @@ SpellSpecific GetSpellSpecific(uint32 spellId);
 
 // Different spell properties
 inline float GetSpellRadius(SpellRadiusEntry const* radius) { return (radius ? radius->Radius : 0); }
-uint32 GetSpellCastTime(SpellEntry const* spellInfo, Spell const* spell = nullptr);
+uint32 GetSpellCastTime(SpellEntry const* spellInfo, WorldObject* caster, Spell* spell = nullptr);
 uint32 GetSpellCastTimeForBonus(SpellEntry const* spellProto, DamageEffectType damagetype);
 float CalculateDefaultCoefficient(SpellEntry const* spellProto, DamageEffectType const damagetype);
 inline float GetSpellMinRange(SpellRangeEntry const* range) { return (range ? range->minRange : 0); }
@@ -360,18 +360,51 @@ inline bool IsSpellRemovedOnEvade(SpellEntry const* spellInfo)
 
     switch (spellInfo->Id)
     {
+        case 588:           // Inner Fire (Rank 1)
+        case 3235:          // Rancid Blood
+        case 3284:          // Violent Shield
         case 3417:          // Thrash
+        case 3418:          // Improved Blocking
+        case 3616:          // Poison Proc
+        case 3637:          // Improved Blocking III
+        case 5111:          // Living Flame Passive
+        case 5301:          // Defensive State (DND)
+        case 5680:          // Torch Burn
+        case 6718:          // Phasing Stealth
+        case 6752:          // Weak Poison Proc
+        case 7090:          // Bear Form (Shapeshift)
+        case 7276:          // Poison Proc
+        case 8247:          // Wandering Plague
+        case 8279:          // Stealth Detection
+        case 8393:          // Barbs
+        case 8601:          // Slowing Poison
         case 8876:          // Thrash
         case 9205:          // Hate to Zero (Hate to Zero)
         case 9460:          // Corrosive Ooze
+        case 9941:          // Spell Reflection
+        case 10022:         // Deadly Poison
+        case 10072:         // Splintered Obsidian
+        case 10074:         // Spell Reflection
         case 10095:         // Hate to Zero (Hate to Zero)
         case 11838:         // Hate to Zero (Hate to Zero)
+        case 11919:         // Poison Proc
+        case 11984:         // Immolate
+        case 12099:         // Shield Spike
+        case 12246:         // Infected Spine
+        case 12529:         // Chilling Touch
+        case 12539:         // Ghoul Rot
         case 12546:         // Spitelash (Spitelash)
+        case 12556:         // Frost Armor
+        case 12627:         // Disease Cloud
         case 12787:         // Thrash
+        case 12898:         // Smoke Aura Visual
+        case 13299:         // Poison Proc
         case 13767:         // Hate to Zero (Hate to Zero)
         case 16140:         // Exploding Cadaver (Exploding Cadaver)
         case 17327:         // Spirit Particles
+        case 17467:         // Unholy Aura
         case 18943:         // Double Attack
+        case 19030:         // Bear Form (Shapeshift)
         case 18950:         // Invisibility and Stealth Detection
         case 19194:         // Double Attack
         case 19195:         // Hate to 90% (Hate to 90%)
@@ -380,10 +413,14 @@ inline bool IsSpellRemovedOnEvade(SpellEntry const* spellInfo)
         case 19640:         // Pummel (Pummel)
         case 19817:         // Double Attack
         case 19818:         // Double Attack
+        case 21061:         // Putrid Breath
         case 21857:         // Lava Shield
+        case 22128:         // Thorns
         case 22735:         // Spirit of Runn Tum
         case 22856:         // Ice Lock (Guard Slip'kik ice trap in Dire Maul)
         case 25592:         // Hate to Zero (Hate to Zero)
+        case 26341:         // Saurfang's Rage
+        case 27987:         // Unholy Aura
         case 28126:         // Spirit Particles (purple)
         case 29526:         // Hate to Zero (Hate to Zero)
             return false;
@@ -909,10 +946,10 @@ inline bool IsPositiveEffect(const SpellEntry* spellproto, SpellEffectIndex effI
     return IsPositiveEffectTargetMode(spellproto, effIndex, caster, target);
 }
 
-inline bool IsPositiveAuraEffect(const SpellEntry* entry, SpellEffectIndex effIndex, const WorldObject* caster = nullptr, const WorldObject* target = nullptr)
+inline bool IsPositiveAuraEffect(const SpellEntry* entry, SpellEffectIndex effIndex, const WorldObject* /*caster*/ = nullptr, const WorldObject* /*target*/ = nullptr)
 {
     return IsAuraApplyEffect(entry, effIndex) && !IsEffectTargetNegative(entry->EffectImplicitTargetA[effIndex], entry->EffectImplicitTargetB[effIndex])
-        && !entry->HasAttribute(SPELL_ATTR_AURA_IS_DEBUFF);
+        && !entry->HasAttribute(SPELL_ATTR_AURA_IS_DEBUFF) && entry->Effect[effIndex] != SPELL_EFFECT_APPLY_AREA_AURA_ENEMY;
 }
 
 inline bool IsPositiveSpellTargetModeForSpecificTarget(const SpellEntry* entry, uint8 effectMask, const WorldObject* caster = nullptr, const WorldObject* target = nullptr)
@@ -986,7 +1023,7 @@ inline bool IsPositiveSpell(uint32 spellId, const WorldObject* caster = nullptr,
     return IsPositiveSpell(sSpellTemplate.LookupEntry<SpellEntry>(spellId), caster, target);
 }
 
-inline void GetChainJumpRange(SpellEntry const* spellInfo, SpellEffectIndex effIdx, float& minSearchRangeCaster, float& maxSearchRangeTarget, float& jumpRadius)
+inline void GetChainJumpRange(SpellEntry const* spellInfo, SpellEffectIndex effIdx, float& minSearchRangeCaster, float& maxSearchRangeTarget, float& /*jumpRadius*/)
 {
     const SpellRangeEntry* range = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
     if (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MELEE)

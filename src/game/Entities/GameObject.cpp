@@ -213,6 +213,10 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map* map, float x, float
     if (InstanceData* iData = map->GetInstanceData())
         iData->OnObjectCreate(this);
 
+    // Check if GameObject is Large
+    if (GetGOInfo()->IsLargeGameObject())
+        SetVisibilityDistanceOverride(VisibilityDistanceType::Large);
+
     return true;
 }
 
@@ -859,7 +863,7 @@ void GameObject::SaveRespawnTime()
         GetMap()->GetPersistentState()->SaveGORespawnTime(GetGUIDLow(), m_respawnTime);
 }
 
-bool GameObject::isVisibleForInState(Player const* u, WorldObject const* viewPoint, bool inVisibleList) const
+bool GameObject::isVisibleForInState(Player const* u, WorldObject const* viewPoint, bool /*inVisibleList*/) const
 {
     // Not in world
     if (!IsInWorld() || !u->IsInWorld())
@@ -939,8 +943,7 @@ bool GameObject::isVisibleForInState(Player const* u, WorldObject const* viewPoi
     }
 
     // check distance
-    return IsWithinDistInMap(viewPoint, GetMap()->GetVisibilityDistance() +
-                             (inVisibleList ? World::GetVisibleObjectGreyDistance() : 0.0f), false);
+    return IsWithinDistInMap(viewPoint, GetVisibilityDistance(), false);
 }
 
 void GameObject::Respawn()
@@ -1114,8 +1117,7 @@ bool GameObject::IsCollisionEnabled() const
     switch (GetGoType())
     {
         case GAMEOBJECT_TYPE_DOOR:
-            return GetGoState() != GO_STATE_ACTIVE && GetGoState() != GO_STATE_ACTIVE_ALTERNATIVE;
-
+            return GetGoState() == GO_STATE_READY;
         default:
             return true;
     }

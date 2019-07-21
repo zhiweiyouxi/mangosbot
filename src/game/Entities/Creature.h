@@ -38,6 +38,7 @@ class Player;
 class WorldSession;
 
 struct GameEventCreatureData;
+enum class VisibilityDistanceType : uint32;
 
 enum CreatureFlagsExtra
 {
@@ -150,6 +151,7 @@ struct CreatureInfo
     uint32  TrainerTemplateId;
     uint32  VendorTemplateId;
     uint32  GossipMenuId;
+    VisibilityDistanceType visibilityDistanceType;
     uint32  EquipmentTemplateId;
     uint32  civilian;
     char const* AIName;
@@ -185,10 +187,18 @@ struct CreatureTemplateSpells
     uint32 spells[CREATURE_MAX_SPELLS];
 };
 
+struct CreatureCooldowns
+{
+    uint32 entry;
+    uint32 spellId;
+    uint32 cooldownMin;
+    uint32 cooldownMax;
+};
+
 struct EquipmentInfo
 {
-    uint32  entry;
-    uint32  equipentry[3];
+    uint32 entry;
+    uint32 equipentry[3];
 };
 
 // depricated old way

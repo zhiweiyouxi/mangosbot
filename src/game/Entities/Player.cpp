@@ -282,7 +282,7 @@ PlayerTaxi::PlayerTaxi()
     memset(m_taximask, 0, sizeof(m_taximask));
 }
 
-void PlayerTaxi::InitTaxiNodes(uint32 race, uint32 level)
+void PlayerTaxi::InitTaxiNodes(uint32 race, uint32 /*level*/)
 {
     memset(m_taximask, 0, sizeof(m_taximask));
     // capital and taxi hub masks
@@ -1008,7 +1008,7 @@ DrunkenState Player::GetDrunkenstateByValue(uint16 value)
     return DRUNKEN_SOBER;
 }
 
-void Player::SetDrunkValue(uint16 newDrunkenValue, uint32 itemId)
+void Player::SetDrunkValue(uint16 newDrunkenValue, uint32 /*itemId*/)
 {
     uint32 oldDrunkenState = Player::GetDrunkenstateByValue(m_drunk);
 
@@ -1313,10 +1313,6 @@ void Player::Update(const uint32 diff)
         // It will be recalculate at mailbox open (for unReadMails important non-0 until mailbox open, it also will be recalculated)
         m_nextMailDelivereTime = 0;
     }
-
-    // Update player only attacks
-    if (uint32 ranged_att = getAttackTimer(RANGED_ATTACK))
-        setAttackTimer(RANGED_ATTACK, (diff >= ranged_att ? 0 : ranged_att - diff));
 
     // Update cinematic location
     if (m_cinematicMgr)
@@ -2204,7 +2200,7 @@ void Player::RegenerateHealth()
     if (addvalue < 0)
         addvalue = 0;
 
-    ModifyHealth(int32(addvalue));
+    ModifyHealth(int32(addvalue * 2));
 }
 
 Creature* Player::GetNPCIfCanInteractWith(ObjectGuid guid, uint32 npcflagmask)
@@ -3519,15 +3515,14 @@ void Player::_SaveSpellCooldowns()
     stmt.PExecute(GetGUIDLow());
 
     static SqlStatementID insertSpellCooldown;
-    TimePoint currTime = GetMap()->GetCurrentClockTime();
 
     for (auto& cdItr : m_cooldownMap)
     {
         auto& cdData = cdItr.second;
         if (!cdData->IsPermanent())
         {
-            TimePoint sTime = currTime;
-            TimePoint cTime = currTime;
+            TimePoint sTime = TimePoint::min();
+            TimePoint cTime = TimePoint::min();
             cdData->GetSpellCDExpireTime(sTime);
             cdData->GetCatCDExpireTime(cTime);
             uint64 spellExpireTime = uint64(Clock::to_time_t(sTime));
@@ -4237,7 +4232,7 @@ void Player::SetWaterWalk(bool enable)
     GetSession()->SendPacket(data);
 }
 
-void Player::SetLevitate(bool enable)
+void Player::SetLevitate(bool /*enable*/)
 {
     // TODO: check if there is something similar for 2.4.3.
     // WorldPacket data;
@@ -4256,7 +4251,7 @@ void Player::SetLevitate(bool enable)
     // SendMessageToSet(data, false);
 }
 
-void Player::SetCanFly(bool enable)
+void Player::SetCanFly(bool /*enable*/)
 {
 //     TODO: check if there is something similar for 1.12.x (99% chance there is not)
 //     WorldPacket data(enable ? SMSG_MOVE_SET_CAN_FLY : SMSG_MOVE_UNSET_CAN_FLY, GetPackGUID().size() + 4);
@@ -4971,52 +4966,6 @@ float Player::GetSpellCritFromIntellect() const
         return 0.0f;
     const float crit_ratio = crit_data[pclass].rate0 + crit_data[pclass].rate1 * getLevel();
     return (crit_data[pclass].base + (GetStat(STAT_INTELLECT) / crit_ratio));
-}
-
-float Player::OCTRegenHPPerSpirit() const
-{
-    float regen = 0.0f;
-
-    float Spirit = GetStat(STAT_SPIRIT);
-    uint8 Class = getClass();
-
-    switch (Class)
-    {
-        case CLASS_DRUID:   regen = (Spirit * 0.11 + 1);    break;
-        case CLASS_HUNTER:  regen = (Spirit * 0.43 - 5.5);  break;
-        case CLASS_MAGE:    regen = (Spirit * 0.11 + 1);    break;
-        case CLASS_PALADIN: regen = (Spirit * 0.25);        break;
-        case CLASS_PRIEST:  regen = (Spirit * 0.15 + 1.4);  break;
-        case CLASS_ROGUE:   regen = (Spirit * 0.84 - 13);   break;
-        case CLASS_SHAMAN:  regen = (Spirit * 0.28 - 3.6);  break;
-        case CLASS_WARLOCK: regen = (Spirit * 0.12 + 1.5);  break;
-        case CLASS_WARRIOR: regen = (Spirit * 1.26 - 22.6); break;
-    }
-
-    return regen;
-}
-
-float Player::OCTRegenMPPerSpirit() const
-{
-    float addvalue = 0.0;
-
-    float Spirit = GetStat(STAT_SPIRIT);
-    uint8 Class = getClass();
-
-    switch (Class)
-    {
-        case CLASS_DRUID:   addvalue = (Spirit / 5 + 15);   break;
-        case CLASS_HUNTER:  addvalue = (Spirit / 5 + 15);   break;
-        case CLASS_MAGE:    addvalue = (Spirit / 4 + 12.5); break;
-        case CLASS_PALADIN: addvalue = (Spirit / 5 + 15);   break;
-        case CLASS_PRIEST:  addvalue = (Spirit / 4 + 12.5); break;
-        case CLASS_SHAMAN:  addvalue = (Spirit / 5 + 17);   break;
-        case CLASS_WARLOCK: addvalue = (Spirit / 5 + 15);   break;
-    }
-
-    addvalue /= 2.0f;   // the above addvalue are given per tick which occurs every 2 seconds, hence this divide by 2
-
-    return addvalue;
 }
 
 void Player::SetRegularAttackTime()
@@ -5789,6 +5738,21 @@ void Player::LearnDefaultSkills()
         }
         SetSkill(tskill.SkillId, value, max, step);
     }
+}
+
+uint32 Player::GetSpellRank(SpellEntry const* spellInfo)
+{
+    SkillLineAbilityMapBounds bounds = sSpellMgr.GetSkillLineAbilityMapBoundsBySpellId(spellInfo->Id);
+    if (bounds.first != bounds.second)
+    {
+        SkillLineAbilityEntry const* skillInfo = bounds.first->second;
+        uint32 spellRank = GetSkillValue(skillInfo->skillId);
+        if (spellInfo->maxLevel > 0 && spellRank >= spellInfo->maxLevel * 5)
+            spellRank = spellInfo->maxLevel * 5;
+        return spellRank;
+    }
+    else
+        return 0;
 }
 
 void Player::SendInitialActionButtons() const
@@ -6605,7 +6569,7 @@ uint32 Player::GetGuildIdFromDB(ObjectGuid guid)
 
 uint32 Player::GetRankFromDB(ObjectGuid guid)
 {
-    QueryResult* result = CharacterDatabase.PQuery("SELECT rank FROM guild_member WHERE guid='%u'", guid.GetCounter());
+    QueryResult* result = CharacterDatabase.PQuery("SELECT `rank` FROM guild_member WHERE guid='%u'", guid.GetCounter());
     if (result)
     {
         uint32 v = result->Fetch()[0].GetUInt32();
@@ -8408,7 +8372,7 @@ InventoryResult Player::_CanTakeMoreSimilarItems(uint32 entry, uint32 count, Ite
     return EQUIP_ERR_OK;
 }
 
-bool Player::HasItemTotemCategory(uint32 TotemCategory) const
+bool Player::HasItemTotemCategory(uint32 /*TotemCategory*/) const
 {
     /*[-ZERO] Item *pItem;
      for(uint8 i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; ++i)
@@ -11092,7 +11056,7 @@ void Player::ApplyEnchantment(Item* item, bool apply)
         ApplyEnchantment(item, EnchantmentSlot(slot), apply);
 }
 
-void Player::ApplyEnchantment(Item* item, EnchantmentSlot slot, bool apply, bool apply_dur, bool ignore_condition)
+void Player::ApplyEnchantment(Item* item, EnchantmentSlot slot, bool apply, bool apply_dur, bool /*ignore_condition*/)
 {
     if (!item)
         return;
@@ -11405,6 +11369,12 @@ void Player::PrepareGossipMenu(WorldObject* pSource, uint32 menuId)
                 case GOSSIP_OPTION_IMMERSIVE:
 #endif
                     break;                                  // no checks
+                case GOSSIP_OPTION_SD2_1:
+                case GOSSIP_OPTION_SD2_2:
+                case GOSSIP_OPTION_SD2_3:
+                case GOSSIP_OPTION_SD2_4:
+                case GOSSIP_OPTION_SD2_5:
+                    break;
                 default:
                     sLog.outErrorDb("Creature entry %u have unknown gossip option %u for menu %u", pCreature->GetEntry(), gossipMenu.option_id, gossipMenu.menu_id);
                     hasMenuItem = false;
@@ -14063,20 +14033,13 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
     _LoadMailedItems(holder->GetResult(PLAYER_LOGIN_QUERY_LOADMAILEDITEMS));
     UpdateNextMailTimeAndUnreads();
 
+    _LoadSpells(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSPELLS));
+
     _LoadAuras(holder->GetResult(PLAYER_LOGIN_QUERY_LOADAURAS), time_diff);
 
     // add ghost flag (must be after aura load: PLAYER_FLAGS_GHOST set in aura)
     if (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST))
         m_deathState = DEAD;
-
-    // train spells by loaded skills
-    for (auto itr = mSkillStatus.begin(); itr != mSkillStatus.end(); ++itr)
-    {
-        if (itr->second.uState != SKILL_DELETED)
-            UpdateSkillTrainedSpells(uint16(itr->first), SKILL_VALUE(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos))));
-    }
-
-    _LoadSpells(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSPELLS));
 
     // after spell load
     InitTalentForLevel();
@@ -14336,7 +14299,7 @@ void Player::_LoadAuras(QueryResult* result, uint32 timediff)
                 if ((effIndexMask & (1 << i)) == 0)
                     continue;
 
-                Aura* aura = CreateAura(spellproto, SpellEffectIndex(i), nullptr, holder, this);
+                Aura* aura = CreateAura(spellproto, SpellEffectIndex(i), nullptr, nullptr, holder, this);
                 if (!damage[i])
                     damage[i] = aura->GetModifier()->m_amount;
 
@@ -14829,9 +14792,9 @@ void Player::_LoadSpells(QueryResult* result)
 {
     // QueryResult *result = CharacterDatabase.PQuery("SELECT spell,active,disabled FROM character_spell WHERE guid = '%u'",GetGUIDLow());
 
+    std::vector<std::tuple<uint32, bool, bool>> spells;
     if (result)
     {
-        std::vector<std::tuple<uint32, bool, bool>> spells;
         do
         {
             Field* fields = result->Fetch();
@@ -14847,11 +14810,18 @@ void Player::_LoadSpells(QueryResult* result)
         }
         while (result->NextRow());
 
-        for (auto& data : spells)
-            addSpell(std::get<0>(data), std::get<1>(data), false, false, std::get<2>(data));
-
         delete result;
     }
+
+    // train spells by loaded skills
+    for (auto itr = mSkillStatus.begin(); itr != mSkillStatus.end(); ++itr)
+    {
+        if (itr->second.uState != SKILL_DELETED)
+            UpdateSkillTrainedSpells(uint16(itr->first), SKILL_VALUE(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos))));
+    }
+
+    for (auto& data : spells)
+        addSpell(std::get<0>(data), std::get<1>(data), false, false, std::get<2>(data));
 }
 
 void Player::_LoadGroup(QueryResult* result)
@@ -16292,7 +16262,7 @@ void Player::CharmSpellInitialize() const
         }
     }
 
-    WorldPacket data(SMSG_PET_SPELLS, 8 + 4 + 1 + 1 + 2 + 4 * MAX_UNIT_ACTION_BAR_INDEX + 1 + 4 * addlist + 1);
+    WorldPacket data(SMSG_PET_SPELLS, 8 + 4 + 1 + 1 + 2 + 4 * MAX_UNIT_ACTION_BAR_INDEX + 1 + 4 * uint32(addlist) + 1);
     data << charm->GetObjectGuid();
     data << uint32(0x00000000);
     data << uint8(charm->AI()->GetReactState()) << uint8(charmInfo->GetCommandState()) << uint16(0);
@@ -17596,7 +17566,7 @@ void Player::SendInitialPacketsBeforeAddToMap()
     data << (float)0.01666667f;                             // game speed
     GetSession()->SendPacket(data);
 
-    if(!GetSession()->PlayerLoading())
+    if (!GetSession()->PlayerLoading())
         SetMover(this);
 }
 
@@ -18060,19 +18030,20 @@ void Player::UpdateForQuestWorldObjects()
     if (m_clientGUIDs.empty())
         return;
 
-    // UpdateData udata;
-    // WorldPacket packet;
-    for (auto& m_clientGUID : m_clientGUIDs)
+    UpdateData updateData;
+    for (auto m_clientGUID : m_clientGUIDs)
     {
         if (m_clientGUID.IsGameObject())
         {
             if (GameObject* obj = GetMap()->GetGameObject(m_clientGUID))
-                // obj->BuildValuesUpdateBlockForPlayer(&udata,this);
-                obj->SendCreateUpdateToPlayer(this); //[-ZERO] we must send create packet because of GAMEOBJECT_FLAGS change (not dynamic) - probably incorrect
+                obj->BuildValuesUpdateBlockForPlayer(&updateData, this);
         }
     }
-    // udata.BuildPacket(&packet);
-    // GetSession()->SendPacket(packet);
+    for (size_t i = 0; i < updateData.GetPacketCount(); ++i)
+    {
+        WorldPacket packet = updateData.BuildPacket(i);
+        GetSession()->SendPacket(packet);
+    }
 }
 
 void Player::UpdateEverything()
@@ -18080,24 +18051,15 @@ void Player::UpdateEverything()
     if (m_clientGUIDs.empty())
         return;
 
-    UpdateData updateDataCreature;
-    UpdateData updateDataRest;
-    WorldPacket packet;
-    for (GuidSet::const_iterator itr = m_clientGUIDs.begin(); itr != m_clientGUIDs.end(); ++itr)
+    UpdateData updateData;
+    for (const auto guid : m_clientGUIDs)
+        if (WorldObject* obj = GetMap()->GetWorldObject(guid))
+            obj->BuildForcedValuesUpdateBlockForPlayer(&updateData, this);
+    for (size_t i = 0; i < updateData.GetPacketCount(); ++i)
     {
-        if (WorldObject* obj = GetMap()->GetWorldObject(*itr))
-        {
-            if (obj->GetTypeId() == TYPEID_UNIT)
-                obj->BuildForcedValuesUpdateBlockForPlayer(&updateDataCreature, this);
-            else
-                obj->BuildValuesUpdateBlockForPlayer(&updateDataRest, this);
-        }
+        WorldPacket packet = updateData.BuildPacket(i);
+        GetSession()->SendPacket(packet);
     }
-    updateDataCreature.BuildPacket(packet); // protection against too big packets - TODO: extend to all
-    GetSession()->SendPacket(packet);
-    packet.clear();
-    updateDataRest.BuildPacket(packet);
-    GetSession()->SendPacket(packet);
 }
 
 void Player::SummonIfPossible(bool agree)
@@ -18146,7 +18108,7 @@ void Player::AddItemDurations(Item* item)
     }
 }
 
-void Player::AutoUnequipOffhandIfNeed()
+void Player::AutoUnequipOffhandIfNeed(uint8 bag)
 {
     Item* offItem = GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
     if (!offItem)
@@ -18157,7 +18119,7 @@ void Player::AutoUnequipOffhandIfNeed()
         return;
 
     ItemPosCountVec off_dest;
-    uint8 off_msg = CanStoreItem(NULL_BAG, NULL_SLOT, off_dest, offItem, false);
+    uint8 off_msg = CanStoreItem(bag, NULL_SLOT, off_dest, offItem, false);
     if (off_msg == EQUIP_ERR_OK)
     {
         RemoveItem(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND, true);
@@ -18221,7 +18183,7 @@ bool Player::HasItemFitToSpellReqirements(SpellEntry const* spellInfo, Item cons
     return false;
 }
 
-bool Player::CanNoReagentCast(SpellEntry const* spellInfo) const
+bool Player::CanNoReagentCast(SpellEntry const* /*spellInfo*/) const
 {
     // don't take reagents for spells with SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP
 //[-ZERO]    if (spellInfo->AttributesEx5 & SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP &&
@@ -19512,22 +19474,27 @@ void Player::ForceHealAndPowerUpdateInZone()
     }
 }
 
-void Player::AddGCD(SpellEntry const& spellEntry, uint32 forcedDuration /*= 0*/, bool updateClient /*= false*/)
+void Player::AddGCD(SpellEntry const& spellEntry, uint32 /*forcedDuration = 0*/, bool updateClient /*= false*/)
 {
     int32 gcdDuration = spellEntry.StartRecoveryTime;
-    if (!gcdDuration)
+    if (!spellEntry.StartRecoveryCategory && !gcdDuration)
         return;
 
     // gcd modifier auras applied only to self spells and only player have mods for this
-    ApplySpellMod(spellEntry.Id, SPELLMOD_CASTING_TIME_OLD, gcdDuration);
+    ApplySpellMod(spellEntry.Id, SPELLMOD_GLOBAL_COOLDOWN, gcdDuration);
 
     // apply haste rating
-    gcdDuration = int32(float(gcdDuration) * GetFloatValue(UNIT_MOD_CAST_SPEED));
+    if (spellEntry.StartRecoveryCategory == 133 && gcdDuration == 1500 &&
+        spellEntry.DmgClass != SPELL_DAMAGE_CLASS_MELEE && spellEntry.DmgClass != SPELL_DAMAGE_CLASS_RANGED &&
+        !spellEntry.HasAttribute(SPELL_ATTR_RANGED) && !spellEntry.HasAttribute(SPELL_ATTR_ABILITY))
+    {
+        gcdDuration = int32(float(gcdDuration) * GetFloatValue(UNIT_MOD_CAST_SPEED));
+        gcdDuration = std::max(gcdDuration, 1000);
+        gcdDuration = std::min(gcdDuration, 1500);
+    }
 
-    if (gcdDuration < 1000)
-        gcdDuration = 1000;
-    else if (gcdDuration > 1500)
-        gcdDuration = 1500;
+    if (!gcdDuration)
+        return;
 
     // TODO: Remove this once spells are queuable and GCD is checked on execute
     if (uint32 latency = GetSession()->GetLatency())
@@ -19601,11 +19568,13 @@ void Player::AddCooldown(SpellEntry const& spellEntry, ItemPrototype const* item
 
     if (forcedDuration)
         recTime = forcedDuration;
-
-    // shoot spells used equipped item cooldown values already assigned in GetAttackTime(RANGED_ATTACK)
-    // prevent 0 cooldowns set by another way
-    if (!recTime && !categoryRecTime && (spellCategory == 76 || spellCategory == 351))
-        recTime = GetAttackTime(RANGED_ATTACK);
+    else
+    {
+        // shoot spells used equipped item cooldown values already assigned in GetAttackTime(RANGED_ATTACK)
+        // prevent 0 cooldowns set by another way
+        if (spellEntry.HasAttribute(SPELL_ATTR_RANGED) && !spellEntry.HasAttribute(SPELL_ATTR_EX2_NOT_RESET_AUTO_ACTIONS))
+            recTime += GetFloatValue(UNIT_FIELD_RANGEDATTACKTIME);
+    }
 
     // blizzlike code for choosing which is recTime > categoryRecTime after spellmod application
     if (recTime)
@@ -19627,17 +19596,6 @@ void Player::AddCooldown(SpellEntry const& spellEntry, ItemPrototype const* item
             data << GetObjectGuid();
             SendDirectMessage(data);
             sLog.outDebug("Sending SMSG_COOLDOWN_EVENT with spell id = %u", spellEntry.Id);
-        }
-
-        if (spellEntry.AttributesServerside & SPELL_ATTR_SS_SEND_COOLDOWN)
-        {
-            // send to client
-            WorldPacket data(SMSG_SPELL_COOLDOWN, 8 + 1 + 4);
-            data << GetObjectGuid();
-            data << uint8(1);
-            data << uint32(spellEntry.Id);
-            data << uint32(recTime);
-            GetSession()->SendPacket(data);
         }
     }
 }
