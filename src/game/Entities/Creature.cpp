@@ -1302,7 +1302,7 @@ void Creature::SelectLevel(uint32 forcedLevel /*= USE_DEFAULT_DATABASE_LEVEL*/)
         }
         else
         {
-            sLog.outError("Creature::SelectLevel> Error trying to set level(%u) for creature %s without enough data to do it!", level, GetGuidStr().c_str());
+            sLog.outDebug("Creature::SelectLevel> Error trying to set level(%u) for creature %s without enough data to do it!", level, GetGuidStr().c_str());
             // probably wrong
             health = (cinfo->MaxLevelHealth / cinfo->MaxLevel) * level;
             mana = (cinfo->MaxLevelMana / cinfo->MaxLevel) * level;

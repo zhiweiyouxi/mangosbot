@@ -2947,11 +2947,11 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool dependen
         // do character spell book cleanup (all characters)
         if (!IsInWorld() && !learning)                      // spell load case
         {
-            sLog.outError("Player::addSpell: nonexistent in SpellStore spell #%u request, deleting for all characters in `character_spell`.", spell_id);
+            sLog.outDebug("Player::addSpell: nonexistent in SpellStore spell #%u request, deleting for all characters in `character_spell`.", spell_id);
             CharacterDatabase.PExecute("DELETE FROM character_spell WHERE spell = '%u'", spell_id);
         }
         else
-            sLog.outError("Player::addSpell: nonexistent in SpellStore spell #%u request.", spell_id);
+            sLog.outDebug("Player::addSpell: nonexistent in SpellStore spell #%u request.", spell_id);
 
         return false;
     }
@@ -5780,18 +5780,18 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
     if (button >= MAX_ACTION_BUTTONS)
     {
         if (player)
-            sLog.outError("Action %u not added into button %u for player %s: button must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTONS);
+            sLog.outDebug("Action %u not added into button %u for player %s: button must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTONS);
         else
-            sLog.outError("Table `playercreateinfo_action` have action %u into button %u : button must be < %u", action, button, MAX_ACTION_BUTTONS);
+            sLog.outDebug("Table `playercreateinfo_action` have action %u into button %u : button must be < %u", action, button, MAX_ACTION_BUTTONS);
         return false;
     }
 
     if (action >= MAX_ACTION_BUTTON_ACTION_VALUE)
     {
         if (player)
-            sLog.outError("Action %u not added into button %u for player %s: action must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTON_ACTION_VALUE);
+            sLog.outDebug("Action %u not added into button %u for player %s: action must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTON_ACTION_VALUE);
         else
-            sLog.outError("Table `playercreateinfo_action` have action %u into button %u : action must be < %u", action, button, MAX_ACTION_BUTTON_ACTION_VALUE);
+            sLog.outDebug("Table `playercreateinfo_action` have action %u into button %u : action must be < %u", action, button, MAX_ACTION_BUTTON_ACTION_VALUE);
         return false;
     }
 
@@ -5803,9 +5803,9 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
             if (!spellProto)
             {
                 if (player)
-                    sLog.outError("Spell action %u not added into button %u for player %s: spell not exist", action, button, player->GetName());
+                    sLog.outDebug("Spell action %u not added into button %u for player %s: spell not exist", action, button, player->GetName());
                 else
-                    sLog.outError("Table `playercreateinfo_action` have spell action %u into button %u: spell not exist", action, button);
+                    sLog.outDebug("Table `playercreateinfo_action` have spell action %u into button %u: spell not exist", action, button);
                 return false;
             }
 
@@ -5813,12 +5813,12 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
             {
                 if (!player->HasSpell(spellProto->Id))
                 {
-                    sLog.outError("Spell action %u not added into button %u for player %s: player don't known this spell", action, button, player->GetName());
+                    sLog.outDebug("Spell action %u not added into button %u for player %s: player don't known this spell", action, button, player->GetName());
                     return false;
                 }
                 if (IsPassiveSpell(spellProto))
                 {
-                    sLog.outError("Spell action %u not added into button %u for player %s: spell is passive", action, button, player->GetName());
+                    sLog.outDebug("Spell action %u not added into button %u for player %s: spell is passive", action, button, player->GetName());
                     return false;
                 }
             }
@@ -5829,9 +5829,9 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
             if (!ObjectMgr::GetItemPrototype(action))
             {
                 if (player)
-                    sLog.outError("Item action %u not added into button %u for player %s: item not exist", action, button, player->GetName());
+                    sLog.outDebug("Item action %u not added into button %u for player %s: item not exist", action, button, player->GetName());
                 else
-                    sLog.outError("Table `playercreateinfo_action` have item action %u into button %u: item not exist", action, button);
+                    sLog.outDebug("Table `playercreateinfo_action` have item action %u into button %u: item not exist", action, button);
                 return false;
             }
             break;
@@ -14489,7 +14489,7 @@ void Player::_LoadInventory(QueryResult* result, uint32 timediff)
             }
             else
             {
-                sLog.outError("Player::_LoadInventory: Player %s has item (GUID: %u Entry: %u) can't be loaded to inventory (Bag GUID: %u Slot: %u) by some reason, will send by mail.", GetName(), item_lowguid, item_id, bag_guid, slot);
+                sLog.outDebug("Player::_LoadInventory: Player %s has item (GUID: %u Entry: %u) can't be loaded to inventory (Bag GUID: %u Slot: %u) by some reason, will send by mail.", GetName(), item_lowguid, item_id, bag_guid, slot);
                 CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item = '%u'", item_lowguid);
                 problematicItems.push_back(item);
             }
