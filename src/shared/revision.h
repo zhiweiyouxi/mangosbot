@@ -24,7 +24,7 @@
 
 #ifndef MANGOS_H_REVISION
 #define MANGOS_H_REVISION
-    #define REVISION_NR "2116001"
+    #define REVISION_NR "2116016"
 
     #define REALMD_DB_VERSION_NR 21
     #define REALMD_DB_STRUCTURE_NR 2
@@ -38,6 +38,6 @@
 
     #define WORLD_DB_VERSION_NR 21
     #define WORLD_DB_STRUCTURE_NR 16
-    #define WORLD_DB_CONTENT_NR 002
-    #define WORLD_DB_UPDATE_DESCRIPTION "Add_Field_Comments_pt2"
+    #define WORLD_DB_CONTENT_NR 016
+    #define WORLD_DB_UPDATE_DESCRIPTION "Fix typo in quest 5064"
 #endif // __REVISION_H__

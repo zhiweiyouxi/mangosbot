@@ -31,6 +31,8 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cctype>
 
 /**
  * @brief
@@ -554,7 +556,7 @@ inline bool isEastAsianString(const std::wstring &wstr, bool numericOrSpace)
  */
 inline void strToUpper(std::string& str)
 {
-    std::transform(str.begin(), str.end(), str.begin(), toupper);
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return toupper(c); });
 }
 
 /**
@@ -564,7 +566,7 @@ inline void strToUpper(std::string& str)
  */
 inline void strToLower(std::string& str)
 {
-    std::transform(str.begin(), str.end(), str.begin(), tolower);
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return tolower(c); });
 }
 
 /**
@@ -643,7 +645,7 @@ inline wchar_t wcharToLower(wchar_t wchar)
  */
 inline void wstrToUpper(std::wstring& str)
 {
-    std::transform(str.begin(), str.end(), str.begin(), wcharToUpper);
+    std::transform(str.begin(), str.end(), str.begin(), [](wchar_t w) {return wcharToUpper(w); });
 }
 
 /**
@@ -653,7 +655,7 @@ inline void wstrToUpper(std::wstring& str)
  */
 inline void wstrToLower(std::wstring& str)
 {
-    std::transform(str.begin(), str.end(), str.begin(), wcharToLower);
+    std::transform(str.begin(), str.end(), str.begin(), [](wchar_t w) {return wcharToLower(w); });
 }
 
 /**
