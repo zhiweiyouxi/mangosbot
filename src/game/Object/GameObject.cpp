@@ -51,6 +51,9 @@
 #ifdef ENABLE_ELUNA
 #include "LuaEngine.h"
 #endif /* ENABLE_ELUNA */
+#ifdef ENABLE_IMMERSIVE
+#include "immersive.h"
+#endif
 
 GameObject::GameObject() : WorldObject(),
     loot(this),
@@ -475,22 +478,22 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
                             if (visualGO)
                                 visualGO->SetLootState(GO_JUST_DEACTIVATED);
                         }
-                        
+
                         if (!trapEntry)
                             break;
                         GameObjectInfo const* trapInfo = sGOStorage.LookupEntry<GameObjectInfo>(trapEntry);
                         if (!trapInfo || trapInfo->type != GAMEOBJECT_TYPE_TRAP)
                             break;
-                        
+
                         float range = 0.5f;
-                        
+
                         GameObject* trapGO = NULL;
 
                         MaNGOS::NearestGameObjectEntryInObjectRangeCheck go_check(*this, trapEntry, range);
                         MaNGOS::GameObjectLastSearcher<MaNGOS::NearestGameObjectEntryInObjectRangeCheck> checker(trapGO, go_check);
 
                         Cell::VisitGridObjects(this, checker, range);
-                        
+
                         // found correct GO
                         if (trapGO)
                             trapGO->SetLootState(GO_JUST_DEACTIVATED);
@@ -1392,6 +1395,9 @@ void GameObject::Use(Unit* user)
 
                     // normal chance
                     bool success = skill >= zone_skill && chance >= roll;
+#ifdef ENABLE_IMMERSIVE
+                    success = sImmersive.OnFishing(player, success);
+#endif
                     GameObject* fishingHole = NULL;
 
                     // overwrite fail in case fishhole if allowed (after 3.3.0)
@@ -1815,7 +1821,7 @@ uint32 GameObject::RollMineralVein(uint32 entry)      //Maybe incedicite bloodst
                 entry = 1732;
                 break;
             case 2040: // Mithril can spawn Iron
-                entry = 1735; 
+                entry = 1735;
                 break;
             case 123310: // Ooze covered mithril can spawn ooze covered iron
                 entry = 73939;
@@ -1853,7 +1859,7 @@ uint32 GameObject::RollMineralVein(uint32 entry)      //Maybe incedicite bloodst
                 break;
         case 2040: // Mithril can spawn Truesilver
             if (urand (0, 100) < sWorld.getConfig(CONFIG_UINT32_RATE_MINING_RARE))
-                entrynew = 2047; 
+                entrynew = 2047;
                 break;
         case 123310: // Ooze covered mithril can spawn ooze covered truesilver
             if (urand (0, 100) < sWorld.getConfig(CONFIG_UINT32_RATE_MINING_RARE))
@@ -1878,7 +1884,7 @@ uint32 GameObject::RollMineralVein(uint32 entry)      //Maybe incedicite bloodst
 
         default: //default case for copper or not listet special veins
             entrynew = entry;
-    }   
+    }
         return entrynew;
 }
 
