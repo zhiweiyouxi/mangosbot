@@ -60,6 +60,7 @@
 #include "Server/DBCStores.h"
 #include "Server/SQLStorages.h"
 #include "Loot/LootMgr.h"
+#include "World/WorldState.h"
 #include "Config/Config.h"
 
 #ifdef ENABLE_PLAYERBOTS
@@ -548,6 +549,8 @@ Player::Player(WorldSession* session): Unit(), m_taxiTracker(*this), m_mover(thi
 
     PlayerTalkClass = new PlayerMenu(GetSession());
     m_currentBuybackSlot = BUYBACK_SLOT_START;
+
+    m_WeeklyQuestChanged = false;
 
     m_lastLiquid = nullptr;
 
@@ -6673,7 +6676,9 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea, bool force)
     {
         // handle outdoor pvp zones
         sOutdoorPvPMgr.HandlePlayerLeaveZone(this, m_zoneUpdateId);
+        sWorldState.HandlePlayerLeaveZone(this, m_zoneUpdateId);
         sOutdoorPvPMgr.HandlePlayerEnterZone(this, newZone);
+        sWorldState.HandlePlayerEnterZone(this, newZone);
 
         SendInitWorldStates(newZone);                       // only if really enters to new zone, not just area change, works strange...
 
@@ -11910,7 +11915,7 @@ bool Player::CanSeeStartQuest(Quest const* pQuest) const
     if (SatisfyQuestClass(pQuest, false) && SatisfyQuestRace(pQuest, false) && SatisfyQuestSkill(pQuest, false) && SatisfyQuestCondition(pQuest, false) &&
             SatisfyQuestExclusiveGroup(pQuest, false) && SatisfyQuestReputation(pQuest, false) &&
             SatisfyQuestPreviousQuest(pQuest, false) && SatisfyQuestNextChain(pQuest, false) &&
-            SatisfyQuestPrevChain(pQuest, false) &&
+            SatisfyQuestPrevChain(pQuest, false) && SatisfyQuestWeek(pQuest) &&
             pQuest->IsActive())
     {
         int32 highLevelDiff = sWorld.getConfig(CONFIG_INT32_QUEST_HIGH_LEVEL_HIDE_DIFF);
@@ -11929,6 +11934,7 @@ bool Player::CanTakeQuest(Quest const* pQuest, bool msg) const
            SatisfyQuestSkill(pQuest, msg) && SatisfyQuestCondition(pQuest, msg) && SatisfyQuestReputation(pQuest, msg) &&
            SatisfyQuestPreviousQuest(pQuest, msg) && SatisfyQuestTimed(pQuest, msg) &&
            SatisfyQuestNextChain(pQuest, msg) && SatisfyQuestPrevChain(pQuest, msg) &&
+           SatisfyQuestWeek(pQuest) &&
            pQuest->IsActive();
 }
 
@@ -12038,6 +12044,9 @@ bool Player::CanRewardQuest(Quest const* pQuest, bool msg) const
 {
     // not auto complete quest and not completed quest (only cheating case, then ignore without message)
     if (!pQuest->IsAutoComplete() && GetQuestStatus(pQuest->GetQuestId()) != QUEST_STATUS_COMPLETE)
+        return false;
+
+    if (!SatisfyQuestWeek(pQuest))
         return false;
 
     // rewarded and not repeatable quest (only cheating case, then ignore without message)
@@ -12327,6 +12336,9 @@ void Player::RewardQuest(Quest const* pQuest, uint32 reward, Object* questGiver,
     // Send reward mail
     if (uint32 mail_template_id = pQuest->GetRewMailTemplateId())
         MailDraft(mail_template_id).SendMailTo(this, questGiver, MAIL_CHECK_MASK_HAS_BODY, pQuest->GetRewMailDelaySecs());
+
+    if (pQuest->IsWeekly())
+        SetWeeklyQuestStatus(quest_id);
 
     if (!pQuest->IsRepeatable())
         SetQuestStatus(quest_id, QUEST_STATUS_COMPLETE);
@@ -12744,6 +12756,15 @@ bool Player::SatisfyQuestExclusiveGroup(Quest const* qInfo, bool msg) const
         if (exclude_Id == qInfo->GetQuestId())
             continue;
 
+        Quest const* quest = sObjectMgr.GetQuestTemplate(exclude_Id);
+        if (!SatisfyQuestWeek(quest))
+        {
+            if (msg)
+                SendCanTakeQuestResponse(INVALIDREASON_DONT_HAVE_REQ);
+
+            return false;
+        }
+
         QuestStatusMap::const_iterator i_exstatus = mQuestStatus.find(exclude_Id);
 
         // alternative quest already started or completed
@@ -12807,6 +12828,15 @@ bool Player::SatisfyQuestPrevChain(Quest const* qInfo, bool msg) const
 
     // No previous quest in chain active
     return true;
+}
+
+bool Player::SatisfyQuestWeek(Quest const* qInfo) const
+{
+    if (!qInfo->IsWeekly() || m_weeklyquests.empty())
+        return true;
+
+    // if not found in cooldown list
+    return m_weeklyquests.find(qInfo->GetQuestId()) == m_weeklyquests.end();
 }
 
 bool Player::CanGiveQuestSourceItemIfNeed(Quest const* pQuest, ItemPosCountVec* dest) const
@@ -13924,8 +13954,14 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
     // load the player's map here if it's not already loaded
     SetMap(sMapMgr.CreateMap(GetMapId(), this));
 
+    time_t now = time(nullptr);
+    time_t logoutTime = time_t(fields[22].GetUInt64());
+
+    // since last logout (in seconds)
+    uint32 time_diff = uint32(now - logoutTime);
+
     // if the player is in an instance and it has been reset in the meantime teleport him to the entrance
-    if (GetInstanceId() && !state)
+    if (GetInstanceId() && (!state || time_diff > 15 * MINUTE))
     {
         AreaTrigger const* at = sObjectMgr.GetMapEntranceTrigger(GetMapId());
         if (at)
@@ -13935,12 +13971,6 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
     }
 
     SaveRecallPosition();
-
-    time_t now = time(nullptr);
-    time_t logoutTime = time_t(fields[22].GetUInt64());
-
-    // since last logout (in seconds)
-    uint32 time_diff = uint32(now - logoutTime);
 
     // set value, including drunk invisibility detection
     // calculate sobering. after 15 minutes logged out, the player will be sober again
@@ -14050,6 +14080,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
 
     // after spell load, learn rewarded spell if need also
     _LoadQuestStatus(holder->GetResult(PLAYER_LOGIN_QUERY_LOADQUESTSTATUS));
+    _LoadWeeklyQuestStatus(holder->GetResult(PLAYER_LOGIN_QUERY_LOADWEEKLYQUESTSTATUS));
 
     // must be before inventory (some items required reputation check)
     m_reputationMgr.LoadFromDB(holder->GetResult(PLAYER_LOGIN_QUERY_LOADREPUTATION));
@@ -14105,7 +14136,6 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
             m_recallX = destination->x;
             m_recallY = destination->y;
             m_recallZ = destination->z;
-
         }
         // flight will start later
     }
@@ -14790,6 +14820,34 @@ void Player::_LoadQuestStatus(QueryResult* result)
         SetQuestSlot(i, 0);
 }
 
+void Player::_LoadWeeklyQuestStatus(QueryResult* result)
+{
+    m_weeklyquests.clear();
+
+    // QueryResult *result = CharacterDatabase.PQuery("SELECT quest FROM character_queststatus_weekly WHERE guid = '%u'", GetGUIDLow());
+
+    if (result)
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+
+            uint32 quest_id = fields[0].GetUInt32();
+
+            Quest const* pQuest = sObjectMgr.GetQuestTemplate(quest_id);
+            if (!pQuest)
+                continue;
+
+            m_weeklyquests.insert(quest_id);
+
+            DEBUG_LOG("Weekly quest {%u} cooldown for player (GUID: %u)", quest_id, GetGUIDLow());
+        } while (result->NextRow());
+
+        delete result;
+    }
+    m_WeeklyQuestChanged = false;
+}
+
 void Player::_LoadSpells(QueryResult* result)
 {
     // QueryResult *result = CharacterDatabase.PQuery("SELECT spell,active,disabled FROM character_spell WHERE guid = '%u'",GetGUIDLow());
@@ -15308,6 +15366,7 @@ void Player::SaveToDB()
     _SaveBGData();
     _SaveInventory();
     _SaveQuestStatus();
+    _SaveWeeklyQuestStatus();
     _SaveSpells();
     _SaveSpellCooldowns();
     _SaveActions();
@@ -15693,6 +15752,26 @@ void Player::_SaveQuestStatus()
         }
         questStatus.uState = QUEST_UNCHANGED;
     }
+}
+
+void Player::_SaveWeeklyQuestStatus()
+{
+    if (!m_WeeklyQuestChanged || m_weeklyquests.empty())
+        return;
+
+    // we don't need transactions here.
+    static SqlStatementID delQuestStatus;
+    static SqlStatementID insQuestStatus;
+
+    SqlStatement stmtDel = CharacterDatabase.CreateStatement(delQuestStatus, "DELETE FROM character_queststatus_weekly WHERE guid = ?");
+    SqlStatement stmtIns = CharacterDatabase.CreateStatement(insQuestStatus, "INSERT INTO character_queststatus_weekly (guid,quest) VALUES (?, ?)");
+
+    stmtDel.PExecute(GetGUIDLow());
+
+    for (uint32 quest_id : m_weeklyquests)
+        stmtIns.PExecute(GetGUIDLow(), quest_id);
+
+    m_WeeklyQuestChanged = false;
 }
 
 void Player::_SaveSkills()
@@ -17847,6 +17926,22 @@ void Player::learnQuestRewardedSpells()
 
         learnQuestRewardedSpells(quest);
     }
+}
+
+void Player::SetWeeklyQuestStatus(uint32 quest_id)
+{
+    m_weeklyquests.insert(quest_id);
+    m_WeeklyQuestChanged = true;
+}
+
+void Player::ResetWeeklyQuestStatus()
+{
+    if (m_weeklyquests.empty())
+        return;
+
+    m_weeklyquests.clear();
+    // DB data deleted in caller
+    m_WeeklyQuestChanged = false;
 }
 
 BattleGround* Player::GetBattleGround() const

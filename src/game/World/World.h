@@ -146,6 +146,8 @@ enum eConfigUInt32Values
     CONFIG_UINT32_CREATURE_FAMILY_ASSISTANCE_DELAY,
     CONFIG_UINT32_CREATURE_FAMILY_FLEE_DELAY,
     CONFIG_UINT32_WORLD_BOSS_LEVEL_DIFF,
+    CONFIG_UINT32_QUEST_WEEKLY_RESET_WEEK_DAY,
+    CONFIG_UINT32_QUEST_WEEKLY_RESET_HOUR,
     CONFIG_UINT32_CHAT_STRICT_LINK_CHECKING_SEVERITY,
     CONFIG_UINT32_CHAT_STRICT_LINK_CHECKING_KICK,
     CONFIG_UINT32_CORPSE_DECAY_NORMAL,
@@ -175,6 +177,7 @@ enum eConfigUInt32Values
     CONFIG_UINT32_FOGOFWAR_STEALTH,
     CONFIG_UINT32_FOGOFWAR_HEALTH,
     CONFIG_UINT32_FOGOFWAR_STATS,
+    CONFIG_UINT32_CREATURE_PICKPOCKET_RESTOCK_DELAY,
     CONFIG_UINT32_VALUE_COUNT
 };
 
@@ -577,6 +580,9 @@ class World
         // callback for UpdateRealmCharacters
         void _UpdateRealmCharCount(QueryResult* resultCharCount, uint32 accountId);
 
+        void InitWeeklyQuestResetTime();
+        void ResetWeeklyQuests();
+
     private:
         void setConfig(eConfigUInt32Values index, char const* fieldname, uint32 defvalue);
         void setConfig(eConfigInt32Values index, char const* fieldname, int32 defvalue);
@@ -637,6 +643,9 @@ class World
         // CLI command holder to be thread safe
         std::mutex m_cliCommandQueueLock;
         std::deque<const CliCommandHolder*> m_cliCommandQueue;
+
+        // next weekly quests reset time
+        time_t m_NextWeeklyQuestReset;
 
         // Player Queue
         Queue m_QueuedSessions;

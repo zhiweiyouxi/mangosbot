@@ -161,10 +161,11 @@ enum UnitStandStateType
     UNIT_STAND_STATE_SIT_MEDIUM_CHAIR  = 5,
     UNIT_STAND_STATE_SIT_HIGH_CHAIR    = 6,
     UNIT_STAND_STATE_DEAD              = 7,
-    UNIT_STAND_STATE_KNEEL             = 8
+    UNIT_STAND_STATE_KNEEL             = 8,
+    UNIT_STAND_STATE_CUSTOM            = 9, // confirm for vanilla - used on Cthun in later sniffs
 };
 
-#define MAX_UNIT_STAND_STATE             9
+#define MAX_UNIT_STAND_STATE             10
 
 /* byte flag value not exist in 1.12, moved/merged in (UNIT_FIELD_BYTES_1,3), in post-1.x it's in (UNIT_FIELD_BYTES_1,2)
 enum UnitStandFlags
@@ -414,7 +415,7 @@ enum UnitState
     UNIT_STAT_FLEEING         = 0x00020000,                 // FleeMovementGenerator/TimedFleeingMovementGenerator active/onstack
     UNIT_STAT_FLEEING_MOVE    = 0x00040000,
     UNIT_STAT_SEEKING_ASSISTANCE = 0x00080000,
-    UNIT_STAT_DONT_TURN       = 0x00100000,                 // Creature will not turn and acquire new target
+    UNIT_STAT_CHARGING        = 0x00100000,                 // Creature will not turn and acquire new target
     UNIT_STAT_CHANNELING      = 0x00200000,
     // More room for other MMGens
 
@@ -1466,7 +1467,7 @@ class Unit : public WorldObject
         bool IsFogOfWarVisibleHealth(Unit const* other) const;
         bool IsFogOfWarVisibleStats(Unit const* other) const;
 
-        bool IsInGroup(Unit const* other, bool party = false, bool ignoreCharms = false) const;
+        virtual bool IsInGroup(Unit const* other, bool party = false, bool ignoreCharms = false) const;
         inline bool IsInParty(Unit const* other, bool ignoreCharms = false) const { return IsInGroup(other, true, ignoreCharms); }
         bool IsInGuild(Unit const* other, bool ignoreCharms = false) const;
         bool IsInTeam(Unit const* other, bool ignoreCharms = true) const;
@@ -1539,7 +1540,7 @@ class Unit : public WorldObject
         SpellMissInfo SpellHitResult(Unit* pVictim, SpellEntry const* spell, uint8 effectMask, bool reflectable = false);
 
         bool CanDualWield() const { return m_canDualWield; }
-        void SetCanDualWield(bool value) { m_canDualWield = value; }
+        virtual void SetCanDualWield(bool value) { m_canDualWield = value; }
 
         // Unit Combat reactions API: Dodge/Parry/Block
         bool CanDodge() const { return m_canDodge; }
@@ -1775,9 +1776,9 @@ class Unit : public WorldObject
         bool CanInitiateAttack() const;
 
         void NearTeleportTo(float x, float y, float z, float orientation, bool casting = false);
+        // do not use - kept only for cinematics
         void MonsterMoveWithSpeed(float x, float y, float z, float speed, bool generatePath = false, bool forceDestination = false);
-        // recommend use MonsterMove/MonsterMoveWithSpeed for most case that correctly work with movegens
-        // if used additional args in ... part then floats must explicitly casted to double
+        
         void SendHeartBeat();
 
         bool IsMoving() const { return m_movementInfo.HasMovementFlag(movementFlagsMask); }
@@ -2324,7 +2325,6 @@ class Unit : public WorldObject
         bool CanEnterCombat() { return m_canEnterCombat && !IsEvadingHome(); }
         void SetCanEnterCombat(bool can) { m_canEnterCombat = can; }
 
-        void SetTurningOff(bool apply);
         virtual bool IsIgnoringRangedTargets() { return false; }
 
         float GetAttackDistance(Unit const* pl) const;

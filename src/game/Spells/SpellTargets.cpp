@@ -222,7 +222,7 @@ SpellEffectInfo SpellEffectInfoTable[MAX_SPELL_EFFECTS] =
     /*[121]*/    { "SPELL_EFFECT_NORMALIZED_WEAPON_DMG",        TARGET_TYPE_UNIT,           TARGET_NONE },
     /*[122]*/    { "SPELL_EFFECT_122",                          TARGET_TYPE_UNKNOWN,        TARGET_NONE },
     /*[123]*/    { "SPELL_EFFECT_SEND_TAXI",                    TARGET_TYPE_UNIT,           TARGET_UNIT_CASTER },
-    /*[124]*/    { "SPELL_EFFECT_PLAYER_PULL",                  TARGET_TYPE_UNIT,           TARGET_NONE },
+    /*[124]*/    { "SPELL_EFFECT_PULL_TOWARDS",                 TARGET_TYPE_UNIT,           TARGET_NONE },
     /*[125]*/    { "SPELL_EFFECT_MODIFY_THREAT_PERCENT",        TARGET_TYPE_UNIT,           TARGET_NONE },
     /*[126]*/    { "SPELL_EFFECT_STEAL_BENEFICIAL_BUFF",        TARGET_TYPE_UNIT,           TARGET_NONE },
     /*[127]*/    { "SPELL_EFFECT_PROSPECTING",                  TARGET_TYPE_ITEM,           TARGET_NONE },
@@ -340,6 +340,7 @@ void SpellTargetMgr::Initialize()
                 // start from first next target
                 for (uint32 effIdxTarget = effIdxSource; effIdxTarget < MAX_EFFECT_INDEX; ++effIdxTarget)
                 {
+                    SpellTargetImplicitType implicitEffectTypeTarget = data.implicitType[effIdxTarget];
                     for (uint8 rightTarget = effIdxSource == effIdxTarget ? rightSource + 1 : 0; rightTarget < 2; ++rightTarget)
                     {
                         uint32 targetTarget;
@@ -363,6 +364,8 @@ void SpellTargetMgr::Initialize()
                             bool ignore = false;
                             // exception for area auras
                             if (implicitEffectType == TARGET_TYPE_SPECIAL_UNIT && info.type == TARGET_TYPE_UNIT && info.enumerator != TARGET_ENUMERATOR_SINGLE)
+                                ignore = true;
+                            else if (implicitEffectTypeTarget == TARGET_TYPE_LOCATION_DEST && info.type == TARGET_TYPE_UNIT)
                                 ignore = true;
                             else
                             {
