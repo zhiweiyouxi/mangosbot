@@ -160,12 +160,9 @@ enum eConfigUInt32Values
     CONFIG_UINT32_BATTLEGROUND_QUEUE_ANNOUNCER_JOIN,
     CONFIG_UINT32_GROUP_OFFLINE_LEADER_DELAY,
     CONFIG_UINT32_GUILD_EVENT_LOG_COUNT,
-    CONFIG_UINT32_TIMERBAR_FATIGUE_GMLEVEL,
-    CONFIG_UINT32_TIMERBAR_FATIGUE_MAX,
-    CONFIG_UINT32_TIMERBAR_BREATH_GMLEVEL,
-    CONFIG_UINT32_TIMERBAR_BREATH_MAX,
-    CONFIG_UINT32_TIMERBAR_FIRE_GMLEVEL,
-    CONFIG_UINT32_TIMERBAR_FIRE_MAX,
+    CONFIG_UINT32_MIRRORTIMER_FATIGUE_MAX,
+    CONFIG_UINT32_MIRRORTIMER_BREATH_MAX,
+    CONFIG_UINT32_MIRRORTIMER_ENVIRONMENTAL_MAX,
     CONFIG_UINT32_MIN_LEVEL_STAT_SAVE,
     CONFIG_UINT32_MAINTENANCE_DAY,
     CONFIG_UINT32_CHARDELETE_KEEP_DAYS,
@@ -319,6 +316,7 @@ enum eConfigBoolValues
     CONFIG_BOOL_CLEAN_CHARACTER_DB,
     CONFIG_BOOL_VMAP_INDOOR_CHECK,
     CONFIG_BOOL_PET_UNSUMMON_AT_MOUNT,
+    CONFIG_BOOL_PET_ATTACK_FROM_BEHIND,
     CONFIG_BOOL_MMAP_ENABLED,
     CONFIG_BOOL_PLAYER_COMMANDS,
     CONFIG_BOOL_PATH_FIND_OPTIMIZE,
@@ -532,12 +530,8 @@ class World
         static float GetMaxVisibleDistanceInInstances()     { return m_MaxVisibleDistanceInInstances;  }
         static float GetMaxVisibleDistanceInBG()            { return m_MaxVisibleDistanceInBG;         }
 
-        static float GetMaxVisibleDistanceInFlight()        { return m_MaxVisibleDistanceInFlight;    }
-        static float GetVisibleUnitGreyDistance()           { return m_VisibleUnitGreyDistance;       }
-        static float GetVisibleObjectGreyDistance()         { return m_VisibleObjectGreyDistance;     }
-
-        static float GetRelocationLowerLimitSq()            { return m_relocation_lower_limit_sq; }
-        static uint32 GetRelocationAINotifyDelay()          { return m_relocation_ai_notify_delay; }
+        static float GetRelocationLowerLimitSq() { return m_relocation_lower_limit_sq; }
+        static uint32 GetRelocationAINotifyDelay() { return m_relocation_ai_notify_delay; }
 
         void InitServerMaintenanceCheck();
         void ServerMaintenanceStart();
@@ -636,10 +630,6 @@ class World
         static float m_MaxVisibleDistanceOnContinents;
         static float m_MaxVisibleDistanceInInstances;
         static float m_MaxVisibleDistanceInBG;
-
-        static float m_MaxVisibleDistanceInFlight;
-        static float m_VisibleUnitGreyDistance;
-        static float m_VisibleObjectGreyDistance;
 
         static float  m_relocation_lower_limit_sq;
         static uint32 m_relocation_ai_notify_delay;

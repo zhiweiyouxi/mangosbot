@@ -41,6 +41,16 @@
 #include "Loot/LootMgr.h"
 #include "Spells/SpellMgr.h"
 
+constexpr float VisibilityDistances[AsUnderlyingType(VisibilityDistanceType::Max)] =
+{
+    DEFAULT_VISIBILITY_DISTANCE,
+    VISIBILITY_DISTANCE_TINY,
+    VISIBILITY_DISTANCE_SMALL,
+    VISIBILITY_DISTANCE_LARGE,
+    VISIBILITY_DISTANCE_GIGANTIC,
+    MAX_VISIBILITY_DISTANCE
+};
+
 Object::Object(): m_updateFlag(0), m_itsNewObject(false)
 {
     m_objectTypeId      = TYPEID_OBJECT;
@@ -110,12 +120,14 @@ void Object::SendForcedObjectUpdate()
     BuildUpdateData(update_players);
     RemoveFromClientUpdateList();
 
-    WorldPacket packet;                                     // here we allocate a std::vector with a size of 0x10000
+    // here we allocate a std::vector with a size of 0x10000
     for (auto& update_player : update_players)
     {
-        update_player.second.BuildPacket(packet);
-        update_player.first->GetSession()->SendPacket(packet);
-        packet.clear();                                     // clean the string
+        for (size_t i = 0; i < update_player.second.GetPacketCount(); ++i)
+        {
+            WorldPacket packet = update_player.second.BuildPacket(i);
+            update_player.first->GetSession()->SendPacket(packet);
+        }
     }
 }
 
@@ -178,12 +190,14 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) c
 void Object::SendCreateUpdateToPlayer(Player* player) const
 {
     // send create update to player
-    UpdateData upd;
-    WorldPacket packet;
+    UpdateData updateData;
+    BuildCreateUpdateBlockForPlayer(&updateData, player);
 
-    BuildCreateUpdateBlockForPlayer(&upd, player);
-    upd.BuildPacket(packet);
-    player->GetSession()->SendPacket(packet);
+    for (size_t i = 0; i < updateData.GetPacketCount(); ++i)
+    {
+        WorldPacket packet = updateData.BuildPacket(i);
+        player->GetSession()->SendPacket(packet);
+    }
 }
 
 void Object::BuildValuesUpdateBlockForPlayer(UpdateData* data, Player* target) const
@@ -417,25 +431,33 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* u
                 {
                     *data << uint32(m_floatValues[index]);
                 }
-
-                // Fog of War: replace absolute health values with percentages for non-allied units according to settings
-                else if ((index == UNIT_FIELD_HEALTH || index == UNIT_FIELD_MAXHEALTH) &&
-                         !(static_cast<const Unit*>(this))->IsFogOfWarVisibleHealth(target))
+                else if (index == UNIT_FIELD_HEALTH || index == UNIT_FIELD_MAXHEALTH)
                 {
-                    *data << uint32(index == UNIT_FIELD_MAXHEALTH ? 100 : ceil(100.0 * m_uint32Values[UNIT_FIELD_HEALTH] / m_uint32Values[UNIT_FIELD_MAXHEALTH]));
-                }
+                    uint32 value = m_uint32Values[index];
 
+                    // Fog of War: replace absolute health values with percentages for non-allied units according to settings
+                    if (!static_cast<const Unit*>(this)->IsFogOfWarVisibleHealth(target))
+                    {
+                        switch (index)
+                        {
+                            case UNIT_FIELD_HEALTH:     value = uint32(ceil((100.0 * value) / m_uint32Values[UNIT_FIELD_MAXHEALTH]));   break;
+                            case UNIT_FIELD_MAXHEALTH:  value = 100;                                                                    break;
+                        }
+                    }
+
+                    *data << value;
+                }
                 // Fog of War: hide stat values for non-allied units according to settings
                 else if ((index == UNIT_FIELD_RANGEDATTACKTIME ||
                           index == UNIT_FIELD_MINDAMAGE || index == UNIT_FIELD_MAXDAMAGE ||
                           index == UNIT_FIELD_MINOFFHANDDAMAGE || index == UNIT_FIELD_MAXOFFHANDDAMAGE ||
-                          index == UNIT_FIELD_MINOFFHANDDAMAGE || (index >= UNIT_FIELD_STAT0 && index < UNIT_FIELD_BASE_MANA) ||
+                          (index >= UNIT_FIELD_STAT0 && index < UNIT_FIELD_BASE_MANA) ||
                           index == UNIT_FIELD_BASE_HEALTH || index == UNIT_FIELD_ATTACK_POWER ||
                           index == UNIT_FIELD_ATTACK_POWER_MODS || index == UNIT_FIELD_ATTACK_POWER_MULTIPLIER ||
                           index == UNIT_FIELD_RANGED_ATTACK_POWER || index == UNIT_FIELD_RANGED_ATTACK_POWER_MODS ||
                           index == UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER || index == UNIT_FIELD_MINRANGEDDAMAGE ||
                           index == UNIT_FIELD_MAXRANGEDDAMAGE || (index >= UNIT_FIELD_POWER_COST_MODIFIER && index <= UNIT_FIELD_POWER_COST_MULTIPLIER_06)) &&
-                          !(static_cast<const Unit*>(this))->IsFogOfWarVisibleStats(target))
+                          !static_cast<const Unit*>(this)->IsFogOfWarVisibleStats(target))
                 {
                     *data << uint32(0);
                 }
@@ -515,6 +537,28 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* u
                     }
 
                     *data << dynflagsValue;
+                }
+                else if (index == UNIT_FIELD_FACTIONTEMPLATE)
+                {
+                    uint32 value = m_uint32Values[index];
+
+                    // [XFACTION]: Alter faction if detected crossfaction group interaction when updating faction field:
+                    if (this != target && GetTypeId() == TYPEID_PLAYER && sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_GROUP))
+                    {
+                        Player const* thisPlayer = static_cast<Player const*>(this);
+                        const uint32 targetTeam = target->GetTeam();
+
+                        if (thisPlayer->GetTeam() != targetTeam && !thisPlayer->HasCharmer() && target->IsInGroup(thisPlayer))
+                        {
+                            switch (targetTeam)
+                            {
+                                case ALLIANCE:  value = 1054;   break;  // "Alliance Generic"
+                                case HORDE:     value = 1495;   break;  // "Horde Generic"
+                            }
+                        }
+                    }
+
+                    *data << value;
                 }
                 else                                        // Unhandled index, just send
                 {
@@ -911,7 +955,7 @@ void Object::MarkForClientUpdate()
     }
 }
 
-void Object::ForceValuesUpdateAtIndex(uint32 index)
+void Object::ForceValuesUpdateAtIndex(uint16 index)
 {
     m_changedValues[index] = true;
     if (m_inWorld && !m_objectUpdated)
@@ -924,7 +968,8 @@ void Object::ForceValuesUpdateAtIndex(uint32 index)
 WorldObject::WorldObject() :
     m_isOnEventNotified(false),
     m_currMap(nullptr), m_mapId(0),
-    m_InstanceId(0), m_isActiveObject(false)
+    m_InstanceId(0), m_isActiveObject(false),
+    m_visibilityDistanceOverride(0.f)
 {
 }
 
@@ -1072,7 +1117,7 @@ float WorldObject::GetDistance2d(float x, float y, DistanceCalculation distcalc)
 float WorldObject::GetDistanceZ(const WorldObject* obj) const
 {
     float dz = fabs(GetPositionZ() - obj->GetPositionZ());
-    float sizefactor = GetObjectBoundingRadius() + obj->GetObjectBoundingRadius();
+    float sizefactor = GetCombatReach() + obj->GetCombatReach();
     float dist = dz - sizefactor;
     return dist > 0 ? dist : 0;
 }
@@ -1080,7 +1125,7 @@ float WorldObject::GetDistanceZ(const WorldObject* obj) const
 bool WorldObject::IsWithinDist3d(float x, float y, float z, float dist2compare) const
 {
     float distsq = GetDistance(x, y, z, DIST_CALC_NONE);
-    float sizefactor = GetObjectBoundingRadius();
+    float sizefactor = GetCombatReach();
     float maxdist = dist2compare + sizefactor;
 
     return distsq < maxdist * maxdist;
@@ -1089,7 +1134,7 @@ bool WorldObject::IsWithinDist3d(float x, float y, float z, float dist2compare) 
 bool WorldObject::IsWithinDist2d(float x, float y, float dist2compare) const
 {
     float distsq = GetDistance2d(x, y, DIST_CALC_NONE);
-    float sizefactor = GetObjectBoundingRadius();
+    float sizefactor = GetCombatReach();
     float maxdist = dist2compare + sizefactor;
 
     return distsq < maxdist * maxdist;
@@ -1098,7 +1143,7 @@ bool WorldObject::IsWithinDist2d(float x, float y, float dist2compare) const
 bool WorldObject::_IsWithinDist(WorldObject const* obj, float dist2compare, bool is3D) const
 {
     float distsq = GetDistance(obj, is3D, DIST_CALC_NONE);
-    float sizefactor = GetObjectBoundingRadius() + obj->GetObjectBoundingRadius();
+    float sizefactor = GetCombatReach() + obj->GetCombatReach();
     float maxdist = dist2compare + sizefactor;
 
     return distsq < maxdist * maxdist;
@@ -1342,69 +1387,18 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float& z, Map* atMap 
     if (!atMap)
         atMap = GetMap();
 
-    switch (GetTypeId())
-    {
-        case TYPEID_UNIT:
-        {
-            // non fly unit don't must be in air
-            // non swim unit must be at ground (mostly speedup, because it don't must be in water and water level check less fast
-            if (!((Creature const*)this)->CanFly())
-            {
-                bool canSwim = ((Creature const*)this)->CanSwim();
-                float ground_z = z;
-                float max_z = canSwim
-                              ? atMap->GetTerrain()->GetWaterOrGroundLevel(x, y, z, &ground_z, !((Unit const*)this)->HasAuraType(SPELL_AURA_WATER_WALK))
-                              : ((ground_z = atMap->GetHeight(x, y, z)));
-                if (max_z > INVALID_HEIGHT)
-                {
-                    if (z > max_z)
-                        z = max_z;
-                    else if (z < ground_z)
-                        z = ground_z;
-                }
-            }
-            else
-            {
-                float ground_z = atMap->GetHeight(x, y, z);
-                if (z < ground_z)
-                    z = ground_z;
-            }
-            break;
-        }
-        case TYPEID_PLAYER:
-        {
-            // for server controlled moves player work same as creature (but it can always swim)
-            {
-                float ground_z = z;
-                float max_z = atMap->GetTerrain()->GetWaterOrGroundLevel(x, y, z, &ground_z, !((Unit const*)this)->HasAuraType(SPELL_AURA_WATER_WALK));
-                if (max_z > INVALID_HEIGHT)
-                {
-                    if (z > max_z)
-                        z = max_z;
-                    else if (z < ground_z)
-                        z = ground_z;
-                }
-            }
-            break;
-        }
-        default:
-        {
-            float ground_z = atMap->GetHeight(x, y, z);
-            if (ground_z > INVALID_HEIGHT)
-                z = ground_z;
-            break;
-        }
-    }
+    float ground_z = atMap->GetHeight(x, y, z);
+    if (ground_z > INVALID_HEIGHT)
+        z = ground_z;
 }
 
 void WorldObject::MovePositionToFirstCollision(WorldLocation &pos, float dist, float angle)
 {
     float destX = pos.coord_x + dist * cos(angle);
     float destY = pos.coord_y + dist * sin(angle);
-    float ground = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, MAX_HEIGHT, true);
-    float floor = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, pos.coord_z, true);
-    float destZ = fabs(ground - pos.coord_z) <= fabs(floor - pos.coord_z) ? ground : floor;
+    float destZ = pos.coord_z;
 
+    UpdateAllowedPositionZ(destX, destY, destZ);
     bool colPoint = GetMap()->GetHitPosition(pos.coord_x, pos.coord_y, pos.coord_z + 0.5f, destX, destY, destZ, -0.5f);
 
     if (colPoint)
@@ -1422,9 +1416,7 @@ void WorldObject::MovePositionToFirstCollision(WorldLocation &pos, float dist, f
         {
             destX -= step * cos(angle);
             destY -= step * sin(angle);
-            ground = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, MAX_HEIGHT, true);
-            floor = GetMap()->GetTerrain()->GetHeightStatic(destX, destY, pos.coord_z, true);
-            destZ = fabs(ground - pos.coord_z) <= fabs(floor - pos.coord_z) ? ground : floor;
+            UpdateAllowedPositionZ(destX, destY, destZ);
         }
         else
         {
@@ -1437,7 +1429,7 @@ void WorldObject::MovePositionToFirstCollision(WorldLocation &pos, float dist, f
 
     MaNGOS::NormalizeMapCoord(pos.coord_x);
     MaNGOS::NormalizeMapCoord(pos.coord_y);
-    UpdateGroundPositionZ(pos.coord_x, pos.coord_y, pos.coord_z);
+    UpdateAllowedPositionZ(pos.coord_x, pos.coord_y, pos.coord_z);
     pos.orientation = m_position.o;
 }
 
@@ -1449,11 +1441,14 @@ float WorldObject::GetCombinedCombatReach(WorldObject const* pVictim, bool forMe
 float WorldObject::GetCombinedCombatReach(bool forMeleeRange, float flat_mod) const
 {
     // The measured values show BASE_MELEE_OFFSET in (1.3224, 1.342)
-    float reach = GetCombatReach() +
-        BASE_MELEERANGE_OFFSET + flat_mod;
+    float reach = GetCombatReach() + flat_mod;
 
-    if (forMeleeRange && reach < ATTACK_DISTANCE)
-        reach = ATTACK_DISTANCE;
+    if (forMeleeRange)
+    {
+        reach += BASE_MELEERANGE_OFFSET;
+        if (reach < ATTACK_DISTANCE)
+            reach = ATTACK_DISTANCE;
+    }
 
     return reach;
 }
@@ -1811,7 +1806,7 @@ void WorldObject::GetNearPoint2D(float& x, float& y, float distance2d, float abs
     MaNGOS::NormalizeMapCoord(y);
 }
 
-void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, float& z, float searcher_bounding_radius, float distance2d, float absAngle) const
+void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, float& z, float searcher_bounding_radius, float distance2d, float absAngle, bool isInWater) const
 {
     GetNearPoint2D(x, y, distance2d, absAngle);
     const float init_z = z = GetPositionZ();
@@ -1821,7 +1816,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, 
     {
         if (searcher)
             searcher->UpdateAllowedPositionZ(x, y, z, GetMap()); // update to LOS height if available
-        else
+        else if (!isInWater)
             UpdateGroundPositionZ(x, y, z);
         return;
     }
@@ -1849,7 +1844,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, 
     {
         if (searcher)
             searcher->UpdateAllowedPositionZ(x, y, z, GetMap()); // update to LOS height if available
-        else
+        else if (!isInWater)
             UpdateGroundPositionZ(x, y, z);
 
         if (fabs(init_z - z) < dist && IsWithinLOS(x, y, z))
@@ -1871,7 +1866,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, 
 
         if (searcher)
             searcher->UpdateAllowedPositionZ(x, y, z, GetMap()); // update to LOS height if available
-        else
+        else if (!isInWater)
             UpdateGroundPositionZ(x, y, z);
 
         if (fabs(init_z - z) < dist && IsWithinLOS(x, y, z))
@@ -1887,7 +1882,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, 
 
         if (searcher)
             searcher->UpdateAllowedPositionZ(x, y, z, GetMap()); // update to LOS height if available
-        else
+        else if (!isInWater)
             UpdateGroundPositionZ(x, y, z);
         return;
     }
@@ -1903,7 +1898,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, 
 
         if (searcher)
             searcher->UpdateAllowedPositionZ(x, y, z, GetMap()); // update to LOS height if available
-        else
+        else if (!isInWater)
             UpdateGroundPositionZ(x, y, z);
 
         if (fabs(init_z - z) < dist && IsWithinLOS(x, y, z))
@@ -1916,7 +1911,7 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float& x, float& y, 
 
     if (searcher)
         searcher->UpdateAllowedPositionZ(x, y, z, GetMap());// update to LOS height if available
-    else
+    else if (!isInWater)
         UpdateGroundPositionZ(x, y, z);
 }
 
@@ -2075,6 +2070,31 @@ void WorldObject::SetActiveObjectState(bool active)
     m_isActiveObject = active;
 }
 
+void WorldObject::SetVisibilityDistanceOverride(VisibilityDistanceType type)
+{
+    MANGOS_ASSERT(type < VisibilityDistanceType::Max);
+    if (GetTypeId() == TYPEID_PLAYER)
+        return;
+
+    m_visibilityDistanceOverride = VisibilityDistances[AsUnderlyingType(type)];
+}
+
+float WorldObject::GetVisibilityDistance() const
+{
+    if (IsVisibilityOverridden())
+        return m_visibilityDistanceOverride;
+    else
+        return GetMap()->GetVisibilityDistance();
+}
+
+float WorldObject::GetVisibilityDistanceFor(WorldObject* obj) const
+{
+    if (IsVisibilityOverridden() && obj->GetTypeId() == TYPEID_PLAYER)
+        return m_visibilityDistanceOverride;
+    else
+        return obj->GetVisibilityDistance();
+}
+
 void WorldObject::SetNotifyOnEventState(bool state)
 {
     if (state == m_isOnEventNotified)
@@ -2111,7 +2131,7 @@ bool WorldObject::HasGCD(SpellEntry const* spellEntry) const
     return !m_GCDCatMap.empty();
 }
 
-void WorldObject::AddCooldown(SpellEntry const& spellEntry, ItemPrototype const* itemProto /*= nullptr*/, bool permanent /*= false*/, uint32 forcedDuration /*= 0*/)
+void WorldObject::AddCooldown(SpellEntry const& spellEntry, ItemPrototype const* /*itemProto = nullptr*/, bool /*permanent = false*/, uint32 forcedDuration /*= 0*/)
 {
     uint32 recTimeDuration = forcedDuration ? forcedDuration : spellEntry.RecoveryTime;
     if (recTimeDuration || spellEntry.CategoryRecoveryTime)
@@ -2238,12 +2258,12 @@ void WorldObject::RemoveSpellCooldown(uint32 spellId, bool updateClient /*= true
     RemoveSpellCooldown(*spellEntry, updateClient);
 }
 
-void WorldObject::RemoveSpellCooldown(SpellEntry const& spellEntry, bool updateClient /*= true*/)
+void WorldObject::RemoveSpellCooldown(SpellEntry const& spellEntry, bool /*updateClient = true*/)
 {
     m_cooldownMap.RemoveBySpellId(spellEntry.Id);
 }
 
-void WorldObject::RemoveSpellCategoryCooldown(uint32 category, bool updateClient /*= true*/)
+void WorldObject::RemoveSpellCategoryCooldown(uint32 category, bool /*updateClient = true*/)
 {
     m_cooldownMap.RemoveByCategory(category);
 }

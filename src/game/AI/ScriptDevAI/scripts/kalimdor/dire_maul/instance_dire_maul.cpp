@@ -52,6 +52,12 @@ void instance_dire_maul::OnPlayerEnter(Player* pPlayer)
     DoToggleGameObjectFlags(GO_WEST_LIBRARY_DOOR, GO_FLAG_LOCKED, !m_bDoNorthBeforeWest);
 }
 
+void instance_dire_maul::OnPlayerLeave(Player* pPlayer) {
+    // Remove King of the Gordok aura
+    if (pPlayer->HasAura(SPELL_KING_OF_GORDOK))
+        pPlayer->RemoveAurasDueToSpell(SPELL_KING_OF_GORDOK);
+}
+
 void instance_dire_maul::OnCreatureCreate(Creature* pCreature)
 {
     switch (pCreature->GetEntry())
@@ -593,7 +599,7 @@ struct go_ai_fixed_trap : public GameObjectAI
 {
     go_ai_fixed_trap(GameObject* go) : GameObjectAI(go) {}
 
-    void UpdateAI(const uint32 uiDiff) override
+    void UpdateAI(const uint32 /*uiDiff*/) override
     {
         if (m_go->IsSpawned())
         {

@@ -111,8 +111,8 @@ void Player::UpdateResistances(uint32 school)
 {
     if (school > SPELL_SCHOOL_NORMAL)
     {
-        float value  = GetTotalAuraModValue(UnitMods(UNIT_MOD_RESISTANCE_START + school));
-        SetResistance(SpellSchools(school), int32(value));
+        int32 value = GetTotalResistanceValue(SpellSchools(school));
+        SetResistance(SpellSchools(school), value);
     }
     else
         UpdateArmor();
@@ -120,25 +120,22 @@ void Player::UpdateResistances(uint32 school)
 
 void Player::UpdateArmor()
 {
-    UnitMods unitMod = UNIT_MOD_ARMOR;
+    float dynamic = (GetStat(STAT_AGILITY) * 2.0f);
 
-    float value = GetModifierValue(unitMod, BASE_VALUE);         // base armor (from items)
-    value *= GetModifierValue(unitMod, BASE_PCT);           // armor percent from items
-    value += GetStat(STAT_AGILITY) * 2.0f;                  // armor bonus from stats
-    value += GetModifierValue(unitMod, TOTAL_VALUE);
-
-    // add dynamic flat mods
-    AuraList const& mResbyIntellect = GetAurasByType(SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT);
-    for (auto i : mResbyIntellect)
+    // Add dynamic flat mods
+    for (auto& i : GetAurasByType(SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT))
     {
-        Modifier* mod = i->GetModifier();
-        if (mod->m_miscvalue & SPELL_SCHOOL_MASK_NORMAL)
-            value += int32(GetStat(STAT_INTELLECT) * mod->m_amount / 100.0f);
+        if (Modifier* mod = i->GetModifier())
+        {
+            if (mod->m_miscvalue & SPELL_SCHOOL_MASK_NORMAL)
+                dynamic += (GetStat(STAT_INTELLECT) * (mod->m_amount * 0.01f));
+        }
     }
 
-    value *= GetModifierValue(unitMod, TOTAL_PCT);
-
-    SetArmor(int32(value));
+    m_auraModifiersGroup[UNIT_MOD_ARMOR][TOTAL_VALUE] += dynamic;
+    int32 value = GetTotalResistanceValue(SPELL_SCHOOL_NORMAL);
+    SetArmor(value);
+    m_auraModifiersGroup[UNIT_MOD_ARMOR][TOTAL_VALUE] -= dynamic;
 }
 
 float Player::GetHealthBonusFromStamina() const
@@ -367,12 +364,12 @@ void Player::CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, fl
             weapon_mindamage += GetAmmoDPS() * att_speed;
             weapon_maxdamage += GetAmmoDPS() * att_speed;
         }
-    }
 
-    if (index != 0)
-    {
-        base_value = 0.0f;
-        total_value = 0.0f;
+        if (index != 0)
+        {
+            base_value = 0.0f;
+            total_value = 0.0f;
+        }
     }
 
     min_damage = ((base_value + weapon_mindamage) * base_pct + total_value) * total_pct;
@@ -611,8 +608,8 @@ void Creature::UpdateResistances(uint32 school)
 {
     if (school > SPELL_SCHOOL_NORMAL)
     {
-        float value  = GetTotalAuraModValue(UnitMods(UNIT_MOD_RESISTANCE_START + school));
-        SetResistance(SpellSchools(school), int32(value));
+        int32 value = GetTotalResistanceValue(SpellSchools(school));
+        SetResistance(SpellSchools(school), value);
     }
     else
         UpdateArmor();
@@ -620,8 +617,8 @@ void Creature::UpdateResistances(uint32 school)
 
 void Creature::UpdateArmor()
 {
-    float value = GetTotalAuraModValue(UNIT_MOD_ARMOR);
-    SetArmor(int32(value));
+    int32 value = GetTotalResistanceValue(SPELL_SCHOOL_NORMAL);
+    SetArmor(value);
 }
 
 void Creature::UpdateMaxHealth()
@@ -695,8 +692,28 @@ void Creature::UpdateDamagePhysical(WeaponAttackType attType)
         maxdamage *= 0.5f;
     }
 
-    SetStatFloatValue(attType == BASE_ATTACK ? UNIT_FIELD_MINDAMAGE : UNIT_FIELD_MINOFFHANDDAMAGE, mindamage);
-    SetStatFloatValue(attType == BASE_ATTACK ? UNIT_FIELD_MAXDAMAGE : UNIT_FIELD_MAXOFFHANDDAMAGE, maxdamage);
+    uint16 fieldmin, fieldmax;
+
+    switch (attType)
+    {
+        case RANGED_ATTACK:
+            fieldmin = UNIT_FIELD_MINRANGEDDAMAGE;
+            fieldmax = UNIT_FIELD_MAXRANGEDDAMAGE;
+            break;
+        case BASE_ATTACK:
+            fieldmin = UNIT_FIELD_MINDAMAGE;
+            fieldmax = UNIT_FIELD_MAXDAMAGE;
+            break;
+        case OFF_ATTACK:
+            fieldmin = UNIT_FIELD_MINOFFHANDDAMAGE;
+            fieldmax = UNIT_FIELD_MAXOFFHANDDAMAGE;
+            break;
+        default:
+            return;
+    }
+
+    SetStatFloatValue(fieldmin, mindamage);
+    SetStatFloatValue(fieldmax, maxdamage);
 }
 
 /*#######################################
@@ -745,26 +762,18 @@ bool Pet::UpdateAllStats()
 void Pet::UpdateResistances(uint32 school)
 {
     if (school > SPELL_SCHOOL_NORMAL)
-    {
-        float value  = GetTotalAuraModValue(UnitMods(UNIT_MOD_RESISTANCE_START + school));
-        SetResistance(SpellSchools(school), int32(value));
-    }
+        return Creature::UpdateResistances(school);
     else
         UpdateArmor();
 }
 
 void Pet::UpdateArmor()
 {
-    float value = 0.0f;
-    UnitMods unitMod = UNIT_MOD_ARMOR;
+    float amount = (GetStat(STAT_AGILITY) * 2.0f);
 
-    value  = GetModifierValue(unitMod, BASE_VALUE);
-    value *= GetModifierValue(unitMod, BASE_PCT);
-    value += GetStat(STAT_AGILITY) * 2.0f;
-    value += GetModifierValue(unitMod, TOTAL_VALUE);
-    value *= GetModifierValue(unitMod, TOTAL_PCT);
-
-    SetArmor(int32(value));
+    m_auraModifiersGroup[UNIT_MOD_ARMOR][TOTAL_VALUE] += amount;
+    Creature::UpdateArmor();
+    m_auraModifiersGroup[UNIT_MOD_ARMOR][TOTAL_VALUE] -= amount;
 }
 
 void Pet::UpdateMaxHealth()
@@ -823,24 +832,25 @@ void Pet::UpdateAttackPowerAndDamage(bool ranged)
 
     // automatically update weapon damage after attack power modification
     UpdateDamagePhysical(BASE_ATTACK);
+    UpdateDamagePhysical(OFF_ATTACK);
 }
 
 void Pet::UpdateDamagePhysical(WeaponAttackType attType)
 {
-    if (attType > BASE_ATTACK)
+    if (attType > OFF_ATTACK)
         return;
 
     UnitMods unitMod = UNIT_MOD_DAMAGE_MAINHAND;
 
-    float att_speed = float(GetAttackTime(BASE_ATTACK)) / 1000.0f;
+    float att_speed = float(GetAttackTime(attType)) / 1000.0f;
 
     float base_value  = GetModifierValue(unitMod, BASE_VALUE) + GetTotalAttackPowerValue(attType) / 14.0f * att_speed;
     float base_pct    = GetModifierValue(unitMod, BASE_PCT);
     float total_value = GetModifierValue(unitMod, TOTAL_VALUE);
     float total_pct   = GetModifierValue(unitMod, TOTAL_PCT);
 
-    float weapon_mindamage = GetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE);
-    float weapon_maxdamage = GetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE);
+    float weapon_mindamage = GetBaseWeaponDamage(attType, MINDAMAGE);
+    float weapon_maxdamage = GetBaseWeaponDamage(attType, MAXDAMAGE);
 
     float mindamage = ((base_value + weapon_mindamage) * base_pct + total_value) * total_pct;
     float maxdamage = ((base_value + weapon_maxdamage) * base_pct + total_value) * total_pct;
@@ -866,6 +876,33 @@ void Pet::UpdateDamagePhysical(WeaponAttackType attType)
         }
     }
 
-    SetStatFloatValue(UNIT_FIELD_MINDAMAGE, mindamage);
-    SetStatFloatValue(UNIT_FIELD_MAXDAMAGE, maxdamage);
+    // Disarm for creatures
+    if (hasWeapon(attType) && !hasWeaponForAttack(attType))
+    {
+        mindamage *= 0.5f;
+        maxdamage *= 0.5f;
+    }
+
+    uint16 fieldmin, fieldmax;
+
+    switch (attType)
+    {
+        case RANGED_ATTACK:
+            fieldmin = UNIT_FIELD_MINRANGEDDAMAGE;
+            fieldmax = UNIT_FIELD_MAXRANGEDDAMAGE;
+            break;
+        case BASE_ATTACK:
+            fieldmin = UNIT_FIELD_MINDAMAGE;
+            fieldmax = UNIT_FIELD_MAXDAMAGE;
+            break;
+        case OFF_ATTACK:
+            fieldmin = UNIT_FIELD_MINOFFHANDDAMAGE;
+            fieldmax = UNIT_FIELD_MAXOFFHANDDAMAGE;
+            break;
+        default:
+            return;
+    }
+
+    SetStatFloatValue(fieldmin, mindamage);
+    SetStatFloatValue(fieldmax, maxdamage);
 }
