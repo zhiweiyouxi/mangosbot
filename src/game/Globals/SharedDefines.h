@@ -2432,6 +2432,13 @@ enum MovementEvent
 };
 
 #ifdef ENABLE_PLAYERBOTS || ENABLE_IMMERSIVE
+//Clang doesn't like || usage
+#ifdef ENABLE_PLAYERBOTS 
+#define MANGOSBOT_ZERO
+#define CMANGOS
+#endif
+
+#ifdef ENABLE_IMMERSIVE
 #define MANGOSBOT_ZERO
 #define CMANGOS
 #endif
