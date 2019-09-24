@@ -60,10 +60,13 @@
 #include "Server/DBCStores.h"
 #include "Server/SQLStorages.h"
 #include "Loot/LootMgr.h"
+#include "World/WorldState.h"
 #include "Config/Config.h"
+
 #ifdef ENABLE_PLAYERBOTS
 #include "playerbot.h"
 #endif
+
 #ifdef ENABLE_IMMERSIVE
 #include "immersive.h"
 #endif
@@ -337,10 +340,17 @@ SpellModifier::SpellModifier(SpellModOp _op, SpellModType _type, int32 _value, A
 
 bool SpellModifier::isAffectedOnSpell(SpellEntry const* spell) const
 {
+	// Should make sure spell is not null.
+	if (!spell) return false;
+	
     SpellEntry const* affect_spell = sSpellTemplate.LookupEntry<SpellEntry>(spellId);
     // False if affect_spell == nullptr or spellFamily not equal
     if (!affect_spell || affect_spell->SpellFamilyName != spell->SpellFamilyName)
+    {
+		affect_spell = nullptr;
         return false;
+	}
+	affect_spell = nullptr;
     return spell->IsFitToFamilyMask(mask);
 }
 
@@ -546,6 +556,8 @@ Player::Player(WorldSession* session): Unit(), m_taxiTracker(*this), m_mover(thi
 
     PlayerTalkClass = new PlayerMenu(GetSession());
     m_currentBuybackSlot = BUYBACK_SLOT_START;
+
+    m_WeeklyQuestChanged = false;
 
     m_lastLiquid = nullptr;
 
@@ -2945,11 +2957,11 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool dependen
         // do character spell book cleanup (all characters)
         if (!IsInWorld() && !learning)                      // spell load case
         {
-            sLog.outError("Player::addSpell: nonexistent in SpellStore spell #%u request, deleting for all characters in `character_spell`.", spell_id);
+            sLog.outDebug("Player::addSpell: nonexistent in SpellStore spell #%u request, deleting for all characters in `character_spell`.", spell_id);
             CharacterDatabase.PExecute("DELETE FROM character_spell WHERE spell = '%u'", spell_id);
         }
         else
-            sLog.outError("Player::addSpell: nonexistent in SpellStore spell #%u request.", spell_id);
+            sLog.outDebug("Player::addSpell: nonexistent in SpellStore spell #%u request.", spell_id);
 
         return false;
     }
@@ -5778,18 +5790,18 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
     if (button >= MAX_ACTION_BUTTONS)
     {
         if (player)
-            sLog.outError("Action %u not added into button %u for player %s: button must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTONS);
+            sLog.outDebug("Action %u not added into button %u for player %s: button must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTONS);
         else
-            sLog.outError("Table `playercreateinfo_action` have action %u into button %u : button must be < %u", action, button, MAX_ACTION_BUTTONS);
+            sLog.outDebug("Table `playercreateinfo_action` have action %u into button %u : button must be < %u", action, button, MAX_ACTION_BUTTONS);
         return false;
     }
 
     if (action >= MAX_ACTION_BUTTON_ACTION_VALUE)
     {
         if (player)
-            sLog.outError("Action %u not added into button %u for player %s: action must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTON_ACTION_VALUE);
+            sLog.outDebug("Action %u not added into button %u for player %s: action must be < %u", action, button, player->GetName(), MAX_ACTION_BUTTON_ACTION_VALUE);
         else
-            sLog.outError("Table `playercreateinfo_action` have action %u into button %u : action must be < %u", action, button, MAX_ACTION_BUTTON_ACTION_VALUE);
+            sLog.outDebug("Table `playercreateinfo_action` have action %u into button %u : action must be < %u", action, button, MAX_ACTION_BUTTON_ACTION_VALUE);
         return false;
     }
 
@@ -5801,9 +5813,9 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
             if (!spellProto)
             {
                 if (player)
-                    sLog.outError("Spell action %u not added into button %u for player %s: spell not exist", action, button, player->GetName());
+                    sLog.outDebug("Spell action %u not added into button %u for player %s: spell not exist", action, button, player->GetName());
                 else
-                    sLog.outError("Table `playercreateinfo_action` have spell action %u into button %u: spell not exist", action, button);
+                    sLog.outDebug("Table `playercreateinfo_action` have spell action %u into button %u: spell not exist", action, button);
                 return false;
             }
 
@@ -5811,12 +5823,12 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
             {
                 if (!player->HasSpell(spellProto->Id))
                 {
-                    sLog.outError("Spell action %u not added into button %u for player %s: player don't known this spell", action, button, player->GetName());
+                    sLog.outDebug("Spell action %u not added into button %u for player %s: player don't known this spell", action, button, player->GetName());
                     return false;
                 }
                 if (IsPassiveSpell(spellProto))
                 {
-                    sLog.outError("Spell action %u not added into button %u for player %s: spell is passive", action, button, player->GetName());
+                    sLog.outDebug("Spell action %u not added into button %u for player %s: spell is passive", action, button, player->GetName());
                     return false;
                 }
             }
@@ -5827,9 +5839,9 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
             if (!ObjectMgr::GetItemPrototype(action))
             {
                 if (player)
-                    sLog.outError("Item action %u not added into button %u for player %s: item not exist", action, button, player->GetName());
+                    sLog.outDebug("Item action %u not added into button %u for player %s: item not exist", action, button, player->GetName());
                 else
-                    sLog.outError("Table `playercreateinfo_action` have item action %u into button %u: item not exist", action, button);
+                    sLog.outDebug("Table `playercreateinfo_action` have item action %u into button %u: item not exist", action, button);
                 return false;
             }
             break;
@@ -6671,7 +6683,9 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea, bool force)
     {
         // handle outdoor pvp zones
         sOutdoorPvPMgr.HandlePlayerLeaveZone(this, m_zoneUpdateId);
+        sWorldState.HandlePlayerLeaveZone(this, m_zoneUpdateId);
         sOutdoorPvPMgr.HandlePlayerEnterZone(this, newZone);
+        sWorldState.HandlePlayerEnterZone(this, newZone);
 
         SendInitWorldStates(newZone);                       // only if really enters to new zone, not just area change, works strange...
 
@@ -11376,7 +11390,7 @@ void Player::PrepareGossipMenu(WorldObject* pSource, uint32 menuId)
                 case GOSSIP_OPTION_SD2_5:
                     break;
                 default:
-                    sLog.outErrorDb("Creature entry %u have unknown gossip option %u for menu %u", pCreature->GetEntry(), gossipMenu.option_id, gossipMenu.menu_id);
+                    sLog.outDebug("Creature entry %u have unknown gossip option %u for menu %u", pCreature->GetEntry(), gossipMenu.option_id, gossipMenu.menu_id);
                     hasMenuItem = false;
                     break;
             }
@@ -11908,7 +11922,7 @@ bool Player::CanSeeStartQuest(Quest const* pQuest) const
     if (SatisfyQuestClass(pQuest, false) && SatisfyQuestRace(pQuest, false) && SatisfyQuestSkill(pQuest, false) && SatisfyQuestCondition(pQuest, false) &&
             SatisfyQuestExclusiveGroup(pQuest, false) && SatisfyQuestReputation(pQuest, false) &&
             SatisfyQuestPreviousQuest(pQuest, false) && SatisfyQuestNextChain(pQuest, false) &&
-            SatisfyQuestPrevChain(pQuest, false) &&
+            SatisfyQuestPrevChain(pQuest, false) && SatisfyQuestWeek(pQuest) &&
             pQuest->IsActive())
     {
         int32 highLevelDiff = sWorld.getConfig(CONFIG_INT32_QUEST_HIGH_LEVEL_HIDE_DIFF);
@@ -11927,6 +11941,7 @@ bool Player::CanTakeQuest(Quest const* pQuest, bool msg) const
            SatisfyQuestSkill(pQuest, msg) && SatisfyQuestCondition(pQuest, msg) && SatisfyQuestReputation(pQuest, msg) &&
            SatisfyQuestPreviousQuest(pQuest, msg) && SatisfyQuestTimed(pQuest, msg) &&
            SatisfyQuestNextChain(pQuest, msg) && SatisfyQuestPrevChain(pQuest, msg) &&
+           SatisfyQuestWeek(pQuest) &&
            pQuest->IsActive();
 }
 
@@ -12036,6 +12051,9 @@ bool Player::CanRewardQuest(Quest const* pQuest, bool msg) const
 {
     // not auto complete quest and not completed quest (only cheating case, then ignore without message)
     if (!pQuest->IsAutoComplete() && GetQuestStatus(pQuest->GetQuestId()) != QUEST_STATUS_COMPLETE)
+        return false;
+
+    if (!SatisfyQuestWeek(pQuest))
         return false;
 
     // rewarded and not repeatable quest (only cheating case, then ignore without message)
@@ -12325,6 +12343,9 @@ void Player::RewardQuest(Quest const* pQuest, uint32 reward, Object* questGiver,
     // Send reward mail
     if (uint32 mail_template_id = pQuest->GetRewMailTemplateId())
         MailDraft(mail_template_id).SendMailTo(this, questGiver, MAIL_CHECK_MASK_HAS_BODY, pQuest->GetRewMailDelaySecs());
+
+    if (pQuest->IsWeekly())
+        SetWeeklyQuestStatus(quest_id);
 
     if (!pQuest->IsRepeatable())
         SetQuestStatus(quest_id, QUEST_STATUS_COMPLETE);
@@ -12742,6 +12763,15 @@ bool Player::SatisfyQuestExclusiveGroup(Quest const* qInfo, bool msg) const
         if (exclude_Id == qInfo->GetQuestId())
             continue;
 
+        Quest const* quest = sObjectMgr.GetQuestTemplate(exclude_Id);
+        if (!SatisfyQuestWeek(quest))
+        {
+            if (msg)
+                SendCanTakeQuestResponse(INVALIDREASON_DONT_HAVE_REQ);
+
+            return false;
+        }
+
         QuestStatusMap::const_iterator i_exstatus = mQuestStatus.find(exclude_Id);
 
         // alternative quest already started or completed
@@ -12805,6 +12835,15 @@ bool Player::SatisfyQuestPrevChain(Quest const* qInfo, bool msg) const
 
     // No previous quest in chain active
     return true;
+}
+
+bool Player::SatisfyQuestWeek(Quest const* qInfo) const
+{
+    if (!qInfo->IsWeekly() || m_weeklyquests.empty())
+        return true;
+
+    // if not found in cooldown list
+    return m_weeklyquests.find(qInfo->GetQuestId()) == m_weeklyquests.end();
 }
 
 bool Player::CanGiveQuestSourceItemIfNeed(Quest const* pQuest, ItemPosCountVec* dest) const
@@ -13922,8 +13961,14 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
     // load the player's map here if it's not already loaded
     SetMap(sMapMgr.CreateMap(GetMapId(), this));
 
+    time_t now = time(nullptr);
+    time_t logoutTime = time_t(fields[22].GetUInt64());
+
+    // since last logout (in seconds)
+    uint32 time_diff = uint32(now - logoutTime);
+
     // if the player is in an instance and it has been reset in the meantime teleport him to the entrance
-    if (GetInstanceId() && !state)
+    if (GetInstanceId() && (!state || time_diff > 15 * MINUTE))
     {
         AreaTrigger const* at = sObjectMgr.GetMapEntranceTrigger(GetMapId());
         if (at)
@@ -13933,12 +13978,6 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
     }
 
     SaveRecallPosition();
-
-    time_t now = time(nullptr);
-    time_t logoutTime = time_t(fields[22].GetUInt64());
-
-    // since last logout (in seconds)
-    uint32 time_diff = uint32(now - logoutTime);
 
     // set value, including drunk invisibility detection
     // calculate sobering. after 15 minutes logged out, the player will be sober again
@@ -14048,6 +14087,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
 
     // after spell load, learn rewarded spell if need also
     _LoadQuestStatus(holder->GetResult(PLAYER_LOGIN_QUERY_LOADQUESTSTATUS));
+    _LoadWeeklyQuestStatus(holder->GetResult(PLAYER_LOGIN_QUERY_LOADWEEKLYQUESTSTATUS));
 
     // must be before inventory (some items required reputation check)
     m_reputationMgr.LoadFromDB(holder->GetResult(PLAYER_LOGIN_QUERY_LOADREPUTATION));
@@ -14103,7 +14143,6 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
             m_recallX = destination->x;
             m_recallY = destination->y;
             m_recallZ = destination->z;
-
         }
         // flight will start later
     }
@@ -14487,7 +14526,7 @@ void Player::_LoadInventory(QueryResult* result, uint32 timediff)
             }
             else
             {
-                sLog.outError("Player::_LoadInventory: Player %s has item (GUID: %u Entry: %u) can't be loaded to inventory (Bag GUID: %u Slot: %u) by some reason, will send by mail.", GetName(), item_lowguid, item_id, bag_guid, slot);
+                sLog.outDebug("Player::_LoadInventory: Player %s has item (GUID: %u Entry: %u) can't be loaded to inventory (Bag GUID: %u Slot: %u) by some reason, will send by mail.", GetName(), item_lowguid, item_id, bag_guid, slot);
                 CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item = '%u'", item_lowguid);
                 problematicItems.push_back(item);
             }
@@ -14786,6 +14825,34 @@ void Player::_LoadQuestStatus(QueryResult* result)
     // clear quest log tail
     for (uint16 i = slot; i < MAX_QUEST_LOG_SIZE; ++i)
         SetQuestSlot(i, 0);
+}
+
+void Player::_LoadWeeklyQuestStatus(QueryResult* result)
+{
+    m_weeklyquests.clear();
+
+    // QueryResult *result = CharacterDatabase.PQuery("SELECT quest FROM character_queststatus_weekly WHERE guid = '%u'", GetGUIDLow());
+
+    if (result)
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+
+            uint32 quest_id = fields[0].GetUInt32();
+
+            Quest const* pQuest = sObjectMgr.GetQuestTemplate(quest_id);
+            if (!pQuest)
+                continue;
+
+            m_weeklyquests.insert(quest_id);
+
+            DEBUG_LOG("Weekly quest {%u} cooldown for player (GUID: %u)", quest_id, GetGUIDLow());
+        } while (result->NextRow());
+
+        delete result;
+    }
+    m_WeeklyQuestChanged = false;
 }
 
 void Player::_LoadSpells(QueryResult* result)
@@ -15306,6 +15373,7 @@ void Player::SaveToDB()
     _SaveBGData();
     _SaveInventory();
     _SaveQuestStatus();
+    _SaveWeeklyQuestStatus();
     _SaveSpells();
     _SaveSpellCooldowns();
     _SaveActions();
@@ -15691,6 +15759,26 @@ void Player::_SaveQuestStatus()
         }
         questStatus.uState = QUEST_UNCHANGED;
     }
+}
+
+void Player::_SaveWeeklyQuestStatus()
+{
+    if (!m_WeeklyQuestChanged || m_weeklyquests.empty())
+        return;
+
+    // we don't need transactions here.
+    static SqlStatementID delQuestStatus;
+    static SqlStatementID insQuestStatus;
+
+    SqlStatement stmtDel = CharacterDatabase.CreateStatement(delQuestStatus, "DELETE FROM character_queststatus_weekly WHERE guid = ?");
+    SqlStatement stmtIns = CharacterDatabase.CreateStatement(insQuestStatus, "INSERT INTO character_queststatus_weekly (guid,quest) VALUES (?, ?)");
+
+    stmtDel.PExecute(GetGUIDLow());
+
+    for (uint32 quest_id : m_weeklyquests)
+        stmtIns.PExecute(GetGUIDLow(), quest_id);
+
+    m_WeeklyQuestChanged = false;
 }
 
 void Player::_SaveSkills()
@@ -17845,6 +17933,22 @@ void Player::learnQuestRewardedSpells()
 
         learnQuestRewardedSpells(quest);
     }
+}
+
+void Player::SetWeeklyQuestStatus(uint32 quest_id)
+{
+    m_weeklyquests.insert(quest_id);
+    m_WeeklyQuestChanged = true;
+}
+
+void Player::ResetWeeklyQuestStatus()
+{
+    if (m_weeklyquests.empty())
+        return;
+
+    m_weeklyquests.clear();
+    // DB data deleted in caller
+    m_WeeklyQuestChanged = false;
 }
 
 BattleGround* Player::GetBattleGround() const

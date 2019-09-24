@@ -380,6 +380,28 @@ bool Master::_StartDB()
         return false;
     }
 
+	dbstring = sConfig.GetStringDefault("PlayerbotDatabaseInfo");
+	nConnections = sConfig.GetIntDefault("PlayerbotDatabaseConnections", 1);
+	if (dbstring.empty())
+	{
+		sLog.outError("Playerbot Database not specified in configuration file");
+
+		///- Wait for already started DB delay threads to end
+		WorldDatabase.HaltDelayThread();
+		return false;
+	}
+	sLog.outString("Playerbot Database total connections: %i", nConnections + 1);
+
+	///- Initialise the Character database
+	if (!PlayerbotDatabase.Initialize(dbstring.c_str(), nConnections))
+	{
+		sLog.outError("Cannot connect to Playerbot database %s", dbstring.c_str());
+
+		///- Wait for already started DB delay threads to end
+		WorldDatabase.HaltDelayThread();
+		return false;
+	}
+
     ///- Get login database info from configuration file
     dbstring = sConfig.GetStringDefault("LoginDatabaseInfo");
     nConnections = sConfig.GetIntDefault("LoginDatabaseConnections", 1);

@@ -22,6 +22,8 @@
 #include "World/World.h"
 // TODO: Required for classic honor system type HonorStandingList, needs redesign:
 #include "Globals/ObjectMgr.h"
+#include "PlayerbotAIConfig.h"
+#include "RandomPlayerbotMgr.h"
 
 struct HonorScores
 {

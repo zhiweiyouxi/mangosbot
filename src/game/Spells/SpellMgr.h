@@ -152,6 +152,7 @@ inline bool IsEffectHandledOnDelayedSpellLaunch(SpellEntry const* spellInfo, Spe
         case SPELL_EFFECT_WEAPON_PERCENT_DAMAGE:
         case SPELL_EFFECT_WEAPON_DAMAGE:
         case SPELL_EFFECT_NORMALIZED_WEAPON_DMG:
+        case SPELL_EFFECT_CHARGE:
             return true;
         default:
             return false;
@@ -372,6 +373,7 @@ inline bool IsSpellRemovedOnEvade(SpellEntry const* spellInfo)
         case 5680:          // Torch Burn
         case 6718:          // Phasing Stealth
         case 6752:          // Weak Poison Proc
+        case 6947:          // Curse of the Bleakheart Proc
         case 7090:          // Bear Form (Shapeshift)
         case 7276:          // Poison Proc
         case 8247:          // Wandering Plague
@@ -842,10 +844,6 @@ inline bool IsPositiveEffectTargetMode(const SpellEntry* entry, SpellEffectIndex
     if (!entry)
         return false;
 
-    // Forces positive targets to be negative TODO: Find out if this is true for neutral targets
-    if (entry->HasAttribute(SPELL_ATTR_AURA_IS_DEBUFF))
-        return false;
-
     // Triggered spells case: prefer child spell via IsPositiveSpell()-like scan for triggered spell
     if (IsSpellEffectTriggerSpell(entry, effIndex))
     {
@@ -1117,7 +1115,7 @@ inline uint32 GetAffectedTargets(SpellEntry const* spellInfo)
                 case 26457:                                 // Drain Mana (correct number has to be researched)
                 case 26559:
                     return 12;
-                case 25991:                                 // Poison Bolt Volley (AQ40, Pincess Huhuran)
+                case 26052:                                 // Poison Bolt Volley (AQ40, Princess Huhuran)
                     return 15;
                 default:
                     break;
@@ -1130,6 +1128,17 @@ inline uint32 GetAffectedTargets(SpellEntry const* spellInfo)
             {
                 case 23603:                                 // Wild Polymorph (BWL, Nefarian)
                     return 1;
+                default:
+                    break;
+            }
+            break;
+        }
+        case SPELLFAMILY_HUNTER:
+        {
+            switch (spellInfo->Id)
+            {
+                case 26180:                                 // Wyvern Sting (AQ40, Princess Huhuran)
+                    return 10;
                 default:
                     break;
             }
@@ -2389,7 +2398,7 @@ class SpellMgr
             return (spellId1 != spellId2 && GetFirstSpellInChain(spellId1) == GetFirstSpellInChain(spellId2));
         }
 
-        bool IsSingleTargetSpell(SpellEntry const* entry) const
+        inline bool IsSingleTargetSpell(SpellEntry const* entry) const
         {
             // Pre-TBC: SPELL_ATTR_EX5_SINGLE_TARGET_SPELL substitute code
             // Not AoE
@@ -2426,17 +2435,23 @@ class SpellMgr
                 return false;
 
             // Early instance of same spell check
-            if (entry1 == entry2)
+            if (entry1 == entry2 || entry1->Id == entry2->Id)
                 return true;
 
-            // One spell is a rank of another spell (same spell chain)
-            if (GetFirstSpellInChain(entry1->Id) == GetFirstSpellInChain(entry2->Id))
+            // One spell is a rank of another spell
+            if (IsSpellAnotherRankOfSpell(entry1->Id, entry2->Id))
                 return true;
+
+            // Experimental: Try to detect spinoffs of specific family spells (e.g. polymorph flavors)
+            if (entry1->SpellFamilyName != SPELLFAMILY_GENERIC && entry2->SpellFamilyName != SPELLFAMILY_GENERIC)
+            {
+                if (!entry1->SpellFamilyFlags.Empty() && !entry2->SpellFamilyFlags.Empty())
+                    return entry1->IsFitToFamily(SpellFamily(entry2->SpellFamilyName), entry2->SpellFamilyFlags);
+            }
 
             return false;
         }
 
-        bool IsSpellRankOfSpell(SpellEntry const* spellInfo_1, uint32 spellId_2) const;
         bool IsSpellStackableWithSpell(const SpellEntry* entry1, const SpellEntry* entry2) const
         {
             if (!entry1 || !entry2)

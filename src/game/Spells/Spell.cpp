@@ -1310,7 +1310,7 @@ void Spell::DoAllTargetlessEffects(bool dest)
     uint32 procVictim;
     uint32 procEx = PROC_EX_NONE;
     WorldObject* caster = m_caster; // preparation for GO casting
-    Unit* unitCaster = caster->GetTypeId() == TYPEID_UNIT ? static_cast<Unit*>(caster) : nullptr;
+    Unit* unitCaster = caster->isType(TYPEMASK_UNIT) ? static_cast<Unit*>(caster) : nullptr;
 
     uint32 effectMask;
     if (dest) // can have delay
@@ -4210,7 +4210,7 @@ SpellCastResult Spell::CheckCast(bool strict)
     if (!m_caster->isAlive() && m_caster->GetTypeId() == TYPEID_PLAYER && !m_spellInfo->HasAttribute(SPELL_ATTR_CASTABLE_WHILE_DEAD) && !m_spellInfo->HasAttribute(SPELL_ATTR_PASSIVE))
         return SPELL_FAILED_CASTER_DEAD;
 
-    if (!m_caster->IsStandState() && m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && !m_spellInfo->HasAttribute(SPELL_ATTR_CASTABLE_WHILE_SITTING))
+    if (!m_IsTriggeredSpell && !m_caster->IsStandState() && m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && !m_spellInfo->HasAttribute(SPELL_ATTR_CASTABLE_WHILE_SITTING))
         return SPELL_FAILED_NOT_STANDING;
 
     // check global cooldown
@@ -5002,6 +5002,18 @@ SpellCastResult Spell::CheckCast(bool strict)
                 }
                 break;
             }
+            case SPELL_EFFECT_PICKPOCKET:
+            {
+                // should always fail above if not exists
+                Unit* target = m_targets.getUnitTarget();
+                if (!target->IsCreature())
+                    return SPELL_FAILED_BAD_TARGETS;
+
+                Creature* creatureTarget = static_cast<Creature*>(target);
+                if (!creatureTarget->GetCreatureInfo()->PickpocketLootId)
+                    return SPELL_FAILED_TARGET_NO_POCKETS;
+                break;
+            }
             case SPELL_EFFECT_SUMMON_DEAD_PET:
             {
                 Creature* pet = m_caster->GetPet();
@@ -5298,14 +5310,9 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             case SPELL_AURA_PERIODIC_MANA_LEECH:
             {
-                if (!expectedTarget)
-                    return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
-
-                if (m_caster->GetTypeId() != TYPEID_PLAYER || m_CastItem)
-                    break;
-
-                if (expectedTarget->GetPowerType() != POWER_MANA)
-                    return SPELL_FAILED_BAD_TARGETS;
+                if (expectedTarget)
+                    if (expectedTarget->GetPowerType() != POWER_MANA)
+                        return SPELL_FAILED_BAD_TARGETS;
 
                 break;
             }
@@ -6787,7 +6794,18 @@ void Spell::ResetEffectDamageAndHeal()
     m_healing = 0;
 }
 
-// handle SPELL_AURA_ADD_TARGET_TRIGGER auras
+bool Spell::CanExecuteTriggersOnHit(uint8 effMask, SpellEntry const* triggeredByAura) const
+{
+    bool only_on_caster = (triggeredByAura && triggeredByAura->HasAttribute(SPELL_ATTR_EX4_PROC_ONLY_ON_CASTER));
+    // If triggeredByAura has SPELL_ATTR4_PROC_ONLY_ON_CASTER then it can only proc on a cast spell with TARGET_UNIT_CASTER
+    for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
+        if ((effMask & (1 << i)) && (!only_on_caster || (m_spellInfo->EffectImplicitTargetA[i] == TARGET_UNIT_CASTER)))
+            return true;
+
+    return false;
+}
+
+// handle SPELL_AURA_ADD_TARGET_TRIGGER auras - TODO: proc them right on target hit not on end
 void Spell::ProcSpellAuraTriggers()
 {
     Unit::AuraList const& targetTriggers = m_caster->GetAurasByType(SPELL_AURA_ADD_TARGET_TRIGGER);
@@ -6799,22 +6817,19 @@ void Spell::ProcSpellAuraTriggers()
         {
             if (ihit->missCondition == SPELL_MISS_NONE)
             {
-                // check m_caster->GetGUID() let load auras at login and speedup most often case
-                Unit* unit = m_caster->GetObjectGuid() == ihit->targetGUID ? m_caster : ObjectAccessor::GetUnit(*m_caster, ihit->targetGUID);
-                if (unit && unit->isAlive())
-                {
-                    SpellEntry const* auraSpellInfo = targetTrigger->GetSpellProto();
-                    SpellEffectIndex auraSpellIdx = targetTrigger->GetEffIndex();
-                    const uint32 procid = auraSpellInfo->EffectTriggerSpell[auraSpellIdx];
-                    // Quick target mode check for procs and triggers (do not cast at friendly targets stuff against hostiles only)
-                    if (IsPositiveSpellTargetModeForSpecificTarget(m_spellInfo, ihit->effectMask, m_caster, unit) != IsPositiveSpellTargetModeForSpecificTarget(procid, ihit->effectMask, m_caster, unit))
-                        continue;
-                    // Calculate chance at that moment (can be depend for example from combo points)
-                    int32 auraBasePoints = targetTrigger->GetBasePoints();
-                    int32 chance = m_caster->CalculateSpellDamage(unit, auraSpellInfo, auraSpellIdx, &auraBasePoints);
-                    if (roll_chance_i(chance))
-                        m_caster->CastSpell(unit, procid, TRIGGERED_OLD_TRIGGERED, nullptr, targetTrigger);
-                }
+                Unit* target = m_caster->GetObjectGuid() == ihit->targetGUID ? m_caster : ObjectAccessor::GetUnit(*m_caster, ihit->targetGUID);
+                if (!target || !target->isAlive())
+                    continue;
+                SpellEntry const* auraSpellInfo = targetTrigger->GetSpellProto();
+                if (!CanExecuteTriggersOnHit(ihit->effectHitMask, auraSpellInfo))
+                    continue;
+                SpellEffectIndex auraSpellIdx = targetTrigger->GetEffIndex();
+                const uint32 procid = auraSpellInfo->EffectTriggerSpell[auraSpellIdx];
+                int32 auraBasePoints = targetTrigger->GetBasePoints();
+                // Calculate chance at that moment (can be depend for example from combo points)
+                int32 chance = m_caster->CalculateSpellDamage(target, auraSpellInfo, auraSpellIdx, &auraBasePoints);
+                if (roll_chance_i(chance))
+                    m_caster->CastSpell(target, procid, TRIGGERED_OLD_TRIGGERED, nullptr, targetTrigger);
             }
         }
     }
@@ -6903,9 +6918,39 @@ float Spell::GetCone()
     return M_PI_F / 3.f; // 60 degrees is default
 }
 
-void Spell::FilterTargetMap(UnitList& /*filterUnitList*/, SpellEffectIndex /*effIndex*/)
+void Spell::FilterTargetMap(UnitList& filterUnitList, SpellEffectIndex /*effIndex*/)
 {
+    switch (m_spellInfo->Id)
+    {
+        case 14297: // Shadow Storm (exclude targets below 25 yards and above 40 yards. Max value is handled by spell effect radius)
+        case 26546:
+        case 26555:
+        {
+            float x, y, z;
+            m_caster->GetPosition(x, y, z);
+            uint8 eligibleTargets = 0;
+            for (auto& unit : filterUnitList)
+            {
+                float dist = unit->GetDistance(x, y, z, DIST_CALC_COMBAT_REACH);
+                if (dist > 25.0f)
+                    ++eligibleTargets;
+            }
 
+            filterUnitList.sort(TargetDistanceOrderFarAway(m_caster));
+            filterUnitList.resize(eligibleTargets);
+            return;
+        }
+        case 26052: // Poison Bolt Volley (spell hits only the 15 closest targets)
+        case 26180: // Wyvern Sting (spell hits only the 10 closest targets)
+        {
+            if (filterUnitList.size() > m_affectedTargetCount)
+            {
+                filterUnitList.sort(TargetDistanceOrderNear(m_caster));
+                filterUnitList.resize(m_affectedTargetCount);
+            }
+            return;
+        }
+    }
 }
 
 bool Spell::IsEffectWithImplementedMultiplier(uint32 effectId) const
@@ -6970,6 +7015,14 @@ SpellCastResult Spell::OnCheckCast(bool /*strict*/)
             Unit* target = m_targets.getUnitTarget();
             if (!target || target->GetTypeId() == TYPEID_PLAYER)
                 return SPELL_FAILED_BAD_TARGETS;
+            break;
+        }
+        case 7914: // Capture Spirit
+        {
+            if (ObjectGuid target = m_targets.getUnitTargetGuid()) // can be cast only on these targets
+                if (target.GetEntry() != 4663 && target.GetEntry() != 4664 && target.GetEntry() != 4665 && target.GetEntry() != 4666 && target.GetEntry() != 4667
+                    && target.GetEntry() != 4668 && target.GetEntry() != 4705 && target.GetEntry() != 13019)
+                    return SPELL_FAILED_BAD_TARGETS;
             break;
         }
         case 27230: // Health Stone

@@ -83,6 +83,7 @@ HostileReference::HostileReference(Unit* unit, ThreatManager* threatManager, flo
     iUnitGuid = unit->GetObjectGuid();
     m_online = true;
     iAccessible = true;
+	m_suppresabilityToggle = false;
 }
 
 //============================================================
@@ -240,6 +241,7 @@ void ThreatContainer::clearReferences()
 
 //============================================================
 // Return the HostileReference of nullptr, if not found
+
 HostileReference* ThreatContainer::getReferenceByTarget(Unit* victim)
 {
     if (!victim)
@@ -281,6 +283,26 @@ void ThreatContainer::modifyThreatPercent(Unit* victim, int32 threatPercent)
     }
 }
 
+//============================================================
+// Modify all threat by provided percentage
+
+void ThreatContainer::modifyAllThreatPercent(int32 threatPercent)
+{
+    if (threatPercent < -100)
+    {
+        while (!iThreatList.empty())
+        {
+            HostileReference* ref = *iThreatList.begin();
+            ref->removeReference();
+            delete ref;
+        }
+    }
+    else
+    {
+        for (auto itr : iThreatList)
+            itr->addThreatPercent(threatPercent);
+    }
+}
 //============================================================
 
 bool HostileReferenceSortPredicate(const HostileReference* lhs, const HostileReference* rhs)
@@ -452,6 +474,11 @@ void ThreatManager::addThreatDirectly(Unit* victim, float threat)
 void ThreatManager::modifyThreatPercent(Unit* victim, int32 threatPercent)
 {
     iThreatContainer.modifyThreatPercent(victim, threatPercent);
+}
+
+void ThreatManager::modifyAllThreatPercent(int32 threatPercent)
+{
+    iThreatContainer.modifyAllThreatPercent(threatPercent);
 }
 
 //============================================================

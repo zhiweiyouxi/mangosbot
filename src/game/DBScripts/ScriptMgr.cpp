@@ -1173,7 +1173,7 @@ bool ScriptAction::GetScriptProcessTargets(WorldObject* pOrigSource, WorldObject
 
             if (!pBuddy)
             {
-                sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u has buddy %u by pool id %u and no creature found in map %u (data-flags %u), skipping.", m_table, m_script->id, m_script->command, m_script->buddyEntry, m_script->searchRadiusOrGuid, m_map->GetId(), m_script->data_flags);
+                sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u has buddy %u by pool id %u and no creature found in map %u (data-flags %u), skipping.", m_table, m_script->id, m_script->command, m_script->buddyEntry, m_script->searchRadiusOrGuid, m_map->GetId(), m_script->data_flags);
                 return false;
             }
         }
@@ -1181,7 +1181,7 @@ bool ScriptAction::GetScriptProcessTargets(WorldObject* pOrigSource, WorldObject
         {
             if (!pOrigSource && !pOrigTarget)
             {
-                sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u called without buddy %u, but no source for search available, skipping.", m_table, m_script->id, m_script->command, m_script->buddyEntry);
+                sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u called without buddy %u, but no source for search available, skipping.", m_table, m_script->id, m_script->command, m_script->buddyEntry);
                 return false;
             }
 
@@ -1216,7 +1216,7 @@ bool ScriptAction::GetScriptProcessTargets(WorldObject* pOrigSource, WorldObject
                 // TODO: Remove this extra check output after a while - it might have false effects
                 if (!pBuddy && pSearcher->GetEntry() == m_script->buddyEntry)
                 {
-                    sLog.outErrorDb(" DB-SCRIPTS: WARNING: Process table `%s` id %u, command %u has no OTHER buddy %u found - maybe you need to update the script?", m_table, m_script->id, m_script->command, m_script->buddyEntry);
+                    sLog.outDebug(" DB-SCRIPTS: WARNING: Process table `%s` id %u, command %u has no OTHER buddy %u found - maybe you need to update the script?", m_table, m_script->id, m_script->command, m_script->buddyEntry);
                     pBuddy = pSearcher;
                 }
             }
@@ -1233,7 +1233,7 @@ bool ScriptAction::GetScriptProcessTargets(WorldObject* pOrigSource, WorldObject
 
             if (!pBuddy)
             {
-                sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u has buddy %u not found in range %u of searcher %s (data-flags %u), skipping.", m_table, m_script->id, m_script->command, m_script->buddyEntry, m_script->searchRadiusOrGuid, pSearcher->GetGuidStr().c_str(), m_script->data_flags);
+                sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u has buddy %u not found in range %u of searcher %s (data-flags %u), skipping.", m_table, m_script->id, m_script->command, m_script->buddyEntry, m_script->searchRadiusOrGuid, pSearcher->GetGuidStr().c_str(), m_script->data_flags);
                 return false;
             }
         }
@@ -1264,7 +1264,7 @@ bool ScriptAction::LogIfNotCreature(WorldObject* pWorldObject) const
 {
     if (!pWorldObject || pWorldObject->GetTypeId() != TYPEID_UNIT)
     {
-        sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-creature, skipping.", m_table, m_script->id, m_script->command);
+        sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-creature, skipping.", m_table, m_script->id, m_script->command);
         return true;
     }
     return false;
@@ -1273,7 +1273,7 @@ bool ScriptAction::LogIfNotUnit(WorldObject* pWorldObject) const
 {
     if (!pWorldObject || !pWorldObject->isType(TYPEMASK_UNIT))
     {
-        sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-unit, skipping.", m_table, m_script->id, m_script->command);
+        sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-unit, skipping.", m_table, m_script->id, m_script->command);
         return true;
     }
     return false;
@@ -1282,7 +1282,7 @@ bool ScriptAction::LogIfNotGameObject(WorldObject* pWorldObject) const
 {
     if (!pWorldObject || pWorldObject->GetTypeId() != TYPEID_GAMEOBJECT)
     {
-        sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-gameobject, skipping.", m_table, m_script->id, m_script->command);
+        sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-gameobject, skipping.", m_table, m_script->id, m_script->command);
         return true;
     }
     return false;
@@ -1291,7 +1291,7 @@ bool ScriptAction::LogIfNotPlayer(WorldObject* pWorldObject) const
 {
     if (!pWorldObject || pWorldObject->GetTypeId() != TYPEID_PLAYER)
     {
-        sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-player, skipping.", m_table, m_script->id, m_script->command);
+        sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non-player, skipping.", m_table, m_script->id, m_script->command);
         return true;
     }
     return false;
@@ -1302,7 +1302,7 @@ Player* ScriptAction::GetPlayerTargetOrSourceAndLog(WorldObject* pSource, WorldO
 {
     if ((!pTarget || pTarget->GetTypeId() != TYPEID_PLAYER) && (!pSource || pSource->GetTypeId() != TYPEID_PLAYER))
     {
-        sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non player, skipping.", m_table, m_script->id, m_script->command);
+        sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u call for non player, skipping.", m_table, m_script->id, m_script->command);
         return nullptr;
     }
 
@@ -1344,7 +1344,7 @@ bool ScriptAction::HandleScriptStep()
         {
             if (!pSource)
             {
-                sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u found no worldobject as source, skipping.", m_table, m_script->id, m_script->command);
+                sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u found no worldobject as source, skipping.", m_table, m_script->id, m_script->command);
                 break;
             }
 
@@ -1432,7 +1432,7 @@ bool ScriptAction::HandleScriptStep()
 
             // Normal Movement
             if (m_script->moveTo.travelSpeed)
-                ((Unit*)pSource)->MonsterMoveWithSpeed(m_script->x, m_script->y, m_script->z, m_script->moveTo.travelSpeed * 0.01f);
+                ((Unit*)pSource)->GetMotionMaster()->MoveCharge(m_script->x, m_script->y, m_script->z, m_script->moveTo.travelSpeed * 0.01f, 0);
             else
             {
                 ((Unit*)pSource)->GetMotionMaster()->Clear();
@@ -1568,14 +1568,14 @@ bool ScriptAction::HandleScriptStep()
 
             if (!pGo)
             {
-                sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u failed for gameobject(guid: %u, buddyEntry: %u).", m_table, m_script->id, m_script->command, m_script->respawnGo.goGuid, m_script->buddyEntry);
+                sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u failed for gameobject(guid: %u, buddyEntry: %u).", m_table, m_script->id, m_script->command, m_script->respawnGo.goGuid, m_script->buddyEntry);
                 break;
             }
 
             if (pGo->GetGoType() == GAMEOBJECT_TYPE_FISHINGNODE ||
                     pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR)
             {
-                sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u can not be used with gameobject of type %u (guid: %u, buddyEntry: %u).", m_table, m_script->id, m_script->command, uint32(pGo->GetGoType()), m_script->respawnGo.goGuid, m_script->buddyEntry);
+                sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u can not be used with gameobject of type %u (guid: %u, buddyEntry: %u).", m_table, m_script->id, m_script->command, uint32(pGo->GetGoType()), m_script->respawnGo.goGuid, m_script->buddyEntry);
                 break;
             }
 
@@ -1639,7 +1639,7 @@ bool ScriptAction::HandleScriptStep()
 
             if (!pDoor)
             {
-                sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u failed for gameobject(guid: %u, buddyEntry: %u).", m_table, m_script->id, m_script->command, m_script->changeDoor.goGuid, m_script->buddyEntry);
+                sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u failed for gameobject(guid: %u, buddyEntry: %u).", m_table, m_script->id, m_script->command, m_script->changeDoor.goGuid, m_script->buddyEntry);
                 break;
             }
 
@@ -2185,7 +2185,7 @@ bool ScriptAction::HandleScriptStep()
                     sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, _MOVE_DYNAMIC called with maxDist == 0, but resultingSource == resultingTarget (== %s)", m_table, m_script->id, pSource->GetGuidStr().c_str());
                     break;
                 }
-                pTarget->GetContactPoint(pSource, x, y, z);
+                pTarget->GetContactPoint(pSource, x, y, z, m_script->moveDynamic.fixedDist);
             }
             else                                            // Calculate position
             {
@@ -2297,7 +2297,7 @@ bool ScriptAction::HandleScriptStep()
                     pGoTarget->ResetDoorOrButton();
                     break;
                 default:
-                    sLog.outErrorDb(" DB-SCRIPTS: Process table `%s` id %u, command %u failed for gameobject(buddyEntry: %u). Gameobject is not a door or button", m_table, m_script->id, m_script->command, m_script->buddyEntry);
+                    sLog.outDebug(" DB-SCRIPTS: Process table `%s` id %u, command %u failed for gameobject(buddyEntry: %u). Gameobject is not a door or button", m_table, m_script->id, m_script->command, m_script->buddyEntry);
                     break;
             }
             break;

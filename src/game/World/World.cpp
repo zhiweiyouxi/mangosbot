@@ -64,6 +64,8 @@
 #include "Tools/CharacterDatabaseCleaner.h"
 #include "Entities/CreatureLinkingMgr.h"
 #include "Weather/Weather.h"
+#include "Cinematics/CinematicMgr.h"
+#include "World/WorldState.h"
 #ifdef ENABLE_PLAYERBOTS
 #include "AhBot.h"
 #include "PlayerbotAIConfig.h"
@@ -95,7 +97,7 @@ TimePoint World::m_currentTime = TimePoint();
 uint32 World::m_currentDiff = 0;
 
 /// World constructor
-World::World(): mail_timer(0), mail_timer_expires(0)
+World::World(): mail_timer(0), mail_timer_expires(0), m_NextWeeklyQuestReset(0)
 {
     m_playerLimit = 0;
     m_allowMovement = true;
@@ -619,6 +621,9 @@ void World::LoadConfigSettings(bool reload)
     setConfigMinMax(CONFIG_INT32_QUEST_LOW_LEVEL_HIDE_DIFF, "Quests.LowLevelHideDiff", 4, -1, MAX_LEVEL);
     setConfigMinMax(CONFIG_INT32_QUEST_HIGH_LEVEL_HIDE_DIFF, "Quests.HighLevelHideDiff", 7, -1, MAX_LEVEL);
 
+    setConfigMinMax(CONFIG_UINT32_QUEST_WEEKLY_RESET_WEEK_DAY, "Quests.Weekly.ResetWeekDay", 3, 0, 6);
+    setConfigMinMax(CONFIG_UINT32_QUEST_WEEKLY_RESET_HOUR, "Quests.Weekly.ResetHour", 6, 0, 23);
+
     setConfig(CONFIG_BOOL_QUEST_IGNORE_RAID, "Quests.IgnoreRaid", false);
 
     setConfig(CONFIG_BOOL_DETECT_POS_COLLISION, "DetectPosCollision", true);
@@ -650,6 +655,7 @@ void World::LoadConfigSettings(bool reload)
 
     setConfig(CONFIG_FLOAT_THREAT_RADIUS, "ThreatRadius", 100.0f);
     setConfigMin(CONFIG_UINT32_CREATURE_RESPAWN_AGGRO_DELAY, "CreatureRespawnAggroDelay", 5000, 0);
+    setConfig(CONFIG_UINT32_CREATURE_PICKPOCKET_RESTOCK_DELAY, "CreaturePickpocketRestockDelay", 600);
 
     setConfig(CONFIG_BOOL_BATTLEGROUND_CAST_DESERTER,                  "Battleground.CastDeserter", true);
     setConfigMinMax(CONFIG_UINT32_BATTLEGROUND_QUEUE_ANNOUNCER_JOIN,   "Battleground.QueueAnnouncer.Join", 0, 0, 2);
@@ -1266,6 +1272,10 @@ void World::SetInitialWorldSettings()
     LoginDatabase.Execute("DELETE FROM ip_banned WHERE unbandate<=UNIX_TIMESTAMP() AND unbandate<>bandate");
     sLog.outString();
 
+    sLog.outString("Calculate next weekly quest reset time...");
+    InitWeeklyQuestResetTime();
+    sLog.outString();
+
     sLog.outString("Starting server Maintenance system...");
     InitServerMaintenanceCheck();
 
@@ -1288,6 +1298,10 @@ void World::SetInitialWorldSettings()
     sAuctionBot.Initialize();
     sLog.outString();
 
+    sLog.outString("Loading WorldState");
+    sWorldState.Load();
+    sLog.outString();
+
 #ifdef ENABLE_PLAYERBOTS
     auctionbot.Init();
     sPlayerbotAIConfig.Initialize();
@@ -1307,9 +1321,9 @@ void World::DetectDBCLang()
 {
     uint32 m_lang_confid = sConfig.GetIntDefault("DBC.Locale", 255);
 
-    if (m_lang_confid != 255 && m_lang_confid >= MAX_LOCALE)
+    if (m_lang_confid != 255 && m_lang_confid >= MAX_DBC_LOCALE)
     {
-        sLog.outError("Incorrect DBC.Locale! Must be >= 0 and < %d (set to 0)", MAX_LOCALE);
+        sLog.outError("Incorrect DBC.Locale! Must be >= 0 and < %d (set to 0)", MAX_DBC_LOCALE);
         m_lang_confid = LOCALE_enUS;
     }
 
@@ -1318,8 +1332,8 @@ void World::DetectDBCLang()
 
     std::string availableLocalsStr;
 
-    uint32 default_locale = MAX_LOCALE;
-    for (int i = MAX_LOCALE - 1; i >= 0; --i)
+    uint32 default_locale = MAX_DBC_LOCALE;
+    for (int i = MAX_DBC_LOCALE - 1; i >= 0; --i)
     {
         if (strlen(race->name[i]) > 0)                      // check by race names
         {
@@ -1330,13 +1344,13 @@ void World::DetectDBCLang()
         }
     }
 
-    if (default_locale != m_lang_confid && m_lang_confid < MAX_LOCALE &&
+    if (default_locale != m_lang_confid && m_lang_confid < MAX_DBC_LOCALE &&
             (m_availableDbcLocaleMask & (1 << m_lang_confid)))
     {
         default_locale = m_lang_confid;
     }
 
-    if (default_locale >= MAX_LOCALE)
+    if (default_locale >= MAX_DBC_LOCALE)
     {
         sLog.outError("Unable to determine your DBC Locale! (corrupt DBC?)");
         Log::WaitBeforeContinueIfNeed();
@@ -1370,6 +1384,10 @@ void World::Update(uint32 diff)
 
     ///-Update mass mailer tasks if any
     sMassMailMgr.Update();
+
+    /// Handle weekly quests reset time
+    if (m_gameTime > m_NextWeeklyQuestReset)
+        ResetWeeklyQuests();
 
     /// <ul><li> Handle auctions when the timer has passed
     if (m_timers[WUPDATE_AUCTIONS].Passed())
@@ -1421,6 +1439,7 @@ void World::Update(uint32 diff)
     sMapMgr.Update(diff);
     sBattleGroundMgr.Update(diff);
     sOutdoorPvPMgr.Update(diff);
+    sWorldState.Update(diff);
 
     ///- Update groups with offline leaders
     if (m_timers[WUPDATE_GROUPS].Passed())
@@ -1975,6 +1994,40 @@ void World::_UpdateRealmCharCount(QueryResult* resultCharCount, uint32 accountId
     }
 }
 
+void World::InitWeeklyQuestResetTime()
+{
+    QueryResult* result = CharacterDatabase.Query("SELECT NextWeeklyQuestResetTime FROM saved_variables");
+    if (!result)
+        m_NextWeeklyQuestReset = time_t(time(nullptr));        // game time not yet init
+    else
+        m_NextWeeklyQuestReset = time_t((*result)[0].GetUInt64());
+
+    // generate time by config
+    time_t curTime = time(nullptr);
+    tm localTm = *localtime(&curTime);
+
+    int week_day_offset = localTm.tm_wday - int(getConfig(CONFIG_UINT32_QUEST_WEEKLY_RESET_WEEK_DAY));
+
+    // current week reset time
+    localTm.tm_hour = getConfig(CONFIG_UINT32_QUEST_WEEKLY_RESET_HOUR);
+    localTm.tm_min = 0;
+    localTm.tm_sec = 0;
+    time_t nextWeekResetTime = mktime(&localTm);
+    nextWeekResetTime -= week_day_offset * DAY;             // move time to proper day
+
+    // next reset time before current moment
+    if (curTime >= nextWeekResetTime)
+        nextWeekResetTime += WEEK;
+
+    // normalize reset time
+    m_NextWeeklyQuestReset = m_NextWeeklyQuestReset < curTime ? nextWeekResetTime - WEEK : nextWeekResetTime;
+
+    if (!result)
+        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextWeeklyQuestResetTime) VALUES ('" UI64FMTD "')", uint64(m_NextWeeklyQuestReset));
+    else
+        delete result;
+}
+
 void World::LoadSpamRecords(bool reload)
 {
     QueryResult* result = WorldDatabase.Query("SELECT record FROM spam_records");
@@ -1994,6 +2047,20 @@ void World::LoadSpamRecords(bool reload)
 
         delete result;
     }
+}
+
+void World::ResetWeeklyQuests()
+{
+    DETAIL_LOG("Weekly quests reset for all characters.");
+    CharacterDatabase.Execute("TRUNCATE character_queststatus_weekly");
+    for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+        if (itr->second->GetPlayer())
+            itr->second->GetPlayer()->ResetWeeklyQuestStatus();
+
+    m_NextWeeklyQuestReset = time_t(m_NextWeeklyQuestReset + WEEK);
+    CharacterDatabase.PExecute("UPDATE saved_variables SET NextWeeklyQuestResetTime = '" UI64FMTD "'", uint64(m_NextWeeklyQuestReset));
+
+    sGameEventMgr.WeeklyEventTimerRecalculation();
 }
 
 void World::SetPlayerLimit(int32 limit, bool needUpdate)
